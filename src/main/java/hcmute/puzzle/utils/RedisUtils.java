@@ -6,8 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RedisUtils {
-  @Autowired
-  private RedisTemplate<String, Object> redisTemplate;
+  @Autowired private RedisTemplate<String, Object> redisTemplate;
 
   public void set(String key, Object value) {
     redisTemplate.opsForValue().set(key, value);

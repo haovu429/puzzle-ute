@@ -25,8 +25,6 @@ public class DataResponse {
     this.status = status;
   }
 
-
-
   public DataResponse(Object data) {
     this.errCode = "*200";
     this.status = STATUS_OK;
