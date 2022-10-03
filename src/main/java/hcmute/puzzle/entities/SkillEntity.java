@@ -25,18 +25,12 @@ public class SkillEntity {
   @Column(name = "is_active")
   private boolean isActive;
 
-  @ManyToMany(
-          mappedBy = "skillEntities",
-          cascade = CascadeType.DETACH)
+  @ManyToMany(mappedBy = "skillEntities", cascade = CascadeType.DETACH)
   private List<CandidateEntity> candidateEntities = new ArrayList<>();
 
-  @ManyToMany(
-          mappedBy = "skillEntities",
-          cascade = CascadeType.DETACH)
+  @ManyToMany(mappedBy = "skillEntities", cascade = CascadeType.DETACH)
   private List<JobPostEntity> jobPostEntities = new ArrayList<>();
 
-  @ManyToMany(
-          mappedBy = "skillEntities",
-          cascade = CascadeType.DETACH)
+  @ManyToMany(mappedBy = "skillEntities", cascade = CascadeType.DETACH)
   private List<ExperienceEntity> experienceEntities = new ArrayList<>();
 }

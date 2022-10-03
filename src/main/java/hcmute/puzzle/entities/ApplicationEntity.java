@@ -22,6 +22,7 @@ public class ApplicationEntity {
 
   @Column(name = "note", columnDefinition = "VARCHAR(200)")
   private String note;
+
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
   @JoinColumn(name = "job_post_id", nullable = false)
   private JobPostEntity jobPostEntity;
@@ -29,5 +30,4 @@ public class ApplicationEntity {
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
   @JoinColumn(name = "candidate_id", nullable = false)
   private CandidateEntity candidateEntity;
-
 }

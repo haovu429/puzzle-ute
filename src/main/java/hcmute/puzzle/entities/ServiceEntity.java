@@ -14,18 +14,16 @@ import java.util.List;
 @Entity
 @Table(name = "service")
 public class ServiceEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
-    @Column(name = "name", columnDefinition = "VARCHAR(200)")
-    private String name;
+  @Column(name = "name", columnDefinition = "VARCHAR(200)")
+  private String name;
 
-    @Column(name = "is_active")
-    private boolean isActive;
+  @Column(name = "is_active")
+  private boolean isActive;
 
-    @ManyToMany(
-            mappedBy = "serviceEntities",
-            cascade = CascadeType.DETACH)
-    private List<CandidateEntity> candidateEntities = new ArrayList<>();
+  @ManyToMany(mappedBy = "serviceEntities", cascade = CascadeType.DETACH)
+  private List<CandidateEntity> candidateEntities = new ArrayList<>();
 }

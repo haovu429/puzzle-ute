@@ -63,20 +63,16 @@ public class JobPostEntity {
   @JoinColumn(name = "created_employer", nullable = false)
   private EmployerEntity createdEmployer;
 
-
-  @ManyToMany(
-          mappedBy = "savedJobPost",
-          cascade = CascadeType.DETACH)
+  @ManyToMany(mappedBy = "savedJobPost", cascade = CascadeType.DETACH)
   private List<CandidateEntity> candidateEntities = new ArrayList<>();
 
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinTable(
-          name = "needed_skill",
-          joinColumns = @JoinColumn(name = "job_post_id"),
-          inverseJoinColumns = @JoinColumn(name = "skill_id"))
+      name = "needed_skill",
+      joinColumns = @JoinColumn(name = "job_post_id"),
+      inverseJoinColumns = @JoinColumn(name = "skill_id"))
   private List<SkillEntity> skillEntities = new ArrayList<>();
 
   @OneToMany(mappedBy = "jobPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<CompanyEntity> companyEntities = new ArrayList<>();
-
 }

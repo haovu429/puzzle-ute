@@ -52,8 +52,8 @@ public class ExperienceEntity {
 
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinTable(
-          name = "experience_have_skill",
-          joinColumns = @JoinColumn(name = "experience_id"),
-          inverseJoinColumns = @JoinColumn(name = "skill_id"))
+      name = "experience_have_skill",
+      joinColumns = @JoinColumn(name = "experience_id"),
+      inverseJoinColumns = @JoinColumn(name = "skill_id"))
   private List<SkillEntity> skillEntities = new ArrayList<>();
 }

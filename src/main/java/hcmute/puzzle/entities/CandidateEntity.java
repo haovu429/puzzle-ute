@@ -74,9 +74,9 @@ public class CandidateEntity {
 
   @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   @JoinTable(
-          name = "have_service",
-          joinColumns = @JoinColumn(name = "candidate_id"),
-          inverseJoinColumns = @JoinColumn(name = "service_id"))
+      name = "have_service",
+      joinColumns = @JoinColumn(name = "candidate_id"),
+      inverseJoinColumns = @JoinColumn(name = "service_id"))
   private List<ServiceEntity> serviceEntities = new ArrayList<>();
 
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -90,7 +90,7 @@ public class CandidateEntity {
   private List<ExperienceEntity> experienceEntities = new ArrayList<>();
 
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<EvaluateEntity> evaluateEntities = new ArrayList<>();;
+  private List<EvaluateEntity> evaluateEntities = new ArrayList<>();
 
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
@@ -98,12 +98,11 @@ public class CandidateEntity {
 
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinTable(
-          name = "saved_job_post",
-          joinColumns = @JoinColumn(name = "candidate_id"),
-          inverseJoinColumns = @JoinColumn(name = "company_id"))
+      name = "saved_job_post",
+      joinColumns = @JoinColumn(name = "candidate_id"),
+      inverseJoinColumns = @JoinColumn(name = "company_id"))
   private List<JobPostEntity> savedJobPost = new ArrayList<>();
 
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<JobAlertEntity> jobAlertEntities = new ArrayList<>();
-
 }

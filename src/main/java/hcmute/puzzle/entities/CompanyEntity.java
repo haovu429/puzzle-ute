@@ -31,9 +31,7 @@ public class CompanyEntity {
   @Column(name = "is_active")
   private boolean isActive;
 
-  @ManyToMany(
-          mappedBy = "followingCompany",
-          cascade = CascadeType.DETACH)
+  @ManyToMany(mappedBy = "followingCompany", cascade = CascadeType.DETACH)
   private List<CandidateEntity> candidateEntities = new ArrayList<>();
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -42,5 +40,4 @@ public class CompanyEntity {
 
   @OneToMany(mappedBy = "companyEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   private List<NotificationEntity> notificationEntities = new ArrayList<>();
-
 }

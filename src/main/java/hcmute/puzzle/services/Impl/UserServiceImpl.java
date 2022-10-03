@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
 
   public boolean checkEmailExists(String email) {
     UserEntity user = userRepository.getUserByEmail(email);
-      return user == null;
+    return user == null;
   }
 
   @Override

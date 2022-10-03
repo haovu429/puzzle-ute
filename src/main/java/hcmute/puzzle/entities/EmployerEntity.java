@@ -31,9 +31,7 @@ public class EmployerEntity {
   @Column(name = "recruitment_phone", columnDefinition = "VARCHAR(20)")
   private String recruitmentPhone;
 
-  @ManyToMany(
-      mappedBy = "followingEmployers",
-      cascade = CascadeType.ALL)
+  @ManyToMany(mappedBy = "followingEmployers", cascade = CascadeType.ALL)
   private List<CandidateEntity> followCandidates = new ArrayList<>();
 
   @OneToMany(mappedBy = "createdEmployer", cascade = CascadeType.ALL, orphanRemoval = true)
