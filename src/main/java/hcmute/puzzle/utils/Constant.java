@@ -13,7 +13,7 @@ public class Constant {
   @Value("${SMS_ACCESS_TOKEN}")
   public static String SMS_ACCESS_TOKEN;
 
-  public static final Map<String, String> FILTER_PRODUCT =
+  public static final Map<String, String> FILTER_PRODUCT=
       Map.ofEntries(
           Map.entry("m", "manufacturer_id"), Map.entry("c", "category"),
           Map.entry("name", "name "), Map.entry("min", "price"),
