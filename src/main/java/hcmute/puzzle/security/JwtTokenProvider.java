@@ -35,12 +35,12 @@ public class JwtTokenProvider {
         .setExpiration(expiryDate)
         .signWith(SignatureAlgorithm.HS512, JWT_SECRET.getBytes())
         .compact();
-
   }
 
   // Lấy thông tin user từ jwt
   public String getEmailFromJWT(String token) {
-    Claims claims = Jwts.parser().setSigningKey(JWT_SECRET.getBytes()).parseClaimsJws(token).getBody();
+    Claims claims =
+        Jwts.parser().setSigningKey(JWT_SECRET.getBytes()).parseClaimsJws(token).getBody();
 
     return String.valueOf(claims.getSubject());
   }

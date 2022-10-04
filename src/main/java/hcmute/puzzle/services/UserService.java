@@ -2,8 +2,6 @@ package hcmute.puzzle.services;
 
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService {
   ResponseObject save(UserDTO userDTO);
@@ -16,5 +14,5 @@ public interface UserService {
 
   ResponseObject getUserByAccount(String email, String password);
 
-  //UserDetails loadUserByUsername(String email);
+  // UserDetails loadUserByUsername(String email);
 }

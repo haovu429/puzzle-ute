@@ -40,7 +40,7 @@ public class UserDTO {
 
   private Date lastOnline;
 
-  private Boolean isActive;
+  private boolean isActive;
 
   private List<String> roleCodes = new ArrayList<>();
 }

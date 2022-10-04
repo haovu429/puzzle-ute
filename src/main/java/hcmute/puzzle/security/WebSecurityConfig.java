@@ -23,14 +23,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
-  @Autowired UserService userService;
-
-  //    @Autowired
-  //    private AuthEntryPointJwt unauthorizedHandler;
-
   private static final String[] AUTH_WHITE_LIST = {
     "/v3/api-docs/**", "/swagger-ui/**", "/v2/api-docs/**", "/swagger-resources/**"
   };
+
+  //    @Autowired
+  //    private AuthEntryPointJwt unauthorizedHandler;
+  @Autowired UserService userService;
 
   @Bean
   public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -119,7 +118,6 @@ public class WebSecurityConfig {
         .permitAll()
         .and()
         .httpBasic();
-    ;
     http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }

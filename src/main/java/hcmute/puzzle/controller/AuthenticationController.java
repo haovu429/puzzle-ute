@@ -19,43 +19,40 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path = "/api")
 public class AuthenticationController {
-  @Autowired
-  AuthenticationManager authenticationManager;
+  @Autowired AuthenticationManager authenticationManager;
 
-  @Autowired
-  private JwtTokenProvider tokenProvider;
+  @Autowired private JwtTokenProvider tokenProvider;
 
-  @Autowired
-  private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-  @Autowired
-  private RedisUtils redisUtils;
-
+  @Autowired private RedisUtils redisUtils;
 
   @PostMapping("/login")
-  public ResponseObject authenticateUser(@Validated @RequestBody ObjectNode objectNode, @RequestParam(value = "rememberMe", required = false) Boolean rememberMe) {
+  public ResponseObject authenticateUser(
+      @Validated @RequestBody ObjectNode objectNode,
+      @RequestParam(value = "rememberMe", required = false) Boolean rememberMe) {
     try {
       System.out.println("Da vao day");
       String a = objectNode.get("email").toString();
       UserEntity user = userRepository.findByEmail(objectNode.get("email").asText());
       if (user != null) {
-        Authentication authentication = authenticationManager.authenticate(
+        Authentication authentication =
+            authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        objectNode.get("email").asText(),
-                        objectNode.get("password").asText()
-                )
-        );
-//        Set in security context
+                    objectNode.get("email").asText(), objectNode.get("password").asText()));
+        //        Set in security context
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Long JWT_EXPIRATION = (long) (60 * 60 * 24 * 1000); //1 day
+        Long JWT_EXPIRATION = (long) (60 * 60 * 24 * 1000); // 1 day
         if (rememberMe != null) {
-          JWT_EXPIRATION *= 7; //7 days
+          JWT_EXPIRATION *= 7; // 7 days
         }
         // get jwt token
-        String jwt = tokenProvider.generateToken((CustomUserDetails) authentication.getPrincipal(), JWT_EXPIRATION);
+        String jwt =
+            tokenProvider.generateToken(
+                (CustomUserDetails) authentication.getPrincipal(), JWT_EXPIRATION);
 
-        //store token in redis
+        // store token in redis
         redisUtils.set(user.getEmail(), jwt);
 
         return new ResponseObject(200, "Login success", jwt);
@@ -73,11 +70,10 @@ public class AuthenticationController {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     Object user = authentication.getPrincipal();
     if (user instanceof CustomUserDetails) {
-      //delete token in redis
+      // delete token in redis
       redisUtils.delete(((CustomUserDetails) user).getUsername());
       return new ResponseObject(200, "Logout success", "");
     }
     return new ResponseObject("401", 200, "Logout fail");
   }
-
 }

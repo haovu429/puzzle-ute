@@ -10,32 +10,30 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/api")
 public class UserController {
 
-    @Autowired
-    public UserService userService;
+  @Autowired public UserService userService;
 
-    @GetMapping("/user")
-    public ResponseObject getAll() {
-      return userService.getAll();
-    }
+  @GetMapping("/user")
+  public ResponseObject getAll() {
+    return userService.getAll();
+  }
 
-    @PostMapping("/user")
-    public ResponseObject save(@RequestBody UserDTO user) {
-      return userService.save(user);
-    }
+  @PostMapping("/user")
+  public ResponseObject save(@RequestBody UserDTO user) {
+    return userService.save(user);
+  }
 
-    @DeleteMapping("/user/{id}")
-    public ResponseObject delete(@PathVariable Long id) {
-      return userService.delete(id);
-    }
+  @DeleteMapping("/user/{id}")
+  public ResponseObject delete(@PathVariable Long id) {
+    return userService.delete(id);
+  }
 
-    @PutMapping("/user/{id}")
-    public ResponseObject update(@PathVariable Long id, @RequestBody UserDTO user) {
-      return userService.update(id, user);
-    }
+  @PutMapping("/user/{id}")
+  public ResponseObject update(@PathVariable Long id, @RequestBody UserDTO user) {
+    return userService.update(id, user);
+  }
 
-    @GetMapping("/test")
-    public String update() {
-      return "OK";
-    }
-
+  @GetMapping("/test")
+  public String update() {
+    return "OK";
+  }
 }

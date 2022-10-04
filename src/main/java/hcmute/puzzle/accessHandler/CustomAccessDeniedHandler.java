@@ -1,6 +1,5 @@
 package hcmute.puzzle.accessHandler;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hcmute.puzzle.dto.ResponseObject;
 import org.slf4j.Logger;
@@ -14,23 +13,31 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
-  public static final Logger LOG = org.slf4j.LoggerFactory.getLogger(CustomAccessDeniedHandler.class);
+  public static final Logger LOG =
+      org.slf4j.LoggerFactory.getLogger(CustomAccessDeniedHandler.class);
   // Jackson JSON serializer instance
-  private ObjectMapper objectMapper = new ObjectMapper();
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
-  public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-    Authentication auth
-            = SecurityContextHolder.getContext().getAuthentication();
-    ResponseObject responseObject = new ResponseObject("403", 200, accessDeniedException.getMessage());
+  public void handle(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      AccessDeniedException accessDeniedException)
+      throws IOException, ServletException {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    ResponseObject responseObject =
+        new ResponseObject("403", 200, accessDeniedException.getMessage());
 
     if (auth != null) {
-      LOG.warn("User: " + auth.getName()
+      LOG.warn(
+          "User: "
+              + auth.getName()
               + " access denied the protected URL: "
               + request.getRequestURI());
-      responseObject.setMessage("User: " + auth.getName()
+      responseObject.setMessage(
+          "User: "
+              + auth.getName()
               + " access denied the protected URL: "
               + request.getRequestURI());
     }
@@ -38,6 +45,5 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     response.setStatus(200);
     response.setContentType("application/json");
     response.getWriter().write(objectMapper.writeValueAsString(responseObject));
-
   }
 }

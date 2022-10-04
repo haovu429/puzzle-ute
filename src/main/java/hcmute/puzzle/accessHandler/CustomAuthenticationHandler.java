@@ -13,16 +13,19 @@ import java.io.IOException;
 public class CustomAuthenticationHandler implements AuthenticationEntryPoint {
 
   // Jackson JSON serializer instance
-  private ObjectMapper objectMapper = new ObjectMapper();
+  private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
-  public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+  public void commence(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      AuthenticationException authException)
+      throws IOException, ServletException {
     ResponseObject responseObject = new ResponseObject("401", 200, authException.getMessage());
-    //System.out.println(authException.getMessage());
+    // System.out.println(authException.getMessage());
     responseObject.setMessage("Invalid token");
     response.setStatus(200);
     response.setContentType("application/json");
     response.getWriter().write(objectMapper.writeValueAsString(responseObject));
-
   }
 }

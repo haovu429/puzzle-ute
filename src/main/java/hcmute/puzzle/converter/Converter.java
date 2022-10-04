@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class Converter {
@@ -29,7 +28,7 @@ public class Converter {
     userDTO.setIsOnline(entity.getIsOnline());
     userDTO.setJoinDate(entity.getJoinDate());
     userDTO.setLastOnline(entity.getLastOnline());
-    userDTO.setIsActive(entity.getIsActive());
+    userDTO.setActive(entity.isActive());
 
     return userDTO;
   }
@@ -45,9 +44,9 @@ public class Converter {
     userEntity.setIsOnline(dto.getIsOnline());
     userEntity.setJoinDate(dto.getJoinDate());
     userEntity.setLastOnline(dto.getLastOnline());
-    userEntity.setIsActive(dto.getIsActive());
-//        List<RoleEntity> roleEntities = dto.getRoles().stream().map(role -> toEntity(role))
-//                .collect(Collectors.toList());
+    userEntity.setActive(dto.getIsActive());
+    //        List<RoleEntity> roleEntities = dto.getRoles().stream().map(role -> toEntity(role))
+    //                .collect(Collectors.toList());
 
     List<RoleEntity> roleEntities = new ArrayList<>();
     for (String code : dto.getRoleCodes()) {
