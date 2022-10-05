@@ -35,10 +35,10 @@ public class EmployerEntity {
   private List<CandidateEntity> followCandidates = new ArrayList<>();
 
   @OneToMany(mappedBy = "createdEmployer", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<JobPostEntity> jobPostEntities;
+  private List<JobPostEntity> jobPostEntities = new ArrayList<>();
 
   @OneToMany(mappedBy = "employerEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<EvaluateEntity> evaluateEntities;
+  private List<EvaluateEntity> evaluateEntities = new ArrayList<>();
 
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)

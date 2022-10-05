@@ -25,7 +25,7 @@ public class Converter {
     userDTO.setPassword(entity.getPassword());
     userDTO.setPhone(entity.getPhone());
     userDTO.setAvatar(entity.getAvatar());
-    userDTO.setIsOnline(entity.getIsOnline());
+    userDTO.setIsOnline(entity.isOnline());
     userDTO.setJoinDate(entity.getJoinDate());
     userDTO.setLastOnline(entity.getLastOnline());
     userDTO.setActive(entity.isActive());
@@ -41,10 +41,10 @@ public class Converter {
     userEntity.setPassword(dto.getPassword());
     userEntity.setPhone(dto.getPhone());
     userEntity.setAvatar(dto.getAvatar());
-    userEntity.setIsOnline(dto.getIsOnline());
+    userEntity.setOnline(dto.getIsOnline());
     userEntity.setJoinDate(dto.getJoinDate());
     userEntity.setLastOnline(dto.getLastOnline());
-    userEntity.setActive(dto.getIsActive());
+    userEntity.setActive(dto.isActive());
     //        List<RoleEntity> roleEntities = dto.getRoles().stream().map(role -> toEntity(role))
     //                .collect(Collectors.toList());
 

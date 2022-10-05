@@ -28,6 +28,6 @@ public class EvaluateEntity {
   private EmployerEntity employerEntity;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "employer_id", nullable = false)
-  private EmployerEntity candidateEntity;
+  @JoinColumn(name = "candidate_id", nullable = false)
+  private CandidateEntity candidateEntity;
 }
