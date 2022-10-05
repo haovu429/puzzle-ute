@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CompanyDTo {
+public class CompanyDTO {
     private long id;
     private String name;
     private String description;

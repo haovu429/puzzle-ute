@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class EmployeeDTO {
+public class EmployerDTO {
     private long id;
     private String firstname;
     private String lastname;

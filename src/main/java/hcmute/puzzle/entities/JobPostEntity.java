@@ -50,11 +50,27 @@ public class JobPostEntity {
   @Column(name = "budget")
   private long budget;
 
-  private Date due_time;
+  @Column(name = "due_time")
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date dueTime;
 
-  private String work_status;
+  @Column(name = "work_status", columnDefinition = "VARCHAR(20)")
+  private String workStatus;
 
+  @Column(name = "blind")
   private boolean blind;
+
+  @Column(name = "deaf")
+  private boolean deaf;
+
+  @Column(name = "communication_dis")
+  private boolean communicationDis;
+
+  @Column(name = "hand_dis")
+  private boolean handDis;
+
+  @Column(name = "labor")
+  private boolean labor;
 
   @OneToMany(mappedBy = "jobPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<ApplicationEntity> applicationEntities = new ArrayList<>();
@@ -64,7 +80,7 @@ public class JobPostEntity {
   private EmployerEntity createdEmployer;
 
   @ManyToMany(mappedBy = "savedJobPost", cascade = CascadeType.DETACH)
-  private List<CandidateEntity> candidateEntities = new ArrayList<>();
+  private List<CandidateEntity> savedCandidates = new ArrayList<>();
 
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinTable(
