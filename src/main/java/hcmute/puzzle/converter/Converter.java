@@ -1,7 +1,9 @@
 package hcmute.puzzle.converter;
 
+import hcmute.puzzle.dto.ApplicationDTO;
 import hcmute.puzzle.dto.RoleDTO;
 import hcmute.puzzle.dto.UserDTO;
+import hcmute.puzzle.entities.ApplicationEntity;
 import hcmute.puzzle.entities.RoleEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
@@ -74,5 +76,32 @@ public class Converter {
     roleEntity.setCode(dto.getCode());
     roleEntity.setName(dto.getName());
     return roleEntity;
+  }
+
+  // ApplicationEntity
+  public ApplicationDTO toDTO(ApplicationEntity entity) {
+    ApplicationDTO applicationDTO = new ApplicationDTO();
+    applicationDTO.setId(entity.getId());
+    applicationDTO.setResult(entity.getResult());
+    applicationDTO.setNote(entity.getNote());
+
+    if (entity.getCandidateEntity() != null) {
+      applicationDTO.setCandidateId(entity.getId());
+    }
+
+    if (entity.getJobPostEntity() != null) {
+      applicationDTO.setJobPostId(entity.getJobPostEntity().getId());
+    }
+
+    return applicationDTO;
+  }
+
+  public ApplicationEntity toEntity(ApplicationDTO dto) {
+    ApplicationEntity entity = new ApplicationEntity();
+    entity.setId(dto.getId());
+    entity.setResult(dto.getResult());
+    entity.setNote(dto.getNote());
+    //entity.setCandidateEntity(dto.getCandidateId());
+    return entity;
   }
 }
