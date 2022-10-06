@@ -11,8 +11,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class ServiceDTO {
-    private long id;
-    private String name;
-    private boolean isActive;
-    private List<Long> candidateIds = new ArrayList<>();
+  private long id;
+  private String name;
+  private boolean isActive;
+  private List<Long> candidateIds = new ArrayList<>();
 }

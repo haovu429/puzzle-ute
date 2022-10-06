@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
+// @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
   @Autowired private JwtTokenProvider tokenProvider;
 
@@ -57,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
         // get token from redis
         String token = redisUtils.get(email) == null ? "" : redisUtils.get(email).toString();
-        System.out.println("Dung? :" + token.equals(jwt));
+        // System.out.println("Dung? :" + token.equals(jwt));
         if (userDetails != null && token.equals(jwt)) {
           // set authentication to context
           UsernamePasswordAuthenticationToken authentication =
@@ -80,8 +81,43 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     filterChain.doFilter(request, response);
   }
 
+  public String checkToken(String tokenFromHeader) {
+    String validUserEmail = "";
+    try {
+      // get request token from header
+      String jwt = tokenPreProcessing(tokenFromHeader);
+
+      if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+        // get email from token
+        String email = tokenProvider.getEmailFromJWT(jwt);
+        // get user from email
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+        // get token from redis
+        String token = redisUtils.get(email) == null ? "" : redisUtils.get(email).toString();
+        // System.out.println("Dung? :" + token.equals(jwt));
+        if (userDetails != null && token.equals(jwt)) {
+          // pass
+          validUserEmail = userDetails.getUsername();
+        } else {
+          throw new RuntimeException("Loi xac thuc token");
+        }
+      }
+    } catch (AccessDeniedException ex) {
+      throw new AccessDeniedException("Access Denied");
+    } catch (Exception exception) {
+      exception.printStackTrace();
+      log.error("failed on set user authentication", exception);
+      throw new RuntimeException("Loi xac thuc token");
+    }
+    return validUserEmail;
+  }
+
   private String getJwtFromRequest(HttpServletRequest request) {
     String bearerToken = request.getHeader("Authorization");
+    return tokenPreProcessing(bearerToken);
+  }
+
+  private String tokenPreProcessing(String bearerToken) {
     // Check if bearer token is valid
     if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
       return bearerToken.substring(7);

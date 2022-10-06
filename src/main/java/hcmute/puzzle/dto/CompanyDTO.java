@@ -11,12 +11,12 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class CompanyDTO {
-    private long id;
-    private String name;
-    private String description;
-    private String website;
-    private boolean isActive;
+  private long id;
+  private String name;
+  private String description;
+  private String website;
+  private boolean isActive;
 
-    private List<Long> followingCandidateIds = new ArrayList<>();
-    private List<Long> jobPostIds = new ArrayList<>();
+  private List<Long> followingCandidateIds = new ArrayList<>();
+  private List<Long> jobPostIds = new ArrayList<>();
 }

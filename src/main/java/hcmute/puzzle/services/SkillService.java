@@ -1,4 +1,3 @@
 package hcmute.puzzle.services;
 
-public interface SkillService {
-}
+public interface SkillService {}

@@ -16,7 +16,8 @@ import java.util.List;
 public class CandidateEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  // @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "user_id")
   private long id;
 
   @Column(name = "first_name", columnDefinition = "VARCHAR(50)")
@@ -92,10 +93,6 @@ public class CandidateEntity {
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<EvaluateEntity> evaluateEntities = new ArrayList<>();
 
-  @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-  private UserEntity userEntity;
-
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinTable(
       name = "saved_job_post",
@@ -105,4 +102,9 @@ public class CandidateEntity {
 
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<JobAlertEntity> jobAlertEntities = new ArrayList<>();
+
+  @OneToOne(cascade = CascadeType.DETACH)
+  @MapsId
+  @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+  private UserEntity userEntity;
 }

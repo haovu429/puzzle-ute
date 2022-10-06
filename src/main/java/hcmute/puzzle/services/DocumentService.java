@@ -1,4 +1,3 @@
 package hcmute.puzzle.services;
 
-public interface DocumentService {
-}
+public interface DocumentService {}

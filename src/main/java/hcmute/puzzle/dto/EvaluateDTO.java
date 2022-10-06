@@ -8,10 +8,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class EvaluateDTO {
-    private long id;
-    private int rate;
-    private String note;
+  private long id;
+  private int rate;
+  private String note;
 
-    private long employerId;
-    private long candidateId;
+  private long employerId;
+  private long candidateId;
 }

@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ImageDTO {
-    private long id;
-    private String type;
-    private String title;
-    private String url;
-    private long codeId;
+  private long id;
+  private String type;
+  private String title;
+  private String url;
+  private long codeId;
 }

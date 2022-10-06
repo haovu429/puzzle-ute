@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class DataJsonDTO {
-    private String key;
-    private Object value;
+  private String key;
+  private Object value;
 }

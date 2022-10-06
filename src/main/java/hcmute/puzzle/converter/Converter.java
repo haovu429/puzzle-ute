@@ -7,9 +7,10 @@ import hcmute.puzzle.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Component
 public class Converter {
@@ -115,13 +116,16 @@ public class Converter {
     entity.setId(dto.getId());
     entity.setResult(dto.getResult());
     entity.setNote(dto.getNote());
-
-    //    Optional<CandidateEntity> candidate = candidateRepository.findById(dto.getId());
-    //    if (candidate.isPresent()) {
-    //      entity.setCandidateEntity(candidate.get());
-    //    } else {
-    //      throw new CustomerException("Can't convert District in Ward");
-    //    }
+    //      try {
+    //        Optional<CandidateEntity> candidate = candidateRepository.findById(dto.getId());
+    //        if (candidate.isPresent()) {
+    //          entity.setCandidateEntity(candidate.get());
+    //        } else {
+    //          throw new CustomerException("Can't convert Candidate in Application");
+    //        }
+    //      } catch (Exception e) {
+    //        throw new CustomerException("Can't convert Candidate in Application");
+    //      }
 
     // entity.setCandidateEntity(dto.getCandidateId());
     return entity;
@@ -145,8 +149,14 @@ public class Converter {
     dto.setDetailDis(entity.getDetailDis());
     dto.setVerifiedDis(entity.isVerifiedDis());
 
+    if (entity.getUserEntity() == null) {
+      throw new RuntimeException("Can't convert userEntity because it is null");
+    }
+    dto.setUserId(entity.getUserEntity().getId());
+
     return dto;
   }
+
   public CandidateEntity toEntity(CandidateDTO dto) {
     CandidateEntity entity = new CandidateEntity();
     entity.setId(dto.getId());
@@ -162,6 +172,12 @@ public class Converter {
     entity.setLabor(dto.isLabor());
     entity.setDetailDis(dto.getDetailDis());
     entity.setVerifiedDis(dto.isVerifiedDis());
+
+    Optional<UserEntity> userEntity = userRepository.findById(dto.getUserId());
+    if ( userEntity.isEmpty()){
+      throw new NoSuchElementException("Can't convert userId");
+    }
+    entity.setUserEntity(userEntity.get());
 
     return entity;
   }
@@ -219,6 +235,10 @@ public class Converter {
     dto.setRecruitmentEmail(entity.getRecruitmentEmail());
     dto.setRecruitmentPhone(entity.getRecruitmentPhone());
 
+    if (entity.getUserEntity() == null) {
+      throw new RuntimeException("Can't convert userEntity because it is null");
+    }
+    dto.setUserId(entity.getUserEntity().getId());
     return dto;
   }
 
@@ -229,6 +249,12 @@ public class Converter {
     entity.setLastname(dto.getLastname());
     entity.setRecruitmentEmail(dto.getRecruitmentEmail());
     entity.setRecruitmentPhone(dto.getRecruitmentPhone());
+
+    Optional<UserEntity> userEntity = userRepository.findById(dto.getUserId());
+    if ( userEntity.isEmpty()){
+      throw new NoSuchElementException("Can't convert userId");
+    }
+    entity.setUserEntity(userEntity.get());
 
     return entity;
   }
@@ -440,7 +466,4 @@ public class Converter {
 
     return entity;
   }
-
-
-
 }

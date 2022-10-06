@@ -10,12 +10,11 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 public class NotificationDTO {
-    private long id;
-    private String type;
-    private String title;
-    private String brief;
-    private Date time;
-    private long userId;
-    private long companyId;
-
+  private long id;
+  private String type;
+  private String title;
+  private String brief;
+  private Date time;
+  private long userId;
+  private long companyId;
 }

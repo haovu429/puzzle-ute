@@ -1,4 +1,3 @@
 package hcmute.puzzle.services.Impl;
 
-public class ServiceServiceImpl {
-}
+public class ServiceServiceImpl {}

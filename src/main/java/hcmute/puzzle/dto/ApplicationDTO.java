@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ApplicationDTO {
-    private long id;
-    private String result;
-    private String note;
-    private long jobPostId;
-    private long candidateId;
+  private long id;
+  private String result;
+  private String note;
+  private long jobPostId;
+  private long candidateId;
 }

@@ -57,10 +57,12 @@ public class UserEntity {
       inverseJoinColumns = @JoinColumn(name = "role_id"))
   private List<RoleEntity> roles = new ArrayList<>();
 
-  @OneToOne(mappedBy = "userEntity")
+  @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL)
+  @PrimaryKeyJoinColumn
   private EmployerEntity employerEntity;
 
   @OneToOne(mappedBy = "userEntity")
+  @PrimaryKeyJoinColumn
   private CandidateEntity candidateEntity;
 
   @OneToMany(mappedBy = "userEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)

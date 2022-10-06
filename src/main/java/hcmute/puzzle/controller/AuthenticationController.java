@@ -34,7 +34,7 @@ public class AuthenticationController {
     try {
       System.out.println("Da vao day");
       String a = objectNode.get("email").toString();
-      UserEntity user = userRepository.findByEmail(objectNode.get("email").asText());
+      UserEntity user = userRepository.getByEmail(objectNode.get("email").asText());
       if (user != null) {
         Authentication authentication =
             authenticationManager.authenticate(

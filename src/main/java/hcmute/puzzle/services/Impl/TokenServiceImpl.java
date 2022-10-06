@@ -23,7 +23,7 @@ public class TokenServiceImpl implements TokenService {
 
   @Override
   public void saveToken(String tokenValue, String userMail) {
-    UserEntity user = userRepository.findByEmail(userMail);
+    UserEntity user = userRepository.getByEmail(userMail);
     if (user == null) {
       throw new RuntimeException("User was not found by email: " + userMail);
     }

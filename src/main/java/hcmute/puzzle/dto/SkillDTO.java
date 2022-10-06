@@ -11,11 +11,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class SkillDTO {
-    private long id;
-    private String name;
-    private boolean isActive;
+  private long id;
+  private String name;
+  private boolean isActive;
 
-    private List<Long> candidateIds = new ArrayList<>();
-    private List<Long> jobPostIds = new ArrayList<>();
-    private List<Long> experienceIds = new ArrayList<>();
+  private List<Long> candidateIds = new ArrayList<>();
+  private List<Long> jobPostIds = new ArrayList<>();
+  private List<Long> experienceIds = new ArrayList<>();
 }

@@ -8,12 +8,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class JobAlertDTO {
-    private long id;
-    private String industry;
-    private String employmentType;
-    private String workplaceType;
-    private String city;
+  private long id;
+  private String industry;
+  private String employmentType;
+  private String workplaceType;
+  private String city;
 
-    private long candidateId;
-
+  private long candidateId;
 }

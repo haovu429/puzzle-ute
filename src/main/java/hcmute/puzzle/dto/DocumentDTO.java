@@ -8,10 +8,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class DocumentDTO {
-    private long id;
-    private String type;
-    private String title;
-    private String url;
+  private long id;
+  private String type;
+  private String title;
+  private String url;
 
-    private long userId;
+  private long userId;
 }
