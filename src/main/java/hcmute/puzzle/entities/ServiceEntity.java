@@ -6,7 +6,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -25,5 +27,5 @@ public class ServiceEntity {
   private boolean isActive;
 
   @ManyToMany(mappedBy = "serviceEntities", cascade = CascadeType.DETACH)
-  private List<CandidateEntity> candidateEntities = new ArrayList<>();
+  private Set<CandidateEntity> candidateEntities = new HashSet<>();
 }

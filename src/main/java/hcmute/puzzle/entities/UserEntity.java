@@ -3,11 +3,13 @@ package hcmute.puzzle.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -49,25 +51,29 @@ public class UserEntity {
   @Column(name = "is_active")
   private boolean isActive;
 
-  //
-  @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+  // https://shareprogramming.net/phan-biet-fetchmode-va-fetchtype-trong-jpa-hibernate/
+  // https://viblo.asia/p/van-de-n1-cau-truy-van-trong-hibernate-bWrZn00b5xw
+  // @Fetch(FetchMode.JOIN)
+  @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  @Fetch(FetchMode.SUBSELECT)
   @JoinTable(
       name = "user_role",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "role_id"))
-  private List<RoleEntity> roles = new ArrayList<>();
 
-  @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL)
+  private Set<RoleEntity> roles = new HashSet<>();
+
+  @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @PrimaryKeyJoinColumn
   private EmployerEntity employerEntity;
 
-  @OneToOne(mappedBy = "userEntity")
+  @OneToOne(mappedBy = "userEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @PrimaryKeyJoinColumn
   private CandidateEntity candidateEntity;
 
   @OneToMany(mappedBy = "userEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-  private List<DocumentEntity> documentEntities = new ArrayList<>();
+  private Set<DocumentEntity> documentEntities = new HashSet<>();
 
   @OneToMany(mappedBy = "userEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-  private List<NotificationEntity> notificationEntities = new ArrayList<>();
+  private Set<NotificationEntity> notificationEntities = new HashSet<>();
 }

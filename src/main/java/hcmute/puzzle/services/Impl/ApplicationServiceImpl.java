@@ -4,14 +4,19 @@ import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.ApplicationDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.ApplicationEntity;
+import hcmute.puzzle.entities.CandidateEntity;
+import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.ApplicationRepository;
+import hcmute.puzzle.repository.CandidateRepository;
+import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.services.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -19,6 +24,11 @@ import java.util.function.Function;
 public class ApplicationServiceImpl implements ApplicationService {
   @Autowired ApplicationRepository applicationRepository;
 
+  @Autowired
+  CandidateRepository candidateRepository;
+
+  @Autowired
+  JobPostRepository jobPostRepository;
   @Autowired Converter converter;
 
   @Override
@@ -53,5 +63,26 @@ public class ApplicationServiceImpl implements ApplicationService {
               }
             });
     return new ResponseObject(dtos);
+  }
+
+  // Candidate apply jobPost
+  public ResponseObject applyJobPost(long candidateId, long jobPostId) {
+    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
+    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+    ApplicationEntity application = new ApplicationEntity();
+
+    if (candidate.isEmpty()) {
+      throw new NoSuchElementException("Candidate no value present");
+    }
+
+    if (jobPost.isEmpty()) {
+      throw new NoSuchElementException("Employer no value present");
+    }
+
+    application.setCandidateEntity(candidate.get());
+    application.setJobPostEntity(jobPost.get());
+    applicationRepository.save(application);
+
+    return new ResponseObject(200, " Apply success! ",converter.toDTO(application));
   }
 }

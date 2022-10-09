@@ -5,9 +5,11 @@ import hcmute.puzzle.dto.CandidateDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.EmployerEntity;
+import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.EmployerRepository;
+import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.services.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class CandidateServiceImpl implements CandidateService {
   @Autowired CandidateRepository candidateRepository;
 
   @Autowired EmployerRepository employerRepository;
+
+  @Autowired
+  JobPostRepository jobPostRepository;
 
   @Autowired
   UserRepository userRepository;
@@ -120,4 +125,22 @@ public class CandidateServiceImpl implements CandidateService {
 
     return new ResponseObject(200, "Follow success", converter.toDTO(candidate.get()));
   }
+
+//  @Override
+//  public ResponseObject applyJobPost(long candidateId, long jobPostId) {
+//    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
+//    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+//    if (candidate.isEmpty()) {
+//      throw new NoSuchElementException("Candidate no value present");
+//    }
+//
+//    if (jobPost.isEmpty()) {
+//      throw new NoSuchElementException("Employer no value present");
+//    }
+//
+//    candidate.get().get().add(jobPost.get());
+//    candidateRepository.save(candidate.get());
+//
+//    return new ResponseObject(200, "Follow success", converter.toDTO(candidate.get()));
+//  }
 }

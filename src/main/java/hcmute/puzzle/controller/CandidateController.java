@@ -36,7 +36,7 @@ public class CandidateController {
       throw new RuntimeException(bindingResult.getFieldError().toString());
     }
 
-    Optional<UserEntity> linkUser = checkIdentity(token, candidate.getUserId());
+    Optional<UserEntity> linkUser = getUserEntityFromToken(token);
     // String validUserEmail;
     // Check user of current account is updating info
     // JwtAuthenticationFilter filter = new JwtAuthenticationFilter();
@@ -68,7 +68,7 @@ public class CandidateController {
   }
 
   @DeleteMapping("/candidate/{id}")
-  ResponseObject delete(@PathVariable Long id) {
+  ResponseObject delete(@PathVariable long id) {
     return candidateService.delete(id);
   }
 
@@ -80,24 +80,30 @@ public class CandidateController {
     if (bindingResult.hasErrors()) {
       throw new RuntimeException(bindingResult.getFieldError().toString());
     }
-    Optional<UserEntity> linkUser = checkIdentity(token, candidate.getUserId());
+    Optional<UserEntity> linkUser = getUserEntityFromToken(token);
     candidate.setUserId(linkUser.get().getId());
     candidate.setId(linkUser.get().getId());
     return candidateService.update(candidate);
   }
 
   @GetMapping("/candidate/{id}")
-  ResponseObject getById(@PathVariable Long id) {
+  ResponseObject getById(@PathVariable long id) {
     return candidateService.getOne(id);
   }
 
   @PostMapping("/candidate/follow-employer")
-  ResponseEntity<Map<String, Object>> followEmployer(@RequestBody Map<String, Object> input) {
+  ResponseEntity<Map<String, Object>> followEmployer(
+      @RequestBody Map<String, Object> input,
+      //@RequestParam(name = "employerId") long employerId,
+      @RequestHeader(value = "Authorization", required = true) String token) {
     Map<String, Object> retMap = new HashMap<String, Object>();
 
+    //Optional<UserEntity> linkUser = getUserEntityFromToken(token);
+    //long candidateId = linkUser.get().getId();
+
     // https://stackoverflow.com/questions/58056944/java-lang-integer-cannot-be-cast-to-java-lang-long
-    long candidateId = ((Number) input.get("candidateId")).longValue();
-    long employerId = ((Number) input.get("employerId")).longValue();
+     long candidateId = ((Number) input.get("candidateId")).longValue();
+     long employerId = ((Number) input.get("employerId")).longValue();
 
     candidateService.followEmployer(candidateId, employerId);
 
@@ -106,14 +112,14 @@ public class CandidateController {
     return retValue;
   }
 
-  private Optional<UserEntity> checkIdentity(String token, long userIdInput) {
+  private Optional<UserEntity> getUserEntityFromToken(String token) {
     Optional<UserEntity> linkUser;
     String validUserEmail;
 
     validUserEmail = jwtAuthenticationFilter.checkToken(token);
     linkUser = userRepository.findByEmail(validUserEmail);
     if (linkUser.isEmpty()) {
-      throw new RuntimeException("Not found userId = " + userIdInput);
+      throw new RuntimeException("Not found userId ");
     }
     return linkUser;
   }

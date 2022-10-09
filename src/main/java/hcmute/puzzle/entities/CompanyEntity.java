@@ -6,7 +6,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -32,7 +34,7 @@ public class CompanyEntity {
   private boolean isActive;
 
   @ManyToMany(mappedBy = "followingCompany", cascade = CascadeType.DETACH)
-  private List<CandidateEntity> followingCandidate = new ArrayList<>();
+  private Set<CandidateEntity> followingCandidate = new HashSet<>();
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "job_post_id", nullable = false)

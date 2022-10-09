@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,11 +26,11 @@ public class SkillEntity {
   private boolean isActive;
 
   @ManyToMany(mappedBy = "skillEntities", cascade = CascadeType.DETACH)
-  private List<CandidateEntity> candidateEntities = new ArrayList<>();
+  private Set<CandidateEntity> candidateEntities = new HashSet<>();
 
   @ManyToMany(mappedBy = "skillEntities", cascade = CascadeType.DETACH)
-  private List<JobPostEntity> jobPostEntities = new ArrayList<>();
+  private Set<JobPostEntity> jobPostEntities = new HashSet<>();
 
   @ManyToMany(mappedBy = "skillEntities", cascade = CascadeType.DETACH)
-  private List<ExperienceEntity> experienceEntities = new ArrayList<>();
+  private Set<ExperienceEntity> experienceEntities = new HashSet<>();
 }

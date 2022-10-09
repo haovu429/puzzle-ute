@@ -5,9 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -73,22 +73,22 @@ public class JobPostEntity {
   private boolean labor;
 
   @OneToMany(mappedBy = "jobPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<ApplicationEntity> applicationEntities = new ArrayList<>();
+  private Set<ApplicationEntity> applicationEntities = new HashSet<>();
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "created_employer", nullable = false)
   private EmployerEntity createdEmployer;
 
   @ManyToMany(mappedBy = "savedJobPost", cascade = CascadeType.DETACH)
-  private List<CandidateEntity> savedCandidates = new ArrayList<>();
+  private Set<CandidateEntity> savedCandidates = new HashSet<>();
 
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinTable(
       name = "needed_skill",
       joinColumns = @JoinColumn(name = "job_post_id"),
       inverseJoinColumns = @JoinColumn(name = "skill_id"))
-  private List<SkillEntity> skillEntities = new ArrayList<>();
+  private Set<SkillEntity> skillEntities = new HashSet<>();
 
   @OneToMany(mappedBy = "jobPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<CompanyEntity> companyEntities = new ArrayList<>();
+  private Set<CompanyEntity> companyEntities = new HashSet<>();
 }

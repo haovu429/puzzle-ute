@@ -129,4 +129,5 @@ public class WebSecurityConfig {
             .antMatchers(
                 "/images/**", "/js/**", "/webjars/**", "/css/**", "/lib/**", "/favicon.ico");
   }
+  //https://viblo.asia/p/securing-spring-boot-with-jwt-part-2-xac-thuc-nguoi-dung-dua-tren-du-lieu-trong-co-so-du-lieu-63vKjnJVK2R
 }

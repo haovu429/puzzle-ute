@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -61,49 +61,49 @@ public class CandidateEntity {
       name = "follow_employer",
       joinColumns = @JoinColumn(name = "candidate_id"),
       inverseJoinColumns = @JoinColumn(name = "employer_id"))
-  private List<EmployerEntity> followingEmployers = new ArrayList<>();
+  private Set<EmployerEntity> followingEmployers = new HashSet<>();
 
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<ApplicationEntity> applicationEntities = new ArrayList<>();
+  private Set<ApplicationEntity> applicationEntities = new HashSet<>();
 
   @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   @JoinTable(
       name = "have_skill",
       joinColumns = @JoinColumn(name = "candidate_id"),
       inverseJoinColumns = @JoinColumn(name = "skill_id"))
-  private List<SkillEntity> skillEntities = new ArrayList<>();
+  private Set<SkillEntity> skillEntities = new HashSet<>();
 
   @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   @JoinTable(
       name = "have_service",
       joinColumns = @JoinColumn(name = "candidate_id"),
       inverseJoinColumns = @JoinColumn(name = "service_id"))
-  private List<ServiceEntity> serviceEntities = new ArrayList<>();
+  private Set<ServiceEntity> serviceEntities = new HashSet<>();
 
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinTable(
       name = "following_company",
       joinColumns = @JoinColumn(name = "candidate_id"),
       inverseJoinColumns = @JoinColumn(name = "company_id"))
-  private List<CompanyEntity> followingCompany = new ArrayList<>();
+  private Set<CompanyEntity> followingCompany = new HashSet<>();
 
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<ExperienceEntity> experienceEntities = new ArrayList<>();
+  private Set<ExperienceEntity> experienceEntities = new HashSet<>();
 
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<EvaluateEntity> evaluateEntities = new ArrayList<>();
+  private Set<EvaluateEntity> evaluateEntities = new HashSet<>();
 
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinTable(
       name = "saved_job_post",
       joinColumns = @JoinColumn(name = "candidate_id"),
       inverseJoinColumns = @JoinColumn(name = "company_id"))
-  private List<JobPostEntity> savedJobPost = new ArrayList<>();
+  private Set<JobPostEntity> savedJobPost = new HashSet<>();
 
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<JobAlertEntity> jobAlertEntities = new ArrayList<>();
+  private Set<JobAlertEntity> jobAlertEntities = new HashSet<>();
 
-  @OneToOne(cascade = CascadeType.DETACH)
+  @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   @MapsId
   @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
   private UserEntity userEntity;

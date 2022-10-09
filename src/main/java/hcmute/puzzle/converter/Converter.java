@@ -7,10 +7,7 @@ import hcmute.puzzle.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class Converter {
@@ -62,10 +59,10 @@ public class Converter {
     userEntity.setJoinDate(dto.getJoinDate());
     userEntity.setLastOnline(dto.getLastOnline());
     userEntity.setActive(dto.isActive());
-    //        List<RoleEntity> roleEntities = dto.getRoles().stream().map(role -> toEntity(role))
-    //                .collect(Collectors.toList());
+    //        Set<RoleEntity> roleEntities = dto.getRoles().stream().map(role -> toEntity(role))
+    //                .collect(Collectors.toSet());
 
-    List<RoleEntity> roleEntities = new ArrayList<>();
+    Set<RoleEntity> roleEntities = new HashSet<>();
     for (String code : dto.getRoleCodes()) {
       if (roleRepository.existsById(code)) {
         roleEntities.add(roleRepository.findOneByCode(code));
