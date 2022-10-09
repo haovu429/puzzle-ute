@@ -1,5 +1,6 @@
 package hcmute.puzzle.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import hcmute.puzzle.utils.Constant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

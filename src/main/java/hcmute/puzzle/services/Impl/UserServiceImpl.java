@@ -45,10 +45,13 @@ public class UserServiceImpl implements UserService {
       throw new RuntimeException("Email already exists");
     }
 
+    UserDTO responseDTO = converter.toDTO(userEntity);
+    // don't return password
+    responseDTO.setPassword(null);
     // Luu vao dataabase
     userEntity = userRepository.save(userEntity);
     return new ResponseObject(
-        HttpStatus.OK.value(), "Create user success", converter.toDTO(userEntity));
+        HttpStatus.OK.value(), "Create user success", responseDTO);
   }
 
   @Override
