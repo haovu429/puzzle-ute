@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
 public class UserService implements UserDetailsService {
   @Autowired private UserRepository userRepository;
 
-  @PersistenceContext public EntityManager em;
+  // @PersistenceContext public EntityManager em;
 
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
