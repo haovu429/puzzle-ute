@@ -14,7 +14,7 @@
     <name>puzzle-ute</name>
     <description>puzzle-ute</description>
     <properties>
-        <java.version>17.0.4.1</java.version>
+        <java.version>17</java.version>
     </properties>
     <dependencies>
         <!--        Swagger 3.0-->
@@ -96,7 +96,7 @@
                 <artifactId>heroku-maven-plugin</artifactId>
                 <version>3.0.3</version>
                 <configuration>
-                    <appName>test-api-22</appName>
+                    <appName>puzzle-ute</appName>
                     <processTypes>
                         <web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>
                     </processTypes>
