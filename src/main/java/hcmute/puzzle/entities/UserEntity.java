@@ -15,7 +15,8 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "user")
+// Avoid Error table name is "user" in database
+@Table(name = "users")
 public class UserEntity {
 
   @Id
