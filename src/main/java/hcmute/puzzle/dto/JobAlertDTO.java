@@ -13,6 +13,6 @@ public class JobAlertDTO {
   private String employmentType;
   private String workplaceType;
   private String city;
-
+  private long minBudget;
   private long candidateId;
 }

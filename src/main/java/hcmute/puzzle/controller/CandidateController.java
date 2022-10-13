@@ -3,6 +3,7 @@ package hcmute.puzzle.controller;
 import hcmute.puzzle.dto.CandidateDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.services.CandidateService;
@@ -36,23 +37,14 @@ public class CandidateController {
       throw new RuntimeException(bindingResult.getFieldError().toString());
     }
 
-    Optional<UserEntity> linkUser = getUserEntityFromToken(token);
-    // String validUserEmail;
-    // Check user of current account is updating info
-    // JwtAuthenticationFilter filter = new JwtAuthenticationFilter();
-    //    linkUser = userRepository.findById(candidate.getUserId());
-    //    if (linkUser.isEmpty()) {
-    //      throw new RuntimeException("Not found userId = " + candidate.getUserId());
-    //    }
-    //    validUserEmail = jwtAuthenticationFilter.checkToken(token);
-    //    System.out.println("validUserEmail: " + validUserEmail );
-    //    System.out.println("linkUser: " + linkUser.get().getEmail() );
-    //    if (!linkUser.get().getEmail().equals(validUserEmail)) {
-    //      throw new RuntimeException("It is not allowed to edit other users' information");
-    //    }
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    if (linkUser.get().getEmployerEntity() != null) {
+      throw new CustomException("This account is Employer!");
+    }
 
-    // Cách khác: lấy thông tin id từ token và gán cho thông tin cần sửa, không để người dùng input
-    // userId.
+    if (linkUser.get().getCandidateEntity() != null) {
+      throw new CustomException("Info candidate for this account was created!");
+    }
     candidate.setUserId(linkUser.get().getId());
 
     Optional<CandidateDTO> candidateDTO = candidateService.save(candidate);
@@ -67,9 +59,14 @@ public class CandidateController {
     //                HttpStatus.OK.value(), "Create candidate successfully", new CandidateDTO());
   }
 
-  @DeleteMapping("/candidate/{id}")
-  ResponseObject delete(@PathVariable long id) {
-    return candidateService.delete(id);
+  // Gửi Authentication xác thực tài khoản thì xoá.
+  @DeleteMapping("/candidate")
+  ResponseObject delete(
+      @PathVariable long id,
+      @RequestHeader(value = "Authorization", required = true) String token) {
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    return candidateService.delete(linkUser.get().getCandidateEntity().getId());
   }
 
   @PutMapping("/candidate/update")
@@ -80,12 +77,13 @@ public class CandidateController {
     if (bindingResult.hasErrors()) {
       throw new RuntimeException(bindingResult.getFieldError().toString());
     }
-    Optional<UserEntity> linkUser = getUserEntityFromToken(token);
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
     candidate.setUserId(linkUser.get().getId());
     candidate.setId(linkUser.get().getId());
     return candidateService.update(candidate);
   }
 
+  // public
   @GetMapping("/candidate/{id}")
   ResponseObject getById(@PathVariable long id) {
     return candidateService.getOne(id);
@@ -94,33 +92,21 @@ public class CandidateController {
   @PostMapping("/candidate/follow-employer")
   ResponseEntity<Map<String, Object>> followEmployer(
       @RequestBody Map<String, Object> input,
-      //@RequestParam(name = "employerId") long employerId,
+      // @RequestParam(name = "employerId") long employerId,
       @RequestHeader(value = "Authorization", required = true) String token) {
     Map<String, Object> retMap = new HashMap<String, Object>();
 
-    //Optional<UserEntity> linkUser = getUserEntityFromToken(token);
-    //long candidateId = linkUser.get().getId();
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    // long candidateId = linkUser.get().getId();
 
     // https://stackoverflow.com/questions/58056944/java-lang-integer-cannot-be-cast-to-java-lang-long
-     long candidateId = ((Number) input.get("candidateId")).longValue();
-     long employerId = ((Number) input.get("employerId")).longValue();
+    // long candidateId = ((Number) input.get("candidateId")).longValue();
+    long employerId = ((Number) input.get("employerId")).longValue();
 
-    candidateService.followEmployer(candidateId, employerId);
+    candidateService.followEmployer(linkUser.get().getId(), employerId);
 
     ResponseEntity<Map<String, Object>> retValue =
         new ResponseEntity<Map<String, Object>>(retMap, HttpStatus.OK);
     return retValue;
-  }
-
-  private Optional<UserEntity> getUserEntityFromToken(String token) {
-    Optional<UserEntity> linkUser;
-    String validUserEmail;
-
-    validUserEmail = jwtAuthenticationFilter.checkToken(token);
-    linkUser = userRepository.findByEmail(validUserEmail);
-    if (linkUser.isEmpty()) {
-      throw new RuntimeException("Not found userId ");
-    }
-    return linkUser;
   }
 }

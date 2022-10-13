@@ -28,7 +28,7 @@ public class RoleController {
     String result = "false";
     Integer a = 1000;
     Integer b = 1000;
-    if (a.equals(b)) {
+    if (a == b) {
       result = "true";
     }
 

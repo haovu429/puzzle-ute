@@ -29,6 +29,9 @@ public class JobAlertEntity {
   @Column(name = "city", columnDefinition = "VARCHAR(50)")
   private String city;
 
+  @Column(name = "min_budget")
+  private long minBudget;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "candidate_id", nullable = false)
   private CandidateEntity candidateEntity;

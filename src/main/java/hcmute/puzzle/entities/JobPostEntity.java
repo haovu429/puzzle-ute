@@ -47,8 +47,11 @@ public class JobPostEntity {
   @Column(name = "quantity")
   private int quantity;
 
-  @Column(name = "budget")
-  private long budget;
+  @Column(name = "min_budget")
+  private long minBudget;
+
+  @Column(name = "max_budget")
+  private long maxBudget;
 
   @Column(name = "due_time")
   @Temporal(TemporalType.TIMESTAMP)

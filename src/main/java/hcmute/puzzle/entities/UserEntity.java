@@ -3,12 +3,13 @@ package hcmute.puzzle.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -23,16 +24,16 @@ public class UserEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @Column(name = "username", columnDefinition = "VARCHAR(100)")
+  @Column(name = "username", unique = true, columnDefinition = "VARCHAR(100)")
   private String username;
 
   @Column(name = "password", columnDefinition = "VARCHAR(100)")
   private String password;
 
-  @Column(name = "email", columnDefinition = "VARCHAR(100)")
+  @Column(name = "email", unique = true, columnDefinition = "VARCHAR(100)")
   private String email;
 
-  @Column(name = "phone", columnDefinition = "VARCHAR(20)")
+  @Column(name = "phone", unique = true, columnDefinition = "VARCHAR(20)")
   private String phone;
 
   @Column(name = "avatar", columnDefinition = "TEXT")
@@ -43,6 +44,7 @@ public class UserEntity {
 
   @Column(name = "join_date")
   @Temporal(TemporalType.TIMESTAMP)
+  @CreationTimestamp
   private Date joinDate;
 
   @Column(name = "last_online")
@@ -61,14 +63,13 @@ public class UserEntity {
       name = "user_role",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "role_id"))
-
   private Set<RoleEntity> roles = new HashSet<>();
 
   @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @PrimaryKeyJoinColumn
   private EmployerEntity employerEntity;
 
-  @OneToOne(mappedBy = "userEntity",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @PrimaryKeyJoinColumn
   private CandidateEntity candidateEntity;
 

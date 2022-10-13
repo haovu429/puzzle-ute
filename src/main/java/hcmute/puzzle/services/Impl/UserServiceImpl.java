@@ -4,6 +4,7 @@ import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +38,12 @@ public class UserServiceImpl implements UserService {
 
     // Check Role Input, Neu K tim thay Role ==> Cancel
     if (userEntity.getRoles().size() == 0) {
-      throw new RuntimeException("Role not found");
+      throw new CustomException("Role not found");
     }
 
     // Check Email Exists
     if (!checkEmailExists(userEntity.getEmail())) {
-      throw new RuntimeException("Email already exists");
+      throw new CustomException("Email already exists");
     }
 
     UserDTO responseDTO = converter.toDTO(userEntity);
@@ -61,7 +62,7 @@ public class UserServiceImpl implements UserService {
     UserEntity userEntity = converter.toEntity(userDTO);
 
     if (userEntity.getRoles().size() == 0) {
-      throw new RuntimeException("Role not found");
+      throw new CustomException("Role not found");
     } else {
       UserEntity newUser =
           userRepository
@@ -82,15 +83,13 @@ public class UserServiceImpl implements UserService {
               .orElse(null);
 
       if (newUser == null) {
-        throw new RuntimeException("User not found");
+        throw new CustomException("User not found");
       } else {
         return new ResponseObject(
             HttpStatus.OK.value(), "Update user success", converter.toDTO(newUser));
       }
     }
   }
-
-  // test deploy branch main
 
   @Override
   public ResponseObject delete(long id) {
@@ -99,7 +98,7 @@ public class UserServiceImpl implements UserService {
       userRepository.deleteById(id);
       return new ResponseObject(HttpStatus.OK.value(), "Delete user success", "");
     } else {
-      throw new RuntimeException("User not found");
+      throw new CustomException("User not found");
     }
   }
 
@@ -126,7 +125,7 @@ public class UserServiceImpl implements UserService {
       return new ResponseObject(
           HttpStatus.OK.value(), "Get user success", converter.toDTO(userEntity));
     } else {
-      throw new RuntimeException("User not found");
+      throw new CustomException("User not found");
     }
   }
 

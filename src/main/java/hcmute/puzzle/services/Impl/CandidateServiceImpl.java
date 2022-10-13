@@ -126,6 +126,8 @@ public class CandidateServiceImpl implements CandidateService {
     return new ResponseObject(200, "Follow success", converter.toDTO(candidate.get()));
   }
 
+
+
 //  @Override
 //  public ResponseObject applyJobPost(long candidateId, long jobPostId) {
 //    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);

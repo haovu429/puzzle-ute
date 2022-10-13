@@ -22,7 +22,8 @@ public class JobPostDTO {
   private String educationLevel;
   private int experienceYear;
   private int quantity;
-  private long budget;
+  private long minBudget;
+  private long maxBudget;
   private Date dueTime;
   private String workStatus;
   private boolean blind;

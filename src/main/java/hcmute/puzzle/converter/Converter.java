@@ -118,10 +118,10 @@ public class Converter {
     //        if (candidate.isPresent()) {
     //          entity.setCandidateEntity(candidate.get());
     //        } else {
-    //          throw new CustomerException("Can't convert Candidate in Application");
+    //          throw new CustomException("Can't convert Candidate in Application");
     //        }
     //      } catch (Exception e) {
-    //        throw new CustomerException("Can't convert Candidate in Application");
+    //        throw new CustomException("Can't convert Candidate in Application");
     //      }
 
     // entity.setCandidateEntity(dto.getCandidateId());
@@ -147,7 +147,7 @@ public class Converter {
     dto.setVerifiedDis(entity.isVerifiedDis());
 
     if (entity.getUserEntity() == null) {
-      throw new RuntimeException("Can't convert userEntity because it is null");
+      throw new CustomException("Can't convert userEntity because it is null");
     }
     dto.setUserId(entity.getUserEntity().getId());
 
@@ -233,7 +233,7 @@ public class Converter {
     dto.setRecruitmentPhone(entity.getRecruitmentPhone());
 
     if (entity.getUserEntity() == null) {
-      throw new RuntimeException("Can't convert userEntity because it is null");
+      throw new CustomException("Can't convert userEntity because it is null");
     }
     dto.setUserId(entity.getUserEntity().getId());
     return dto;
@@ -339,6 +339,12 @@ public class Converter {
     dto.setEmploymentType(entity.getEmploymentType());
     dto.setWorkplaceType(entity.getWorkplaceType());
     dto.setCity(entity.getCity());
+    dto.setMinBudget(entity.getMinBudget());
+
+    if (entity.getCandidateEntity() == null) {
+      throw new CustomException("Can't convert candidateEntity because it is null");
+    }
+    dto.setCandidateId(entity.getCandidateEntity().getId());
 
     return dto;
   }
@@ -350,6 +356,13 @@ public class Converter {
     entity.setEmploymentType(dto.getEmploymentType());
     entity.setWorkplaceType(dto.getWorkplaceType());
     entity.setCity(dto.getCity());
+    entity.setMinBudget(dto.getMinBudget());
+
+    Optional<CandidateEntity> candidateEntity = candidateRepository.findById(dto.getCandidateId());
+    if ( candidateEntity.isEmpty()){
+      throw new NoSuchElementException("Can't convert candidateId");
+    }
+    entity.setCandidateEntity(candidateEntity.get());
 
     return entity;
   }
@@ -367,7 +380,8 @@ public class Converter {
     dto.setEducationLevel(entity.getEducationLevel());
     dto.setExperienceYear(entity.getExperienceYear());
     dto.setQuantity(entity.getQuantity());
-    dto.setBudget(entity.getBudget());
+    dto.setMinBudget(entity.getMinBudget());
+    dto.setMaxBudget(entity.getMaxBudget());
     dto.setDueTime(entity.getDueTime());
     dto.setWorkStatus(entity.getWorkStatus());
     dto.setBlind(entity.isBlind());
@@ -375,6 +389,11 @@ public class Converter {
     dto.setCommunicationDis(entity.isCommunicationDis());
     dto.setHandDis(entity.isHandDis());
     dto.setLabor(entity.isLabor());
+
+    if (entity.getCreatedEmployer() == null) {
+      throw new CustomException("Can't convert createEntity because it is null");
+    }
+    dto.setCreatedEmployerId(entity.getCreatedEmployer().getId());
 
     return dto;
   }
@@ -391,7 +410,8 @@ public class Converter {
     entity.setEducationLevel(dto.getEducationLevel());
     entity.setExperienceYear(dto.getExperienceYear());
     entity.setQuantity(dto.getQuantity());
-    entity.setBudget(dto.getBudget());
+    entity.setMinBudget(dto.getMinBudget());
+    entity.setMaxBudget(dto.getMaxBudget());
     entity.setDueTime(dto.getDueTime());
     entity.setWorkStatus(dto.getWorkStatus());
     entity.setBlind(dto.isBlind());
@@ -399,6 +419,12 @@ public class Converter {
     entity.setCommunicationDis(dto.isCommunicationDis());
     entity.setHandDis(dto.isHandDis());
     entity.setLabor(dto.isLabor());
+
+    Optional<EmployerEntity> createEmployer = employerRepository.findById(dto.getCreatedEmployerId());
+    if ( createEmployer.isEmpty()){
+      throw new NoSuchElementException("Can't convert createEmployerId");
+    }
+    entity.setCreatedEmployer(createEmployer.get());
 
     return entity;
   }

@@ -16,4 +16,6 @@ public interface CandidateService {
   ResponseObject getOne(long id);
 
   ResponseObject followEmployer(long candidateId, long employerId);
+
+  // ResponseObject applyJobPost(long candidateId, long jobPostId);
 }

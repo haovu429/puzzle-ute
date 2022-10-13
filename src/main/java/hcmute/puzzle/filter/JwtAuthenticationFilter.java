@@ -1,5 +1,7 @@
 package hcmute.puzzle.filter;
 
+import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.security.JwtTokenProvider;
 import hcmute.puzzle.security.UserService;
 import hcmute.puzzle.utils.RedisUtils;
@@ -18,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 // @Component
@@ -25,6 +28,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   @Autowired private JwtTokenProvider tokenProvider;
 
   @Autowired private UserService customUserDetailsService;
+
+  @Autowired
+  UserRepository userRepository;
 
   @Autowired private RedisUtils redisUtils;
 
@@ -110,6 +116,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       throw new RuntimeException("Loi xac thuc token");
     }
     return validUserEmail;
+  }
+
+  public Optional<UserEntity> getUserEntityFromToken(String token) {
+    Optional<UserEntity> linkUser;
+    String validUserEmail;
+
+    validUserEmail = checkToken(token);
+    linkUser = userRepository.findByEmail(validUserEmail);
+    if (linkUser.isEmpty()) {
+      throw new RuntimeException("Not found userId ");
+    }
+    return linkUser;
   }
 
   private String getJwtFromRequest(HttpServletRequest request) {

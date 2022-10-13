@@ -13,9 +13,9 @@ public class MyExceptionHandler {
     return new DataResponse("400", e.getMessage(), DataResponse.STATUS_OK);
   }
 
-  @ExceptionHandler(CustomerException.class)
+  @ExceptionHandler(CustomException.class)
   @ResponseBody
-  public DataResponse handleCustomerException(CustomerException e) {
+  public DataResponse handleCustomerException(CustomException e) {
     return new DataResponse("400", e.getMessage(), DataResponse.STATUS_OK);
   }
 }
