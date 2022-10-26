@@ -1,6 +1,7 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.converter.Converter;
+import hcmute.puzzle.dto.CompanyDTO;
 import hcmute.puzzle.dto.EmployerDTO;
 import hcmute.puzzle.dto.JobPostDTO;
 import hcmute.puzzle.dto.ResponseObject;
@@ -10,6 +11,7 @@ import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.services.CompanyService;
 import hcmute.puzzle.services.EmployerService;
 import hcmute.puzzle.services.JobPostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,8 @@ public class EmployerController {
   @Autowired JobPostService jobPostService;
 
   @Autowired Converter converter;
+
+  @Autowired CompanyService companyService;
 
   @PostMapping("/employer/add")
   ResponseObject save(
@@ -138,6 +142,13 @@ public class EmployerController {
     // Validate JobPost
     jobPostService.validateJobPost(jobPostDTO);
 
+    //employer can not change active status
+    Optional<JobPostEntity> oldJobPost = jobPostRepository.findById(jobPostDTO.getId());
+    if (oldJobPost.isEmpty()) {
+      throw new CustomException("Job post isn't exists");
+    }
+    jobPostDTO.setActive(oldJobPost.get().isActive());
+
     // Set default createEmployer is Employer create first (this valid user requesting)
     jobPostDTO.setCreatedEmployerId(linkUser.get().getId());
 
@@ -162,5 +173,19 @@ public class EmployerController {
     if (jobPostEntity.get().getCreatedEmployer().getId() != linkUser.get().getId()) {
       throw new CustomException("You have no rights to this post!");
     }
+  }
+
+  @PostMapping("/create-info-company")
+  public ResponseObject save(
+          @RequestBody CompanyDTO companyDTO,
+          @RequestHeader(value = "Authorization", required = true) String token) {
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    // Check is Employer
+    if (linkUser.get().getEmployerEntity() == null) {
+      throw new CustomException("This account isn't Employer");
+    }
+    companyDTO.setCreatedEmployerId(linkUser.get().getId());
+    return companyService.save(companyDTO);
   }
 }

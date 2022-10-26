@@ -75,6 +75,12 @@ public class JobPostEntity {
   @Column(name = "labor")
   private boolean labor;
 
+  @Column(name = "skills", columnDefinition = "TEXT")
+  private String skills;
+
+  @Column(name = "is_active")
+  private boolean isActive;
+
   @OneToMany(mappedBy = "jobPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<ApplicationEntity> applicationEntities = new HashSet<>();
 
@@ -85,12 +91,12 @@ public class JobPostEntity {
   @ManyToMany(mappedBy = "savedJobPost", cascade = CascadeType.DETACH)
   private Set<CandidateEntity> savedCandidates = new HashSet<>();
 
-  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  @JoinTable(
-      name = "needed_skill",
-      joinColumns = @JoinColumn(name = "job_post_id"),
-      inverseJoinColumns = @JoinColumn(name = "skill_id"))
-  private Set<SkillEntity> skillEntities = new HashSet<>();
+//  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//  @JoinTable(
+//      name = "needed_skill",
+//      joinColumns = @JoinColumn(name = "job_post_id"),
+//      inverseJoinColumns = @JoinColumn(name = "skill_id"))
+//  private Set<SkillEntity> skillEntities = new HashSet<>();
 
   @OneToMany(mappedBy = "jobPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<CompanyEntity> companyEntities = new HashSet<>();

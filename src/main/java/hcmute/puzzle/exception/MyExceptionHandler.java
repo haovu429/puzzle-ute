@@ -1,6 +1,7 @@
 package hcmute.puzzle.exception;
 
 import hcmute.puzzle.response.DataResponse;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 

@@ -1,13 +1,13 @@
 package hcmute.puzzle.services;
 
+import hcmute.puzzle.dto.PositionDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.ServiceDTO;
-import hcmute.puzzle.dto.SkillDTO;
 
-public interface SkillService {
-    ResponseObject save(SkillDTO skillDTO);
+public interface PositionService {
+    ResponseObject save(PositionDTO positionDTO);
 
-    ResponseObject update(SkillDTO skillDTO);
+    ResponseObject update(PositionDTO positionDTO);
 
     ResponseObject delete(long id);
 

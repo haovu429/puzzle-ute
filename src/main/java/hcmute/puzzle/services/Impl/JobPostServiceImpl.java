@@ -10,7 +10,10 @@ import hcmute.puzzle.services.JobPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class JobPostServiceImpl implements JobPostService {
@@ -70,6 +73,19 @@ public class JobPostServiceImpl implements JobPostService {
     }
 
     throw new CustomException("Cannot find job post with id = " + id);
+  }
+
+  @Override
+  public ResponseObject getAll() {
+    List<JobPostEntity> jobPostEntities = new ArrayList<>();
+
+    jobPostEntities = jobPostRepository.findAll();
+
+    List<JobPostDTO> jobPostDTOS = jobPostEntities.stream().map(entity -> {
+      return converter.toDTO(entity);
+    }).collect(Collectors.toList());
+
+    return new ResponseObject(200, "Info of job post", jobPostDTOS);
   }
 
   public void validateJobPost(JobPostDTO jobPostDTO) {

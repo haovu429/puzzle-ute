@@ -56,6 +56,12 @@ public class CandidateEntity {
   @Column(name = "verified_dis")
   private boolean verifiedDis;
 
+  @Column(name = "skills", columnDefinition = "TEXT")
+  private String skills;
+
+  @Column(name = "services", columnDefinition = "TEXT")
+  private String services;
+
   @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   @JoinTable(
       name = "follow_employer",
@@ -66,19 +72,19 @@ public class CandidateEntity {
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<ApplicationEntity> applicationEntities = new HashSet<>();
 
-  @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-  @JoinTable(
-      name = "have_skill",
-      joinColumns = @JoinColumn(name = "candidate_id"),
-      inverseJoinColumns = @JoinColumn(name = "skill_id"))
-  private Set<SkillEntity> skillEntities = new HashSet<>();
+//  @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+//  @JoinTable(
+//      name = "have_skill",
+//      joinColumns = @JoinColumn(name = "candidate_id"),
+//      inverseJoinColumns = @JoinColumn(name = "skill_id"))
+//  private Set<SkillEntity> skillEntities = new HashSet<>();
 
-  @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-  @JoinTable(
-      name = "have_service",
-      joinColumns = @JoinColumn(name = "candidate_id"),
-      inverseJoinColumns = @JoinColumn(name = "service_id"))
-  private Set<ServiceEntity> serviceEntities = new HashSet<>();
+//  @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+//  @JoinTable(
+//      name = "have_service",
+//      joinColumns = @JoinColumn(name = "candidate_id"),
+//      inverseJoinColumns = @JoinColumn(name = "service_id"))
+//  private Set<ServiceEntity> serviceEntities = new HashSet<>();
 
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinTable(
