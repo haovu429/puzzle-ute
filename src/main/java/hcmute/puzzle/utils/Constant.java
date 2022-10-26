@@ -16,4 +16,6 @@ public class Constant {
           Map.entry("max", "price"), Map.entry("os", "os"));
   @Value("${SMS_ACCESS_TOKEN}")
   public static String SMS_ACCESS_TOKEN;
+
+
 }

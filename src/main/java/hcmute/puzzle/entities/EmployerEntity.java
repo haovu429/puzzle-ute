@@ -45,4 +45,7 @@ public class EmployerEntity {
   @MapsId
   @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
   private UserEntity userEntity;
+
+  @OneToMany(mappedBy = "createdEmployer", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  private Set<CompanyEntity> companyEntities = new HashSet<>();
 }

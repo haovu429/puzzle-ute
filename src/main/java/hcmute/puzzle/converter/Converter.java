@@ -145,6 +145,8 @@ public class Converter {
     dto.setLabor(entity.isLabor());
     dto.setDetailDis(entity.getDetailDis());
     dto.setVerifiedDis(entity.isVerifiedDis());
+    dto.setSkills(entity.getSkills());
+    dto.setServices(entity.getServices());
 
     if (entity.getUserEntity() == null) {
       throw new CustomException("Can't convert userEntity because it is null");
@@ -156,6 +158,7 @@ public class Converter {
 
   public CandidateEntity toEntity(CandidateDTO dto) {
     CandidateEntity entity = new CandidateEntity();
+
     entity.setId(dto.getId());
     entity.setFirstName(dto.getFirstName());
     entity.setLastName(dto.getLastName());
@@ -169,6 +172,8 @@ public class Converter {
     entity.setLabor(dto.isLabor());
     entity.setDetailDis(dto.getDetailDis());
     entity.setVerifiedDis(dto.isVerifiedDis());
+    entity.setSkills(dto.getSkills());
+    entity.setServices(dto.getServices());
 
     Optional<UserEntity> userEntity = userRepository.findById(dto.getUserId());
     if ( userEntity.isEmpty()){
@@ -188,6 +193,11 @@ public class Converter {
     dto.setWebsite(entity.getWebsite());
     dto.setActive(entity.isActive());
 
+    if (entity.getCreatedEmployer() == null) {
+      throw new CustomException("Can't convert createdEmployer because it is null");
+    }
+    dto.setCreatedEmployerId(entity.getCreatedEmployer().getId());
+
     return dto;
   }
 
@@ -198,6 +208,15 @@ public class Converter {
     entity.setDescription(dto.getDescription());
     entity.setWebsite(dto.getWebsite());
     entity.setActive(dto.isActive());
+
+    if (dto.getCreatedEmployerId() != null) {
+      Optional<EmployerEntity> employerEntity = employerRepository.findById(dto.getCreatedEmployerId());
+      if ( employerEntity.isEmpty()){
+        throw new NoSuchElementException("Can't convert userId");
+      }
+      entity.setCreatedEmployer(employerEntity.get());
+    }
+
 
     return entity;
   }
@@ -289,6 +308,7 @@ public class Converter {
     dto.setStartDate(entity.getStartDate());
     dto.setEndDate(entity.getEndDate());
     dto.setDescription(entity.getDescription());
+    dto.setSkills(entity.getSkills());
 
     return dto;
   }
@@ -304,6 +324,7 @@ public class Converter {
     entity.setStartDate(dto.getStartDate());
     entity.setEndDate(dto.getEndDate());
     entity.setDescription(dto.getDescription());
+    entity.setSkills(dto.getSkills());
 
     return entity;
   }
@@ -389,6 +410,8 @@ public class Converter {
     dto.setCommunicationDis(entity.isCommunicationDis());
     dto.setHandDis(entity.isHandDis());
     dto.setLabor(entity.isLabor());
+    dto.setSkills(entity.getSkills());
+    dto.setActive(entity.isActive());
 
     if (entity.getCreatedEmployer() == null) {
       throw new CustomException("Can't convert createEntity because it is null");
@@ -419,6 +442,8 @@ public class Converter {
     entity.setCommunicationDis(dto.isCommunicationDis());
     entity.setHandDis(dto.isHandDis());
     entity.setLabor(dto.isLabor());
+    entity.setSkills(dto.getSkills());
+    entity.setActive(dto.isActive());
 
     Optional<EmployerEntity> createEmployer = employerRepository.findById(dto.getCreatedEmployerId());
     if ( createEmployer.isEmpty()){
@@ -462,7 +487,7 @@ public class Converter {
     return dto;
   }
 
-  public ServiceEntity toDTO(ServiceDTO dto) {
+  public ServiceEntity toEntity(ServiceDTO dto) {
     ServiceEntity entity = new ServiceEntity();
     entity.setId(dto.getId());
     entity.setName(dto.getName());
@@ -481,8 +506,27 @@ public class Converter {
     return dto;
   }
 
-  public SkillEntity toDTO(SkillDTO dto) {
+  public SkillEntity toEntity(SkillDTO dto) {
     SkillEntity entity = new SkillEntity();
+    entity.setId(dto.getId());
+    entity.setName(dto.getName());
+    entity.setActive(dto.isActive());
+
+    return entity;
+  }
+
+  // Position
+  public PositionDTO toDTO(PositionEntity entity) {
+    PositionDTO dto = new PositionDTO();
+    dto.setId(entity.getId());
+    dto.setName(entity.getName());
+    dto.setActive(entity.isActive());
+
+    return dto;
+  }
+
+  public PositionEntity toEntity(PositionDTO dto) {
+    PositionEntity entity = new PositionEntity();
     entity.setId(dto.getId());
     entity.setName(dto.getName());
     entity.setActive(dto.isActive());

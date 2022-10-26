@@ -19,18 +19,18 @@ public class SkillEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @Column(name = "name", columnDefinition = "VARCHAR(200)")
+  @Column(name = "name", columnDefinition = "VARCHAR(200)", unique = true)
   private String name;
 
   @Column(name = "is_active")
   private boolean isActive;
 
-  @ManyToMany(mappedBy = "skillEntities", cascade = CascadeType.DETACH)
-  private Set<CandidateEntity> candidateEntities = new HashSet<>();
-
-  @ManyToMany(mappedBy = "skillEntities", cascade = CascadeType.DETACH)
-  private Set<JobPostEntity> jobPostEntities = new HashSet<>();
-
-  @ManyToMany(mappedBy = "skillEntities", cascade = CascadeType.DETACH)
-  private Set<ExperienceEntity> experienceEntities = new HashSet<>();
+//  @ManyToMany(mappedBy = "skillEntities", cascade = CascadeType.DETACH)
+//  private Set<CandidateEntity> candidateEntities = new HashSet<>();
+//
+//  @ManyToMany(mappedBy = "skillEntities", cascade = CascadeType.DETACH)
+//  private Set<JobPostEntity> jobPostEntities = new HashSet<>();
+//
+//  @ManyToMany(mappedBy = "skillEntities", cascade = CascadeType.DETACH)
+//  private Set<ExperienceEntity> experienceEntities = new HashSet<>();
 }

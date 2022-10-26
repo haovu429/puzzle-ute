@@ -19,4 +19,6 @@ public interface JobPostService {
     ResponseObject getOne(long id);
 
     void validateJobPost(JobPostDTO jobPostDTO);
+
+    ResponseObject getAll();
 }

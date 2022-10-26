@@ -27,10 +27,12 @@ public class RoleController {
   ResponseObject admin() {
     String result = "false";
     Integer a = 1000;
-    Integer b = 1000;
+    int b = 1000;
     if (a == b) {
       result = "true";
     }
+
+    //roleRepository.findAll();
 
     return new ResponseObject(result);
   }

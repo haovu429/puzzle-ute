@@ -14,5 +14,5 @@ public class ServiceDTO {
   private long id;
   private String name;
   private boolean isActive;
-  private List<Long> candidateIds = new ArrayList<>();
+  // private List<Long> candidateIds = new ArrayList<>();
 }

@@ -44,14 +44,17 @@ public class ExperienceEntity {
   @Column(name = "description", columnDefinition = "TEXT")
   private String description;
 
+  @Column(name = "skills", columnDefinition = "TEXT")
+  private String skills;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "candidate_id", nullable = false)
   private CandidateEntity candidateEntity;
 
-  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  @JoinTable(
-      name = "experience_have_skill",
-      joinColumns = @JoinColumn(name = "experience_id"),
-      inverseJoinColumns = @JoinColumn(name = "skill_id"))
-  private Set<SkillEntity> skillEntities = new HashSet<>();
+//  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//  @JoinTable(
+//      name = "experience_have_skill",
+//      joinColumns = @JoinColumn(name = "experience_id"),
+//      inverseJoinColumns = @JoinColumn(name = "skill_id"))
+//  private Set<SkillEntity> skillEntities = new HashSet<>();
 }

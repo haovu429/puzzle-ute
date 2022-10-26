@@ -13,7 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -33,13 +35,18 @@ public class UserServiceImpl implements UserService {
     //  hash password
     userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
+    Set<String> roleCodes = new HashSet<>();
+    roleCodes.add("user");
+
+    userDTO.setRoleCodes(roleCodes);
+
     // Cast DTO --> Entity
     UserEntity userEntity = converter.toEntity(userDTO);
 
     // Check Role Input, Neu K tim thay Role ==> Cancel
-    if (userEntity.getRoles().size() == 0) {
-      throw new CustomException("Role not found");
-    }
+//    if (userEntity.getRoles().size() == 0) {
+//      throw new CustomException("Role not found");
+//    }
 
     // Check Email Exists
     if (!checkEmailExists(userEntity.getEmail())) {

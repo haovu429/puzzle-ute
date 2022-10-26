@@ -2,9 +2,15 @@ package hcmute.puzzle.controller;
 
 import hcmute.puzzle.dto.CandidateDTO;
 import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.entities.ApplicationEntity;
+import hcmute.puzzle.entities.CandidateEntity;
+import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
+import hcmute.puzzle.repository.ApplicationRepository;
+import hcmute.puzzle.repository.CandidateRepository;
+import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.services.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -26,7 +33,14 @@ public class CandidateController {
 
   @Autowired UserRepository userRepository;
 
+  @Autowired
+  JobPostRepository jobPostRepository;
+
+  @Autowired CandidateRepository candidateRepository;
   @Autowired JwtAuthenticationFilter jwtAuthenticationFilter;
+
+  @Autowired
+  ApplicationRepository applicationRepository;
 
   @PostMapping("/candidate/add")
   ResponseObject save(
@@ -108,5 +122,33 @@ public class CandidateController {
     ResponseEntity<Map<String, Object>> retValue =
         new ResponseEntity<Map<String, Object>>(retMap, HttpStatus.OK);
     return retValue;
+  }
+
+  @GetMapping("/candidate/apply-job-post/{postId}")
+  ResponseObject applyJobPost(
+          @PathVariable Long postId, @RequestHeader(value = "Authorization") String token) {
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.get().getCandidateEntity() == null) {
+      throw new CustomException("This account isn't Candidate");
+    }
+
+    Optional<CandidateEntity> candidate = candidateRepository.findById(linkUser.get().getCandidateEntity().getId());
+    Optional<JobPostEntity> jobPost = jobPostRepository.findById(postId);
+    //    if (candidate.isEmpty()) {
+    //      throw new NoSuchElementException("Candidate no value present");
+    //    }
+
+    if (jobPost.isEmpty()) {
+      throw new NoSuchElementException("Employer no value present");
+    }
+
+    ApplicationEntity applicationEntity = new ApplicationEntity();
+    applicationEntity.setCandidateEntity(linkUser.get().getCandidateEntity());
+    applicationEntity.setJobPostEntity(jobPost.get());
+    applicationRepository.save(applicationEntity);
+
+    return new ResponseObject(200, "Apply success", null);
   }
 }

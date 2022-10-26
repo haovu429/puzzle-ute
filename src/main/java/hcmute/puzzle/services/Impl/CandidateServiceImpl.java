@@ -3,6 +3,7 @@ package hcmute.puzzle.services.Impl;
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.CandidateDTO;
 import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.EmployerEntity;
 import hcmute.puzzle.entities.JobPostEntity;
@@ -15,6 +16,7 @@ import hcmute.puzzle.services.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -103,6 +105,12 @@ public class CandidateServiceImpl implements CandidateService {
       CandidateEntity candidate = candidateRepository.getReferenceById(id);
 
       return new ResponseObject(200, "Info of candidate", converter.toDTO(candidate));
+    }
+
+    try {
+      UserDTO userDTO = new UserDTO();
+    } catch (RuntimeException e) {
+
     }
 
     throw new CustomException("Cannot find candidate with id = " + id);

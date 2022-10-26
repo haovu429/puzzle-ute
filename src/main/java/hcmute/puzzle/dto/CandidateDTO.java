@@ -24,11 +24,13 @@ public class CandidateDTO {
   private boolean labor;
   private String detailDis;
   private boolean verifiedDis;
+  private String skills;
+  private String services;
 
   private List<Long> followingEmployerIds = new ArrayList<>();
   private List<Long> applicationIds = new ArrayList<>();
-  private List<Long> skillIds = new ArrayList<>();
-  private List<Long> serviceIds = new ArrayList<>();
+  //private List<Long> skillIds = new ArrayList<>();
+  //private List<Long> serviceIds = new ArrayList<>();
   private List<Long> followingCompanyIds = new ArrayList<>();
   private List<Long> experienceIds = new ArrayList<>();
   private List<Long> evaluateIds = new ArrayList<>();

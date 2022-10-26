@@ -33,6 +33,10 @@ public class CompanyEntity {
   @Column(name = "is_active")
   private boolean isActive;
 
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+  @JoinColumn(name = "created_employer_id")
+  private EmployerEntity createdEmployer;
+
   @ManyToMany(mappedBy = "followingCompany", cascade = CascadeType.DETACH)
   private Set<CandidateEntity> followingCandidate = new HashSet<>();
 
