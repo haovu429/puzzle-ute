@@ -27,6 +27,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api")
+@CrossOrigin(value = "http://localhost:3000")
 public class CandidateController {
 
   @Autowired CandidateService candidateService;
