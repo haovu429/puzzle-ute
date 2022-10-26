@@ -9,9 +9,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter
@@ -43,5 +41,5 @@ public class UserDTO {
 
   private boolean isActive;
 
-  private List<String> roleCodes = new ArrayList<>();
+  private Set<String> roleCodes = new HashSet<>();
 }
