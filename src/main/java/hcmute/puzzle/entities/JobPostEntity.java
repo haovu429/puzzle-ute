@@ -98,6 +98,7 @@ public class JobPostEntity {
 //      inverseJoinColumns = @JoinColumn(name = "skill_id"))
 //  private Set<SkillEntity> skillEntities = new HashSet<>();
 
-  @OneToMany(mappedBy = "jobPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private Set<CompanyEntity> companyEntities = new HashSet<>();
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+  @JoinColumn(name = "company_id")
+  private CompanyEntity companyEntity;
 }

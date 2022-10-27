@@ -125,6 +125,26 @@ public class CandidateController {
     return retValue;
   }
 
+  @GetMapping("/candidate/follow-company/{id}")
+  ResponseEntity<Map<String, Object>> followCompany(
+          @PathVariable(value = "id") Long companyId,
+          // @RequestParam(name = "employerId") long employerId,
+          @RequestHeader(value = "Authorization", required = true) String token) {
+    Map<String, Object> retMap = new HashMap<String, Object>();
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    // long candidateId = linkUser.get().getId();
+
+    // https://stackoverflow.com/questions/58056944/java-lang-integer-cannot-be-cast-to-java-lang-long
+    // long candidateId = ((Number) input.get("candidateId")).longValue();
+
+    candidateService.followCompany(linkUser.get().getId(), companyId);
+
+    ResponseEntity<Map<String, Object>> retValue =
+            new ResponseEntity<Map<String, Object>>(retMap, HttpStatus.OK);
+    return retValue;
+  }
+
   @GetMapping("/candidate/apply-job-post/{postId}")
   ResponseObject applyJobPost(
           @PathVariable Long postId, @RequestHeader(value = "Authorization") String token) {
@@ -151,5 +171,6 @@ public class CandidateController {
     applicationRepository.save(applicationEntity);
 
     return new ResponseObject(200, "Apply success", null);
+
   }
 }
