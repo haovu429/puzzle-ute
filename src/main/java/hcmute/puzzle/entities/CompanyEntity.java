@@ -37,12 +37,11 @@ public class CompanyEntity {
   @JoinColumn(name = "created_employer_id")
   private EmployerEntity createdEmployer;
 
-  @ManyToMany(mappedBy = "followingCompany", cascade = CascadeType.DETACH)
+  @ManyToMany(mappedBy = "followingCompany", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   private Set<CandidateEntity> followingCandidate = new HashSet<>();
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "job_post_id", nullable = false)
-  private JobPostEntity jobPostEntity;
+  @OneToMany(mappedBy = "companyEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  private Set<JobPostEntity> jobPostEntities = new HashSet<>();
 
   //  @OneToMany(mappedBy = "companyEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   //  private List<NotificationEntity> notificationEntities = new ArrayList<>();

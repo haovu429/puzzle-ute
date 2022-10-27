@@ -39,7 +39,7 @@ public class Converter {
     userDTO.setPassword(entity.getPassword());
     userDTO.setPhone(entity.getPhone());
     userDTO.setAvatar(entity.getAvatar());
-    userDTO.setIsOnline(entity.isOnline());
+    userDTO.setOnline(entity.isOnline());
     userDTO.setJoinDate(entity.getJoinDate());
     userDTO.setLastOnline(entity.getLastOnline());
     userDTO.setActive(entity.isActive());
@@ -55,7 +55,7 @@ public class Converter {
     userEntity.setPassword(dto.getPassword());
     userEntity.setPhone(dto.getPhone());
     userEntity.setAvatar(dto.getAvatar());
-    userEntity.setOnline(dto.getIsOnline());
+    userEntity.setOnline(dto.isOnline());
     userEntity.setJoinDate(dto.getJoinDate());
     userEntity.setLastOnline(dto.getLastOnline());
     userEntity.setActive(dto.isActive());

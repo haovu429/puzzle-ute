@@ -33,13 +33,19 @@ public class UserDTO {
 
   private String avatar;
 
-  private Boolean isOnline;
+  private boolean isOnline = false;
 
   private Date joinDate;
 
   private Date lastOnline;
 
-  private boolean isActive;
+  private boolean isActive = true;
 
   private Set<String> roleCodes = new HashSet<>();
+
+  public UserDTO(String email, String username, String password) {
+    this.email = email;
+    this.username = username;
+    this.password = password;
+  }
 }

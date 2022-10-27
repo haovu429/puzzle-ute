@@ -5,13 +5,11 @@ import hcmute.puzzle.dto.CandidateDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.entities.CandidateEntity;
+import hcmute.puzzle.entities.CompanyEntity;
 import hcmute.puzzle.entities.EmployerEntity;
 import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.repository.CandidateRepository;
-import hcmute.puzzle.repository.EmployerRepository;
-import hcmute.puzzle.repository.JobPostRepository;
-import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.repository.*;
 import hcmute.puzzle.services.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +32,9 @@ public class CandidateServiceImpl implements CandidateService {
   UserRepository userRepository;
 
   @Autowired Converter converter;
+
+  @Autowired
+  CompanyRepository companyRepository;
 
   @Override
   public Optional<CandidateDTO> save(CandidateDTO candidateDTO) {
@@ -131,7 +132,25 @@ public class CandidateServiceImpl implements CandidateService {
     candidate.get().getFollowingEmployers().add(employer.get());
     candidateRepository.save(candidate.get());
 
-    return new ResponseObject(200, "Follow success", converter.toDTO(candidate.get()));
+    return new ResponseObject(200, "Follow success", null);
+  }
+
+  @Override
+  public ResponseObject followCompany(long candidateId, long companyId) {
+    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
+    Optional<CompanyEntity> company = companyRepository.findById(companyId);
+    if (candidate.isEmpty()) {
+      throw new NoSuchElementException("Candidate no value present");
+    }
+
+    if (company.isEmpty()) {
+      throw new NoSuchElementException("Company no value present");
+    }
+
+    candidate.get().getFollowingCompany().add(company.get());
+    candidateRepository.save(candidate.get());
+
+    return new ResponseObject(200, "Follow success", null);
   }
 
 
