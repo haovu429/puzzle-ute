@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/api")
 @CrossOrigin(value = "http://localhost:3000")
+@RequestMapping(path = "/api")
 public class UserController {
 
   @Autowired public UserService userService;
