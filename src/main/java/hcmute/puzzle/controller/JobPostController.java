@@ -1,15 +1,10 @@
 package hcmute.puzzle.controller;
 
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.dto.UserDTO;
-import hcmute.puzzle.services.JobPostService;
-import hcmute.puzzle.services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/api")
-public class JobPostController {
-
-
-}
+@CrossOrigin(value = "http://localhost:3000")
+public class JobPostController {}

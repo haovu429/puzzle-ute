@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public ResponseObject save(UserDTO userDTO) {
+    System.out.println("test"+userDTO);
     //  hash password
     userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
