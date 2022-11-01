@@ -20,5 +20,5 @@ public class PositionEntity {
     private String name;
 
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean isActive = false;
 }

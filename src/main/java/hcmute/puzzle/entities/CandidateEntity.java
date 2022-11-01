@@ -109,7 +109,7 @@ public class CandidateEntity {
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<JobAlertEntity> jobAlertEntities = new HashSet<>();
 
-  @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
   @MapsId
   @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
   private UserEntity userEntity;

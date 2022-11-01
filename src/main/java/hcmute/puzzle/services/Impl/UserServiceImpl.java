@@ -35,11 +35,6 @@ public class UserServiceImpl implements UserService {
     //  hash password
     userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
-    Set<String> roleCodes = new HashSet<>();
-    roleCodes.add("user");
-
-    userDTO.setRoleCodes(roleCodes);
-
     // Cast DTO --> Entity
     UserEntity userEntity = converter.toEntity(userDTO);
 

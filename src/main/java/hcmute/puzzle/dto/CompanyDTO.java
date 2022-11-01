@@ -15,7 +15,7 @@ public class CompanyDTO {
   private String name;
   private String description;
   private String website;
-  private boolean isActive;
+  private boolean isActive = false;
 
   private Long createdEmployerId;
   private List<Long> followingCandidateIds = new ArrayList<>();

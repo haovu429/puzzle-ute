@@ -28,7 +28,7 @@ public class ExperienceEntity {
   private String company;
 
   @Column(name = "is_working")
-  private boolean isWorking;
+  private boolean isWorking = false;
 
   @Column(name = "industry", columnDefinition = "VARCHAR(200)")
   private String industry;

@@ -23,7 +23,7 @@ public class SkillEntity {
   private String name;
 
   @Column(name = "is_active")
-  private boolean isActive;
+  private boolean isActive = false;
 
 //  @ManyToMany(mappedBy = "skillEntities", cascade = CascadeType.DETACH)
 //  private Set<CandidateEntity> candidateEntities = new HashSet<>();

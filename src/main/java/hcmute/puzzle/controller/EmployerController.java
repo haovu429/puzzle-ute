@@ -186,6 +186,8 @@ public class EmployerController {
     if (linkUser.get().getEmployerEntity() == null) {
       throw new CustomException("This account isn't Employer");
     }
+
+    companyDTO.setActive(false);
     companyDTO.setCreatedEmployerId(linkUser.get().getId());
     return companyService.save(companyDTO);
   }

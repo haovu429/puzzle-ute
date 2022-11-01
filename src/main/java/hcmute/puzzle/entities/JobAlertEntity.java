@@ -30,7 +30,7 @@ public class JobAlertEntity {
   private String city;
 
   @Column(name = "min_budget")
-  private long minBudget;
+  private long minBudget = 0;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "candidate_id", nullable = false)

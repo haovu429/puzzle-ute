@@ -40,7 +40,7 @@ public class UserEntity {
   private String avatar;
 
   @Column(name = "is_online")
-  private boolean isOnline;
+  private boolean isOnline = false;
 
   @Column(name = "join_date")
   @Temporal(TemporalType.TIMESTAMP)
@@ -52,7 +52,7 @@ public class UserEntity {
   private Date lastOnline;
 
   @Column(name = "is_active")
-  private boolean isActive;
+  private boolean isActive = true;
 
   // https://shareprogramming.net/phan-biet-fetchmode-va-fetchtype-trong-jpa-hibernate/
   // https://viblo.asia/p/van-de-n1-cau-truy-van-trong-hibernate-bWrZn00b5xw
