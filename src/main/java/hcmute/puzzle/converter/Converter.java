@@ -538,4 +538,25 @@ public class Converter {
 
     return entity;
   }
+
+  public ExtraInfoDTO toDTO(ExtraInfoEntity entity) {
+    ExtraInfoDTO dto = new ExtraInfoDTO();
+    dto.setId(entity.getId());
+    dto.setName(entity.getName());
+    dto.setType(entity.getType());
+    dto.setActive(entity.isActive());
+
+    return dto;
+  }
+
+  public ExtraInfoEntity toEntity(ExtraInfoDTO dto) {
+    ExtraInfoEntity entity = new ExtraInfoEntity();
+    entity.setId(dto.getId());
+    entity.setName(dto.getName());
+    entity.setType(dto.getType());
+    entity.setActive(dto.isActive());
+
+    return entity;
+  }
+
 }
