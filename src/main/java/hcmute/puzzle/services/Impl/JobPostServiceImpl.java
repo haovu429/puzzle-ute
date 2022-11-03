@@ -1,8 +1,10 @@
 package hcmute.puzzle.services.Impl;
 
 import hcmute.puzzle.converter.Converter;
+import hcmute.puzzle.dto.CandidateDTO;
 import hcmute.puzzle.dto.JobPostDTO;
 import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.JobPostRepository;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -81,12 +84,41 @@ public class JobPostServiceImpl implements JobPostService {
 
     jobPostEntities = jobPostRepository.findAll();
 
-    List<JobPostDTO> jobPostDTOS = jobPostEntities.stream().map(entity -> {
-      return converter.toDTO(entity);
-    }).collect(Collectors.toList());
+    List<JobPostDTO> jobPostDTOS =
+        jobPostEntities.stream()
+            .map(
+                entity -> {
+                  return converter.toDTO(entity);
+                })
+            .collect(Collectors.toList());
 
     return new ResponseObject(200, "Info of job post", jobPostDTOS);
   }
+
+  public ResponseObject getCandidatesApplyJobPost(long jobPostId) {
+    Set<CandidateEntity> candidateApply = jobPostRepository.getCandidateApplyJobPost(jobPostId);
+    Set<CandidateDTO> candidateDTOS =
+        candidateApply.stream()
+            .map(candidate -> converter.toDTO(candidate))
+            .collect(Collectors.toSet());
+
+    return new ResponseObject(200, "Candidate applied", candidateDTOS);
+  }
+
+  public ResponseObject activateJobPost(long jobPostId) {
+    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+    jobPost.get().setActive(true);
+    jobPostRepository.save(jobPost.get());
+    return new ResponseObject(200, "Activate success", null);
+  }
+
+  public ResponseObject deactivateJobPost(long jobPostId) {
+    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+    jobPost.get().setActive(false);
+    jobPostRepository.save(jobPost.get());
+    return new ResponseObject(200, "Deactivate success", null);
+  }
+
 
   public void validateJobPost(JobPostDTO jobPostDTO) {
     // check budget

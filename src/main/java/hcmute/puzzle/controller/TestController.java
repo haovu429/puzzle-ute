@@ -16,7 +16,7 @@ public class TestController {
     @Autowired
     SetUpDB setUpDB;
 
-    @GetMapping("/set-role")
+    @GetMapping("/init-db")
     public String getAll() {
         setUpDB.preStart();
         return "Done!";

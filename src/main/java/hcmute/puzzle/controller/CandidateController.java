@@ -15,15 +15,13 @@ import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.services.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping(path = "/api")
@@ -34,14 +32,12 @@ public class CandidateController {
 
   @Autowired UserRepository userRepository;
 
-  @Autowired
-  JobPostRepository jobPostRepository;
+  @Autowired JobPostRepository jobPostRepository;
 
   @Autowired CandidateRepository candidateRepository;
   @Autowired JwtAuthenticationFilter jwtAuthenticationFilter;
 
-  @Autowired
-  ApplicationRepository applicationRepository;
+  @Autowired ApplicationRepository applicationRepository;
 
   @PostMapping("/candidate/add")
   ResponseObject save(
@@ -99,38 +95,35 @@ public class CandidateController {
   }
 
   // public
-  @GetMapping("/candidate/{id}")
+  @GetMapping("/candidate/get-one/{id}")
   ResponseObject getById(@PathVariable long id) {
     return candidateService.getOne(id);
   }
 
-  @PostMapping("/candidate/follow-employer")
-  ResponseEntity<Map<String, Object>> followEmployer(
-      @RequestBody Map<String, Object> input,
+  @GetMapping("/candidate/follow-employer/{id}")
+  ResponseObject followEmployer(
+      @PathVariable(value = "id") Long employerId,
+      // @RequestBody Map<String, Object> input,
       // @RequestParam(name = "employerId") long employerId,
       @RequestHeader(value = "Authorization", required = true) String token) {
-    Map<String, Object> retMap = new HashMap<String, Object>();
+    // Map<String, Object> retMap = new HashMap<String, Object>();
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
     // long candidateId = linkUser.get().getId();
 
     // https://stackoverflow.com/questions/58056944/java-lang-integer-cannot-be-cast-to-java-lang-long
     // long candidateId = ((Number) input.get("candidateId")).longValue();
-    long employerId = ((Number) input.get("employerId")).longValue();
+    // long employerId = ((Number) input.get("employerId")).longValue();
 
-    candidateService.followEmployer(linkUser.get().getId(), employerId);
-
-    ResponseEntity<Map<String, Object>> retValue =
-        new ResponseEntity<Map<String, Object>>(retMap, HttpStatus.OK);
-    return retValue;
+    return candidateService.followEmployer(linkUser.get().getId(), employerId);
   }
 
   @GetMapping("/candidate/follow-company/{id}")
-  ResponseEntity<Map<String, Object>> followCompany(
-          @PathVariable(value = "id") Long companyId,
-          // @RequestParam(name = "employerId") long employerId,
-          @RequestHeader(value = "Authorization", required = true) String token) {
-    Map<String, Object> retMap = new HashMap<String, Object>();
+  ResponseObject followCompany(
+      @PathVariable(value = "id") Long companyId,
+      // @RequestParam(name = "employerId") long employerId,
+      @RequestHeader(value = "Authorization", required = true) String token) {
+    // Map<String, Object> retMap = new HashMap<String, Object>();
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
     // long candidateId = linkUser.get().getId();
@@ -138,16 +131,12 @@ public class CandidateController {
     // https://stackoverflow.com/questions/58056944/java-lang-integer-cannot-be-cast-to-java-lang-long
     // long candidateId = ((Number) input.get("candidateId")).longValue();
 
-    candidateService.followCompany(linkUser.get().getId(), companyId);
-
-    ResponseEntity<Map<String, Object>> retValue =
-            new ResponseEntity<Map<String, Object>>(retMap, HttpStatus.OK);
-    return retValue;
+    return candidateService.followCompany(linkUser.get().getId(), companyId);
   }
 
   @GetMapping("/candidate/apply-job-post/{postId}")
   ResponseObject applyJobPost(
-          @PathVariable Long postId, @RequestHeader(value = "Authorization") String token) {
+      @PathVariable Long postId, @RequestHeader(value = "Authorization") String token) {
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
@@ -155,14 +144,24 @@ public class CandidateController {
       throw new CustomException("This account isn't Candidate");
     }
 
-    Optional<CandidateEntity> candidate = candidateRepository.findById(linkUser.get().getCandidateEntity().getId());
+    Optional<CandidateEntity> candidate =
+        candidateRepository.findById(linkUser.get().getCandidateEntity().getId());
     Optional<JobPostEntity> jobPost = jobPostRepository.findById(postId);
     //    if (candidate.isEmpty()) {
     //      throw new NoSuchElementException("Candidate no value present");
     //    }
 
     if (jobPost.isEmpty()) {
-      throw new NoSuchElementException("Employer no value present");
+      throw new NoSuchElementException("JobPost no value present");
+    }
+
+    if (!jobPost.get().isActive()) {
+      throw new CustomException("You can't apply this jobPost. It isn't active");
+    }
+
+    Set<ApplicationEntity> applications = applicationRepository.findApplicationByCanIdAndJobPostId(linkUser.get().getId(), postId);
+    if (!applications.isEmpty()) {
+      throw new CustomException("You applied for this job");
     }
 
     ApplicationEntity applicationEntity = new ApplicationEntity();
@@ -171,6 +170,40 @@ public class CandidateController {
     applicationRepository.save(applicationEntity);
 
     return new ResponseObject(200, "Apply success", null);
+  }
 
+  @GetMapping("/candidate/cancel-apply-job-post/{postId}")
+  ResponseObject cancelApplyJobPost(
+          @PathVariable Long postId, @RequestHeader(value = "Authorization") String token) {
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.get().getCandidateEntity() == null) {
+      throw new CustomException("This account isn't Candidate");
+    }
+
+    Set<ApplicationEntity> applications = applicationRepository.findApplicationByCanIdAndJobPostId(linkUser.get().getId(), postId);
+    if (applications.isEmpty()) {
+      throw new CustomException("You have not applied this JobPost or JobPost doesn't exist");
+    }
+    applicationRepository.deleteAll(applications);
+
+    return new ResponseObject(200, "Cancel apply success", null);
+  }
+
+  @GetMapping("/candidate/save-job-post/{jobPostId}")
+  ResponseObject saveJobPost(
+          @PathVariable(value = "jobPostId") Long jobPostId,
+          // @RequestParam(name = "employerId") long employerId,
+          @RequestHeader(value = "Authorization", required = true) String token) {
+    // Map<String, Object> retMap = new HashMap<String, Object>();
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    // long candidateId = linkUser.get().getId();
+
+    // https://stackoverflow.com/questions/58056944/java-lang-integer-cannot-be-cast-to-java-lang-long
+    // long candidateId = ((Number) input.get("candidateId")).longValue();
+
+    return candidateService.saveJobPost(linkUser.get().getId(), jobPostId);
   }
 }

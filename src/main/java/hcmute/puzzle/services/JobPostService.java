@@ -21,4 +21,10 @@ public interface JobPostService {
     void validateJobPost(JobPostDTO jobPostDTO);
 
     ResponseObject getAll();
+
+    ResponseObject getCandidatesApplyJobPost(long jobPostId);
+
+    ResponseObject activateJobPost(long jobPostId);
+
+    ResponseObject deactivateJobPost(long jobPostId);
 }
