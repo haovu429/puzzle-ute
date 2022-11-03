@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class Converter {
@@ -43,6 +44,10 @@ public class Converter {
     userDTO.setJoinDate(entity.getJoinDate());
     userDTO.setLastOnline(entity.getLastOnline());
     userDTO.setActive(entity.isActive());
+
+    if (!entity.getRoles().isEmpty()) {
+      userDTO.setRoleCodes(entity.getRoles().stream().map(role -> role.getCode()).collect(Collectors.toSet()));
+    }
 
     return userDTO;
   }
@@ -193,10 +198,10 @@ public class Converter {
     dto.setWebsite(entity.getWebsite());
     dto.setActive(entity.isActive());
 
-    if (entity.getCreatedEmployer() == null) {
-      throw new CustomException("Can't convert createdEmployer because it is null");
+    if (entity.getCreatedEmployer() != null) {
+      dto.setCreatedEmployerId(entity.getCreatedEmployer().getId());
     }
-    dto.setCreatedEmployerId(entity.getCreatedEmployer().getId());
+
 
     return dto;
   }
@@ -533,4 +538,25 @@ public class Converter {
 
     return entity;
   }
+
+  public ExtraInfoDTO toDTO(ExtraInfoEntity entity) {
+    ExtraInfoDTO dto = new ExtraInfoDTO();
+    dto.setId(entity.getId());
+    dto.setName(entity.getName());
+    dto.setType(entity.getType());
+    dto.setActive(entity.isActive());
+
+    return dto;
+  }
+
+  public ExtraInfoEntity toEntity(ExtraInfoDTO dto) {
+    ExtraInfoEntity entity = new ExtraInfoEntity();
+    entity.setId(dto.getId());
+    entity.setName(dto.getName());
+    entity.setType(dto.getType());
+    entity.setActive(dto.isActive());
+
+    return entity;
+  }
+
 }

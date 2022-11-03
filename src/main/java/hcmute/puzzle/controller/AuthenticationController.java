@@ -16,6 +16,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @RestController
 @CrossOrigin(value = "http://localhost:3000")
 @RequestMapping(path = "/api")
@@ -34,8 +39,8 @@ public class AuthenticationController {
       @Validated @RequestBody ObjectNode objectNode,
       @RequestParam(value = "rememberMe", required = false) Boolean rememberMe) {
     try {
-      System.out.println("Da vao day");
-      String a = objectNode.get("email").toString();
+      // System.out.println("Da vao day");
+      // String a = objectNode.get("email").toString();
       UserEntity user = userRepository.getByEmail(objectNode.get("email").asText());
       if (user != null) {
         Authentication authentication =
@@ -57,7 +62,13 @@ public class AuthenticationController {
         // store token in redis
         redisUtils.set(user.getEmail(), jwt);
 
-        return new ResponseObject(200, "Login success", jwt);
+        Set<String> roles = user.getRoles().stream().map(role -> role.getCode()).collect(Collectors.toSet());
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("jwt", jwt);
+        result.put("roles", roles);
+
+        return new ResponseObject(200, "Login success", result);
 
       } else {
         return new ResponseObject("401", 200, "Login failed");

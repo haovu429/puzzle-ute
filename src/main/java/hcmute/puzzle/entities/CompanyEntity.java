@@ -31,7 +31,7 @@ public class CompanyEntity {
   private String website;
 
   @Column(name = "is_active")
-  private boolean isActive;
+  private boolean isActive = false;
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
   @JoinColumn(name = "created_employer_id")

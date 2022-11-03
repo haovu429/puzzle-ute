@@ -17,8 +17,8 @@ public class EvaluateEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @Column(name = "type")
-  private int rate;
+  @Column(name = "rate")
+  private int rate = -1;
 
   @Column(name = "note", columnDefinition = "VARCHAR(200)")
   private String note;

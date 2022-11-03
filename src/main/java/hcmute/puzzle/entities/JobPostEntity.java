@@ -61,31 +61,31 @@ public class JobPostEntity {
   private String workStatus;
 
   @Column(name = "blind")
-  private boolean blind;
+  private boolean blind = false;
 
   @Column(name = "deaf")
-  private boolean deaf;
+  private boolean deaf = false;
 
   @Column(name = "communication_dis")
-  private boolean communicationDis;
+  private boolean communicationDis = false;
 
   @Column(name = "hand_dis")
-  private boolean handDis;
+  private boolean handDis = false;
 
   @Column(name = "labor")
-  private boolean labor;
+  private boolean labor = false;
 
   @Column(name = "skills", columnDefinition = "TEXT")
   private String skills;
 
   @Column(name = "is_active")
-  private boolean isActive;
+  private boolean isActive = false;
 
   @OneToMany(mappedBy = "jobPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<ApplicationEntity> applicationEntities = new HashSet<>();
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "created_employer", nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY, cascade =CascadeType.PERSIST)
+  @JoinColumn(name = "created_employer")
   private EmployerEntity createdEmployer;
 
   @ManyToMany(mappedBy = "savedJobPost", cascade = CascadeType.DETACH)

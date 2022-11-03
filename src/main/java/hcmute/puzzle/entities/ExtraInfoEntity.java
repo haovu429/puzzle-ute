@@ -10,8 +10,8 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "position")
-public class PositionEntity {
+@Table(name = "extra_info")
+public class ExtraInfoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -19,6 +19,10 @@ public class PositionEntity {
     @Column(name = "name", columnDefinition = "VARCHAR(200)", unique = true)
     private String name;
 
+    @Column(name = "type")
+    private String type;
+
     @Column(name = "is_active")
-    private boolean isActive = false;
+    private boolean isActive;
+
 }

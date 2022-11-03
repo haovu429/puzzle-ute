@@ -6,6 +6,9 @@ import hcmute.puzzle.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @RestController
 @CrossOrigin(value = "http://localhost:3000")
 @RequestMapping(path = "/api")
@@ -21,6 +24,10 @@ public class UserController {
 
   @PostMapping("/user")
   public ResponseObject save(@ModelAttribute UserDTO user) {
+    Set<String> roleCodes = new HashSet<>();
+    roleCodes.add("user");
+
+    user.setRoleCodes(roleCodes);
     return userService.save(user);
   }
 

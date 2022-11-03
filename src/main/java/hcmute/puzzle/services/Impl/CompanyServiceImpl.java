@@ -10,6 +10,10 @@ import hcmute.puzzle.services.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
 @Service
 public class CompanyServiceImpl implements CompanyService {
   @Autowired CompanyRepository companyRepository;
@@ -20,7 +24,7 @@ public class CompanyServiceImpl implements CompanyService {
   public ResponseObject save(CompanyDTO companyDTO) {
 
     companyDTO.setId(0);
-    companyDTO.setActive(false);
+
     CompanyEntity companyEntity = converter.toEntity(companyDTO);
     companyEntity = companyRepository.save(companyEntity);
 
@@ -59,6 +63,17 @@ public class CompanyServiceImpl implements CompanyService {
 
   @Override
   public ResponseObject getAll() {
-    return null;
+      Set<CompanyEntity> companyEntities = new HashSet<>();
+      companyRepository.findAll().stream().forEach(company -> {
+          companyEntities.add(company);
+      });
+
+      return new ResponseObject(200, "Info company", companyEntities);
   }
+
+    @Override
+    public ResponseObject getOneById(long id) {
+        Optional<CompanyEntity> company = companyRepository.findById(id);
+        return new ResponseObject(200, "Info company", company.get());
+    }
 }

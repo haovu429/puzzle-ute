@@ -2,18 +2,16 @@ package hcmute.puzzle.services;
 
 import hcmute.puzzle.dto.CompanyDTO;
 import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.dto.UserDTO;
 
-public interface CompanyService {
+public interface ExtraInfoService<DTO> {
 
-    ResponseObject save(CompanyDTO companyDTO);
+    ResponseObject save(DTO dto);
 
-    ResponseObject update(CompanyDTO companyDTO);
+    ResponseObject update(DTO dto);
 
     ResponseObject delete(long id);
 
     ResponseObject getAll();
 
     ResponseObject getOneById(long id);
-
 }

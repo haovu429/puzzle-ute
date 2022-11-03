@@ -27,5 +27,5 @@ public class ImageEntity {
   private String url;
 
   @Column(name = "codeId")
-  private long codeId;
+  private long codeId = -1;
 }
