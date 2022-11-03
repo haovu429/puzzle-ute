@@ -109,9 +109,13 @@ public class AdminController {
     return extraInfoService.getAll();
   }
 
-  @GetMapping("/admin/get-one-extra-info/{id}")
-  public ResponseObject getOneExtraInfo(@PathVariable Long id) {
-    return extraInfoService.getOneById(id);
+  @GetMapping("/admin/update-status-job-post/{jobPostId}")
+  public ResponseObject getOneExtraInfo(@PathVariable(value = "jobPostId") Long id, @RequestParam boolean active) {
+
+    if(active) {
+      return jobPostService.activateJobPost(id);
+    }
+    return jobPostService.deactivateJobPost(id);
   }
 
 

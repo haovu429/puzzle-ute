@@ -85,4 +85,24 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     return new ResponseObject(200, " Apply success! ",converter.toDTO(application));
   }
+
+  public ResponseObject responseApply(long applicationId, boolean isAccept, String note) {
+    Optional<ApplicationEntity> application = applicationRepository.findById(applicationId);
+    if (isAccept) {
+      application.get().setResult("ACCEPT");
+    } else {
+      application.get().setResult("REJECT");
+    }
+    application.get().setNote(note);
+    applicationRepository.save(application.get());
+    return new ResponseObject(200, "Activate success", null);
+  }
+
+  public ResponseObject deactivateJobPost(long jobPostId) {
+    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+    jobPost.get().setActive(false);
+    jobPostRepository.save(jobPost.get());
+    return new ResponseObject(200, "Deactivate success", null);
+  }
+
 }

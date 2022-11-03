@@ -191,4 +191,9 @@ public class EmployerController {
     companyDTO.setCreatedEmployerId(linkUser.get().getId());
     return companyService.save(companyDTO);
   }
+
+  @GetMapping("/employer/candidate-apply-jobpost/{jobPostId}")
+  ResponseObject getCandidateApplyJobPost(@PathVariable Long jobPostId) {
+    return jobPostService.getCandidatesApplyJobPost(jobPostId);
+  }
 }

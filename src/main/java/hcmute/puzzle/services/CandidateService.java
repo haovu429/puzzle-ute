@@ -19,5 +19,5 @@ public interface CandidateService {
 
   ResponseObject followCompany(long candidateId, long companyId);
 
-  // ResponseObject applyJobPost(long candidateId, long jobPostId);
+  ResponseObject saveJobPost(long candidateId, long companyId);
 }
