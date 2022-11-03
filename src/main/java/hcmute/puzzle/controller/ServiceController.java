@@ -7,6 +7,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "/api")
 @CrossOrigin(value = "http://localhost:3000")
-public class ServiceController {
-
-}
+public class ServiceController {}
