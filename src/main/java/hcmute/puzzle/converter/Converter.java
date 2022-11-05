@@ -7,7 +7,10 @@ import hcmute.puzzle.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -46,7 +49,8 @@ public class Converter {
     userDTO.setActive(entity.isActive());
 
     if (!entity.getRoles().isEmpty()) {
-      userDTO.setRoleCodes(entity.getRoles().stream().map(role -> role.getCode()).collect(Collectors.toSet()));
+      userDTO.setRoleCodes(
+          entity.getRoles().stream().map(role -> role.getCode()).collect(Collectors.toSet()));
     }
 
     return userDTO;
@@ -181,7 +185,7 @@ public class Converter {
     entity.setServices(dto.getServices());
 
     Optional<UserEntity> userEntity = userRepository.findById(dto.getUserId());
-    if ( userEntity.isEmpty()){
+    if (userEntity.isEmpty()) {
       throw new NoSuchElementException("Can't convert userId");
     }
     entity.setUserEntity(userEntity.get());
@@ -202,7 +206,6 @@ public class Converter {
       dto.setCreatedEmployerId(entity.getCreatedEmployer().getId());
     }
 
-
     return dto;
   }
 
@@ -215,13 +218,13 @@ public class Converter {
     entity.setActive(dto.isActive());
 
     if (dto.getCreatedEmployerId() != null) {
-      Optional<EmployerEntity> employerEntity = employerRepository.findById(dto.getCreatedEmployerId());
-      if ( employerEntity.isEmpty()){
+      Optional<EmployerEntity> employerEntity =
+          employerRepository.findById(dto.getCreatedEmployerId());
+      if (employerEntity.isEmpty()) {
         throw new NoSuchElementException("Can't convert userId");
       }
       entity.setCreatedEmployer(employerEntity.get());
     }
-
 
     return entity;
   }
@@ -272,7 +275,7 @@ public class Converter {
     entity.setRecruitmentPhone(dto.getRecruitmentPhone());
 
     Optional<UserEntity> userEntity = userRepository.findById(dto.getUserId());
-    if ( userEntity.isEmpty()){
+    if (userEntity.isEmpty()) {
       throw new NoSuchElementException("Can't convert userId");
     }
     entity.setUserEntity(userEntity.get());
@@ -315,6 +318,11 @@ public class Converter {
     dto.setDescription(entity.getDescription());
     dto.setSkills(entity.getSkills());
 
+    if (entity.getCandidateEntity() == null) {
+      throw new CustomException("Can't convert candidateEntity because it is null");
+    }
+    dto.setCandidateId(entity.getCandidateEntity().getId());
+
     return dto;
   }
 
@@ -330,6 +338,12 @@ public class Converter {
     entity.setEndDate(dto.getEndDate());
     entity.setDescription(dto.getDescription());
     entity.setSkills(dto.getSkills());
+
+    Optional<CandidateEntity> candidateEntity = candidateRepository.findById(dto.getCandidateId());
+    if (candidateEntity.isPresent()) {
+      // throw new NoSuchElementException("Can't convert candidateId");
+      entity.setCandidateEntity(candidateEntity.get());
+    }
 
     return entity;
   }
@@ -387,11 +401,10 @@ public class Converter {
     entity.setMinBudget(dto.getMinBudget());
 
     Optional<CandidateEntity> candidateEntity = candidateRepository.findById(dto.getCandidateId());
-    if ( candidateEntity.isPresent()){
-      //throw new NoSuchElementException("Can't convert candidateId");
+    if (candidateEntity.isPresent()) {
+      // throw new NoSuchElementException("Can't convert candidateId");
       entity.setCandidateEntity(candidateEntity.get());
     }
-
 
     return entity;
   }
@@ -453,8 +466,9 @@ public class Converter {
     entity.setSkills(dto.getSkills());
     entity.setActive(dto.isActive());
 
-    Optional<EmployerEntity> createEmployer = employerRepository.findById(dto.getCreatedEmployerId());
-    if ( createEmployer.isEmpty()){
+    Optional<EmployerEntity> createEmployer =
+        employerRepository.findById(dto.getCreatedEmployerId());
+    if (createEmployer.isEmpty()) {
       throw new NoSuchElementException("Can't convert createEmployerId");
     }
     entity.setCreatedEmployer(createEmployer.get());
@@ -561,5 +575,4 @@ public class Converter {
 
     return entity;
   }
-
 }

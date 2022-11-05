@@ -24,11 +24,9 @@ import java.util.function.Function;
 public class ApplicationServiceImpl implements ApplicationService {
   @Autowired ApplicationRepository applicationRepository;
 
-  @Autowired
-  CandidateRepository candidateRepository;
+  @Autowired CandidateRepository candidateRepository;
 
-  @Autowired
-  JobPostRepository jobPostRepository;
+  @Autowired JobPostRepository jobPostRepository;
   @Autowired Converter converter;
 
   @Override
@@ -84,7 +82,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     application.setJobPostEntity(jobPost.get());
     applicationRepository.save(application);
 
-    return new ResponseObject(200, " Apply success! ",converter.toDTO(application));
+    return new ResponseObject(200, " Apply success! ", converter.toDTO(application));
   }
 
   @Override
@@ -99,5 +97,4 @@ public class ApplicationServiceImpl implements ApplicationService {
     applicationRepository.save(application.get());
     return new ResponseObject(200, "Activate success", null);
   }
-
 }

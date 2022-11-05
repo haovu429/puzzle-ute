@@ -8,4 +8,3 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/api")
 @CrossOrigin(value = "http://localhost:3000")
 public class SkillController {}
-

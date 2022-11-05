@@ -12,17 +12,16 @@ import javax.persistence.*;
 @Entity
 @Table(name = "extra_info")
 public class ExtraInfoEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
-    @Column(name = "name", columnDefinition = "VARCHAR(200)", unique = true)
-    private String name;
+  @Column(name = "name", columnDefinition = "VARCHAR(200)", unique = true)
+  private String name;
 
-    @Column(name = "type")
-    private String type;
+  @Column(name = "type")
+  private String type;
 
-    @Column(name = "is_active")
-    private boolean isActive;
-
+  @Column(name = "is_active")
+  private boolean isActive;
 }

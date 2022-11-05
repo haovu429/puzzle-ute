@@ -1,13 +1,10 @@
 package hcmute.puzzle.services.Impl;
 
 import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.CompanyDTO;
 import hcmute.puzzle.dto.JobAlertDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.CandidateEntity;
-import hcmute.puzzle.entities.CompanyEntity;
 import hcmute.puzzle.entities.JobAlertEntity;
-import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.JobAlertRepository;
@@ -22,80 +19,78 @@ import java.util.Set;
 @Service
 public class JobAlertServiceImpl implements JobAlertService {
 
-    @Autowired
-    JobAlertRepository jobAlertRepository;
+  @Autowired JobAlertRepository jobAlertRepository;
 
-    @Autowired
-    CandidateRepository candidateRepository;
+  @Autowired CandidateRepository candidateRepository;
 
-    @Autowired
-    Converter converter;
+  @Autowired Converter converter;
 
-    @Override
-    public ResponseObject save(long candidateId,JobAlertDTO jobAlertDTO) {
-        jobAlertDTO.setId(0);
+  @Override
+  public ResponseObject save(long candidateId, JobAlertDTO jobAlertDTO) {
+    jobAlertDTO.setId(0);
 
-        JobAlertEntity jobAlert = converter.toEntity(jobAlertDTO);
+    JobAlertEntity jobAlert = converter.toEntity(jobAlertDTO);
 
-        Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
+    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
 
-        jobAlert.setCandidateEntity(candidate.get());
+    jobAlert.setCandidateEntity(candidate.get());
 
-        jobAlert = jobAlertRepository.save(jobAlert);
+    jobAlert = jobAlertRepository.save(jobAlert);
 
-        return new ResponseObject(
-                200,
-                "Save success",
-                converter.toDTO(jobAlert));
+    return new ResponseObject(200, "Save success", converter.toDTO(jobAlert));
+  }
+
+  @Override
+  public ResponseObject update(JobAlertDTO jobAlertDTO) {
+    boolean exists = jobAlertRepository.existsById(jobAlertDTO.getId());
+
+    if (!exists) {
+      throw new CustomException("Job Alert isn't exists");
     }
 
-    @Override
-    public ResponseObject update(JobAlertDTO jobAlertDTO) {
-        boolean exists = jobAlertRepository.existsById(jobAlertDTO.getId());
+    JobAlertEntity jobAlert = converter.toEntity(jobAlertDTO);
+    jobAlert = jobAlertRepository.save(jobAlert);
+    return new ResponseObject(200, "Update successfully", converter.toDTO((jobAlert)));
+  }
 
-        if (!exists) {
-            throw new CustomException("Job Alert isn't exists");
-        }
+  @Override
+  public ResponseObject delete(long id) {
+    boolean exists = jobAlertRepository.existsById(id);
 
-        JobAlertEntity jobAlert = converter.toEntity(jobAlertDTO);
-        jobAlert = jobAlertRepository.save(jobAlert);
-        return new ResponseObject(200, "Update successfully", converter.toDTO((jobAlert)));
+    if (!exists) {
+      throw new CustomException("Job Alert isn't exists");
     }
 
-    @Override
-    public ResponseObject delete(long id) {
-        boolean exists = jobAlertRepository.existsById(id);
+    jobAlertRepository.deleteById(id);
 
-        if (!exists) {
-            throw new CustomException("Job Alert isn't exists");
-        }
+    return new ResponseObject(200, "Delete successfully", null);
+  }
 
-        jobAlertRepository.deleteById(id);
+  @Override
+  public ResponseObject getAll() {
+    Set<JobAlertDTO> jobAlertDTOS = new HashSet<>();
+    jobAlertRepository.findAll().stream()
+        .forEach(
+            jobAlert -> {
+              jobAlertDTOS.add(converter.toDTO(jobAlert));
+            });
 
-        return new ResponseObject(200, "Delete successfully", null);
-    }
+    return new ResponseObject(200, "Info JobAlert", jobAlertDTOS);
+  }
 
-    @Override
-    public ResponseObject getAll() {
-        Set<JobAlertDTO> jobAlertDTOS = new HashSet<>();
-        jobAlertRepository.findAll().stream().forEach(jobAlert -> {
-            jobAlertDTOS.add(converter.toDTO(jobAlert));
-        });
+  public ResponseObject getAllJobAlertByCandidateId(long jobAlertId) {
+    Set<JobAlertDTO> jobAlertDTOS = new HashSet<>();
+    jobAlertRepository.findAllByCandidateEntity_Id(jobAlertId).stream()
+        .forEach(
+            jobAlert -> {
+              jobAlertDTOS.add(converter.toDTO(jobAlert));
+            });
+    return new ResponseObject(200, "Info JobAlert by candidate", jobAlertDTOS);
+  }
 
-        return new ResponseObject(200, "Info JobAlert", jobAlertDTOS);
-    }
-
-    public ResponseObject getAllJobAlertByCandidateId(long jobAlertId) {
-        Set<JobAlertDTO> jobAlertDTOS = new HashSet<>();
-        jobAlertRepository.findAllByCandidateEntity_Id(jobAlertId).stream().forEach(jobAlert -> {
-            jobAlertDTOS.add(converter.toDTO(jobAlert));
-        });
-        return new ResponseObject(200, "Info JobAlert by candidate", jobAlertDTOS);
-    }
-
-    @Override
-    public ResponseObject getOneById(long id) {
-        Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(id);
-        return new ResponseObject(200, "Info company", converter.toDTO(jobAlert.get()));
-    }
+  @Override
+  public ResponseObject getOneById(long id) {
+    Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(id);
+    return new ResponseObject(200, "Info job alert", converter.toDTO(jobAlert.get()));
+  }
 }

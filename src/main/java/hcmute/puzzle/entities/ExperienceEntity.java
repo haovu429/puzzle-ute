@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -51,10 +51,10 @@ public class ExperienceEntity {
   @JoinColumn(name = "candidate_id", nullable = false)
   private CandidateEntity candidateEntity;
 
-//  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//  @JoinTable(
-//      name = "experience_have_skill",
-//      joinColumns = @JoinColumn(name = "experience_id"),
-//      inverseJoinColumns = @JoinColumn(name = "skill_id"))
-//  private Set<SkillEntity> skillEntities = new HashSet<>();
+  //  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  //  @JoinTable(
+  //      name = "experience_have_skill",
+  //      joinColumns = @JoinColumn(name = "experience_id"),
+  //      inverseJoinColumns = @JoinColumn(name = "skill_id"))
+  //  private Set<SkillEntity> skillEntities = new HashSet<>();
 }

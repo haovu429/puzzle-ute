@@ -30,7 +30,7 @@ public class RoleController {
       result = "true";
     }
 
-    //roleRepository.findAll();
+    // roleRepository.findAll();
 
     return new ResponseObject(result);
   }

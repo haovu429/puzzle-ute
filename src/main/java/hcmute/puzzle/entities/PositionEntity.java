@@ -12,13 +12,13 @@ import javax.persistence.*;
 @Entity
 @Table(name = "position")
 public class PositionEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
-    @Column(name = "name", columnDefinition = "VARCHAR(200)", unique = true)
-    private String name;
+  @Column(name = "name", columnDefinition = "VARCHAR(200)", unique = true)
+  private String name;
 
-    @Column(name = "is_active")
-    private boolean isActive = false;
+  @Column(name = "is_active")
+  private boolean isActive = false;
 }

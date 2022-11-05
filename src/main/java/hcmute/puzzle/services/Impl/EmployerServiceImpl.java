@@ -4,7 +4,6 @@ import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.EmployerDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.EmployerEntity;
-import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.EmployerRepository;
@@ -22,8 +21,7 @@ public class EmployerServiceImpl implements EmployerService {
 
   @Autowired EmployerRepository employerRepository;
 
-  @Autowired
-  UserRepository userRepository;
+  @Autowired UserRepository userRepository;
 
   @Autowired Converter converter;
 
@@ -35,11 +33,11 @@ public class EmployerServiceImpl implements EmployerService {
     // save province
     employerEntity.setId(0);
 
-    if (employerEntity.getUserEntity().getCandidateEntity()!= null) {
+    if (employerEntity.getUserEntity().getCandidateEntity() != null) {
       throw new RuntimeException("This account for candidate");
     }
 
-    //Optional<UserEntity> user = userRepository.findById(em)
+    // Optional<UserEntity> user = userRepository.findById(em)
     employerRepository.save(employerEntity);
 
     Optional<EmployerDTO> result = Optional.of(converter.toDTO(employerEntity));

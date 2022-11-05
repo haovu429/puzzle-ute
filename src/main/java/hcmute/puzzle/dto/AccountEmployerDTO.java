@@ -1,4 +1,3 @@
 package hcmute.puzzle.dto;
 
-public class AccountEmployerDTO {
-}
+public class AccountEmployerDTO {}

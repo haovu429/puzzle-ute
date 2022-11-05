@@ -1,6 +1,7 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.dto.CandidateDTO;
+import hcmute.puzzle.dto.ExperienceDTO;
 import hcmute.puzzle.dto.JobAlertDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.*;
@@ -8,6 +9,7 @@ import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.repository.*;
 import hcmute.puzzle.services.CandidateService;
+import hcmute.puzzle.services.ExperienceService;
 import hcmute.puzzle.services.JobAlertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,8 +39,11 @@ public class CandidateController {
 
   @Autowired JobAlertRepository jobAlertRepository;
 
-  @Autowired
-  JobAlertService jobAlertService;
+  @Autowired JobAlertService jobAlertService;
+
+  @Autowired ExperienceService experienceService;
+
+  @Autowired ExperienceRepository experienceRepository;
 
   @PostMapping("/candidate/add")
   ResponseObject save(
@@ -160,7 +165,8 @@ public class CandidateController {
       throw new CustomException("You can't apply this jobPost. It isn't active");
     }
 
-    Set<ApplicationEntity> applications = applicationRepository.findApplicationByCanIdAndJobPostId(linkUser.get().getId(), postId);
+    Set<ApplicationEntity> applications =
+        applicationRepository.findApplicationByCanIdAndJobPostId(linkUser.get().getId(), postId);
     if (!applications.isEmpty()) {
       throw new CustomException("You applied for this job");
     }
@@ -175,7 +181,7 @@ public class CandidateController {
 
   @GetMapping("/candidate/cancel-apply-job-post/{postId}")
   ResponseObject cancelApplyJobPost(
-          @PathVariable Long postId, @RequestHeader(value = "Authorization") String token) {
+      @PathVariable Long postId, @RequestHeader(value = "Authorization") String token) {
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
@@ -183,7 +189,8 @@ public class CandidateController {
       throw new CustomException("This account isn't Candidate");
     }
 
-    Set<ApplicationEntity> applications = applicationRepository.findApplicationByCanIdAndJobPostId(linkUser.get().getId(), postId);
+    Set<ApplicationEntity> applications =
+        applicationRepository.findApplicationByCanIdAndJobPostId(linkUser.get().getId(), postId);
     if (applications.isEmpty()) {
       throw new CustomException("You have not applied this JobPost or JobPost doesn't exist");
     }
@@ -194,9 +201,9 @@ public class CandidateController {
 
   @GetMapping("/candidate/save-job-post/{jobPostId}")
   ResponseObject saveJobPost(
-          @PathVariable(value = "jobPostId") Long jobPostId,
-          // @RequestParam(name = "employerId") long employerId,
-          @RequestHeader(value = "Authorization", required = true) String token) {
+      @PathVariable(value = "jobPostId") Long jobPostId,
+      // @RequestParam(name = "employerId") long employerId,
+      @RequestHeader(value = "Authorization", required = true) String token) {
     // Map<String, Object> retMap = new HashMap<String, Object>();
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
@@ -210,9 +217,9 @@ public class CandidateController {
 
   @PostMapping("/candidate/add-job-alert")
   ResponseObject addJobAlert(
-          @RequestBody @Validated JobAlertDTO jobAlertDTO,
-          BindingResult bindingResult,
-          @RequestHeader(value = "Authorization") String token) {
+      @RequestBody @Validated JobAlertDTO jobAlertDTO,
+      BindingResult bindingResult,
+      @RequestHeader(value = "Authorization") String token) {
     if (bindingResult.hasErrors()) {
       throw new RuntimeException(bindingResult.getFieldError().toString());
     }
@@ -226,9 +233,10 @@ public class CandidateController {
   }
 
   @PutMapping("/candidate/update-job-alert")
-  ResponseObject updateJobAlert(@RequestBody @Validated JobAlertDTO jobAlertDTO,
-                                BindingResult bindingResult,
-                                @RequestHeader(value = "Authorization") String token) {
+  ResponseObject updateJobAlert(
+      @RequestBody @Validated JobAlertDTO jobAlertDTO,
+      BindingResult bindingResult,
+      @RequestHeader(value = "Authorization") String token) {
     if (bindingResult.hasErrors()) {
       throw new RuntimeException(bindingResult.getFieldError().toString());
     }
@@ -250,13 +258,12 @@ public class CandidateController {
     return jobAlertService.update(jobAlertDTO);
   }
 
-  @GetMapping ("/candidate/delete-job-alert/{jobAlertId}")
-  ResponseObject deleteJobAlert(@PathVariable(value = "jobAlertId") long id,
-                                @RequestHeader(value = "Authorization") String token) {
+  @GetMapping("/candidate/delete-job-alert/{jobAlertId}")
+  ResponseObject deleteJobAlert(
+      @PathVariable(value = "jobAlertId") long id,
+      @RequestHeader(value = "Authorization") String token) {
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-
-
 
     Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(id);
 
@@ -271,15 +278,17 @@ public class CandidateController {
     return jobAlertService.delete(id);
   }
 
-  @GetMapping ("/candidate/get-job-alert")
+  @GetMapping("/candidate/get-job-alert")
   ResponseObject getAllJobAlertByCandidateId(@RequestHeader(value = "Authorization") String token) {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
     return jobAlertService.getAllJobAlertByCandidateId(linkUser.get().getId());
   }
 
-  @GetMapping ("/candidate/get-job-alert-by-id/{jobAlertId}")
-  ResponseObject getAllJobAlertById(@PathVariable(value = "jobAlertId") long jobAlertId, @RequestHeader(value = "Authorization") String token) {
+  @GetMapping("/candidate/get-job-alert-by-id/{jobAlertId}")
+  ResponseObject getAllJobAlertById(
+      @PathVariable(value = "jobAlertId") long jobAlertId,
+      @RequestHeader(value = "Authorization") String token) {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
     Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(jobAlertId);
@@ -295,4 +304,93 @@ public class CandidateController {
     return jobAlertService.getOneById(jobAlertId);
   }
 
+  @PostMapping("/candidate/add-experience")
+  ResponseObject addExperience(
+      @RequestBody @Validated ExperienceDTO experienceDTO,
+      BindingResult bindingResult,
+      @RequestHeader(value = "Authorization") String token) {
+    if (bindingResult.hasErrors()) {
+      throw new RuntimeException(bindingResult.getFieldError().toString());
+    }
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    if (linkUser.get().getEmployerEntity() != null || linkUser.get().getCandidateEntity() == null) {
+      throw new CustomException("This account isn't Candidate!");
+    }
+
+    return experienceService.save(linkUser.get().getId(), experienceDTO);
+  }
+
+  @PutMapping("/candidate/update-experience")
+  ResponseObject updateExperience(
+      @RequestBody @Validated ExperienceDTO experienceDTO,
+      BindingResult bindingResult,
+      @RequestHeader(value = "Authorization") String token) {
+    if (bindingResult.hasErrors()) {
+      throw new RuntimeException(bindingResult.getFieldError().toString());
+    }
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    Optional<ExperienceEntity> experience = experienceRepository.findById(experienceDTO.getId());
+
+    if (experience.isEmpty()) {
+      throw new CustomException("Experience isn't exists");
+    }
+
+    if (experience.get().getCandidateEntity().getId() != linkUser.get().getId()) {
+      throw new CustomException("You don't have rights for this Experience");
+    }
+
+    experienceDTO.setCandidateId(linkUser.get().getId());
+
+    return experienceService.update(experienceDTO);
+  }
+
+  @GetMapping("/candidate/delete-experience/{experienceId}")
+  ResponseObject deleteExperience(
+      @PathVariable(value = "experienceId") long id,
+      @RequestHeader(value = "Authorization") String token) {
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    Optional<ExperienceEntity> experience = experienceRepository.findById(id);
+
+    if (experience.isEmpty()) {
+      throw new CustomException("Experience isn't exists");
+    }
+
+    if (experience.get().getCandidateEntity().getId() != linkUser.get().getId()) {
+      throw new CustomException("You don't have rights for this Experience");
+    }
+
+    return experienceService.delete(id);
+  }
+
+  @GetMapping("/candidate/get-experience")
+  ResponseObject getAllExperienceByCandidateId(
+      @RequestHeader(value = "Authorization") String token) {
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    return experienceService.getAllExperienceByCandidateId(linkUser.get().getId());
+  }
+
+  @GetMapping("/candidate/get-experience-by-id/{experienceId}")
+  ResponseObject getExperienceById(
+      @PathVariable(value = "experienceId") long experienceId,
+      @RequestHeader(value = "Authorization") String token) {
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    Optional<ExperienceEntity> experience = experienceRepository.findById(experienceId);
+
+    if (experience.isEmpty()) {
+      throw new CustomException("Experience have this id isn't exist");
+    }
+
+    if (experience.get().getCandidateEntity().getId() != linkUser.get().getId()) {
+      throw new CustomException("You don't have right for this Experience");
+    }
+
+    return experienceService.getOneById(experienceId);
+  }
 }

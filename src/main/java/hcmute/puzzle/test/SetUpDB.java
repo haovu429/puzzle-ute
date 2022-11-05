@@ -23,8 +23,7 @@ public class SetUpDB {
 
   @Autowired JobPostRepository jobPostRepository;
 
-  @Autowired
-  ServiceRepository serviceRepository;
+  @Autowired ServiceRepository serviceRepository;
 
   @Autowired CandidateRepository candidateRepository;
 
@@ -111,13 +110,13 @@ public class SetUpDB {
     candidate1.setFirstName("Minh");
     candidate1.setLastName("Lê Quang");
     candidate1.setUserEntity(user1);
-    //user1.setCandidateEntity(candidate1);
+    // user1.setCandidateEntity(candidate1);
 
     CandidateEntity candidate2 = new CandidateEntity();
     candidate2.setFirstName("Phong");
     candidate2.setLastName("Vũ");
     candidate2.setUserEntity(user2);
-    //user2.setCandidateEntity(candidate2);
+    // user2.setCandidateEntity(candidate2);
     candidateList.add(candidate1);
     candidateList.add(candidate2);
 
@@ -127,15 +126,15 @@ public class SetUpDB {
     employer1.setFirstname("Văn");
     employer1.setLastname("Minh");
     employer1.setUserEntity(user3);
-    //user3.setEmployerEntity(employer1);
+    // user3.setEmployerEntity(employer1);
     employerList.add(employer1);
 
     EmployerEntity employer2 = new EmployerEntity();
     employer2.setFirstname("Văn");
     employer2.setLastname("Hoàng");
     employer2.setUserEntity(user4);
-    //user4.setEmployerEntity(employer2);
-    //userRepository.saveAll(userList);
+    // user4.setEmployerEntity(employer2);
+    // userRepository.saveAll(userList);
     employerList.add(employer2);
 
     candidateRepository.saveAll(candidateList);
@@ -233,6 +232,5 @@ public class SetUpDB {
     serviceList.add(service4);
 
     serviceRepository.saveAll(serviceList);
-
   }
 }

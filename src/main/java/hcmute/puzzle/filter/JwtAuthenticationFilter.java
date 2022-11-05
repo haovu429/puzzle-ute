@@ -25,13 +25,9 @@ import java.util.Optional;
 @Slf4j
 // @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+  @Autowired UserRepository userRepository;
   @Autowired private JwtTokenProvider tokenProvider;
-
   @Autowired private UserService customUserDetailsService;
-
-  @Autowired
-  UserRepository userRepository;
-
   @Autowired private RedisUtils redisUtils;
 
   @Override

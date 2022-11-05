@@ -37,53 +37,57 @@ public class CompanyServiceImpl implements CompanyService {
   @Override
   public ResponseObject update(CompanyDTO companyDTO) {
 
-      boolean exists = companyRepository.existsById(companyDTO.getId());
+    boolean exists = companyRepository.existsById(companyDTO.getId());
 
-      if (!exists) {
-          throw new CustomException("Company isn't exists");
-      }
+    if (!exists) {
+      throw new CustomException("Company isn't exists");
+    }
 
-      CompanyEntity companyEntity = converter.toEntity(companyDTO);
-      companyEntity = companyRepository.save(companyEntity);
+    CompanyEntity companyEntity = converter.toEntity(companyDTO);
+    companyEntity = companyRepository.save(companyEntity);
     return new ResponseObject(200, "Update successfully", converter.toDTO(companyEntity));
   }
 
   @Override
   public ResponseObject delete(long id) {
-      boolean exists = companyRepository.existsById(id);
+    boolean exists = companyRepository.existsById(id);
 
-      if (!exists) {
-          throw new CustomException("Company isn't exists");
-      }
+    if (!exists) {
+      throw new CustomException("Company isn't exists");
+    }
 
-      companyRepository.deleteById(id);
+    companyRepository.deleteById(id);
 
-      return new ResponseObject(200, "Delete successfully", null);
+    return new ResponseObject(200, "Delete successfully", null);
   }
 
   @Override
   public ResponseObject getAll() {
-      Set<CompanyDTO> companyDTOS = new HashSet<>();
-      companyRepository.findAll().stream().forEach(company -> {
-          companyDTOS.add(converter.toDTO(company));
-      });
+    Set<CompanyDTO> companyDTOS = new HashSet<>();
+    companyRepository.findAll().stream()
+        .forEach(
+            company -> {
+              companyDTOS.add(converter.toDTO(company));
+            });
 
-      return new ResponseObject(200, "Info company", companyDTOS);
+    return new ResponseObject(200, "Info company", companyDTOS);
   }
 
-    @Override
-    public ResponseObject getAllCompanyInActive() {
-        Set<CompanyDTO> companyDTOS = new HashSet<>();
-        companyRepository.findCompanyEntitiesByActiveFalse().stream().forEach(company -> {
-            companyDTOS.add(converter.toDTO(company));
-        });
+  @Override
+  public ResponseObject getAllCompanyInActive() {
+    Set<CompanyDTO> companyDTOS = new HashSet<>();
+    companyRepository.findCompanyEntitiesByActiveFalse().stream()
+        .forEach(
+            company -> {
+              companyDTOS.add(converter.toDTO(company));
+            });
 
-        return new ResponseObject(200, "Info company inactive", companyDTOS);
-    }
+    return new ResponseObject(200, "Info company inactive", companyDTOS);
+  }
 
-    @Override
-    public ResponseObject getOneById(long id) {
-        Optional<CompanyEntity> company = companyRepository.findById(id);
-        return new ResponseObject(200, "Info company", converter.toDTO(company.get()));
-    }
+  @Override
+  public ResponseObject getOneById(long id) {
+    Optional<CompanyEntity> company = companyRepository.findById(id);
+    return new ResponseObject(200, "Info company", converter.toDTO(company.get()));
+  }
 }

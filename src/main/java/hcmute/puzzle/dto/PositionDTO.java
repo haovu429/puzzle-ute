@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class PositionDTO {
-    private long id;
-    private String name;
-    private boolean isActive;
+  private long id;
+  private String name;
+  private boolean isActive;
 }

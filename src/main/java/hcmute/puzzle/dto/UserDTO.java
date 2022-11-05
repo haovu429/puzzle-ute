@@ -1,6 +1,5 @@
 package hcmute.puzzle.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import hcmute.puzzle.utils.Constant;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +8,9 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -42,5 +43,4 @@ public class UserDTO {
   private boolean isActive = true;
 
   private Set<String> roleCodes = new HashSet<>();
-
 }

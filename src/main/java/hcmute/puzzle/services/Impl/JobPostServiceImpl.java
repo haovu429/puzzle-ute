@@ -25,19 +25,16 @@ public class JobPostServiceImpl implements JobPostService {
 
   @Autowired JobPostRepository jobPostRepository;
 
-  public Optional<JobPostDTO> add(JobPostDTO jobPostDTO) {
+  public ResponseObject add(JobPostDTO jobPostDTO) {
 
     JobPostEntity jobPostEntity = converter.toEntity(jobPostDTO);
 
     // set id
     jobPostEntity.setId(0);
 
-    jobPostRepository.save(jobPostEntity);
+    jobPostEntity = jobPostRepository.save(jobPostEntity);
 
-    Optional<JobPostDTO> result = Optional.of(converter.toDTO(jobPostEntity));
-
-    // return add Province success
-    return result;
+    return new ResponseObject(200, "Save job post Successfully", converter.toDTO(jobPostEntity));
   }
 
   @Override
@@ -118,7 +115,6 @@ public class JobPostServiceImpl implements JobPostService {
     jobPostRepository.save(jobPost.get());
     return new ResponseObject(200, "Deactivate success", null);
   }
-
 
   public void validateJobPost(JobPostDTO jobPostDTO) {
     // check budget

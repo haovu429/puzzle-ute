@@ -8,23 +8,23 @@ import org.springframework.stereotype.Service;
 @Service
 public class ServiceServiceImpl implements ServiceService {
 
-    @Override
-    public ResponseObject save(ServiceDTO serviceDTO) {
-        return null;
-    }
+  @Override
+  public ResponseObject save(ServiceDTO serviceDTO) {
+    return null;
+  }
 
-    @Override
-    public ResponseObject update(ServiceDTO serviceDTO) {
-        return null;
-    }
+  @Override
+  public ResponseObject update(ServiceDTO serviceDTO) {
+    return null;
+  }
 
-    @Override
-    public ResponseObject delete(long id) {
-        return null;
-    }
+  @Override
+  public ResponseObject delete(long id) {
+    return null;
+  }
 
-    @Override
-    public ResponseObject getAll() {
-        return null;
-    }
+  @Override
+  public ResponseObject getAll() {
+    return null;
+  }
 }

@@ -1,10 +1,8 @@
 package hcmute.puzzle.repository;
 
 import hcmute.puzzle.entities.UserEntity;
-import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 

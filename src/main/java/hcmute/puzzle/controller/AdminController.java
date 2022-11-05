@@ -12,9 +12,6 @@ import hcmute.puzzle.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @RestController
 @RequestMapping(path = "/api")
 @CrossOrigin(value = "http://localhost:3000")
@@ -34,12 +31,9 @@ public class AdminController {
 
   @Autowired CompanyService companyService;
 
-  @Autowired
-  ExtraInfoService extraInfoService;
+  @Autowired ExtraInfoService extraInfoService;
 
-  @Autowired
-  UserService userService;
-
+  @Autowired UserService userService;
 
   // Company
   @PostMapping("/admin/add-company")
@@ -110,9 +104,10 @@ public class AdminController {
   }
 
   @GetMapping("/admin/update-status-job-post/{jobPostId}")
-  public ResponseObject getOneExtraInfo(@PathVariable(value = "jobPostId") Long id, @RequestParam boolean active) {
+  public ResponseObject getOneExtraInfo(
+      @PathVariable(value = "jobPostId") Long id, @RequestParam boolean active) {
 
-    if(active) {
+    if (active) {
       return jobPostService.activateJobPost(id);
     }
     return jobPostService.deactivateJobPost(id);

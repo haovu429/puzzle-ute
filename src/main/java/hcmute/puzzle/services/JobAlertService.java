@@ -1,19 +1,18 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.dto.CompanyDTO;
 import hcmute.puzzle.dto.JobAlertDTO;
 import hcmute.puzzle.dto.ResponseObject;
 
 public interface JobAlertService {
-    ResponseObject save(long candidateId, JobAlertDTO jobAlertDTO);
+  ResponseObject save(long candidateId, JobAlertDTO jobAlertDTO);
 
-    ResponseObject update(JobAlertDTO jobAlertDTO);
+  ResponseObject update(JobAlertDTO jobAlertDTO);
 
-    ResponseObject delete(long id);
+  ResponseObject delete(long id);
 
-    ResponseObject getAll();
+  ResponseObject getAll();
 
-    ResponseObject getAllJobAlertByCandidateId(long jobAlertId);
+  ResponseObject getAllJobAlertByCandidateId(long jobAlertId);
 
-    ResponseObject getOneById(long id);
+  ResponseObject getOneById(long id);
 }

@@ -14,7 +14,6 @@ import hcmute.puzzle.services.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -25,16 +24,13 @@ public class CandidateServiceImpl implements CandidateService {
 
   @Autowired EmployerRepository employerRepository;
 
-  @Autowired
-  JobPostRepository jobPostRepository;
+  @Autowired JobPostRepository jobPostRepository;
 
-  @Autowired
-  UserRepository userRepository;
+  @Autowired UserRepository userRepository;
 
   @Autowired Converter converter;
 
-  @Autowired
-  CompanyRepository companyRepository;
+  @Autowired CompanyRepository companyRepository;
 
   @Override
   public Optional<CandidateDTO> save(CandidateDTO candidateDTO) {
@@ -170,8 +166,4 @@ public class CandidateServiceImpl implements CandidateService {
 
     return new ResponseObject(200, "Save success", null);
   }
-
-
-
-
 }

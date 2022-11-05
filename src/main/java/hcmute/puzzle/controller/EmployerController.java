@@ -43,11 +43,9 @@ public class EmployerController {
 
   @Autowired CompanyService companyService;
 
-  @Autowired
-  ApplicationRepository applicationRepository;
+  @Autowired ApplicationRepository applicationRepository;
 
-  @Autowired
-  ApplicationService applicationService;
+  @Autowired ApplicationService applicationService;
 
   @PostMapping("/employer/add")
   ResponseObject save(
@@ -204,9 +202,7 @@ public class EmployerController {
   // Lấy danh sách ứng viên đã apply vào một jobPost
   @GetMapping("/employer/candidate-apply-jobpost/{jobPostId}")
   ResponseObject getCandidateApplyJobPost(
-      @PathVariable Long jobPostId,
-      @RequestHeader(value = "Authorization") String token) {
-
+      @PathVariable Long jobPostId, @RequestHeader(value = "Authorization") String token) {
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
     // Check is Employer
@@ -229,10 +225,10 @@ public class EmployerController {
 
   @GetMapping("/employer/response-application")
   ResponseObject responseApplication(
-          @RequestParam long applicationId,
-          @RequestParam boolean result,
-          @RequestParam String note,
-          @RequestHeader(value = "Authorization") String token) {
+      @RequestParam long applicationId,
+      @RequestParam boolean result,
+      @RequestParam String note,
+      @RequestHeader(value = "Authorization") String token) {
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
     // Check is Employer
@@ -246,7 +242,8 @@ public class EmployerController {
       throw new CustomException("Application isn't exist");
     }
 
-    if (application.get().getJobPostEntity().getCreatedEmployer().getId() != linkUser.get().getId()) {
+    if (application.get().getJobPostEntity().getCreatedEmployer().getId()
+        != linkUser.get().getId()) {
       throw new CustomException("You don't have rights for this application");
     }
 

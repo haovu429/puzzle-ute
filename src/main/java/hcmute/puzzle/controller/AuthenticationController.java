@@ -61,7 +61,8 @@ public class AuthenticationController {
         // store token in redis
         redisUtils.set(user.getEmail(), jwt);
 
-        Set<String> roles = user.getRoles().stream().map(role -> role.getName()).collect(Collectors.toSet());
+        Set<String> roles =
+            user.getRoles().stream().map(role -> role.getName()).collect(Collectors.toSet());
 
         Map<String, Object> result = new HashMap<>();
         result.put("jwt", jwt);

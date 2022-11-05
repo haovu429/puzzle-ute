@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -84,19 +84,19 @@ public class JobPostEntity {
   @OneToMany(mappedBy = "jobPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<ApplicationEntity> applicationEntities = new HashSet<>();
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade =CascadeType.PERSIST)
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "created_employer")
   private EmployerEntity createdEmployer;
 
   @ManyToMany(mappedBy = "savedJobPost", cascade = CascadeType.DETACH)
   private Set<CandidateEntity> savedCandidates = new HashSet<>();
 
-//  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//  @JoinTable(
-//      name = "needed_skill",
-//      joinColumns = @JoinColumn(name = "job_post_id"),
-//      inverseJoinColumns = @JoinColumn(name = "skill_id"))
-//  private Set<SkillEntity> skillEntities = new HashSet<>();
+  //  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  //  @JoinTable(
+  //      name = "needed_skill",
+  //      joinColumns = @JoinColumn(name = "job_post_id"),
+  //      inverseJoinColumns = @JoinColumn(name = "skill_id"))
+  //  private Set<SkillEntity> skillEntities = new HashSet<>();
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
   @JoinColumn(name = "company_id")

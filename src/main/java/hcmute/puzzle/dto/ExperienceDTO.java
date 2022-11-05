@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
@@ -23,5 +22,5 @@ public class ExperienceDTO {
   private String skills;
 
   private long candidateId;
-  //private List<Long> skillIds;
+  // private List<Long> skillIds;
 }

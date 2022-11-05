@@ -1,8 +1,5 @@
 package hcmute.puzzle.controller;
 
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.repository.RoleRepository;
-import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.test.SetUpDB;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,12 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(value = "http://localhost:3000")
 public class TestController {
 
-    @Autowired
-    SetUpDB setUpDB;
+  @Autowired SetUpDB setUpDB;
 
-    @GetMapping("/init-db")
-    public String getAll() {
-        setUpDB.preStart();
-        return "Done!";
-    }
+  @GetMapping("/init-db")
+  public String getAll() {
+    setUpDB.preStart();
+    return "Done!";
+  }
 }
