@@ -361,6 +361,7 @@ public class Converter {
   public JobAlertDTO toDTO(JobAlertEntity entity) {
     JobAlertDTO dto = new JobAlertDTO();
     dto.setId(entity.getId());
+    dto.setTag(entity.getTag());
     dto.setIndustry(entity.getIndustry());
     dto.setEmploymentType(entity.getEmploymentType());
     dto.setWorkplaceType(entity.getWorkplaceType());
@@ -378,6 +379,7 @@ public class Converter {
   public JobAlertEntity toEntity(JobAlertDTO dto) {
     JobAlertEntity entity = new JobAlertEntity();
     entity.setId(dto.getId());
+    entity.setTag(dto.getTag());
     entity.setIndustry(dto.getIndustry());
     entity.setEmploymentType(dto.getEmploymentType());
     entity.setWorkplaceType(dto.getWorkplaceType());

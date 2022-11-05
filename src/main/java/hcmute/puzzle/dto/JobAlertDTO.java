@@ -9,6 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class JobAlertDTO {
   private long id;
+  private String tag;
   private String industry;
   private String employmentType;
   private String workplaceType;

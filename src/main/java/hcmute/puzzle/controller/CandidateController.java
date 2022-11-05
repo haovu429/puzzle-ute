@@ -245,14 +245,18 @@ public class CandidateController {
       throw new CustomException("You don't have rights for this JobAlert");
     }
 
+    jobAlertDTO.setCandidateId(linkUser.get().getId());
+
     return jobAlertService.update(jobAlertDTO);
   }
 
-  @GetMapping ("/candidate/delete-job-alert{jobAlertId}")
+  @GetMapping ("/candidate/delete-job-alert/{jobAlertId}")
   ResponseObject deleteJobAlert(@PathVariable(value = "jobAlertId") long id,
                                 @RequestHeader(value = "Authorization") String token) {
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+
 
     Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(id);
 
@@ -272,6 +276,23 @@ public class CandidateController {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
     return jobAlertService.getAllJobAlertByCandidateId(linkUser.get().getId());
+  }
+
+  @GetMapping ("/candidate/get-job-alert-by-id/{jobAlertId}")
+  ResponseObject getAllJobAlertById(@PathVariable(value = "jobAlertId") long jobAlertId, @RequestHeader(value = "Authorization") String token) {
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(jobAlertId);
+
+    if (jobAlert.isEmpty()) {
+      throw new CustomException("Job Alert have this id isn't exist");
+    }
+
+    if (jobAlert.get().getCandidateEntity().getId() != linkUser.get().getId()) {
+      throw new CustomException("You don't have right for this Job Alert");
+    }
+
+    return jobAlertService.getOneById(jobAlertId);
   }
 
 }

@@ -17,6 +17,9 @@ public class JobAlertEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
+  @Column(name = "tag", columnDefinition = "TEXT")
+  private String tag;
+
   @Column(name = "industry", columnDefinition = "VARCHAR(200)")
   private String industry;
 
