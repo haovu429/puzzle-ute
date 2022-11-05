@@ -14,6 +14,9 @@ public interface CompanyService {
 
     ResponseObject getAll();
 
+
+    ResponseObject getAllCompanyInActive();
+
     ResponseObject getOneById(long id);
 
 }

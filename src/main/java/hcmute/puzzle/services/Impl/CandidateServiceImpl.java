@@ -173,21 +173,5 @@ public class CandidateServiceImpl implements CandidateService {
 
 
 
-//  @Override
-//  public ResponseObject applyJobPost(long candidateId, long jobPostId) {
-//    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
-//    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
-//    if (candidate.isEmpty()) {
-//      throw new NoSuchElementException("Candidate no value present");
-//    }
-//
-//    if (jobPost.isEmpty()) {
-//      throw new NoSuchElementException("Employer no value present");
-//    }
-//
-//    candidate.get().get().add(jobPost.get());
-//    candidateRepository.save(candidate.get());
-//
-//    return new ResponseObject(200, "Follow success", converter.toDTO(candidate.get()));
-//  }
+
 }

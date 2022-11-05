@@ -45,7 +45,7 @@ public class CompanyServiceImpl implements CompanyService {
 
       CompanyEntity companyEntity = converter.toEntity(companyDTO);
       companyEntity = companyRepository.save(companyEntity);
-    return new ResponseObject(200, "Update successfully", companyEntity);
+    return new ResponseObject(200, "Update successfully", converter.toDTO(companyEntity));
   }
 
   @Override
@@ -63,17 +63,27 @@ public class CompanyServiceImpl implements CompanyService {
 
   @Override
   public ResponseObject getAll() {
-      Set<CompanyEntity> companyEntities = new HashSet<>();
+      Set<CompanyDTO> companyDTOS = new HashSet<>();
       companyRepository.findAll().stream().forEach(company -> {
-          companyEntities.add(company);
+          companyDTOS.add(converter.toDTO(company));
       });
 
-      return new ResponseObject(200, "Info company", companyEntities);
+      return new ResponseObject(200, "Info company", companyDTOS);
   }
+
+    @Override
+    public ResponseObject getAllCompanyInActive() {
+        Set<CompanyDTO> companyDTOS = new HashSet<>();
+        companyRepository.findCompanyEntitiesByActiveFalse().stream().forEach(company -> {
+            companyDTOS.add(converter.toDTO(company));
+        });
+
+        return new ResponseObject(200, "Info company inactive", companyDTOS);
+    }
 
     @Override
     public ResponseObject getOneById(long id) {
         Optional<CompanyEntity> company = companyRepository.findById(id);
-        return new ResponseObject(200, "Info company", company.get());
+        return new ResponseObject(200, "Info company", converter.toDTO(company.get()));
     }
 }

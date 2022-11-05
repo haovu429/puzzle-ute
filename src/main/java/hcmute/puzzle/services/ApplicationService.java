@@ -9,4 +9,9 @@ public interface ApplicationService {
   ResponseObject deleteById(Long id);
 
   ResponseObject findAll(Pageable pageable);
+
+  ResponseObject applyJobPost(long candidateId, long jobPostId);
+
+  ResponseObject responseApplication(long applicationId, boolean isAccept, String note);
+
 }

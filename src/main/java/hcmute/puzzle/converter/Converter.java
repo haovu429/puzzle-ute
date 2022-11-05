@@ -385,10 +385,11 @@ public class Converter {
     entity.setMinBudget(dto.getMinBudget());
 
     Optional<CandidateEntity> candidateEntity = candidateRepository.findById(dto.getCandidateId());
-    if ( candidateEntity.isEmpty()){
-      throw new NoSuchElementException("Can't convert candidateId");
+    if ( candidateEntity.isPresent()){
+      //throw new NoSuchElementException("Can't convert candidateId");
+      entity.setCandidateEntity(candidateEntity.get());
     }
-    entity.setCandidateEntity(candidateEntity.get());
+
 
     return entity;
   }

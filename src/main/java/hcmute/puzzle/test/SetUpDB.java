@@ -173,6 +173,7 @@ public class SetUpDB {
     jobPost1.setQuantity(3);
     jobPost1.setMinBudget(800);
     jobPost1.setMaxBudget(1000);
+    jobPost1.setCreatedEmployer(employer1);
 
     JobPostEntity jobPost2 = new JobPostEntity();
     jobPost2.setTitle("Dev java");
@@ -186,6 +187,7 @@ public class SetUpDB {
     jobPost2.setQuantity(3);
     jobPost2.setMinBudget(800);
     jobPost2.setMaxBudget(1000);
+    jobPost2.setCreatedEmployer(employer2);
 
     JobPostEntity jobPost3 = new JobPostEntity();
     jobPost3.setTitle("Nhân viên Marketing");

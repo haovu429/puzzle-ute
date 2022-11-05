@@ -5,12 +5,15 @@ import hcmute.puzzle.dto.CompanyDTO;
 import hcmute.puzzle.dto.EmployerDTO;
 import hcmute.puzzle.dto.JobPostDTO;
 import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.entities.ApplicationEntity;
 import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
+import hcmute.puzzle.repository.ApplicationRepository;
 import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.services.ApplicationService;
 import hcmute.puzzle.services.CompanyService;
 import hcmute.puzzle.services.EmployerService;
 import hcmute.puzzle.services.JobPostService;
@@ -39,6 +42,12 @@ public class EmployerController {
   @Autowired Converter converter;
 
   @Autowired CompanyService companyService;
+
+  @Autowired
+  ApplicationRepository applicationRepository;
+
+  @Autowired
+  ApplicationService applicationService;
 
   @PostMapping("/employer/add")
   ResponseObject save(
@@ -143,7 +152,7 @@ public class EmployerController {
     // Validate JobPost
     jobPostService.validateJobPost(jobPostDTO);
 
-    //employer can not change active status
+    // employer can not change active status
     Optional<JobPostEntity> oldJobPost = jobPostRepository.findById(jobPostDTO.getId());
     if (oldJobPost.isEmpty()) {
       throw new CustomException("Job post isn't exists");
@@ -178,8 +187,8 @@ public class EmployerController {
 
   @PostMapping("/create-info-company")
   public ResponseObject save(
-          @RequestBody CompanyDTO companyDTO,
-          @RequestHeader(value = "Authorization", required = true) String token) {
+      @RequestBody CompanyDTO companyDTO,
+      @RequestHeader(value = "Authorization", required = true) String token) {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
     // Check is Employer
@@ -192,8 +201,55 @@ public class EmployerController {
     return companyService.save(companyDTO);
   }
 
+  // Lấy danh sách ứng viên đã apply vào một jobPost
   @GetMapping("/employer/candidate-apply-jobpost/{jobPostId}")
-  ResponseObject getCandidateApplyJobPost(@PathVariable Long jobPostId) {
+  ResponseObject getCandidateApplyJobPost(
+      @PathVariable Long jobPostId,
+      @RequestHeader(value = "Authorization") String token) {
+
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    // Check is Employer
+    if (linkUser.get().getEmployerEntity() == null) {
+      throw new CustomException("This account isn't Employer");
+    }
+
+    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+
+    if (jobPost.isEmpty()) {
+      throw new CustomException("JobPost isn't exist");
+    }
+
+    if (jobPost.get().getCreatedEmployer().getId() != linkUser.get().getId()) {
+      throw new CustomException("You don't have rights for this jobPost");
+    }
+
     return jobPostService.getCandidatesApplyJobPost(jobPostId);
+  }
+
+  @GetMapping("/employer/response-application")
+  ResponseObject responseApplication(
+          @RequestParam long applicationId,
+          @RequestParam boolean result,
+          @RequestParam String note,
+          @RequestHeader(value = "Authorization") String token) {
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    // Check is Employer
+    if (linkUser.get().getEmployerEntity() == null) {
+      throw new CustomException("This account isn't Employer");
+    }
+
+    Optional<ApplicationEntity> application = applicationRepository.findById(applicationId);
+
+    if (application.isEmpty()) {
+      throw new CustomException("Application isn't exist");
+    }
+
+    if (application.get().getJobPostEntity().getCreatedEmployer().getId() != linkUser.get().getId()) {
+      throw new CustomException("You don't have rights for this application");
+    }
+
+    return applicationService.responseApplication(applicationId, result, note);
   }
 }

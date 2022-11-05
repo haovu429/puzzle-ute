@@ -1,18 +1,14 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.dto.CandidateDTO;
+import hcmute.puzzle.dto.JobAlertDTO;
 import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.entities.ApplicationEntity;
-import hcmute.puzzle.entities.CandidateEntity;
-import hcmute.puzzle.entities.JobPostEntity;
-import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.entities.*;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
-import hcmute.puzzle.repository.ApplicationRepository;
-import hcmute.puzzle.repository.CandidateRepository;
-import hcmute.puzzle.repository.JobPostRepository;
-import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.repository.*;
 import hcmute.puzzle.services.CandidateService;
+import hcmute.puzzle.services.JobAlertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -38,6 +34,11 @@ public class CandidateController {
   @Autowired JwtAuthenticationFilter jwtAuthenticationFilter;
 
   @Autowired ApplicationRepository applicationRepository;
+
+  @Autowired JobAlertRepository jobAlertRepository;
+
+  @Autowired
+  JobAlertService jobAlertService;
 
   @PostMapping("/candidate/add")
   ResponseObject save(
@@ -206,4 +207,71 @@ public class CandidateController {
 
     return candidateService.saveJobPost(linkUser.get().getId(), jobPostId);
   }
+
+  @PostMapping("/candidate/add-job-alert")
+  ResponseObject addJobAlert(
+          @RequestBody @Validated JobAlertDTO jobAlertDTO,
+          BindingResult bindingResult,
+          @RequestHeader(value = "Authorization") String token) {
+    if (bindingResult.hasErrors()) {
+      throw new RuntimeException(bindingResult.getFieldError().toString());
+    }
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    if (linkUser.get().getEmployerEntity() != null || linkUser.get().getCandidateEntity() == null) {
+      throw new CustomException("This account isn't Candidate!");
+    }
+
+    return jobAlertService.save(linkUser.get().getId(), jobAlertDTO);
+  }
+
+  @PutMapping("/candidate/update-job-alert")
+  ResponseObject updateJobAlert(@RequestBody @Validated JobAlertDTO jobAlertDTO,
+                                BindingResult bindingResult,
+                                @RequestHeader(value = "Authorization") String token) {
+    if (bindingResult.hasErrors()) {
+      throw new RuntimeException(bindingResult.getFieldError().toString());
+    }
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(jobAlertDTO.getId());
+
+    if (jobAlert.isEmpty()) {
+      throw new CustomException("Job Alert isn't exists");
+    }
+
+    if (jobAlert.get().getCandidateEntity().getId() != linkUser.get().getId()) {
+      throw new CustomException("You don't have rights for this JobAlert");
+    }
+
+    return jobAlertService.update(jobAlertDTO);
+  }
+
+  @GetMapping ("/candidate/delete-job-alert{jobAlertId}")
+  ResponseObject deleteJobAlert(@PathVariable(value = "jobAlertId") long id,
+                                @RequestHeader(value = "Authorization") String token) {
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(id);
+
+    if (jobAlert.isEmpty()) {
+      throw new CustomException("Job Alert isn't exists");
+    }
+
+    if (jobAlert.get().getCandidateEntity().getId() != linkUser.get().getId()) {
+      throw new CustomException("You don't have rights for this JobAlert");
+    }
+
+    return jobAlertService.delete(id);
+  }
+
+  @GetMapping ("/candidate/get-job-alert")
+  ResponseObject getAllJobAlertByCandidateId(@RequestHeader(value = "Authorization") String token) {
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    return jobAlertService.getAllJobAlertByCandidateId(linkUser.get().getId());
+  }
+
 }

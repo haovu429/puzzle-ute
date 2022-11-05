@@ -117,6 +117,4 @@ public class AdminController {
     }
     return jobPostService.deactivateJobPost(id);
   }
-
-
 }

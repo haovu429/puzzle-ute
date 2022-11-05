@@ -33,8 +33,13 @@ public class CommonController {
     @Autowired
     ApplicationRepository applicationRepository;
 
-    @GetMapping("/job-post")
-    ResponseObject getById() {
+    @GetMapping("/job-post/get-all")
+    ResponseObject getAllJobPost() {
         return jobPostService.getAll();
+    }
+
+    @GetMapping("/job-post/get-one/{jobPostId}")
+    ResponseObject getJobPostById(@PathVariable(value = "jobPostId") long jobPostId) {
+        return jobPostService.getOne(jobPostId);
     }
 }
