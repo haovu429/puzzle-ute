@@ -151,12 +151,15 @@ public class SetUpDB {
 
     CompanyEntity company1 = new CompanyEntity();
     company1.setName("FPT soft");
+    company1.setCreatedEmployer(employer1);
 
     CompanyEntity company2 = new CompanyEntity();
     company2.setName("Shopee");
+    company1.setCreatedEmployer(employer1);
 
     CompanyEntity company3 = new CompanyEntity();
     company3.setName("Zalo");
+    company1.setCreatedEmployer(employer2);
 
     companyList.add(company1);
     companyList.add(company2);
