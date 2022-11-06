@@ -39,6 +39,8 @@ public class SetUpDB {
 
       roleCodes.add("user");
       roleCodes.add("admin");
+      roleCodes.add("candidate");
+      roleCodes.add("employer");
 
       roleCodes.stream()
           .forEach(
