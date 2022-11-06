@@ -12,5 +12,7 @@ public interface ExtraInfoService<DTO> {
 
   ResponseObject getAll();
 
+  ResponseObject getByType(String type);
+
   ResponseObject getOneById(long id);
 }

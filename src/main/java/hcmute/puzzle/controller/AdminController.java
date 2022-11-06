@@ -110,6 +110,7 @@ public class AdminController {
     return extraInfoService.getAll();
   }
 
+
   @GetMapping("/admin/update-status-job-post/{jobPostId}")
   public ResponseObject getOneExtraInfo(
       @PathVariable(value = "jobPostId") Long id, @RequestParam boolean active) {

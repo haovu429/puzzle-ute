@@ -6,6 +6,7 @@ import hcmute.puzzle.repository.ApplicationRepository;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.services.CandidateService;
+import hcmute.puzzle.services.ExtraInfoService;
 import hcmute.puzzle.services.JobPostService;
 import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class CommonController {
 
   @Autowired ApplicationRepository applicationRepository;
 
+  @Autowired
+  ExtraInfoService extraInfoService;
+
   @GetMapping("/job-post/get-all")
   ResponseObject getAllJobPost() {
     return jobPostService.getAll();
@@ -35,5 +39,10 @@ public class CommonController {
   @GetMapping("/job-post/get-one/{jobPostId}")
   ResponseObject getJobPostById(@PathVariable(value = "jobPostId") long jobPostId) {
     return jobPostService.getOne(jobPostId);
+  }
+
+  @GetMapping("/get-all-extra-info-by-type")
+  public ResponseObject getAllExtraInfoByType(@RequestParam String type) {
+    return extraInfoService.getByType(type);
   }
 }

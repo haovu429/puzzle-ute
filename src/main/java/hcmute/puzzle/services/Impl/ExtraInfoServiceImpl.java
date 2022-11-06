@@ -7,6 +7,7 @@ import hcmute.puzzle.entities.ExtraInfoEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.ExtraInfoRepository;
 import hcmute.puzzle.services.ExtraInfoService;
+import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class ExtraInfoServiceImpl implements ExtraInfoService<ExtraInfoDTO> {
   @Override
   public ResponseObject save(ExtraInfoDTO extraInfoDTO) {
     extraInfoDTO.setId(0);
+    extraInfoDTO.setType(Constant.validateTypeExtraInfo(extraInfoDTO.getType().toUpperCase()));
 
     ExtraInfoEntity extraInfoEntity = converter.toEntity(extraInfoDTO);
     extraInfoEntity = extraInfoRepository.save(extraInfoEntity);
@@ -34,6 +36,7 @@ public class ExtraInfoServiceImpl implements ExtraInfoService<ExtraInfoDTO> {
   @Override
   public ResponseObject update(ExtraInfoDTO extraInfoDTO) {
     boolean exists = extraInfoRepository.existsById(extraInfoDTO.getId());
+    extraInfoDTO.setType(Constant.validateTypeExtraInfo(extraInfoDTO.getType().toUpperCase()));
 
     if (!exists) {
       throw new CustomException("ExtraInfo isn't exists");
@@ -67,6 +70,18 @@ public class ExtraInfoServiceImpl implements ExtraInfoService<ExtraInfoDTO> {
             });
 
     return new ResponseObject(200, "ExtraInfo", extraInfoEntities);
+  }
+
+  @Override
+  public ResponseObject getByType(String type) {
+    Set<ExtraInfoEntity> extraInfoEntities = new HashSet<>();
+    extraInfoRepository.getExtraInfoEntitiesByType(type).stream()
+        .forEach(
+            extraInfo -> {
+              extraInfoEntities.add(extraInfo);
+            });
+
+    return new ResponseObject(200, "ExtraInfo by type", extraInfoEntities);
   }
 
   @Override
