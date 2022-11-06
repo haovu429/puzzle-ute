@@ -2,12 +2,13 @@ package hcmute.puzzle.controller;
 
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.repository.RoleRepository;
+import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api")
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class RoleController {
 
   //	@Autowired

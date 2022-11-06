@@ -74,21 +74,25 @@ public class SetUpDB {
     UserEntity user1 = new UserEntity();
     user1.setEmail("candidate1@gmail.com");
     user1.setPassword(passwordEncoder.encode("123456"));
+    user1.getRoles().add(userRole4);
     user1.getRoles().add(userRole2);
 
     UserEntity user2 = new UserEntity();
     user2.setEmail("candidate2@gmail.com");
     user2.setPassword(passwordEncoder.encode("123456"));
+    user2.getRoles().add(userRole4);
     user2.getRoles().add(userRole2);
 
     UserEntity user3 = new UserEntity();
     user3.setEmail("employer1@gmail.com");
     user3.setPassword(passwordEncoder.encode("123456"));
+    user3.getRoles().add(userRole3);
     user3.getRoles().add(userRole2);
 
     UserEntity user4 = new UserEntity();
     user4.setEmail("employer2@gmail.com");
     user4.setPassword(passwordEncoder.encode("123456"));
+    user4.getRoles().add(userRole3);
     user4.getRoles().add(userRole2);
 
     UserEntity user5 = new UserEntity();

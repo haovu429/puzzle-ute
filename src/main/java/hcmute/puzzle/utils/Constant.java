@@ -17,4 +17,7 @@ public class Constant {
 
   @Value("${SMS_ACCESS_TOKEN}")
   public static String SMS_ACCESS_TOKEN;
+
+  public static final String LOCAL_URL = "http://localhost:3000";
+  public static final String ONLINE_URL = "https://puzzle-client-eight.vercel.app";
 }

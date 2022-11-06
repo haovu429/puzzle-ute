@@ -18,6 +18,10 @@ public interface JobPostService {
 
   ResponseObject getCandidatesApplyJobPost(long jobPostId);
 
+  ResponseObject getJobPostAppliedByCandidateId(long candidateId);
+
+  ResponseObject getJobPostSavedByCandidateId(long candidateId);
+
   ResponseObject activateJobPost(long jobPostId);
 
   ResponseObject deactivateJobPost(long jobPostId);

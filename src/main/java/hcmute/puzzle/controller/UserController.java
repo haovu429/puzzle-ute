@@ -3,6 +3,7 @@ package hcmute.puzzle.controller;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.services.UserService;
+import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +12,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping(path = "/api")
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class UserController {
 
   @Autowired public UserService userService;

@@ -4,6 +4,7 @@ import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.services.ApplicationService;
+import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api")
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class ApplicationController {
 
   @Autowired ApplicationService applicationService;

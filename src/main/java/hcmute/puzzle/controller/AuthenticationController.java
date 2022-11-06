@@ -6,6 +6,7 @@ import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.security.JwtTokenProvider;
+import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/api")
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class AuthenticationController {
   @Autowired AuthenticationManager authenticationManager;
 

@@ -6,6 +6,7 @@ import hcmute.puzzle.dto.EmployerDTO;
 import hcmute.puzzle.dto.JobPostDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.ApplicationEntity;
+import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
@@ -24,6 +25,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/api")
@@ -249,4 +252,6 @@ public class EmployerController {
 
     return applicationService.responseApplication(applicationId, result, note);
   }
+
+
 }

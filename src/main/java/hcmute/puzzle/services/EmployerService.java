@@ -13,4 +13,6 @@ public interface EmployerService {
   ResponseObject update(EmployerDTO employerDTO);
 
   ResponseObject getOne(long id);
+
+  ResponseObject getEmployerFollowedByCandidateId(long candidateId);
 }

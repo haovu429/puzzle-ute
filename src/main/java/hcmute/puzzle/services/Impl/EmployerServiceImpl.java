@@ -1,8 +1,10 @@
 package hcmute.puzzle.services.Impl;
 
 import hcmute.puzzle.converter.Converter;
+import hcmute.puzzle.dto.CompanyDTO;
 import hcmute.puzzle.dto.EmployerDTO;
 import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.EmployerEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.CandidateRepository;
@@ -13,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployerServiceImpl implements EmployerService {
@@ -83,5 +87,21 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     throw new CustomException("Cannot find candidate with id = " + id);
+  }
+
+  @Override
+  public ResponseObject getEmployerFollowedByCandidateId(long candidateId) {
+    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
+
+    if (candidate.isEmpty()) {
+      throw new CustomException("Candidate isn't exist");
+    }
+
+    Set<EmployerDTO> employerDTOS =
+            candidate.get().getFollowingEmployers().stream()
+                    .map(employer -> converter.toDTO(employer))
+                    .collect(Collectors.toSet());
+
+    return new ResponseObject(200, "Employer followed", employerDTOS);
   }
 }

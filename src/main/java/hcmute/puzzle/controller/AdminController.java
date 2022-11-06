@@ -9,12 +9,14 @@ import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.services.*;
+import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api")
-@CrossOrigin(value = "http://localhost:3000")
+
+@CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class AdminController {
 
   @Autowired EmployerService employerService;
@@ -54,6 +56,11 @@ public class AdminController {
   @GetMapping("/admin/get-all-company")
   public ResponseObject getAllCompany() {
     return companyService.getAll();
+  }
+
+  @GetMapping("/admin/get-all-company-inactive")
+  public ResponseObject getAllCompanyInactive() {
+    return companyService.getAllCompanyInActive();
   }
 
   @GetMapping("/admin/get-one-company/{id}")

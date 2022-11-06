@@ -8,9 +8,8 @@ import hcmute.puzzle.entities.*;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.repository.*;
-import hcmute.puzzle.services.CandidateService;
-import hcmute.puzzle.services.ExperienceService;
-import hcmute.puzzle.services.JobAlertService;
+import hcmute.puzzle.services.*;
+import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -18,12 +17,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
 @RestController
 @RequestMapping(path = "/api")
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class CandidateController {
 
   @Autowired CandidateService candidateService;
@@ -45,16 +45,29 @@ public class CandidateController {
 
   @Autowired ExperienceRepository experienceRepository;
 
+  @Autowired EmployerService employerService;
+
+  @Autowired
+  CompanyService companyService;
+
+  @Autowired
+  JobPostService jobPostService;
+
   @PostMapping("/candidate/add")
   ResponseObject save(
       @RequestBody @Validated CandidateDTO candidate,
       BindingResult bindingResult,
-      @RequestHeader(value = "Authorization", required = true) String token) {
+      @RequestHeader(value = "Authorization") String token) {
     if (bindingResult.hasErrors()) {
-      throw new RuntimeException(bindingResult.getFieldError().toString());
+      throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
     if (linkUser.get().getEmployerEntity() != null) {
       throw new CustomException("This account is Employer!");
     }
@@ -79,10 +92,14 @@ public class CandidateController {
   // Gửi Authentication xác thực tài khoản thì xoá.
   @DeleteMapping("/candidate")
   ResponseObject delete(
-      @PathVariable long id,
-      @RequestHeader(value = "Authorization", required = true) String token) {
+      @RequestHeader(value = "Authorization") String token) {
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
     return candidateService.delete(linkUser.get().getCandidateEntity().getId());
   }
 
@@ -90,11 +107,16 @@ public class CandidateController {
   ResponseObject update(
       @RequestBody @Validated CandidateDTO candidate,
       BindingResult bindingResult,
-      @RequestHeader(value = "Authorization", required = true) String token) {
+      @RequestHeader(value = "Authorization") String token) {
     if (bindingResult.hasErrors()) {
-      throw new RuntimeException(bindingResult.getFieldError().toString());
+      throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
     candidate.setUserId(linkUser.get().getId());
     candidate.setId(linkUser.get().getId());
     return candidateService.update(candidate);
@@ -111,10 +133,15 @@ public class CandidateController {
       @PathVariable(value = "id") Long employerId,
       // @RequestBody Map<String, Object> input,
       // @RequestParam(name = "employerId") long employerId,
-      @RequestHeader(value = "Authorization", required = true) String token) {
+      @RequestHeader(value = "Authorization") String token) {
     // Map<String, Object> retMap = new HashMap<String, Object>();
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
     // long candidateId = linkUser.get().getId();
 
     // https://stackoverflow.com/questions/58056944/java-lang-integer-cannot-be-cast-to-java-lang-long
@@ -128,10 +155,15 @@ public class CandidateController {
   ResponseObject followCompany(
       @PathVariable(value = "id") Long companyId,
       // @RequestParam(name = "employerId") long employerId,
-      @RequestHeader(value = "Authorization", required = true) String token) {
+      @RequestHeader(value = "Authorization") String token) {
     // Map<String, Object> retMap = new HashMap<String, Object>();
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
     // long candidateId = linkUser.get().getId();
 
     // https://stackoverflow.com/questions/58056944/java-lang-integer-cannot-be-cast-to-java-lang-long
@@ -146,12 +178,16 @@ public class CandidateController {
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
     if (linkUser.get().getCandidateEntity() == null) {
       throw new CustomException("This account isn't Candidate");
     }
 
-    Optional<CandidateEntity> candidate =
-        candidateRepository.findById(linkUser.get().getCandidateEntity().getId());
+//    Optional<CandidateEntity> candidate =
+//        candidateRepository.findById(linkUser.get().getCandidateEntity().getId());
     Optional<JobPostEntity> jobPost = jobPostRepository.findById(postId);
     //    if (candidate.isEmpty()) {
     //      throw new NoSuchElementException("Candidate no value present");
@@ -185,6 +221,10 @@ public class CandidateController {
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
     if (linkUser.get().getCandidateEntity() == null) {
       throw new CustomException("This account isn't Candidate");
     }
@@ -203,10 +243,15 @@ public class CandidateController {
   ResponseObject saveJobPost(
       @PathVariable(value = "jobPostId") Long jobPostId,
       // @RequestParam(name = "employerId") long employerId,
-      @RequestHeader(value = "Authorization", required = true) String token) {
+      @RequestHeader(value = "Authorization") String token) {
     // Map<String, Object> retMap = new HashMap<String, Object>();
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
     // long candidateId = linkUser.get().getId();
 
     // https://stackoverflow.com/questions/58056944/java-lang-integer-cannot-be-cast-to-java-lang-long
@@ -221,10 +266,15 @@ public class CandidateController {
       BindingResult bindingResult,
       @RequestHeader(value = "Authorization") String token) {
     if (bindingResult.hasErrors()) {
-      throw new RuntimeException(bindingResult.getFieldError().toString());
+      throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
     if (linkUser.get().getEmployerEntity() != null || linkUser.get().getCandidateEntity() == null) {
       throw new CustomException("This account isn't Candidate!");
     }
@@ -238,10 +288,14 @@ public class CandidateController {
       BindingResult bindingResult,
       @RequestHeader(value = "Authorization") String token) {
     if (bindingResult.hasErrors()) {
-      throw new RuntimeException(bindingResult.getFieldError().toString());
+      throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
 
     Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(jobAlertDTO.getId());
 
@@ -265,6 +319,10 @@ public class CandidateController {
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
     Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(id);
 
     if (jobAlert.isEmpty()) {
@@ -282,6 +340,10 @@ public class CandidateController {
   ResponseObject getAllJobAlertByCandidateId(@RequestHeader(value = "Authorization") String token) {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
     return jobAlertService.getAllJobAlertByCandidateId(linkUser.get().getId());
   }
 
@@ -292,6 +354,10 @@ public class CandidateController {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
     Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(jobAlertId);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
 
     if (jobAlert.isEmpty()) {
       throw new CustomException("Job Alert have this id isn't exist");
@@ -310,10 +376,15 @@ public class CandidateController {
       BindingResult bindingResult,
       @RequestHeader(value = "Authorization") String token) {
     if (bindingResult.hasErrors()) {
-      throw new RuntimeException(bindingResult.getFieldError().toString());
+      throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
     if (linkUser.get().getEmployerEntity() != null || linkUser.get().getCandidateEntity() == null) {
       throw new CustomException("This account isn't Candidate!");
     }
@@ -327,10 +398,14 @@ public class CandidateController {
       BindingResult bindingResult,
       @RequestHeader(value = "Authorization") String token) {
     if (bindingResult.hasErrors()) {
-      throw new RuntimeException(bindingResult.getFieldError().toString());
+      throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
 
     Optional<ExperienceEntity> experience = experienceRepository.findById(experienceDTO.getId());
 
@@ -354,6 +429,10 @@ public class CandidateController {
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
     Optional<ExperienceEntity> experience = experienceRepository.findById(id);
 
     if (experience.isEmpty()) {
@@ -372,6 +451,10 @@ public class CandidateController {
       @RequestHeader(value = "Authorization") String token) {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
     return experienceService.getAllExperienceByCandidateId(linkUser.get().getId());
   }
 
@@ -380,6 +463,10 @@ public class CandidateController {
       @PathVariable(value = "experienceId") long experienceId,
       @RequestHeader(value = "Authorization") String token) {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
 
     Optional<ExperienceEntity> experience = experienceRepository.findById(experienceId);
 
@@ -392,5 +479,53 @@ public class CandidateController {
     }
 
     return experienceService.getOneById(experienceId);
+  }
+
+  @GetMapping("/candidate/get-job-post-applied")
+  ResponseObject getJobPostAppliedByCandidate(
+          @RequestHeader(value = "Authorization") String token) {
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
+    return jobPostService.getJobPostAppliedByCandidateId(linkUser.get().getId());
+  }
+
+  @GetMapping("/candidate/get-job-post-saved")
+  ResponseObject getJobPostSavedByCandidate(
+          @RequestHeader(value = "Authorization") String token) {
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
+    return jobPostService.getJobPostSavedByCandidateId(linkUser.get().getId());
+  }
+
+  @GetMapping("/candidate/get-company-followed")
+  ResponseObject getCompanyFollowedByCandidate(
+          @RequestHeader(value = "Authorization") String token) {
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
+    return companyService.getCompanyFollowedByCandidateId(linkUser.get().getId());
+  }
+
+  @GetMapping("/candidate/get-employer-followed")
+  ResponseObject getEmployerFollowedByCandidate(
+          @RequestHeader(value = "Authorization") String token) {
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
+    return employerService.getEmployerFollowedByCandidateId(linkUser.get().getId());
   }
 }

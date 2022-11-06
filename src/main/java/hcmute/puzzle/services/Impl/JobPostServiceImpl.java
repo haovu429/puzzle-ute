@@ -7,6 +7,7 @@ import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.services.JobPostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ public class JobPostServiceImpl implements JobPostService {
   @Autowired Converter converter;
 
   @Autowired JobPostRepository jobPostRepository;
+
+  @Autowired CandidateRepository candidateRepository;
 
   public ResponseObject add(JobPostDTO jobPostDTO) {
 
@@ -100,6 +103,32 @@ public class JobPostServiceImpl implements JobPostService {
             .collect(Collectors.toSet());
 
     return new ResponseObject(200, "Candidate applied", candidateDTOS);
+  }
+
+  @Override
+  public ResponseObject getJobPostAppliedByCandidateId(long candidateId) {
+    Set<JobPostDTO> jobPostDTOS =
+        jobPostRepository.findAllByAppliedCandidateId(candidateId).stream()
+            .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+            .collect(Collectors.toSet());
+
+    return new ResponseObject(200, "Job Post applied", jobPostDTOS);
+  }
+
+  @Override
+  public ResponseObject getJobPostSavedByCandidateId(long candidateId) {
+    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
+
+    if (candidate.isEmpty()) {
+      throw new CustomException("Candidate isn't exist");
+    }
+
+    Set<JobPostDTO> jobPostDTOS =
+        candidate.get().getSavedJobPost().stream()
+            .map(jobPost -> converter.toDTO(jobPost))
+            .collect(Collectors.toSet());
+
+    return new ResponseObject(200, "Job Post applied", jobPostDTOS);
   }
 
   public ResponseObject activateJobPost(long jobPostId) {

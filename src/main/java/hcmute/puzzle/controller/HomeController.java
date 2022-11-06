@@ -1,6 +1,7 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.services.RequestService;
+import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -13,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 // @RequestMapping(path = "/api")
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class HomeController {
   @Autowired private RequestService requestService;
 

@@ -1,6 +1,7 @@
 package hcmute.puzzle.filter;
 
 import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.security.JwtTokenProvider;
 import hcmute.puzzle.security.UserService;
@@ -123,6 +124,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     if (linkUser.isEmpty()) {
       throw new RuntimeException("Not found userId ");
     }
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
     return linkUser;
   }
 
