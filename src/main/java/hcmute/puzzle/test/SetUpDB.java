@@ -29,6 +29,10 @@ public class SetUpDB {
 
   @Autowired PositionRepository positionRepository;
 
+  @Autowired ExperienceRepository experienceRepository;
+
+  @Autowired ExtraInfoRepository extraInfoRepository;
+
   @Autowired CandidateRepository candidateRepository;
 
   @Autowired EmployerRepository employerRepository;
@@ -294,5 +298,23 @@ public class SetUpDB {
     positionList.add(position4);
 
     positionRepository.saveAll(positionList);
+
+
+    Set<ExtraInfoEntity> extraInfoList = new HashSet<>();
+    ExtraInfoEntity extraInfo1 = new ExtraInfoEntity();
+    extraInfo1.setActive(true);
+    extraInfo1.setName("Java Develop");
+    extraInfo1.setType("skill");
+
+    extraInfoList.add(extraInfo1);
+
+    ExtraInfoEntity extraInfo2 = new ExtraInfoEntity();
+    extraInfo1.setActive(true);
+    extraInfo1.setName("Java Develop");
+    extraInfo1.setType("position");
+
+    extraInfoList.add(extraInfo2);
+
+    extraInfoRepository.saveAll(extraInfoList);
   }
 }
