@@ -17,6 +17,7 @@ import hcmute.puzzle.services.ApplicationService;
 import hcmute.puzzle.services.CompanyService;
 import hcmute.puzzle.services.EmployerService;
 import hcmute.puzzle.services.JobPostService;
+import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -27,7 +28,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api")
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class EmployerController {
   @Autowired EmployerService employerService;
 

@@ -7,18 +7,17 @@ import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.utils.Constant;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileOutputStream;
 import java.util.Map;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping(path = "/api")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class FilesController {
@@ -32,8 +31,7 @@ public class FilesController {
   @PostMapping("/upload-avatar")
   public ResponseObject uploadFile(
       @RequestParam("file") MultipartFile file,
-      @RequestHeader(value = "Authorization") String token)
-      throws IOException {
+      @RequestHeader(value = "Authorization") String token) {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
     if (linkUser.isEmpty()) {
@@ -42,13 +40,22 @@ public class FilesController {
 
     String fileName = linkUser.get().getEmail() + "_avatar";
 
-    ClassLoader classLoader = getClass().getClassLoader();
-//
-//    Resource resource =
-//
-//    file.transferTo(new File(classLoader.getResource("static/image/"+fileName).toString()));
+    Map result = null;
 
-    Map result = storageService.uploadAvatarImage(fileName, file);
+    String fileLocation =
+            new File("src\\main\\resources\\static\\images").getAbsolutePath()
+                    + "\\"
+                    + fileName
+                    + "."
+                    + FilenameUtils.getExtension(file.getOriginalFilename());
+
+    try {
+      // push to storage cloud
+      result = storageService.uploadAvatarImage(fileName, file);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     if (result == null) {
       throw new CustomException("Upload image failure");
