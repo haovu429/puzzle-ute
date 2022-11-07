@@ -116,6 +116,16 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   @Override
+  public ResponseObject getJobPostCreatedByEmployerId(long employerId) {
+    Set<JobPostDTO> jobPostDTOS =
+            jobPostRepository.findAllByCreatedEmployerId(employerId).stream()
+                    .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+                    .collect(Collectors.toSet());
+
+    return new ResponseObject(200, "Job Post created", jobPostDTOS);
+  }
+
+  @Override
   public ResponseObject getJobPostSavedByCandidateId(long candidateId) {
     Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
 

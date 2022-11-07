@@ -3,7 +3,6 @@ package hcmute.puzzle.services.Impl;
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.CandidateDTO;
 import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.CompanyEntity;
 import hcmute.puzzle.entities.EmployerEntity;
@@ -104,11 +103,11 @@ public class CandidateServiceImpl implements CandidateService {
       return new ResponseObject(200, "Info of candidate", converter.toDTO(candidate));
     }
 
-    try {
-      UserDTO userDTO = new UserDTO();
-    } catch (RuntimeException e) {
-
-    }
+    //    try {
+    //      UserDTO userDTO = new UserDTO();
+    //    } catch (RuntimeException e) {
+    //
+    //    }
 
     throw new CustomException("Cannot find candidate with id = " + id);
   }
