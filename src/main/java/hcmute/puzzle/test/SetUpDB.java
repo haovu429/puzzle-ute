@@ -25,6 +25,10 @@ public class SetUpDB {
 
   @Autowired ServiceRepository serviceRepository;
 
+  @Autowired SkillRepository skillRepository;
+
+  @Autowired PositionRepository positionRepository;
+
   @Autowired CandidateRepository candidateRepository;
 
   @Autowired EmployerRepository employerRepository;
@@ -241,5 +245,54 @@ public class SetUpDB {
     serviceList.add(service4);
 
     serviceRepository.saveAll(serviceList);
+
+
+    Set<SkillEntity> skillList = new HashSet<>();
+    SkillEntity skill1 = new SkillEntity();
+    service1.setName("Java Develop");
+    service1.setActive(true);
+
+    SkillEntity skill2 = new SkillEntity();
+    service2.setName("Mobile Develop");
+    service2.setActive(true);
+
+    SkillEntity skill3 = new SkillEntity();
+    service3.setName("dot Net Develop");
+    service3.setActive(false);
+
+    SkillEntity skill4 = new SkillEntity();
+    service4.setName("Flutter Develop");
+    service4.setActive(true);
+
+    skillList.add(skill1);
+    skillList.add(skill2);
+    skillList.add(skill3);
+    skillList.add(skill4);
+
+    skillRepository.saveAll(skillList);
+
+    Set<PositionEntity> positionList = new HashSet<>();
+    PositionEntity position1 = new PositionEntity();
+    service1.setName("Java Develop");
+    service1.setActive(true);
+
+    PositionEntity position2 = new PositionEntity();
+    service2.setName("Mobile Develop");
+    service2.setActive(true);
+
+    PositionEntity position3 = new PositionEntity();
+    service3.setName("dot Net Develop");
+    service3.setActive(false);
+
+    PositionEntity position4 = new PositionEntity();
+    service4.setName("Flutter Develop");
+    service4.setActive(true);
+
+    positionList.add(position1);
+    positionList.add(position2);
+    positionList.add(position3);
+    positionList.add(position4);
+
+    positionRepository.saveAll(positionList);
   }
 }
