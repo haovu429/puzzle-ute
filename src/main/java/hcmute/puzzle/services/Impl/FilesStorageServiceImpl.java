@@ -4,6 +4,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.utils.CloudinaryUtil;
+import hcmute.puzzle.utils.Constant;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +26,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
       Map params1 =
           ObjectUtils.asMap(
               "folder",
-              "puzzle_ute/user/avatar",
+                  Constant.STORAGE_IMAGE_LOCATION,
               "public_id",
               imageName,
               "use_filename",
@@ -49,9 +50,9 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 
     try {
       // Destroy the image
-      Map params1 = ObjectUtils.asMap("resource_type", "image", "folder", "puzzle_ute/user/avatar", "invalidate", true);
+      Map params1 = ObjectUtils.asMap("resource_type", "image", "folder", "puzzle_ute/user/avatar", "type", "upload", "invalidate", true);
 
-      Map result = cloudinary.uploader().destroy(imageName, params1);
+      Map result = cloudinary.uploader().destroy(Constant.STORAGE_IMAGE_LOCATION + "/" + imageName, params1);
       return result;
     } catch (Exception e) {
       e.printStackTrace();

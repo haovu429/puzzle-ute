@@ -40,35 +40,35 @@ public class FilesController {
 
     String fileName = linkUser.get().getEmail() + "_avatar";
 
-    Map result = null;
+    Map response = null;
 
     try {
       // push to storage cloud
-      result = storageService.uploadAvatarImage(fileName, file);
+      response = storageService.uploadAvatarImage(fileName, file);
 
     } catch (Exception e) {
       e.printStackTrace();
     }
 
-    if (result == null) {
+    if (response == null) {
       throw new CustomException("Upload image failure");
     }
 
-    if (result.get("secure_url") == null) {
+    if (response.get("secure_url") == null) {
       throw new CustomException("Can't get url from response of storage cloud");
     }
 
-    String url = result.get("secure_url").toString();
+    String url = response.get("secure_url").toString();
 
     linkUser.get().setAvatar(url);
 
     userRepository.save(linkUser.get());
 
-    return new ResponseObject(200, "Upload image success", null);
+    return new ResponseObject(200, "Upload image success", response);
   }
 
   @GetMapping("/delete-avatar")
-  public ResponseObject delateFile(
+  public ResponseObject deleteFile(
           @RequestHeader(value = "Authorization") String token) {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 

@@ -27,10 +27,13 @@ public class Constant {
   public static final String SKILL = "SKILL";
   public static final String SERVICE = "SERVICE";
 
+  public static final String STORAGE_IMAGE_LOCATION = "puzzle_ute/user/avatar";
+
   public static String validateTypeExtraInfo(String type) {
     if (type.equals(POSITION)) return POSITION;
     if (type.equals(SKILL)) return SKILL;
     if (type.equals(SERVICE)) return SERVICE;
     throw new CustomException("Type isn't exist");
   }
+
 }
