@@ -42,13 +42,6 @@ public class FilesController {
 
     Map result = null;
 
-    String fileLocation =
-            new File("src\\main\\resources\\static\\images").getAbsolutePath()
-                    + "\\"
-                    + fileName
-                    + "."
-                    + FilenameUtils.getExtension(file.getOriginalFilename());
-
     try {
       // push to storage cloud
       result = storageService.uploadAvatarImage(fileName, file);
@@ -72,6 +65,43 @@ public class FilesController {
     userRepository.save(linkUser.get());
 
     return new ResponseObject(200, "Upload image success", null);
+  }
+
+  @GetMapping("/delete-avatar")
+  public ResponseObject delateFile(
+          @RequestHeader(value = "Authorization") String token) {
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
+    String fileName = linkUser.get().getEmail() + "_avatar";
+
+    Map response;
+
+    response = storageService.deleteAvatarImage(fileName);
+
+    if (response == null) {
+      throw new CustomException("Delete image failure, not response");
+    }
+
+    if (response.get("result") == null) {
+      throw new CustomException("Can't get url from response of storage cloud");
+    }
+
+    String result = response.get("result").toString();
+
+    if (!result.equals("ok")) {
+      return new ResponseObject(200, "Delete image failure, response isn't ok", response);
+      //throw new CustomException("Delete image failure, response isn't ok");
+    }
+
+    linkUser.get().setAvatar(null);
+
+    userRepository.save(linkUser.get());
+
+    return new ResponseObject(200, "Delete image success", response);
   }
 
   //    @GetMapping("/files")

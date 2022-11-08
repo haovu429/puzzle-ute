@@ -7,5 +7,7 @@ import java.io.IOException;
 import java.util.Map;
 
 public interface FilesStorageService {
-    Map uploadAvatarImage(String imageName, MultipartFile file) throws IOException;
+    Map uploadAvatarImage(String imageName, MultipartFile file);
+
+    Map deleteAvatarImage(String imageName);
 }
