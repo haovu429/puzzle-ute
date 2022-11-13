@@ -30,8 +30,6 @@ public class Converter {
   @Autowired private JobAlertRepository jobAlertRepository;
   @Autowired private JobPostRepository jobPostRepository;
   @Autowired private NotificationRepository notificationRepository;
-  @Autowired private ServiceRepository serviceRepository;
-  @Autowired private SkillRepository skillRepository;
   @Autowired private UserRepository userRepository;
 
   // User
@@ -144,6 +142,7 @@ public class Converter {
     dto.setId(entity.getId());
     dto.setFirstName(entity.getFirstName());
     dto.setLastName(entity.getLastName());
+    dto.setPhoneNum(entity.getPhoneNum());
     dto.setIntroduction(entity.getIntroduction());
     dto.setEducationLevel(entity.getEducationLevel());
     dto.setWorkStatus(entity.getWorkStatus());
@@ -156,6 +155,7 @@ public class Converter {
     dto.setVerifiedDis(entity.isVerifiedDis());
     dto.setSkills(entity.getSkills());
     dto.setServices(entity.getServices());
+    dto.setPosition(entity.getPosition());
 
     if (entity.getUserEntity() == null) {
       throw new CustomException("Can't convert userEntity because it is null");
@@ -171,6 +171,7 @@ public class Converter {
     entity.setId(dto.getId());
     entity.setFirstName(dto.getFirstName());
     entity.setLastName(dto.getLastName());
+    entity.setPhoneNum(dto.getPhoneNum());
     entity.setIntroduction(dto.getIntroduction());
     entity.setEducationLevel(dto.getEducationLevel());
     entity.setWorkStatus(dto.getWorkStatus());
@@ -183,6 +184,7 @@ public class Converter {
     entity.setVerifiedDis(dto.isVerifiedDis());
     entity.setSkills(dto.getSkills());
     entity.setServices(dto.getServices());
+    entity.setPosition(dto.getPosition());
 
     Optional<UserEntity> userEntity = userRepository.findById(dto.getUserId());
     if (userEntity.isEmpty()) {
@@ -499,62 +501,62 @@ public class Converter {
     return entity;
   }
 
-  // Service
-  public ServiceDTO toDTO(ServiceEntity entity) {
-    ServiceDTO dto = new ServiceDTO();
-    dto.setId(entity.getId());
-    dto.setName(entity.getName());
-    dto.setActive(entity.isActive());
-
-    return dto;
-  }
-
-  public ServiceEntity toEntity(ServiceDTO dto) {
-    ServiceEntity entity = new ServiceEntity();
-    entity.setId(dto.getId());
-    entity.setName(dto.getName());
-    entity.setActive(dto.isActive());
-
-    return entity;
-  }
-
-  // Skill
-  public SkillDTO toDTO(SkillEntity entity) {
-    SkillDTO dto = new SkillDTO();
-    dto.setId(entity.getId());
-    dto.setName(entity.getName());
-    dto.setActive(entity.isActive());
-
-    return dto;
-  }
-
-  public SkillEntity toEntity(SkillDTO dto) {
-    SkillEntity entity = new SkillEntity();
-    entity.setId(dto.getId());
-    entity.setName(dto.getName());
-    entity.setActive(dto.isActive());
-
-    return entity;
-  }
-
-  // Position
-  public PositionDTO toDTO(PositionEntity entity) {
-    PositionDTO dto = new PositionDTO();
-    dto.setId(entity.getId());
-    dto.setName(entity.getName());
-    dto.setActive(entity.isActive());
-
-    return dto;
-  }
-
-  public PositionEntity toEntity(PositionDTO dto) {
-    PositionEntity entity = new PositionEntity();
-    entity.setId(dto.getId());
-    entity.setName(dto.getName());
-    entity.setActive(dto.isActive());
-
-    return entity;
-  }
+//  // Service
+//  public ServiceDTO toDTO(ServiceEntity entity) {
+//    ServiceDTO dto = new ServiceDTO();
+//    dto.setId(entity.getId());
+//    dto.setName(entity.getName());
+//    dto.setActive(entity.isActive());
+//
+//    return dto;
+//  }
+//
+//  public ServiceEntity toEntity(ServiceDTO dto) {
+//    ServiceEntity entity = new ServiceEntity();
+//    entity.setId(dto.getId());
+//    entity.setName(dto.getName());
+//    entity.setActive(dto.isActive());
+//
+//    return entity;
+//  }
+//
+//  // Skill
+//  public SkillDTO toDTO(SkillEntity entity) {
+//    SkillDTO dto = new SkillDTO();
+//    dto.setId(entity.getId());
+//    dto.setName(entity.getName());
+//    dto.setActive(entity.isActive());
+//
+//    return dto;
+//  }
+//
+//  public SkillEntity toEntity(SkillDTO dto) {
+//    SkillEntity entity = new SkillEntity();
+//    entity.setId(dto.getId());
+//    entity.setName(dto.getName());
+//    entity.setActive(dto.isActive());
+//
+//    return entity;
+//  }
+//
+//  // Position
+//  public PositionDTO toDTO(PositionEntity entity) {
+//    PositionDTO dto = new PositionDTO();
+//    dto.setId(entity.getId());
+//    dto.setName(entity.getName());
+//    dto.setActive(entity.isActive());
+//
+//    return dto;
+//  }
+//
+//  public PositionEntity toEntity(PositionDTO dto) {
+//    PositionEntity entity = new PositionEntity();
+//    entity.setId(dto.getId());
+//    entity.setName(dto.getName());
+//    entity.setActive(dto.isActive());
+//
+//    return entity;
+//  }
 
   public ExtraInfoDTO toDTO(ExtraInfoEntity entity) {
     ExtraInfoDTO dto = new ExtraInfoDTO();

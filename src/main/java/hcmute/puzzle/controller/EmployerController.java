@@ -6,7 +6,6 @@ import hcmute.puzzle.dto.EmployerDTO;
 import hcmute.puzzle.dto.JobPostDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.ApplicationEntity;
-import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
@@ -18,6 +17,7 @@ import hcmute.puzzle.services.ApplicationService;
 import hcmute.puzzle.services.CompanyService;
 import hcmute.puzzle.services.EmployerService;
 import hcmute.puzzle.services.JobPostService;
+import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -25,12 +25,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/api")
-@CrossOrigin(value = "http://localhost:3000")
+@CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class EmployerController {
   @Autowired EmployerService employerService;
 
@@ -253,5 +251,20 @@ public class EmployerController {
     return applicationService.responseApplication(applicationId, result, note);
   }
 
+  @GetMapping("/employer/get-all-job-post-created")
+  ResponseObject getJobPostCreated(@RequestHeader(value = "Authorization") String token) {
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
+    // Check is Employer
+    if (linkUser.get().getEmployerEntity() == null) {
+      throw new CustomException("This account isn't Employer");
+    }
+
+    return jobPostService.getJobPostCreatedByEmployerId(linkUser.get().getId());
+
+  }
 }

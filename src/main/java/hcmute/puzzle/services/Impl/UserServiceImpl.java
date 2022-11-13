@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -104,16 +106,13 @@ public class UserServiceImpl implements UserService {
   @Override
   public ResponseObject getAll() {
     // Lay Tat Ca UserEntity
-    List<UserEntity> userEntitys = userRepository.findAll();
-    // Tao UserDTO de tra ve Json
-    List<UserDTO> userDTOs = new ArrayList<>();
+    Set<UserDTO> userDTOS = userRepository.findAll().stream().map(userEntity -> {
+      UserDTO userDTO = converter.toDTO(userEntity);
+      userDTO.setPassword(null);
+      return userDTO;
+    }).collect(Collectors.toSet());
 
-    // Cast UserEntity --> UserDTO
-    for (UserEntity i : userEntitys) {
-      UserDTO user = converter.toDTO(i);
-      userDTOs.add(user);
-    }
-    return new ResponseObject(HttpStatus.OK.value(), "Get all user success", userDTOs);
+    return new ResponseObject(HttpStatus.OK.value(), "Get all user success", userDTOS);
   }
 
   @Override
@@ -127,6 +126,21 @@ public class UserServiceImpl implements UserService {
       throw new CustomException("User not found");
     }
   }
+
+//  @Override
+//  public ResponseObject getOne() {
+//    // Lay Tat Ca UserEntity
+//    List<UserEntity> userEntitys = userRepository.findAll();
+//    // Tao UserDTO de tra ve Json
+//    List<UserDTO> userDTOs = new ArrayList<>();
+//
+//    // Cast UserEntity --> UserDTO
+//    for (UserEntity i : userEntitys) {
+//      UserDTO user = converter.toDTO(i);
+//      userDTOs.add(user);
+//    }
+//    return new ResponseObject(HttpStatus.OK.value(), "Get all user success", userDTOs);
+//  }
 
   //  @Override
   //  public UserDetails loadUserByUsername(String email) {

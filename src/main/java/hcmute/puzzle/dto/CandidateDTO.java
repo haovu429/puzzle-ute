@@ -11,6 +11,7 @@ public class CandidateDTO {
   private long id;
   private String firstName;
   private String lastName;
+  private String phoneNum;
   private String introduction;
   private String educationLevel;
   private String workStatus;
@@ -23,6 +24,7 @@ public class CandidateDTO {
   private boolean verifiedDis;
   private String skills;
   private String services;
+  private String position;
 
   //  private List<Long> followingEmployerIds = new ArrayList<>();
   //  private List<Long> applicationIds = new ArrayList<>();

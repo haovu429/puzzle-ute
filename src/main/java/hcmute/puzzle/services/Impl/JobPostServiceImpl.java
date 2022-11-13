@@ -7,16 +7,16 @@ import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.model.TableQuery;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.services.JobPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +27,7 @@ public class JobPostServiceImpl implements JobPostService {
   @Autowired JobPostRepository jobPostRepository;
 
   @Autowired CandidateRepository candidateRepository;
+
 
   public ResponseObject add(JobPostDTO jobPostDTO) {
 
@@ -116,6 +117,16 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   @Override
+  public ResponseObject getJobPostCreatedByEmployerId(long employerId) {
+    Set<JobPostDTO> jobPostDTOS =
+            jobPostRepository.findAllByCreatedEmployerId(employerId).stream()
+                    .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+                    .collect(Collectors.toSet());
+
+    return new ResponseObject(200, "Job Post created", jobPostDTOS);
+  }
+
+  @Override
   public ResponseObject getJobPostSavedByCandidateId(long candidateId) {
     Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
 
@@ -151,4 +162,6 @@ public class JobPostServiceImpl implements JobPostService {
       throw new CustomException("Min budget can't be greater than max budget");
     }
   }
+
+
 }

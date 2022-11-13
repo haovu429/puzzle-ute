@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api")
-
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class AdminController {
 
@@ -109,6 +108,7 @@ public class AdminController {
   public ResponseObject getAllExtraInfo() {
     return extraInfoService.getAll();
   }
+
 
   @GetMapping("/admin/update-status-job-post/{jobPostId}")
   public ResponseObject getOneExtraInfo(

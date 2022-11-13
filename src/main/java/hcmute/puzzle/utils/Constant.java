@@ -1,5 +1,7 @@
 package hcmute.puzzle.utils;
 
+import hcmute.puzzle.exception.CustomException;
+
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Map;
@@ -20,4 +22,18 @@ public class Constant {
 
   public static final String LOCAL_URL = "http://localhost:3000";
   public static final String ONLINE_URL = "https://puzzle-client-eight.vercel.app";
+
+  public static final String POSITION = "POSITION";
+  public static final String SKILL = "SKILL";
+  public static final String SERVICE = "SERVICE";
+
+  public static final String STORAGE_IMAGE_LOCATION = "puzzle_ute/user/avatar";
+
+  public static String validateTypeExtraInfo(String type) {
+    if (type.equals(POSITION)) return POSITION;
+    if (type.equals(SKILL)) return SKILL;
+    if (type.equals(SERVICE)) return SERVICE;
+    throw new CustomException("Type isn't exist");
+  }
+
 }

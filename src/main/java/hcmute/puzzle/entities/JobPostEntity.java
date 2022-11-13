@@ -78,6 +78,9 @@ public class JobPostEntity {
   @Column(name = "skills", columnDefinition = "TEXT")
   private String skills;
 
+  @Column(name = "positions", columnDefinition = "TEXT")
+  private String positions;
+
   @Column(name = "is_active")
   private boolean isActive = false;
 

@@ -18,6 +18,10 @@ public interface JobPostRepository extends JpaRepository<JobPostEntity, Long> {
       "SELECT jp FROM JobPostEntity jp, ApplicationEntity ap, CandidateEntity can WHERE can.id = :candidateId AND ap.candidateEntity.id = can.id AND ap.jobPostEntity.id = jp.id")
   Set<JobPostEntity> findAllByAppliedCandidateId(@Param("candidateId") long candidateId);
 
+  @Query(
+          "SELECT jp FROM JobPostEntity jp WHERE jp.createdEmployer.id = :employerId")
+  Set<JobPostEntity> findAllByCreatedEmployerId(@Param("employerId") long employerId);
+
 //  @Query(
 //          "SELECT jp FROM JobPostEntity jp, CandidateEntity can WHERE can.id = :candidateId AND jp.id in can.savedJobPost")
 //  Set<JobPostEntity> findAllBySavedCandidateId(@Param("candidateId") long candidateId);

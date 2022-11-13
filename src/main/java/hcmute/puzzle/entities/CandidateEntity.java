@@ -27,6 +27,9 @@ public class CandidateEntity implements Serializable {
   @Column(name = "last_name", columnDefinition = "VARCHAR(50)")
   private String lastName;
 
+  @Column(name = "phone_num", columnDefinition = "VARCHAR(20)")
+  private String phoneNum;
+
   @Column(name = "introduction", columnDefinition = "TEXT")
   private String introduction;
 
@@ -62,6 +65,9 @@ public class CandidateEntity implements Serializable {
 
   @Column(name = "services", columnDefinition = "TEXT")
   private String services;
+
+  @Column(name = "position", columnDefinition = "TEXT")
+  private String position;
 
   @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   @JoinTable(
