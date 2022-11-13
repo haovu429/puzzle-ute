@@ -27,6 +27,9 @@ public class CandidateEntity implements Serializable {
   @Column(name = "last_name", columnDefinition = "VARCHAR(50)")
   private String lastName;
 
+  @Column(name = "phone_num", columnDefinition = "VARCHAR(20)")
+  private String phoneNum;
+
   @Column(name = "introduction", columnDefinition = "TEXT")
   private String introduction;
 

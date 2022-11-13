@@ -30,8 +30,6 @@ public class Converter {
   @Autowired private JobAlertRepository jobAlertRepository;
   @Autowired private JobPostRepository jobPostRepository;
   @Autowired private NotificationRepository notificationRepository;
-  @Autowired private ServiceRepository serviceRepository;
-  @Autowired private SkillRepository skillRepository;
   @Autowired private UserRepository userRepository;
 
   // User
@@ -144,6 +142,7 @@ public class Converter {
     dto.setId(entity.getId());
     dto.setFirstName(entity.getFirstName());
     dto.setLastName(entity.getLastName());
+    dto.setPhoneNum(entity.getPhoneNum());
     dto.setIntroduction(entity.getIntroduction());
     dto.setEducationLevel(entity.getEducationLevel());
     dto.setWorkStatus(entity.getWorkStatus());
@@ -172,6 +171,7 @@ public class Converter {
     entity.setId(dto.getId());
     entity.setFirstName(dto.getFirstName());
     entity.setLastName(dto.getLastName());
+    entity.setPhoneNum(dto.getPhoneNum());
     entity.setIntroduction(dto.getIntroduction());
     entity.setEducationLevel(dto.getEducationLevel());
     entity.setWorkStatus(dto.getWorkStatus());

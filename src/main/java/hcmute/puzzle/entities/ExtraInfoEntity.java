@@ -16,7 +16,7 @@ public class ExtraInfoEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @Column(name = "name", columnDefinition = "VARCHAR(200)", unique = true)
+  @Column(name = "name", columnDefinition = "VARCHAR(200)")
   private String name;
 
   @Column(name = "type")

@@ -14,4 +14,8 @@ public class CandidateFilter {
     List<String>  skills;
     List<String> positions;
     List<String> services;
+    List<String> others;
+    int noOfRecords;
+    int pageIndex;
+    boolean sortById;
 }

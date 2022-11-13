@@ -91,11 +91,11 @@ public class SearchServiceImpl implements SearchService {
   private String filterBetweenValue(String objectAlias, String fieldName, Double min, Double max) {
     String filter = "";
 
-    if (min != null ) {
+    if (min != null) {
       filter = filter + " AND " + objectAlias + "." + fieldName + " > " + min + " ";
     }
 
-    if (max != null ) {
+    if (max != null) {
       filter = filter + " AND " + objectAlias + "." + fieldName + " < " + max + " ";
     }
 
@@ -117,21 +117,31 @@ public class SearchServiceImpl implements SearchService {
     // add condition id > 0 to fix error miss WHERE
     StringBuilder strQuery =
         new StringBuilder(
-            "SELECT " + objectAlias + " FROM " + objectName + " " + objectAlias + " WHERE " + objectAlias + ".id > 0 ");
+            "SELECT "
+                + objectAlias
+                + " FROM "
+                + objectName
+                + " "
+                + objectAlias
+                + " WHERE "
+                + objectAlias
+                + ".id > 0 ");
     // String filterManufacturer = filterManufacturer(manufacturer);
     // strQuery.append(filterManufacturer);
 
-    searchBetweens.forEach(
-        searchBetween -> {
-          if (searchBetween != null) {
-            strQuery.append(
-                filterBetweenValue(
-                    objectAlias,
-                    searchBetween.getFieldSearch(),
-                    searchBetween.getMin(),
-                    searchBetween.getMax()));
-          }
-        });
+    if (searchBetweens != null) {
+      searchBetweens.forEach(
+          searchBetween -> {
+            if (searchBetween != null) {
+              strQuery.append(
+                  filterBetweenValue(
+                      objectAlias,
+                      searchBetween.getFieldSearch(),
+                      searchBetween.getMin(),
+                      searchBetween.getMax()));
+            }
+          });
+    }
 
     if (fieldSearch != null) {
       fieldSearch.forEach(

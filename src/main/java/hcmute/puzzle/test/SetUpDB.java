@@ -23,12 +23,6 @@ public class SetUpDB {
 
   @Autowired JobPostRepository jobPostRepository;
 
-  @Autowired ServiceRepository serviceRepository;
-
-  @Autowired SkillRepository skillRepository;
-
-  @Autowired PositionRepository positionRepository;
-
   @Autowired ExperienceRepository experienceRepository;
 
   @Autowired ExtraInfoRepository extraInfoRepository;
@@ -123,12 +117,14 @@ public class SetUpDB {
     CandidateEntity candidate1 = new CandidateEntity();
     candidate1.setFirstName("Minh");
     candidate1.setLastName("Lê Quang");
+    candidate1.setSkills("flutter#golang");
     candidate1.setUserEntity(user1);
     // user1.setCandidateEntity(candidate1);
 
     CandidateEntity candidate2 = new CandidateEntity();
     candidate2.setFirstName("Phong");
     candidate2.setLastName("Vũ");
+    candidate2.setSkills("java#android#c#python");
     candidate2.setUserEntity(user2);
     // user2.setCandidateEntity(candidate2);
     candidateList.add(candidate1);
@@ -227,95 +223,101 @@ public class SetUpDB {
 
     jobPostRepository.saveAll(jobPostList);
 
-    Set<ServiceEntity> serviceList = new HashSet<>();
-    ServiceEntity service1 = new ServiceEntity();
+    Set<ExtraInfoEntity> extraInfos = new HashSet<>();
+
+    ExtraInfoEntity service1 = new ExtraInfoEntity();
     service1.setName("Java Develop");
+    service1.setType("SERVICE");
     service1.setActive(true);
 
-    ServiceEntity service2 = new ServiceEntity();
+    ExtraInfoEntity service2 = new ExtraInfoEntity();
     service2.setName("Mobile Develop");
+    service1.setType("SERVICE");
     service2.setActive(true);
 
-    ServiceEntity service3 = new ServiceEntity();
+    ExtraInfoEntity service3 = new ExtraInfoEntity();
     service3.setName("dot Net Develop");
+    service1.setType("SERVICE");
     service3.setActive(false);
 
-    ServiceEntity service4 = new ServiceEntity();
+    ExtraInfoEntity service4 = new ExtraInfoEntity();
     service4.setName("Flutter Develop");
+    service1.setType("SERVICE");
     service4.setActive(true);
 
-    serviceList.add(service1);
-    serviceList.add(service2);
-    serviceList.add(service3);
-    serviceList.add(service4);
+    extraInfos.add(service1);
+    extraInfos.add(service2);
+    extraInfos.add(service3);
+    extraInfos.add(service4);
 
-    serviceRepository.saveAll(serviceList);
+    ExtraInfoEntity skill1 = new ExtraInfoEntity();
+    skill1.setName("Java");
+    skill1.setType("SKILL");
+    skill1.setActive(true);
+
+    ExtraInfoEntity skill2 = new ExtraInfoEntity();
+    skill2.setName("Mobile Develop");
+    skill1.setType("SKILL");
+    skill2.setActive(true);
+
+    ExtraInfoEntity skill3 = new ExtraInfoEntity();
+    skill2.setName("dot Net Develop");
+    skill1.setType("SKILL");
+    skill2.setActive(false);
+
+    ExtraInfoEntity skill4 = new ExtraInfoEntity();
+    skill2.setName("Flutter Develop");
+    skill1.setType("SKILL");
+    skill2.setActive(true);
+
+    extraInfos.add(skill1);
+    extraInfos.add(skill2);
+    extraInfos.add(skill3);
+    extraInfos.add(skill4);
+
+    ExtraInfoEntity position1 = new ExtraInfoEntity();
+    position1.setName("Java Develop");
+    position1.setType("POSITION");
+    position1.setActive(true);
+
+    ExtraInfoEntity position2 = new ExtraInfoEntity();
+    position2.setName("Mobile Develop");
+    position2.setType("POSITION");
+    position2.setActive(true);
+
+    ExtraInfoEntity position3 = new ExtraInfoEntity();
+    position3.setName("Dot Net Develop");
+    position3.setType("POSITION");
+    position3.setActive(false);
+
+    ExtraInfoEntity position4 = new ExtraInfoEntity();
+    position4.setName("Java Develop");
+    position4.setType("POSITION");
+    position4.setActive(true);
+
+    extraInfos.add(position1);
+    extraInfos.add(position2);
+    extraInfos.add(position3);
+    extraInfos.add(position4);
+
+    extraInfoRepository.saveAll(extraInfos);
 
 
-    Set<SkillEntity> skillList = new HashSet<>();
-    SkillEntity skill1 = new SkillEntity();
-    service1.setName("Java Develop");
-    service1.setActive(true);
-
-    SkillEntity skill2 = new SkillEntity();
-    service2.setName("Mobile Develop");
-    service2.setActive(true);
-
-    SkillEntity skill3 = new SkillEntity();
-    service3.setName("dot Net Develop");
-    service3.setActive(false);
-
-    SkillEntity skill4 = new SkillEntity();
-    service4.setName("Flutter Develop");
-    service4.setActive(true);
-
-    skillList.add(skill1);
-    skillList.add(skill2);
-    skillList.add(skill3);
-    skillList.add(skill4);
-
-    skillRepository.saveAll(skillList);
-
-    Set<PositionEntity> positionList = new HashSet<>();
-    PositionEntity position1 = new PositionEntity();
-    service1.setName("Java Develop");
-    service1.setActive(true);
-
-    PositionEntity position2 = new PositionEntity();
-    service2.setName("Mobile Develop");
-    service2.setActive(true);
-
-    PositionEntity position3 = new PositionEntity();
-    service3.setName("dot Net Develop");
-    service3.setActive(false);
-
-    PositionEntity position4 = new PositionEntity();
-    service4.setName("Flutter Develop");
-    service4.setActive(true);
-
-    positionList.add(position1);
-    positionList.add(position2);
-    positionList.add(position3);
-    positionList.add(position4);
-
-    positionRepository.saveAll(positionList);
-
-
-    Set<ExtraInfoEntity> extraInfoList = new HashSet<>();
-    ExtraInfoEntity extraInfo1 = new ExtraInfoEntity();
-    extraInfo1.setActive(true);
-    extraInfo1.setName("Java Develop");
-    extraInfo1.setType("skill");
-
-    extraInfoList.add(extraInfo1);
-
-    ExtraInfoEntity extraInfo2 = new ExtraInfoEntity();
-    extraInfo1.setActive(true);
-    extraInfo1.setName("Java Develop");
-    extraInfo1.setType("position");
-
-    extraInfoList.add(extraInfo2);
-
-    extraInfoRepository.saveAll(extraInfoList);
+//    Set<ExtraInfoEntity> extraInfoList = new HashSet<>();
+//    ExtraInfoEntity extraInfo1 = new ExtraInfoEntity();
+//    extraInfo1.setActive(true);
+//    extraInfo1.setName("Java Develop");
+//    extraInfo1.setType("skill");
+//
+//    extraInfoList.add(extraInfo1);
+//
+//    ExtraInfoEntity extraInfo2 = new ExtraInfoEntity();
+//    extraInfo1.setActive(true);
+//    extraInfo1.setName("Java Develop");
+//    extraInfo1.setType("position");
+//
+//    extraInfoList.add(extraInfo2);
+//
+//    extraInfoRepository.saveAll(extraInfoList);
   }
 }

@@ -1,7 +1,7 @@
 package hcmute.puzzle.utils;
 
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.services.SkillService;
+
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Map;
