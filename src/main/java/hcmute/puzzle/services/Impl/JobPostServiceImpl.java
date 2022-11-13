@@ -106,6 +106,17 @@ public class JobPostServiceImpl implements JobPostService {
     return new ResponseObject(200, "Candidate applied", candidateDTOS);
   }
 
+
+//  public ResponseObject getJobPostCandidateApplied(long candidateId) {
+//    Set<JobPostEntity> jobPostApplied = jobPostRepository.getJobPostCandidateApplied(candidateId);
+//    Set<JobPostDTO> jobPostDTOS =
+//            jobPostApplied.stream()
+//                    .map(jobPost -> converter.toDTO(jobPost))
+//                    .collect(Collectors.toSet());
+//
+//    return new ResponseObject(200, "Job Post applied", jobPostDTOS);
+//  }
+
   @Override
   public ResponseObject getJobPostAppliedByCandidateId(long candidateId) {
     Set<JobPostDTO> jobPostDTOS =

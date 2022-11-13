@@ -104,9 +104,15 @@ public class EmployerController {
     return employerService.update(employer);
   }
 
-  @GetMapping("/employer/{id}")
-  ResponseObject getById(@PathVariable Long id) {
-    return employerService.getOne(id);
+  @GetMapping("/employer/profile")
+  ResponseObject getById(@RequestHeader(value = "Authorization") String token) {
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    // Check is Employer
+    if (linkUser.get().getEmployerEntity() == null) {
+      throw new CustomException("This account isn't Employer");
+    }
+    return employerService.getOne(linkUser.get().getId());
   }
 
   @PostMapping("/employer/post-job")

@@ -21,14 +21,14 @@ public class ApplicationController {
 
   @Autowired Converter converter;
 
-  @GetMapping("addresses")
+  @GetMapping("/application/get-all")
   @ResponseBody
   public ResponseObject getAll(@RequestParam("page") Optional<Integer> page) {
     Pageable pageable = PageRequest.of(page.orElse(0), 5);
     return applicationService.findAll(pageable);
   }
 
-  @GetMapping("address")
+  @GetMapping("/application/get-one")
   @ResponseBody
   public ResponseObject findById(@RequestParam("id") long id) throws CustomException {
     return applicationService.findById(id);

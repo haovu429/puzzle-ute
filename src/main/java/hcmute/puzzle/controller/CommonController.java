@@ -19,10 +19,7 @@ import hcmute.puzzle.model.SearchBetween;
 import hcmute.puzzle.repository.ApplicationRepository;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.UserRepository;
-import hcmute.puzzle.services.CandidateService;
-import hcmute.puzzle.services.ExtraInfoService;
-import hcmute.puzzle.services.JobPostService;
-import hcmute.puzzle.services.SearchService;
+import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -55,20 +52,28 @@ public class CommonController {
   @Autowired
   ExtraInfoService extraInfoService;
 
+  @Autowired CompanyService companyService;
+
   @Autowired
   SearchService searchService;
 
-  @GetMapping("/job-post/get-all")
+  @GetMapping("/common/job-post/get-all")
   ResponseObject getAllJobPost() {
     return jobPostService.getAll();
   }
 
-  @GetMapping("/job-post/get-one/{jobPostId}")
+  @GetMapping("/common/job-post/get-one/{jobPostId}")
   ResponseObject getJobPostById(@PathVariable(value = "jobPostId") long jobPostId) {
     return jobPostService.getOne(jobPostId);
   }
 
-  @GetMapping("/get-all-extra-info-by-type")
+  @GetMapping("/common/company")
+  public ResponseObject getAllCompany() {
+    return companyService.getAll();
+  }
+
+
+  @GetMapping("/common/get-all-extra-info-by-type")
   public ResponseObject getAllExtraInfoByType(@RequestParam String type) {
     return extraInfoService.getByType(type);
   }
@@ -174,4 +179,10 @@ public class CommonController {
 
     return new ResponseObject(200 , "Result for filter candidate", candidateDTOS);
   }
+
+  @GetMapping("/common/get-all-extra-info")
+  public ResponseObject getAllExtraInfo() {
+    return extraInfoService.getAll();
+  }
+
 }

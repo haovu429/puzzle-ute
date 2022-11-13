@@ -86,7 +86,7 @@ public class EmployerServiceImpl implements EmployerService {
       return new ResponseObject(200, "Info of employer", converter.toDTO(employer));
     }
 
-    throw new CustomException("Cannot find candidate with id = " + id);
+    throw new CustomException("Cannot find employer with id = " + id);
   }
 
   @Override
