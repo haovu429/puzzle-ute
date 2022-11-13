@@ -63,6 +63,9 @@ public class CandidateEntity implements Serializable {
   @Column(name = "services", columnDefinition = "TEXT")
   private String services;
 
+  @Column(name = "position", columnDefinition = "TEXT")
+  private String position;
+
   @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   @JoinTable(
       name = "follow_employer",

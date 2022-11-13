@@ -70,7 +70,7 @@ public class CommonController {
     return extraInfoService.getByType(type);
   }
 
-  @PostMapping("/job-post/filter")
+  @PostMapping("/common/job-post/filter")
   public ResponseObject filterJobPost(@RequestBody(required = false) JobPostFilter jobPostFilter) {
 
     List<SearchBetween> searchBetweenList = new ArrayList<>();
@@ -105,8 +105,66 @@ public class CommonController {
     List<String> commonFieldSearch = new ArrayList<>();
     List<String> valueCommonFieldSearch = jobPostFilter.getOthers();
 
-    if (jobPostFilter.getSkills() != null && !jobPostFilter.getSkills().isEmpty()) {
+    if (jobPostFilter.getOthers() != null && !jobPostFilter.getOthers().isEmpty()) {
       commonFieldSearch.add("description");
+      commonFieldSearch.add("title");
+    }
+
+    List<JobPostEntity> jobPostEntities = searchService.filterObject(
+            "JobPostEntity",
+            searchBetweenList,
+            fieldSearch,
+            commonFieldSearch,
+            valueCommonFieldSearch,
+            jobPostFilter.getNoOfRecords(),
+            jobPostFilter.getPageIndex(),
+            jobPostFilter.isSortById());
+
+    List<JobPostDTO> jobPostDTOS = jobPostEntities.stream().map(jobPost -> converter.toDTO(jobPost)).collect(Collectors.toList());
+
+    //JobPostFilter jobPostFilter1 = new JobPostFilter();
+
+    return new ResponseObject(200 , "Result for filter job post", jobPostDTOS);
+  }
+
+  @PostMapping("/common/candidate/filter")
+  public ResponseObject filterCandidate(@RequestBody(required = false) JobPostFilter jobPostFilter) {
+
+    List<SearchBetween> searchBetweenList = new ArrayList<>();
+
+    SearchBetween searchForBudgetMin = new SearchBetween("minBudget", Double.valueOf(jobPostFilter.getMinBudget()), null);
+    SearchBetween searchForExperienceYearMin = new SearchBetween("experienceYear", null, Double.valueOf(jobPostFilter.getExperienceYear()));
+
+    searchBetweenList.add(searchForBudgetMin);
+    searchBetweenList.add(searchForExperienceYearMin);
+
+    Map<String,List<String>> fieldSearch = new HashMap<>();
+    if (jobPostFilter.getTitles() != null && !jobPostFilter.getTitles().isEmpty()) {
+      fieldSearch.put("title", jobPostFilter.getTitles());
+    }
+
+    if (jobPostFilter.getEmploymentTypes() != null && !jobPostFilter.getEmploymentTypes().isEmpty()) {
+      fieldSearch.put("employmentType", jobPostFilter.getEmploymentTypes());
+    }
+
+    if (jobPostFilter.getCities() != null && !jobPostFilter.getCities().isEmpty()) {
+      fieldSearch.put("city", jobPostFilter.getCities());
+    }
+
+    if (jobPostFilter.getPositions() != null && !jobPostFilter.getPositions().isEmpty()) {
+      fieldSearch.put("positions", jobPostFilter.getPositions());
+    }
+
+    if (jobPostFilter.getSkills() != null && !jobPostFilter.getSkills().isEmpty()) {
+      fieldSearch.put("skills", jobPostFilter.getSkills());
+    }
+
+    List<String> commonFieldSearch = new ArrayList<>();
+    List<String> valueCommonFieldSearch = jobPostFilter.getOthers();
+
+    if (jobPostFilter.getOthers() != null && !jobPostFilter.getOthers().isEmpty()) {
+      commonFieldSearch.add("description");
+      commonFieldSearch.add("title");
     }
 
     List<JobPostEntity> jobPostEntities = searchService.filterObject(

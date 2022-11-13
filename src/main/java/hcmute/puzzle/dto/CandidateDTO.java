@@ -23,6 +23,7 @@ public class CandidateDTO {
   private boolean verifiedDis;
   private String skills;
   private String services;
+  private String position;
 
   //  private List<Long> followingEmployerIds = new ArrayList<>();
   //  private List<Long> applicationIds = new ArrayList<>();
