@@ -190,7 +190,7 @@ public class CommonController {
     return extraInfoService.getAll();
   }
 
-  @GetMapping("/employer/get-employer-by-id/{id}")
+  @GetMapping("/common/employer/get-employer-by-id/{id}")
   ResponseObject getById(@PathVariable long id) {
     return employerService.getOne(id);
   }
