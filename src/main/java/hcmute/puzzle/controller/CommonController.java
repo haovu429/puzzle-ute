@@ -1,9 +1,6 @@
 package hcmute.puzzle.controller;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.CandidateDTO;
@@ -13,6 +10,8 @@ import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.JobAlertEntity;
 import hcmute.puzzle.entities.JobPostEntity;
+import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.model.CandidateFilter;
 import hcmute.puzzle.model.JobPostFilter;
@@ -25,8 +24,6 @@ import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -38,6 +35,8 @@ public class CommonController {
   @Autowired CandidateService candidateService;
 
   @Autowired UserRepository userRepository;
+
+  @Autowired EmployerService employerService;
 
   @Autowired JobPostService jobPostService;
 
@@ -190,5 +189,11 @@ public class CommonController {
   public ResponseObject getAllExtraInfo() {
     return extraInfoService.getAll();
   }
+
+  @GetMapping("/employer/get-employer-by-id/{id}")
+  ResponseObject getById(@PathVariable long id) {
+    return employerService.getOne(id);
+  }
+
 
 }
