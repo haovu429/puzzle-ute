@@ -123,9 +123,14 @@ public class CandidateController {
   }
 
   // public
-  @GetMapping("/candidate/get-one/{id}")
-  ResponseObject getById(@PathVariable long id) {
-    return candidateService.getOne(id);
+  @GetMapping("/candidate/profile")
+  ResponseObject getById(@RequestHeader(value = "Authorization") String token) {
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+    return candidateService.getOne(linkUser.get().getId());
   }
 
   @GetMapping("/candidate/follow-employer/{id}")

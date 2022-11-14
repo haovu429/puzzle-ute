@@ -72,8 +72,13 @@ public class UserController {
   }
 
   @PutMapping("/user/{id}")
-  public ResponseObject update(@PathVariable Long id, @RequestBody UserDTO user) {
-    return userService.update(id, user);
+  public ResponseObject update(@RequestHeader(value = "Authorization") String token, @RequestBody UserDTO user) {
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+    return userService.update(linkUser.get().getId(), user);
   }
 
   @GetMapping("/test")
