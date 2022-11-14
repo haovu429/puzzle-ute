@@ -19,8 +19,8 @@ public class JobPostFilter {
     List<String> positions;
     List<String> skills;
     List<String> others;
-    int noOfRecords;
-    int pageIndex;
+    int noOfRecords = 15;
+    int pageIndex = 0;
     boolean sortById;
 
 }
