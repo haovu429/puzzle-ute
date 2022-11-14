@@ -3,10 +3,7 @@ package hcmute.puzzle.controller;
 import java.util.*;
 
 import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.CandidateDTO;
-import hcmute.puzzle.dto.CompanyDTO;
-import hcmute.puzzle.dto.JobPostDTO;
-import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.dto.*;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.JobAlertEntity;
 import hcmute.puzzle.entities.JobPostEntity;
@@ -45,6 +42,8 @@ public class CommonController {
   @Autowired JwtAuthenticationFilter jwtAuthenticationFilter;
 
   @Autowired ApplicationRepository applicationRepository;
+
+  @Autowired UserService userService;
 
   @Autowired
   Converter converter;
@@ -194,6 +193,16 @@ public class CommonController {
   ResponseObject getById(@PathVariable long id) {
     return employerService.getOne(id);
   }
+
+  @PostMapping("/common/register")
+  public ResponseObject save(@ModelAttribute UserDTO user) {
+    Set<String> roleCodes = new HashSet<>();
+    roleCodes.add("user");
+
+    user.setRoleCodes(roleCodes);
+    return userService.save(user);
+  }
+
 
 
 }

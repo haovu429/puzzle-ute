@@ -35,21 +35,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
-    //    response.setHeader("Access-Control-Allow-Origin", "*");
-    //    response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-    //    response.setHeader("Access-Control-Max-Age", "20000");
-    //    response.setHeader(
-    //        "Access-Control-Allow-Headers",
-    //        "x-requested-with, authorization, Content-Type, Authorization, credential,
-    // X-XSRF-TOKEN");
-    //
-    //    request.setAttribute("Access-Control-Allow-Origin", "*");
-    //    request.setAttribute("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-    //    request.setAttribute("Access-Control-Max-Age", "20000");
-    //    request.setAttribute(
-    //            "Access-Control-Allow-Headers",
-    //            "x-requested-with, authorization, Content-Type, Authorization, credential,
-    // X-XSRF-TOKEN");
+    response.setHeader("Access-Control-Allow-Origin", "*");
+    response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+    response.setHeader("Access-Control-Max-Age", "20000");
+    response.setHeader(
+        "Access-Control-Allow-Headers",
+        "x-requested-with, authorization, Content-Type, Authorization, credential,X-XSRF-TOKEN");
+
+    request.setAttribute("Access-Control-Allow-Origin", "*");
+    request.setAttribute("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+    request.setAttribute("Access-Control-Max-Age", "20000");
+    request.setAttribute(
+        "Access-Control-Allow-Headers",
+        "x-requested-with, authorization, Content-Type, Authorization, credential,X-XSRF-TOKEN");
     try {
       // get request token from header
       String jwt = getJwtFromRequest(request);

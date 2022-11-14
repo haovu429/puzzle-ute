@@ -16,10 +16,18 @@ public class CorsConfiguration implements WebMvcConfigurer{
 //        };
 //    }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedMethods("*")
-                .allowedOrigins(Constant.LOCAL_URL, Constant.ONLINE_URL);
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**");
+////                .allowedMethods("*")
+////                .allowedOrigins(Constant.LOCAL_URL, Constant.ONLINE_URL);
+//    }
+    @Configuration
+    public class WebConfiguration implements WebMvcConfigurer {
+
+        @Override
+        public void addCorsMappings(CorsRegistry registry) {
+            registry.addMapping("/**").allowedMethods("*");
+        }
     }
 }

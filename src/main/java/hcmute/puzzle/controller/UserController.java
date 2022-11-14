@@ -57,15 +57,6 @@ public class UserController {
     return new ResponseObject(200, "Profile info", userDTO);
   }
 
-  @PostMapping("/user")
-  public ResponseObject save(@ModelAttribute UserDTO user) {
-    Set<String> roleCodes = new HashSet<>();
-    roleCodes.add("user");
-
-    user.setRoleCodes(roleCodes);
-    return userService.save(user);
-  }
-
   @DeleteMapping("/user/{id}")
   public ResponseObject delete(@PathVariable Long id) {
     return userService.delete(id);
