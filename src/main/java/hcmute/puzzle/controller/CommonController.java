@@ -7,6 +7,7 @@ import java.util.TreeMap;
 
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.CandidateDTO;
+import hcmute.puzzle.dto.CompanyDTO;
 import hcmute.puzzle.dto.JobPostDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.CandidateEntity;
@@ -70,6 +71,11 @@ public class CommonController {
   @GetMapping("/common/company")
   public ResponseObject getAllCompany() {
     return companyService.getAll();
+  }
+
+  @GetMapping("/common/company/get-one-company/{id}")
+  public ResponseObject getOneCompany(@PathVariable Long id) {
+    return companyService.getOneById(id);
   }
 
 
