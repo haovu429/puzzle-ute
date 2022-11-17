@@ -119,4 +119,17 @@ public class AdminController {
     }
     return jobPostService.deactivateJobPost(id);
   }
+
+  @DeleteMapping("/admin/company/{id}")
+  public ResponseObject delete(@PathVariable Long id) {
+    return companyService.delete(id);
+  }
+
+  @PutMapping("/admin/company/{id}")
+  public ResponseObject update(@PathVariable Long id, @RequestBody CompanyDTO companyDTO) {
+    companyDTO.setId(id);
+    return companyService.update(companyDTO);
+    //return null;
+  }
+
 }

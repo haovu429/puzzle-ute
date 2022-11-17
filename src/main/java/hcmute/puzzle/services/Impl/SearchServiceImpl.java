@@ -92,11 +92,11 @@ public class SearchServiceImpl implements SearchService {
     String filter = "";
 
     if (min != null) {
-      filter = filter + " AND " + objectAlias + "." + fieldName + " > " + min + " ";
+      filter = filter + " AND " + objectAlias + "." + fieldName + " >= " + min + " ";
     }
 
     if (max != null) {
-      filter = filter + " AND " + objectAlias + "." + fieldName + " < " + max + " ";
+      filter = filter + " AND " + objectAlias + "." + fieldName + " <= " + max + " ";
     }
 
     return filter;

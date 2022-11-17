@@ -16,19 +16,7 @@ public class CompanyController {
 
   @Autowired JwtAuthenticationFilter jwtAuthenticationFilter;
 
-  @GetMapping("/company")
-  public ResponseObject getAll() {
-    return companyService.getAll();
-  }
 
-  @DeleteMapping("/company/{id}")
-  public ResponseObject delete(@PathVariable Long id) {
-    return companyService.delete(id);
-  }
 
-  @PutMapping("/company/{id}")
-  public ResponseObject update(@PathVariable Long id, @RequestBody CompanyDTO companyDTO) {
-    // return companyService.update(id, companyDTO);
-    return null;
-  }
+
 }
