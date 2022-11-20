@@ -156,6 +156,19 @@ public class CandidateController {
     return candidateService.followEmployer(linkUser.get().getId(), employerId);
   }
 
+  @GetMapping("/candidate/cancel-followed-employer/{id}")
+  ResponseObject cancelFollowEmployer(
+          @PathVariable(value = "id") Long employerId,
+          @RequestHeader(value = "Authorization") String token) {
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+    return candidateService.cancelFollowedEmployer(linkUser.get().getId(), employerId);
+  }
+
   @GetMapping("/candidate/follow-company/{id}")
   ResponseObject followCompany(
       @PathVariable(value = "id") Long companyId,
@@ -175,6 +188,19 @@ public class CandidateController {
     // long candidateId = ((Number) input.get("candidateId")).longValue();
 
     return candidateService.followCompany(linkUser.get().getId(), companyId);
+  }
+
+  @GetMapping("/candidate/cancel-followed-company/{id}")
+  ResponseObject cancelFollowCompany(
+          @PathVariable(value = "id") Long companyId,
+          @RequestHeader(value = "Authorization") String token) {
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+    return candidateService.cancelFollowedCompany(linkUser.get().getId(), companyId);
   }
 
   @GetMapping("/candidate/apply-job-post/{postId}")
@@ -256,13 +282,20 @@ public class CandidateController {
     if (linkUser.isEmpty()) {
       throw new CustomException("Not found account");
     }
-
-    // long candidateId = linkUser.get().getId();
-
-    // https://stackoverflow.com/questions/58056944/java-lang-integer-cannot-be-cast-to-java-lang-long
-    // long candidateId = ((Number) input.get("candidateId")).longValue();
-
     return candidateService.saveJobPost(linkUser.get().getId(), jobPostId);
+  }
+
+  @GetMapping("/candidate/cancel-saved-job-post/{jobPostId}")
+  ResponseObject cancelSaveJobPost(
+          @PathVariable(value = "jobPostId") Long jobPostId,
+          @RequestHeader(value = "Authorization") String token) {
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+    return candidateService.cancelSavedJobPost(linkUser.get().getId(), jobPostId);
   }
 
   @PostMapping("/candidate/add-job-alert")

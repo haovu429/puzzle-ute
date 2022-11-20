@@ -51,22 +51,6 @@ public class CandidateServiceImpl implements CandidateService {
     return result;
   }
 
-  public boolean checkProductCodeExists(String productCode, Optional<Long> updateId) {
-    // allow updating with old product_code
-
-    // Save
-    if (updateId == null) {
-      updateId = Optional.of(-1L);
-    }
-    // Update
-    //        long count = candidateRepository.countByProductCodeWithUpdateId(productCode,
-    // updateId.get());
-    //        if (count > 0) {
-    //            return true;
-    //        }
-    return false;
-  }
-
   @Override
   public ResponseObject delete(long id) {
     boolean exists = candidateRepository.existsById(id);
@@ -124,10 +108,36 @@ public class CandidateServiceImpl implements CandidateService {
       throw new NoSuchElementException("Employer no value present");
     }
 
+    if (candidate.get().getFollowingEmployers().contains(employer.get())) {
+      throw new CustomException("You already follow this employer");
+    }
+
     candidate.get().getFollowingEmployers().add(employer.get());
     candidateRepository.save(candidate.get());
 
     return new ResponseObject(200, "Follow success", null);
+  }
+
+  @Override
+  public ResponseObject cancelFollowedEmployer(long candidateId, long employerId) {
+    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
+    Optional<EmployerEntity> employer = employerRepository.findById(employerId);
+    if (candidate.isEmpty()) {
+      throw new NoSuchElementException("Candidate no value present");
+    }
+
+    if (employer.isEmpty()) {
+      throw new NoSuchElementException("Employer no value present");
+    }
+
+    if (!candidate.get().getFollowingEmployers().contains(employer.get())) {
+      throw new CustomException("You haven't followed this employer yet");
+    }
+
+    candidate.get().getFollowingEmployers().remove(employer.get());
+    candidateRepository.save(candidate.get());
+
+    return new ResponseObject(200, "Cancel follow success", null);
   }
 
   @Override
@@ -142,10 +152,35 @@ public class CandidateServiceImpl implements CandidateService {
       throw new NoSuchElementException("Company no value present");
     }
 
+    if (candidate.get().getFollowingCompany().contains(company.get())) {
+      throw new CustomException("You already follow this company");
+    }
+
     candidate.get().getFollowingCompany().add(company.get());
     candidateRepository.save(candidate.get());
 
     return new ResponseObject(200, "Follow success", null);
+  }
+
+  public ResponseObject cancelFollowedCompany(long candidateId, long companyId) {
+    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
+    Optional<CompanyEntity> company = companyRepository.findById(companyId);
+    if (candidate.isEmpty()) {
+      throw new NoSuchElementException("Candidate no value present");
+    }
+
+    if (company.isEmpty()) {
+      throw new NoSuchElementException("Company no value present");
+    }
+
+    if (!candidate.get().getFollowingCompany().contains(company.get())) {
+      throw new CustomException("You haven't followed this company yet");
+    }
+
+    candidate.get().getFollowingCompany().remove(company.get());
+    candidateRepository.save(candidate.get());
+
+    return new ResponseObject(200, "Cancel follow success", null);
   }
 
   @Override
@@ -160,9 +195,35 @@ public class CandidateServiceImpl implements CandidateService {
       throw new NoSuchElementException("JobPost no value present");
     }
 
+    if (candidate.get().getSavedJobPost().contains(jobPost.get())) {
+      throw new CustomException("You already save this Job Post");
+    }
+
     candidate.get().getSavedJobPost().add(jobPost.get());
     candidateRepository.save(candidate.get());
 
     return new ResponseObject(200, "Save success", null);
+  }
+
+  @Override
+  public ResponseObject cancelSavedJobPost(long candidateId, long jobPostId) {
+    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
+    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+    if (candidate.isEmpty()) {
+      throw new NoSuchElementException("Candidate no value present");
+    }
+
+    if (jobPost.isEmpty()) {
+      throw new NoSuchElementException("JobPost no value present");
+    }
+
+    if (!candidate.get().getSavedJobPost().contains(jobPost.get())) {
+      throw new CustomException("You haven't saved this Job Post yet");
+    }
+
+    candidate.get().getSavedJobPost().remove(jobPost.get());
+    candidateRepository.save(candidate.get());
+
+    return new ResponseObject(200, "Cancel saved Job Post success", null);
   }
 }

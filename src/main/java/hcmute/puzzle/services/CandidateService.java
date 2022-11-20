@@ -17,7 +17,13 @@ public interface CandidateService {
 
   ResponseObject followEmployer(long candidateId, long employerId);
 
+  ResponseObject cancelFollowedEmployer(long candidateId, long employerId);
+
   ResponseObject followCompany(long candidateId, long companyId);
 
+  ResponseObject cancelFollowedCompany(long candidateId, long companyId);
+
   ResponseObject saveJobPost(long candidateId, long companyId);
+
+  ResponseObject cancelSavedJobPost(long candidateId, long jobPostId);
 }
