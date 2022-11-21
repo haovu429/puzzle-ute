@@ -13,4 +13,5 @@ public class ApplicationDTO {
   private String note;
   private long jobPostId;
   private long candidateId;
+  private CandidateDTO candidateDTO;
 }

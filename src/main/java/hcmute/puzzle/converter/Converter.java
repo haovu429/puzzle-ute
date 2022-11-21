@@ -105,7 +105,7 @@ public class Converter {
     applicationDTO.setNote(entity.getNote());
 
     if (entity.getCandidateEntity() != null) {
-      applicationDTO.setCandidateId(entity.getId());
+      applicationDTO.setCandidateId(entity.getCandidateEntity().getId());
     }
 
     if (entity.getJobPostEntity() != null) {
@@ -426,6 +426,7 @@ public class Converter {
     dto.setQuantity(entity.getQuantity());
     dto.setMinBudget(entity.getMinBudget());
     dto.setMaxBudget(entity.getMaxBudget());
+    dto.setCreateTime(entity.getCreateTime());
     dto.setDueTime(entity.getDueTime());
     dto.setWorkStatus(entity.getWorkStatus());
     dto.setBlind(entity.isBlind());
@@ -458,6 +459,7 @@ public class Converter {
     entity.setQuantity(dto.getQuantity());
     entity.setMinBudget(dto.getMinBudget());
     entity.setMaxBudget(dto.getMaxBudget());
+    entity.setCreateTime(dto.getCreateTime());
     entity.setDueTime(dto.getDueTime());
     entity.setWorkStatus(dto.getWorkStatus());
     entity.setBlind(dto.isBlind());

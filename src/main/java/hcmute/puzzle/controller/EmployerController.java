@@ -48,39 +48,6 @@ public class EmployerController {
 
   @Autowired ApplicationService applicationService;
 
-  @PostMapping("/employer/add")
-  ResponseObject save(
-      @RequestBody @Validated EmployerDTO employer,
-      BindingResult bindingResult,
-      @RequestHeader(value = "Authorization", required = true) String token) {
-    if (bindingResult.hasErrors()) {
-      throw new CustomException(bindingResult.getFieldError().toString());
-    }
-
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-
-    if (linkUser.get().getCandidateEntity() != null) {
-      throw new CustomException("This account is Candidate!");
-    }
-
-    if (linkUser.get().getEmployerEntity() != null) {
-      throw new CustomException("Info employer for this account was created!");
-    }
-
-    employer.setUserId(linkUser.get().getId());
-
-    Optional<EmployerDTO> employerDTO = employerService.save(employer);
-    if (employerDTO.isPresent()) {
-      return new ResponseObject(
-          HttpStatus.OK.value(), "Create employer successfully", employerDTO.get());
-    } else {
-      throw new CustomException("Add employer failed");
-    }
-
-    //    return new ResponseObject(
-    //        HttpStatus.OK.value(), "Create employer successfully", new EmployerDTO());
-  }
-
   @DeleteMapping("/employer/{id}")
   ResponseObject delete(
       @PathVariable Long id, @RequestHeader(value = "Authorization") String token) {
@@ -191,7 +158,7 @@ public class EmployerController {
   }
 
   @PostMapping("/create-info-company")
-  public ResponseObject save(
+  public ResponseObject saveCompany(
       @RequestBody CompanyDTO companyDTO,
       @RequestHeader(value = "Authorization", required = true) String token) {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
@@ -272,5 +239,30 @@ public class EmployerController {
 
     return jobPostService.getJobPostCreatedByEmployerId(linkUser.get().getId());
 
+  }
+
+  @GetMapping("/employer/get-application-by-job-post/{jobPostId}")
+  ResponseObject getApplicationByJobPost(@RequestHeader(value = "Authorization") String token, @PathVariable long jobPostId) {
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
+    // Check is Employer
+    if (linkUser.get().getEmployerEntity() == null) {
+      throw new CustomException("This account isn't Employer");
+    }
+
+    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+    if (jobPost.isEmpty()) {
+      throw new CustomException("Job post isn't exists");
+    }
+
+    if (jobPost.get().getCreatedEmployer().getId() != linkUser.get().getId()) {
+      throw new CustomException("You don't have rights for this job post");
+    }
+
+    return applicationService.getApplicationByJobPostId(jobPostId);
   }
 }

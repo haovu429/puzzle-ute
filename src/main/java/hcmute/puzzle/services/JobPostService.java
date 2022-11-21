@@ -27,4 +27,8 @@ public interface JobPostService {
   ResponseObject activateJobPost(long jobPostId);
 
   ResponseObject deactivateJobPost(long jobPostId);
+
+  ResponseObject getJobPostDueSoon();
+
+  ResponseObject getHotJobPost();
 }

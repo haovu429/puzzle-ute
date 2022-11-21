@@ -203,11 +203,15 @@ public class CommonController {
     return userService.save(user);
   }
 
-//  @GetMapping("/common/company")
-//  public ResponseObject getAll() {
-//    return companyService.getAll();
-//  }
+  @GetMapping("/common/get-hot-job-post")
+  public ResponseObject getHotJobPost() {
+    return jobPostService.getHotJobPost();
+  }
 
+  @GetMapping("/common/get-job-post-due-soon")
+  public ResponseObject getJobPostDueSoon() {
+    return jobPostService.getJobPostDueSoon();
+  }
 
 
 }

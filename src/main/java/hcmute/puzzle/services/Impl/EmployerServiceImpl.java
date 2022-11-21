@@ -6,9 +6,12 @@ import hcmute.puzzle.dto.EmployerDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.EmployerEntity;
+import hcmute.puzzle.entities.RoleEntity;
+import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.EmployerRepository;
+import hcmute.puzzle.repository.RoleRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.services.EmployerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,9 @@ public class EmployerServiceImpl implements EmployerService {
 
   @Autowired UserRepository userRepository;
 
+  @Autowired
+  RoleRepository roleRepository;
+
   @Autowired Converter converter;
 
   @Override
@@ -41,12 +47,21 @@ public class EmployerServiceImpl implements EmployerService {
       throw new RuntimeException("This account for candidate");
     }
 
-    // Optional<UserEntity> user = userRepository.findById(em)
     employerRepository.save(employerEntity);
+
+    Optional<UserEntity> userEntity = userRepository.findById(employerEntity.getId());
+    if (userEntity.isEmpty()) {
+      throw new CustomException("Account isn't exist");
+    }
+    Optional<RoleEntity> role = roleRepository.findById("candidate");
+    if (role.isEmpty()) {
+      throw new CustomException("role candidate isn't exist");
+    }
+    userEntity.get().getRoles().add(role.get());
+    userRepository.save(userEntity.get());
 
     Optional<EmployerDTO> result = Optional.of(converter.toDTO(employerEntity));
 
-    // return add Province success
     return result;
   }
 

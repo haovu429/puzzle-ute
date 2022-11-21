@@ -32,21 +32,15 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public ResponseObject save(UserDTO userDTO) {
-    //  hash password
-    userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
     // Cast DTO --> Entity
     UserEntity userEntity = converter.toEntity(userDTO);
-
-    // Check Role Input, Neu K tim thay Role ==> Cancel
-    //    if (userEntity.getRoles().size() == 0) {
-    //      throw new CustomException("Role not found");
-    //    }
-
     // Check Email Exists
     if (!checkEmailExists(userEntity.getEmail())) {
       throw new CustomException("Email already exists");
     }
+    //  hash password
+    userEntity.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
     UserDTO responseDTO = converter.toDTO(userEntity);
     // don't return password

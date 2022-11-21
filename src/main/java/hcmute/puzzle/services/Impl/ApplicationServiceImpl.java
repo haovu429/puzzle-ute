@@ -16,9 +16,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
@@ -96,5 +98,28 @@ public class ApplicationServiceImpl implements ApplicationService {
     application.get().setNote(note);
     applicationRepository.save(application.get());
     return new ResponseObject(200, "Activate success", null);
+  }
+
+  public ResponseObject getApplicationByJobPostId(long jobPostId) {
+    if (!jobPostRepository.existsById(jobPostId)) {
+      throw new CustomException("Job Post isn't exists");
+    }
+
+    List<ApplicationDTO> applicationDTOS =
+        applicationRepository.findApplicationByJobPostId(jobPostId).stream()
+            .map(
+                application -> {
+                  ApplicationDTO applicationDTO = converter.toDTO(application);
+                  Optional<CandidateEntity> candidate = candidateRepository.findById(applicationDTO.getCandidateId());
+                  if (candidate.isEmpty()) {
+                    throw new CustomException("Data candidate is wrong");
+                  }
+
+                  applicationDTO.setCandidateDTO(converter.toDTO(candidate.get()));
+                  return applicationDTO;
+                })
+            .collect(Collectors.toList());
+    return new ResponseObject(
+        200, "List application for job post id = " + jobPostId, applicationDTOS);
   }
 }

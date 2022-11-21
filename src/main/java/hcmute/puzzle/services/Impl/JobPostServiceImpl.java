@@ -7,27 +7,31 @@ import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.model.TableQuery;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.services.JobPostService;
+import hcmute.puzzle.utils.CustomNullsFirstInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class JobPostServiceImpl implements JobPostService {
+
+  @PersistenceContext public EntityManager em;
 
   @Autowired Converter converter;
 
   @Autowired JobPostRepository jobPostRepository;
 
   @Autowired CandidateRepository candidateRepository;
-
 
   public ResponseObject add(JobPostDTO jobPostDTO) {
 
@@ -106,16 +110,16 @@ public class JobPostServiceImpl implements JobPostService {
     return new ResponseObject(200, "Candidate applied", candidateDTOS);
   }
 
-
-//  public ResponseObject getJobPostCandidateApplied(long candidateId) {
-//    Set<JobPostEntity> jobPostApplied = jobPostRepository.getJobPostCandidateApplied(candidateId);
-//    Set<JobPostDTO> jobPostDTOS =
-//            jobPostApplied.stream()
-//                    .map(jobPost -> converter.toDTO(jobPost))
-//                    .collect(Collectors.toSet());
-//
-//    return new ResponseObject(200, "Job Post applied", jobPostDTOS);
-//  }
+  //  public ResponseObject getJobPostCandidateApplied(long candidateId) {
+  //    Set<JobPostEntity> jobPostApplied =
+  // jobPostRepository.getJobPostCandidateApplied(candidateId);
+  //    Set<JobPostDTO> jobPostDTOS =
+  //            jobPostApplied.stream()
+  //                    .map(jobPost -> converter.toDTO(jobPost))
+  //                    .collect(Collectors.toSet());
+  //
+  //    return new ResponseObject(200, "Job Post applied", jobPostDTOS);
+  //  }
 
   @Override
   public ResponseObject getJobPostAppliedByCandidateId(long candidateId) {
@@ -130,9 +134,9 @@ public class JobPostServiceImpl implements JobPostService {
   @Override
   public ResponseObject getJobPostCreatedByEmployerId(long employerId) {
     Set<JobPostDTO> jobPostDTOS =
-            jobPostRepository.findAllByCreatedEmployerId(employerId).stream()
-                    .map(jobPostEntity -> converter.toDTO(jobPostEntity))
-                    .collect(Collectors.toSet());
+        jobPostRepository.findAllByCreatedEmployerId(employerId).stream()
+            .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+            .collect(Collectors.toSet());
 
     return new ResponseObject(200, "Job Post created", jobPostDTOS);
   }
@@ -150,7 +154,7 @@ public class JobPostServiceImpl implements JobPostService {
             .map(jobPost -> converter.toDTO(jobPost))
             .collect(Collectors.toSet());
 
-    return new ResponseObject(200, "Job Post applied", jobPostDTOS);
+    return new ResponseObject(200, "Job Posts applied", jobPostDTOS);
   }
 
   public ResponseObject activateJobPost(long jobPostId) {
@@ -174,5 +178,33 @@ public class JobPostServiceImpl implements JobPostService {
     }
   }
 
+  public ResponseObject getJobPostDueSoon() {
+    String strQuery = "SELECT jp FROM JobPostEntity jp ORDER BY jp.dueTime ASC";
+    CustomNullsFirstInterceptor firstInterceptor = new CustomNullsFirstInterceptor();
+    strQuery = firstInterceptor.onPrepareStatement(strQuery);
+    List<JobPostEntity> jobPostEntities =
+        em.createQuery(strQuery).setMaxResults(15).getResultList();
 
+    List<JobPostDTO> jobPostDTO0s =
+        jobPostEntities.stream()
+            .map(jobPost -> converter.toDTO(jobPost))
+            .collect(Collectors.toList());
+    return new ResponseObject(200, "Job Posts due soon", jobPostDTO0s);
+  }
+
+  public ResponseObject getHotJobPost() {
+    String strQuery = "SELECT jp FROM JobPostEntity jp ORDER BY jp.createTime DESC";
+    CustomNullsFirstInterceptor firstInterceptor = new CustomNullsFirstInterceptor();
+    strQuery = firstInterceptor.onPrepareStatement(strQuery);
+    // TypedQuery q = em.createQuery(strQuery, JobPostEntity.class);
+
+    List<JobPostEntity> jobPostEntities =
+        em.createQuery(strQuery).setMaxResults(15).getResultList();
+
+    List<JobPostDTO> jobPostDTO0s =
+        jobPostEntities.stream()
+            .map(jobPost -> converter.toDTO(jobPost))
+            .collect(Collectors.toList());
+    return new ResponseObject(200, " Hot Job Posts", jobPostDTO0s);
+  }
 }

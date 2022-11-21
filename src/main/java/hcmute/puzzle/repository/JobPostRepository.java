@@ -26,6 +26,14 @@ public interface JobPostRepository extends JpaRepository<JobPostEntity, Long> {
           "SELECT jp FROM JobPostEntity jp WHERE jp.createdEmployer.id = :employerId")
   Set<JobPostEntity> findAllByCreatedEmployerId(@Param("employerId") long employerId);
 
+  @Query(
+          "SELECT jp FROM JobPostEntity jp ORDER BY jp.dueTime DESC NULLS LAST ")
+  Set<JobPostEntity> getJobPostDueSoon();
+
+  @Query(
+          "SELECT jp FROM JobPostEntity jp ORDER BY jp.createTime ASC NULLS LAST")
+  Set<JobPostEntity> getHotJobPost();
+
 //  @Query(
 //          "SELECT jp FROM JobPostEntity jp, CandidateEntity can WHERE can.id = :candidateId AND jp.id in can.savedJobPost")
 //  Set<JobPostEntity> findAllBySavedCandidateId(@Param("candidateId") long candidateId);

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class JobPostDTO {
+public class JobPostDTO implements Serializable {
   private long id;
   private String title;
   private String employmentType;
@@ -24,6 +25,7 @@ public class JobPostDTO {
   private int quantity;
   private long minBudget;
   private long maxBudget;
+  private Date createTime;
   private Date dueTime;
   private String workStatus;
   private boolean blind;

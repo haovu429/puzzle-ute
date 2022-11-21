@@ -3,10 +3,7 @@ package hcmute.puzzle.services.Impl;
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.CandidateDTO;
 import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.entities.CandidateEntity;
-import hcmute.puzzle.entities.CompanyEntity;
-import hcmute.puzzle.entities.EmployerEntity;
-import hcmute.puzzle.entities.JobPostEntity;
+import hcmute.puzzle.entities.*;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.*;
 import hcmute.puzzle.services.CandidateService;
@@ -27,6 +24,8 @@ public class CandidateServiceImpl implements CandidateService {
 
   @Autowired UserRepository userRepository;
 
+  @Autowired RoleRepository roleRepository;
+
   @Autowired Converter converter;
 
   @Autowired CompanyRepository companyRepository;
@@ -44,6 +43,17 @@ public class CandidateServiceImpl implements CandidateService {
     }
 
     candidateRepository.save(candidateEntity);
+
+    Optional<UserEntity> userEntity = userRepository.findById(candidateEntity.getId());
+    if (userEntity.isEmpty()) {
+      throw new CustomException("Account isn't exist");
+    }
+    Optional<RoleEntity> role = roleRepository.findById("candidate");
+    if (role.isEmpty()) {
+      throw new CustomException("role candidate isn't exist");
+    }
+    userEntity.get().getRoles().add(role.get());
+    userRepository.save(userEntity.get());
 
     Optional<CandidateDTO> result = Optional.of(converter.toDTO(candidateEntity));
 
