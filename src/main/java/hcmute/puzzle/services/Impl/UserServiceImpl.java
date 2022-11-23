@@ -5,6 +5,7 @@ import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.repository.RoleRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,6 +24,8 @@ public class UserServiceImpl implements UserService {
   @Autowired private UserRepository userRepository;
 
   @Autowired private PasswordEncoder passwordEncoder;
+
+  @Autowired private RoleRepository roleRepository;
 
   public boolean checkEmailExists(String email) {
     UserEntity user = userRepository.getUserByEmail(email);
@@ -54,35 +56,37 @@ public class UserServiceImpl implements UserService {
   public ResponseObject update(long id, UserDTO userDTO) {
     userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
+    Optional<UserEntity> oldUser = userRepository.findById(id);
+
+    if (oldUser.isEmpty()) {
+      throw new CustomException("This account isn't exists");
+    }
+
     UserEntity userEntity = converter.toEntity(userDTO);
 
-    if (userEntity.getRoles().size() == 0) {
-      throw new CustomException("Role not found");
-    } else {
-      UserEntity newUser =
-          userRepository
-              .findById(id)
-              .map(
-                  user -> {
-                    user.setUsername(userEntity.getUsername());
-                    user.setEmail(userEntity.getEmail());
-                    user.setAvatar(userEntity.getAvatar());
-                    user.setPhone(userEntity.getPhone());
-                    user.setOnline(userEntity.isOnline());
-                    user.setLastOnline(userEntity.getLastOnline());
-                    user.setActive(userEntity.isActive());
-                    user.setPassword(userEntity.getPassword());
-                    user.setRoles(userEntity.getRoles());
-                    return userRepository.save(user);
-                  })
-              .orElse(null);
+    UserEntity newUser =
+        userRepository
+            .findById(id)
+            .map(
+                user -> {
+                  user.setUsername(oldUser.get().getUsername());
+                  user.setEmail(oldUser.get().getEmail());
+                  user.setAvatar(userEntity.getAvatar());
+                  user.setPhone(userEntity.getPhone());
+                  // user.setOnline(userEntity.isOnline());
+                  // user.setLastOnline(userEntity.getLastOnline());
+                  user.setActive(oldUser.get().isActive());
+                  user.setPassword(userEntity.getPassword());
+                  user.setRoles(oldUser.get().getRoles());
+                  return userRepository.save(user);
+                })
+            .orElse(null);
 
-      if (newUser == null) {
-        throw new CustomException("User not found");
-      } else {
-        return new ResponseObject(
-            HttpStatus.OK.value(), "Update user success", converter.toDTO(newUser));
-      }
+    if (newUser == null) {
+      throw new CustomException("User not found");
+    } else {
+      return new ResponseObject(
+          HttpStatus.OK.value(), "Update user success", converter.toDTO(newUser));
     }
   }
 
@@ -100,11 +104,15 @@ public class UserServiceImpl implements UserService {
   @Override
   public ResponseObject getAll() {
     // Lay Tat Ca UserEntity
-    Set<UserDTO> userDTOS = userRepository.findAll().stream().map(userEntity -> {
-      UserDTO userDTO = converter.toDTO(userEntity);
-      userDTO.setPassword(null);
-      return userDTO;
-    }).collect(Collectors.toSet());
+    Set<UserDTO> userDTOS =
+        userRepository.findAll().stream()
+            .map(
+                userEntity -> {
+                  UserDTO userDTO = converter.toDTO(userEntity);
+                  userDTO.setPassword(null);
+                  return userDTO;
+                })
+            .collect(Collectors.toSet());
 
     return new ResponseObject(HttpStatus.OK.value(), "Get all user success", userDTOS);
   }
@@ -121,20 +129,20 @@ public class UserServiceImpl implements UserService {
     }
   }
 
-//  @Override
-//  public ResponseObject getOne() {
-//    // Lay Tat Ca UserEntity
-//    List<UserEntity> userEntitys = userRepository.findAll();
-//    // Tao UserDTO de tra ve Json
-//    List<UserDTO> userDTOs = new ArrayList<>();
-//
-//    // Cast UserEntity --> UserDTO
-//    for (UserEntity i : userEntitys) {
-//      UserDTO user = converter.toDTO(i);
-//      userDTOs.add(user);
-//    }
-//    return new ResponseObject(HttpStatus.OK.value(), "Get all user success", userDTOs);
-//  }
+  //  @Override
+  //  public ResponseObject getOne() {
+  //    // Lay Tat Ca UserEntity
+  //    List<UserEntity> userEntitys = userRepository.findAll();
+  //    // Tao UserDTO de tra ve Json
+  //    List<UserDTO> userDTOs = new ArrayList<>();
+  //
+  //    // Cast UserEntity --> UserDTO
+  //    for (UserEntity i : userEntitys) {
+  //      UserDTO user = converter.toDTO(i);
+  //      userDTOs.add(user);
+  //    }
+  //    return new ResponseObject(HttpStatus.OK.value(), "Get all user success", userDTOs);
+  //  }
 
   //  @Override
   //  public UserDetails loadUserByUsername(String email) {

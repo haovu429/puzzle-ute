@@ -164,7 +164,7 @@ public class UserController {
   }
 
   @PostMapping("/user/register-employer")
-  ResponseObject save(
+  ResponseObject registerEmployer(
           @RequestBody @Validated EmployerDTO employer,
           BindingResult bindingResult,
           @RequestHeader(value = "Authorization", required = true) String token) {
@@ -197,7 +197,7 @@ public class UserController {
   }
 
   @PostMapping("/user/register-candidate")
-  ResponseObject save(
+  ResponseObject registerCandidate(
           @RequestBody @Validated CandidateDTO candidate,
           BindingResult bindingResult,
           @RequestHeader(value = "Authorization") String token) {

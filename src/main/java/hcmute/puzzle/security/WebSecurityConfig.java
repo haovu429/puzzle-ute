@@ -104,7 +104,7 @@ public class WebSecurityConfig {
         .antMatchers("/api/admin/**")
         .hasAuthority(Roles.ADMIN.value)
             .antMatchers("/api/init-db")
-            .hasAuthority(Roles.ADMIN.value)
+            .permitAll()
         //        .antMatchers("/api/auth/**")
         //        .permitAll()
         //        .antMatchers("/api/test/**")

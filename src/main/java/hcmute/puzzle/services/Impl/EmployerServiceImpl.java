@@ -53,7 +53,7 @@ public class EmployerServiceImpl implements EmployerService {
     if (userEntity.isEmpty()) {
       throw new CustomException("Account isn't exist");
     }
-    Optional<RoleEntity> role = roleRepository.findById("candidate");
+    Optional<RoleEntity> role = roleRepository.findById("employer");
     if (role.isEmpty()) {
       throw new CustomException("role candidate isn't exist");
     }
