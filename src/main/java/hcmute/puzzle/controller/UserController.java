@@ -74,6 +74,8 @@ public class UserController {
 
   @PutMapping("/user/{id}")
   public ResponseObject update(@RequestHeader(value = "Authorization") String token, @RequestBody UserDTO user) {
+
+    //Optional<UserEntity>
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
     if (linkUser.isEmpty()) {

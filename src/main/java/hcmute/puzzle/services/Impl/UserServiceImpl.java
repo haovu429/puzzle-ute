@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
                   // user.setOnline(userEntity.isOnline());
                   // user.setLastOnline(userEntity.getLastOnline());
                   user.setActive(oldUser.get().isActive());
-                  user.setPassword(userEntity.getPassword());
+                  user.setPassword(oldUser.get().getPassword());
                   user.setRoles(oldUser.get().getRoles());
                   return userRepository.save(user);
                 })
