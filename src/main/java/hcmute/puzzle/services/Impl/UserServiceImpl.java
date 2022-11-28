@@ -6,17 +6,17 @@ import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.entities.RoleEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.model.DataStaticJoinAccount;
 import hcmute.puzzle.repository.RoleRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.services.UserService;
-import hcmute.puzzle.utils.Provider;
+import hcmute.puzzle.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -129,7 +129,8 @@ public class UserServiceImpl implements UserService {
     userEntity.get().getRoles().add(new RoleEntity("user"));
     userRepository.save(userEntity.get());
 
-    return new ResponseObject(HttpStatus.OK.value(), "User info", converter.toDTO(userEntity.get()));
+    return new ResponseObject(
+        HttpStatus.OK.value(), "User info", converter.toDTO(userEntity.get()));
   }
 
   @Override
@@ -145,18 +146,34 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void processOAuthPostLogin(String username) {
-    UserEntity existUser = userRepository.getUserByEmail(username);
+  public ResponseObject getAccountAmount() {
+    long count = userRepository.count();
 
-    if (existUser == null) {
-      UserEntity newUser = new UserEntity();
-      newUser.setEmail(username);
-      newUser.setProvider(Provider.GOOGLE);
-      newUser.setActive(true);
+    return new ResponseObject(HttpStatus.OK.value(), "Account amount", count);
+  }
 
-      userRepository.save(newUser);
+  @Override
+  public ResponseObject getListDataUserJoinLastNumWeeks(long numWeek) {
+    Date timeline = new Date(); // khoi tao tg hien tai
+    // Date nextDate = new Date();
+    List<DataStaticJoinAccount> data = new ArrayList<>();
+    TimeUtil timeUtil = new TimeUtil();
+    for (int i = 0; i < numWeek; i++) {
+      Date backwardTime = timeUtil.upDownTime_TimeUtil(timeline, 7, 0, 0);
+      long count = userRepository.getCountUserJoinInTime(backwardTime, timeline);
+      //data.add(count);
+      DataStaticJoinAccount dataStaticJoinAccount = new DataStaticJoinAccount("Tuan " + (numWeek-i), count);
+      data.add(dataStaticJoinAccount);
+      System.out.println("Tuan " + (numWeek - i) + ": " + count);
+      timeline = backwardTime;
     }
 
+    Collections.reverse(data);
+
+    return new ResponseObject(
+        HttpStatus.OK.value(),
+        "Data static for amount of join account in " + numWeek + " weeks",
+        data);
   }
 
   //  @Override

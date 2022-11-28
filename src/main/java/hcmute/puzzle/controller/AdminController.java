@@ -36,6 +36,8 @@ public class AdminController {
 
   @Autowired UserService userService;
 
+  @Autowired ApplicationService applicationService;
+
   // Company
   @PostMapping("/admin/add-company")
   public ResponseObject createCompany(@RequestBody CompanyDTO companyDTO) {
@@ -143,16 +145,36 @@ public class AdminController {
     return jobPostService.getAll();
   }
 
-  @DeleteMapping("/admin/company/{id}")
-  public ResponseObject delete(@PathVariable Long id) {
-    return companyService.delete(id);
-  }
-
   @PutMapping("/admin/company/{id}")
-  public ResponseObject update(@PathVariable Long id, @RequestBody CompanyDTO companyDTO) {
+  public ResponseObject updateCompany(@PathVariable Long id, @RequestBody CompanyDTO companyDTO) {
     companyDTO.setId(id);
     return companyService.update(companyDTO);
     //return null;
+  }
+
+  @GetMapping("/admin/get-account-amount")
+  public ResponseObject getAccountAmount() {
+    return userService.getAccountAmount();
+  }
+
+  @GetMapping("/admin/get-job-post-amount")
+  public ResponseObject getJobPostAmount() {
+    return jobPostService.getJobPostAmount();
+  }
+
+  @GetMapping("/admin/get-application-amount")
+  public ResponseObject getApplicationAmount() {
+    return applicationService.getApplicationAmount();
+  }
+
+  @GetMapping("/admin/get-extra-info/{id}")
+  public ResponseObject getExtraInfoById(@PathVariable(value = "id")long id) {
+    return extraInfoService.getOneById(id);
+  }
+
+  @GetMapping("/admin/get-data-join-account-in-last-num-week/{numWeek}")
+  public ResponseObject getDataJoinAccountByNumWeek(@PathVariable(value = "numWeek")long numWeek) {
+    return userService.getListDataUserJoinLastNumWeeks(numWeek);
   }
 
 }

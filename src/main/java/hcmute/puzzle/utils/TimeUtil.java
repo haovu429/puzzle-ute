@@ -3,25 +3,19 @@ package hcmute.puzzle.utils;
 
 // Java program to find the
 // difference between two dates
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
-import java.util.Date;
-
-
-import java.sql.Time;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.Date;
 
 public class TimeUtil {
+
+    public static final String FORMAT_TIME = "dd-MM-yyyy HH:mm:ss";
+    public static final String FORMAT_DATE = "dd-MM-yyyy";
 
     // Function to print difference in
     // time start_date and end_date
@@ -31,7 +25,7 @@ public class TimeUtil {
 
     //Hàm lấy thời gian hiện tại dạng String
     public static String getTimeNow(){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_TIME);
         //khai báo đối tượng current thuộc class LocalDateTime
         LocalDateTime current = LocalDateTime.now();
         //sử dụng class DateTimeFormatter để định dạng ngày giờ theo kiểu pattern
@@ -42,6 +36,11 @@ public class TimeUtil {
         System.out.println("\n\nNgày giờ hiện tại: " + formatted);
         return formatted;
     }
+
+//    public static String getTimeNowUtilDate() {
+//        SimpleDateFormat formatter = new SimpleDateFormat(FORMAT_TIME);
+//
+//    }
 
 
     //Hàm so sánh sự chênh lệch ngày giữa hai khoảng thời gian dạng String
@@ -168,6 +167,7 @@ public class TimeUtil {
     }
 
     //Hàm tịnh tiến thời gian, tăng giảm số ngày, tháng, năm của một thời điểm và trả ra mốc thời gian tịnh tiến
+    // mặc định lùi thời gian theo số ngày, tháng, nămn truyền vào, VD date_num=7 --> lùi 7 ngày, date_num=-7 --> tiến 7 ngày
     public String up_downTime(String time, int date_num, int month_num, int year_num) {
         // Định dạng thời gian
         //Định dạng thơig fian cho thời gian tịnh tiên
@@ -194,7 +194,6 @@ public class TimeUtil {
         } catch (Exception e){
             e.printStackTrace();
         }
-
 
         c1.setTime(date);
         //c2.setTime(date);
@@ -316,17 +315,79 @@ public class TimeUtil {
         }
     }
 
+    public static Date stringToDate(String strDate, String format) {
+
+        if (format == null) {
+            format = FORMAT_TIME;
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+        Date date = new Date();
+        try {
+            date = dateFormat.parse(strDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("can't parse date!");
+            return null;
+        }
+
+        return date;
+    }
+
+    public static String dateToString(Date date, String format) {
+
+        if (format == null) {
+            format = FORMAT_TIME;
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+        String strDate = dateFormat.format(date);
+        return strDate;
+    }
+
+    public Date upDownTime_TimeUtil(Date time, int dateNum, int monthNum, int yearNum) {
+        String strTime = dateToString(time, FORMAT_TIME);
+        String outputTime = up_downTime(strTime, dateNum, monthNum, yearNum);
+        return stringToDate(outputTime, FORMAT_TIME);
+    }
+
+    private static int getMonthTypeNum(Date date) throws ParseException{
+        //Date d = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).parse(date);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int month = cal.get(Calendar.MONTH);
+        return month + 1;
+    }
+
+    private static String getMonthTypeString(Date date) throws ParseException{
+        //Date d = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).parse(date);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        String monthName = new SimpleDateFormat("MMMM").format(cal.getTime());
+        return monthName;
+    }
+
 
     // Driver Code
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) throws ParseException {
         // Given start_date
         String start_date
-                = "10-01-2018 01:10:20";
+                = "3-01-2018 01:10:20";
 
         // Given end_date
         String end_date
                 = "10-06-2020 06:30:50";
+        TimeUtil timeUtil = new TimeUtil();
+
+        Date time = TimeUtil.stringToDate(start_date, TimeUtil.FORMAT_TIME);
+
+        String monthName = TimeUtil.getMonthTypeString(time);
+
+        System.out.println(monthName);
+
+        /*Date timeOutput = TimeUtil.stringToDate(timeUtil.up_downTime(start_date,7, 0, 0), FORMAT_TIME);
+        String strDate = TimeUtil.dateToString(timeOutput, FORMAT_TIME);
+        System.out.println(strDate);*/
 
         // Function Call
         //TimeUtil timeUtil = new TimeUtil();

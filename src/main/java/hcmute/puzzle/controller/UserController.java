@@ -14,6 +14,7 @@ import hcmute.puzzle.services.EmployerService;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.services.UserService;
 import hcmute.puzzle.utils.Constant;
+import hcmute.puzzle.utils.TimeUtil;
 import hcmute.puzzle.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -70,7 +71,7 @@ public class UserController {
     data.put("phone", userDTO.getPhone());
     data.put("avatar", userDTO.getAvatar());
 
-    String joinDate = Util.dateToString(userDTO.getJoinDate());
+    String joinDate = TimeUtil.dateToString(userDTO.getJoinDate(), TimeUtil.FORMAT_DATE);
     data.put("joinDate", joinDate);
 
     data.put("fullName", userDTO.getFullName());

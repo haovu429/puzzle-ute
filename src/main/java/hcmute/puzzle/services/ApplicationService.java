@@ -15,4 +15,6 @@ public interface ApplicationService {
   ResponseObject responseApplication(long applicationId, boolean isAccept, String note);
 
   ResponseObject getApplicationByJobPostId(long jobPostId);
+
+  ResponseObject getApplicationAmount();
 }

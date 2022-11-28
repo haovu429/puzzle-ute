@@ -32,4 +32,6 @@ public interface JobPostService {
   ResponseObject getJobPostDueSoon();
 
   ResponseObject getHotJobPost();
+
+  ResponseObject getJobPostAmount();
 }

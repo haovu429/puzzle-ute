@@ -16,7 +16,11 @@ public interface UserService {
 
   ResponseObject getUserByAccount(String email, String password);
 
-  void processOAuthPostLogin(String username);
+  ResponseObject getAccountAmount();
+
+  ResponseObject getListDataUserJoinLastNumWeeks(long numWeek);
+
+  // void processOAuthPostLogin(String username);
 
   // UserDetails loadUserByUsername(String email);
 }

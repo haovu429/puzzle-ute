@@ -110,7 +110,8 @@ public class ApplicationServiceImpl implements ApplicationService {
             .map(
                 application -> {
                   ApplicationDTO applicationDTO = converter.toDTO(application);
-                  Optional<CandidateEntity> candidate = candidateRepository.findById(applicationDTO.getCandidateId());
+                  Optional<CandidateEntity> candidate =
+                      candidateRepository.findById(applicationDTO.getCandidateId());
                   if (candidate.isEmpty()) {
                     throw new CustomException("Data candidate is wrong");
                   }
@@ -121,5 +122,12 @@ public class ApplicationServiceImpl implements ApplicationService {
             .collect(Collectors.toList());
     return new ResponseObject(
         200, "List application for job post id = " + jobPostId, applicationDTOS);
+  }
+
+  @Override
+  public ResponseObject getApplicationAmount() {
+    long amount = applicationRepository.count();
+
+    return new ResponseObject(200, "Application amount", amount);
   }
 }

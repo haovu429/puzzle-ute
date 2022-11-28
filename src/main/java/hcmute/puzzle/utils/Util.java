@@ -8,27 +8,7 @@ import java.util.StringTokenizer;
 
 public class Util {
 
-    public static final String FORMAT_DATE = "dd/MM/yyyy";
 
-    public static Date stringToDate(String strDate, int year) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT_DATE);
-        Date date = new Date();
-        try {
-            date = dateFormat.parse(strDate+"/"+year);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("can't parse date!");
-            return null;
-        }
-
-        return date;
-    }
-
-    public static String dateToString(Date date) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(FORMAT_DATE);
-        String strDate = dateFormat.format(date);
-        return strDate;
-    }
 
     public static Set<String> stringToSet(String str) {
         Set<String> strSet = new HashSet<String>();

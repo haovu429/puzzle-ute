@@ -87,6 +87,9 @@ public class ExtraInfoServiceImpl implements ExtraInfoService<ExtraInfoDTO> {
   @Override
   public ResponseObject getOneById(long id) {
     Optional<ExtraInfoEntity> extraInfo = extraInfoRepository.findById(id);
+    if (extraInfo.isEmpty()) {
+      throw new CustomException("Extra info isn't exists");
+    }
     return new ResponseObject(200, "ExtraInfo", extraInfo.get());
   }
 }

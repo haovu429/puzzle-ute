@@ -224,4 +224,11 @@ public class JobPostServiceImpl implements JobPostService {
             .collect(Collectors.toList());
     return new ResponseObject(200, " Hot Job Posts", jobPostDTO0s);
   }
+
+  @Override
+  public ResponseObject getJobPostAmount() {
+    long amount = jobPostRepository.count();
+
+    return new ResponseObject(200, "Job Post amount", amount);
+  }
 }
