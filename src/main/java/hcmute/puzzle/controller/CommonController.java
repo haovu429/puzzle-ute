@@ -93,11 +93,12 @@ public class CommonController {
       searchBetweenList.add(searchForBudgetMax);
     }
 
-    //    SearchBetween searchForExperienceYearMin =
-    //        new SearchBetween(
-    //            "experienceYear", null, Double.valueOf(jobPostFilter.getExperienceYear()));
-
-    // searchBetweenList.add(searchForExperienceYearMin);
+    if (jobPostFilter.getExperienceYear() != null && !jobPostFilter.getExperienceYear().isEmpty()) {
+      SearchBetween searchForExperienceYearMin =
+          new SearchBetween(
+              "experienceYear", null, Double.valueOf(jobPostFilter.getExperienceYear().get(0)));
+      searchBetweenList.add(searchForExperienceYearMin);
+    }
 
     Map<String, List<String>> fieldSearch = new HashMap<>();
     Map<String, List<Long>> fieldSearchNumber = new HashMap<>();
