@@ -1,8 +1,12 @@
 package hcmute.puzzle.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import hcmute.puzzle.accessHandler.CustomAccessDeniedHandler;
 import hcmute.puzzle.accessHandler.CustomAuthenticationHandler;
+import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
+import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.services.CustomOAuth2UserService;
 import hcmute.puzzle.utils.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,14 +16,20 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 // @EnableJpaRepositories(basePackages="java")
 @Configuration
@@ -32,6 +42,13 @@ public class WebSecurityConfig {
 
   //    @Autowired
   //    private AuthEntryPointJwt unauthorizedHandler;
+
+  @Autowired CustomOAuth2UserService oauthUserService;
+
+  @Autowired OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+
+  @Autowired UserRepository userRepository;
+
   @Autowired UserService userService;
 
   @Bean
@@ -74,7 +91,7 @@ public class WebSecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.cors()
-            .disable()
+        .disable()
         .csrf()
         .disable()
         .exceptionHandling()
@@ -103,8 +120,10 @@ public class WebSecurityConfig {
         .hasAuthority(Roles.EMPLOYER.value)
         .antMatchers("/api/admin/**")
         .hasAuthority(Roles.ADMIN.value)
-            .antMatchers("/api/init-db")
-            .permitAll()
+        .antMatchers("/api/init-db")
+        .permitAll()
+        .antMatchers("/oauth2/**")
+        .permitAll()
         //        .antMatchers("/api/auth/**")
         //        .permitAll()
         //        .antMatchers("/api/test/**")
@@ -113,13 +132,12 @@ public class WebSecurityConfig {
         //        .permitAll()
         .antMatchers("/swagger-ui/**", "/puzzle-api/**")
         .permitAll()
+        .antMatchers("/", "/login", "/oauth/**")
+        .permitAll()
         .anyRequest()
-        // .antMatchers("/**")
         .authenticated()
         .and()
         .formLogin()
-        .loginPage("/login")
-        .usernameParameter("email")
         .permitAll()
         .and()
         .rememberMe()
@@ -128,17 +146,24 @@ public class WebSecurityConfig {
         .logout()
         .permitAll()
         .and()
+        .oauth2Login()
+        .loginPage("/login")
+        .userInfoEndpoint()
+        .userService(oauthUserService)
+        .and()
+        .successHandler(oAuth2LoginSuccessHandler)
+        .and()
         .httpBasic();
     http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
 
-//    @Bean
-//    public WebSecurityCustomizer webSecurityCustomizer() {
-//      return (web) ->
-//          web.ignoring()
-//              .antMatchers(
-//                  "/images/**", "/js/**", "/webjars/**", "/css/**", "/lib/**", "/favicon.ico");
-//    }
-   //https://viblo.asia/p/securing-spring-boot-with-jwt-part-2-xac-thuc-nguoi-dung-dua-tren-du-lieu-trong-co-so-du-lieu-63vKjnJVK2R
+  //    @Bean
+  //    public WebSecurityCustomizer webSecurityCustomizer() {
+  //      return (web) ->
+  //          web.ignoring()
+  //              .antMatchers(
+  //                  "/images/**", "/js/**", "/webjars/**", "/css/**", "/lib/**", "/favicon.ico");
+  //    }
+  // https://viblo.asia/p/securing-spring-boot-with-jwt-part-2-xac-thuc-nguoi-dung-dua-tren-du-lieu-trong-co-so-du-lieu-63vKjnJVK2R
 }

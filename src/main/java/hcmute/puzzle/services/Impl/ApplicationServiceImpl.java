@@ -97,7 +97,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
     application.get().setNote(note);
     applicationRepository.save(application.get());
-    return new ResponseObject(200, "Activate success", null);
+    return new ResponseObject(200, "Response success", null);
   }
 
   public ResponseObject getApplicationByJobPostId(long jobPostId) {

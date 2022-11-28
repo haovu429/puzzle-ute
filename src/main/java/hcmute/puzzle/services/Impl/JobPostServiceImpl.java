@@ -12,6 +12,10 @@ import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.services.JobPostService;
 import hcmute.puzzle.utils.CustomNullsFirstInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -96,6 +100,19 @@ public class JobPostServiceImpl implements JobPostService {
                   return converter.toDTO(entity);
                 })
             .collect(Collectors.toList());
+
+    return new ResponseObject(200, "Info of job post", jobPostDTOS);
+  }
+
+  @Override
+  public ResponseObject getJobPostWithPage(int pageNum, int numOfRecord) {
+
+    Pageable pageable = PageRequest.of(pageNum, numOfRecord);
+
+    Page<JobPostEntity> jobPostEntities =  jobPostRepository.findAll(pageable);
+
+    Page<Object> jobPostDTOS =
+            jobPostEntities.map(entity -> converter.toDTO(entity));
 
     return new ResponseObject(200, "Info of job post", jobPostDTOS);
   }

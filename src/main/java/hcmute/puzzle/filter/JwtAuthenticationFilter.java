@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         "x-requested-with, authorization, Content-Type, Authorization, credential,X-XSRF-TOKEN");
 
     request.setAttribute("Access-Control-Allow-Origin", "*");
-    request.setAttribute("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+    request.setAttribute("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
     request.setAttribute("Access-Control-Max-Age", "20000");
     request.setAttribute(
         "Access-Control-Allow-Headers",

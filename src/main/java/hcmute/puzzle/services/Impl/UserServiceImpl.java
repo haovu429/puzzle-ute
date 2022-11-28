@@ -8,6 +8,7 @@ import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.RoleRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.services.UserService;
+import hcmute.puzzle.utils.Provider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -127,6 +128,21 @@ public class UserServiceImpl implements UserService {
     } else {
       throw new CustomException("User not found");
     }
+  }
+
+  @Override
+  public void processOAuthPostLogin(String username) {
+    UserEntity existUser = userRepository.getUserByEmail(username);
+
+    if (existUser == null) {
+      UserEntity newUser = new UserEntity();
+      newUser.setEmail(username);
+      newUser.setProvider(Provider.GOOGLE);
+      newUser.setActive(true);
+
+      userRepository.save(newUser);
+    }
+
   }
 
   //  @Override

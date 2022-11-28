@@ -18,6 +18,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 // SecuritySchemeIn.HEADER)
 // @EnableAutoConfiguration
 // http://localhost:8080/swagger-ui/index.html
+// http://localhost:8080/oauth2/authorization/google
 public class PuzzleUteApplication {
 
   public static void main(String[] args) {

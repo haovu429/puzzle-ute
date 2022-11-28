@@ -1,5 +1,6 @@
 package hcmute.puzzle.entities;
 
+import hcmute.puzzle.utils.Provider;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -54,6 +55,12 @@ public class UserEntity {
   @Column(name = "is_active")
   private boolean isActive = true;
 
+  @Enumerated(EnumType.STRING)
+  private Provider provider;
+
+  @Column(name = "full_name", columnDefinition = "VARCHAR(100)")
+  private String fullName;
+
   // https://shareprogramming.net/phan-biet-fetchmode-va-fetchtype-trong-jpa-hibernate/
   // https://viblo.asia/p/van-de-n1-cau-truy-van-trong-hibernate-bWrZn00b5xw
   // @Fetch(FetchMode.JOIN)
@@ -78,4 +85,7 @@ public class UserEntity {
 
   @OneToMany(mappedBy = "userEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   private Set<NotificationEntity> notificationEntities = new HashSet<>();
+
+
 }
+

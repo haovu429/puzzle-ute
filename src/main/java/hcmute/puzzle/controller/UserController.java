@@ -14,6 +14,7 @@ import hcmute.puzzle.services.EmployerService;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.services.UserService;
 import hcmute.puzzle.utils.Constant;
+import hcmute.puzzle.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
@@ -62,9 +63,23 @@ public class UserController {
     }
 
     UserDTO userDTO = converter.toDTO(linkUser.get());
+
+    Map<String, Object> data = new HashMap<>();
+    data.put("username", userDTO.getUsername());
+    data.put("email", userDTO.getEmail());
+    data.put("phone", userDTO.getPhone());
+    data.put("avatar", userDTO.getAvatar());
+
+    String joinDate = Util.dateToString(userDTO.getJoinDate());
+    data.put("joinDate", joinDate);
+
+    data.put("fullName", userDTO.getFullName());
+    data.put("roleCodes", userDTO.getRoleCodes());
+    data.put("active", userDTO.isActive());
+
     userDTO.setPassword(null);
 
-    return new ResponseObject(200, "Profile info", userDTO);
+    return new ResponseObject(200, "Profile info", data);
   }
 
   @DeleteMapping("/user/{id}")

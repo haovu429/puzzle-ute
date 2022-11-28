@@ -4,6 +4,7 @@ import hcmute.puzzle.dto.*;
 import hcmute.puzzle.entities.*;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.*;
+import hcmute.puzzle.utils.Provider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -68,6 +69,10 @@ public class Converter {
     userEntity.setActive(dto.isActive());
     //        Set<RoleEntity> roleEntities = dto.getRoles().stream().map(role -> toEntity(role))
     //                .collect(Collectors.toSet());
+
+    Provider provider = Provider.asProvider(dto.getProvider());
+    userEntity.setProvider(provider);
+    userEntity.setFullName(dto.getFullName());
 
     Set<RoleEntity> roleEntities = new HashSet<>();
     for (String code : dto.getRoleCodes()) {

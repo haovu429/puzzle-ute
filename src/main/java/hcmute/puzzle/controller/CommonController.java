@@ -1,14 +1,12 @@
 package hcmute.puzzle.controller;
 
-import java.util.*;
-
 import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.*;
+import hcmute.puzzle.dto.CandidateDTO;
+import hcmute.puzzle.dto.JobPostDTO;
+import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.entities.CandidateEntity;
-import hcmute.puzzle.entities.JobAlertEntity;
 import hcmute.puzzle.entities.JobPostEntity;
-import hcmute.puzzle.entities.UserEntity;
-import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.model.CandidateFilter;
 import hcmute.puzzle.model.JobPostFilter;
@@ -21,7 +19,7 @@ import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -45,16 +43,13 @@ public class CommonController {
 
   @Autowired UserService userService;
 
-  @Autowired
-  Converter converter;
+  @Autowired Converter converter;
 
-  @Autowired
-  ExtraInfoService extraInfoService;
+  @Autowired ExtraInfoService extraInfoService;
 
   @Autowired CompanyService companyService;
 
-  @Autowired
-  SearchService searchService;
+  @Autowired SearchService searchService;
 
   @GetMapping("/common/job-post/get-all")
   ResponseObject getAllJobPost() {
@@ -76,7 +71,6 @@ public class CommonController {
     return companyService.getOneById(id);
   }
 
-
   @GetMapping("/common/get-all-extra-info-by-type")
   public ResponseObject getAllExtraInfoByType(@RequestParam String type) {
     return extraInfoService.getByType(type);
@@ -87,18 +81,29 @@ public class CommonController {
 
     List<SearchBetween> searchBetweenList = new ArrayList<>();
 
-    SearchBetween searchForBudgetMin = new SearchBetween("minBudget", Double.valueOf(jobPostFilter.getMinBudget()), null);
-    SearchBetween searchForExperienceYearMin = new SearchBetween("experienceYear", null, Double.valueOf(jobPostFilter.getExperienceYear()));
+    SearchBetween searchForBudgetMin =
+        new SearchBetween(
+            "minBudget",
+            Double.valueOf(jobPostFilter.getMinBudget()),
+            Double.valueOf(jobPostFilter.getMaxBudget()));
+    //    SearchBetween searchForExperienceYearMin =
+    //        new SearchBetween(
+    //            "experienceYear", null, Double.valueOf(jobPostFilter.getExperienceYear()));
 
     searchBetweenList.add(searchForBudgetMin);
-    searchBetweenList.add(searchForExperienceYearMin);
+    // searchBetweenList.add(searchForExperienceYearMin);
 
-    Map<String,List<String>> fieldSearch = new HashMap<>();
+    Map<String, List<String>> fieldSearch = new HashMap<>();
     if (jobPostFilter.getTitles() != null && !jobPostFilter.getTitles().isEmpty()) {
       fieldSearch.put("title", jobPostFilter.getTitles());
     }
 
-    if (jobPostFilter.getEmploymentTypes() != null && !jobPostFilter.getEmploymentTypes().isEmpty()) {
+    if (jobPostFilter.getExperienceYear() != null && !jobPostFilter.getExperienceYear().isEmpty()) {
+      fieldSearch.put("experienceYear", jobPostFilter.getExperienceYear());
+    }
+
+    if (jobPostFilter.getEmploymentTypes() != null
+        && !jobPostFilter.getEmploymentTypes().isEmpty()) {
       fieldSearch.put("employmentType", jobPostFilter.getEmploymentTypes());
     }
 
@@ -122,7 +127,8 @@ public class CommonController {
       commonFieldSearch.add("title");
     }
 
-    List<JobPostEntity> jobPostEntities = searchService.filterObject(
+    List<JobPostEntity> jobPostEntities =
+        searchService.filterObject(
             "JobPostEntity",
             searchBetweenList,
             fieldSearch,
@@ -132,18 +138,22 @@ public class CommonController {
             jobPostFilter.getPageIndex(),
             jobPostFilter.isSortById());
 
-    List<JobPostDTO> jobPostDTOS = jobPostEntities.stream().map(jobPost -> converter.toDTO(jobPost)).collect(Collectors.toList());
+    List<JobPostDTO> jobPostDTOS =
+        jobPostEntities.stream()
+            .map(jobPost -> converter.toDTO(jobPost))
+            .collect(Collectors.toList());
 
-    //JobPostFilter jobPostFilter1 = new JobPostFilter();
+    // JobPostFilter jobPostFilter1 = new JobPostFilter();
 
-    return new ResponseObject(200 , "Result for filter job post", jobPostDTOS);
+    return new ResponseObject(200, "Result for filter job post", jobPostDTOS);
   }
 
   @PostMapping("/common/candidate-filter")
-  public ResponseObject filterCandidate(@RequestBody(required = false) CandidateFilter candidateFilter) {
+  public ResponseObject filterCandidate(@RequestBody CandidateFilter candidateFilter) {
 
-    Map<String,List<String>> fieldSearch = new HashMap<>();
-    if (candidateFilter.getEducationLevels() != null && !candidateFilter.getEducationLevels().isEmpty()) {
+    Map<String, List<String>> fieldSearch = new HashMap<>();
+    if (candidateFilter.getEducationLevels() != null
+        && !candidateFilter.getEducationLevels().isEmpty()) {
       fieldSearch.put("educationLevel", candidateFilter.getEducationLevels());
     }
 
@@ -167,7 +177,8 @@ public class CommonController {
       commonFieldSearch.add("phoneNum");
     }
 
-    List<CandidateEntity> candidateEntity = searchService.filterObject(
+    List<CandidateEntity> candidateEntity =
+        searchService.filterObject(
             "CandidateEntity",
             null,
             fieldSearch,
@@ -177,11 +188,14 @@ public class CommonController {
             candidateFilter.getPageIndex(),
             candidateFilter.isSortById());
 
-    List<CandidateDTO> candidateDTOS = candidateEntity.stream().map(candidate -> converter.toDTO(candidate)).collect(Collectors.toList());
+    List<CandidateDTO> candidateDTOS =
+        candidateEntity.stream()
+            .map(candidate -> converter.toDTO(candidate))
+            .collect(Collectors.toList());
 
-    //CandidateFilter candidateFilter1 = new CandidateFilter();
+    // CandidateFilter candidateFilter1 = new CandidateFilter();
 
-    return new ResponseObject(200 , "Result for filter candidate", candidateDTOS);
+    return new ResponseObject(200, "Result for filter candidate", candidateDTOS);
   }
 
   @GetMapping("/common/get-all-extra-info")
@@ -195,7 +209,7 @@ public class CommonController {
   }
 
   @PostMapping("/common/register")
-  public ResponseObject save(@ModelAttribute UserDTO user) {
+  public ResponseObject save(@RequestBody UserDTO user) {
     Set<String> roleCodes = new HashSet<>();
     roleCodes.add("user");
 
@@ -213,5 +227,8 @@ public class CommonController {
     return jobPostService.getJobPostDueSoon();
   }
 
-
+  @GetMapping("/common/get-profile-candidate/{candidateId}")
+  ResponseObject getProfileCandidate(@PathVariable long candidateId) {
+    return candidateService.getOne(candidateId);
+  }
 }

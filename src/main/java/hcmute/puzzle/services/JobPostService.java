@@ -15,6 +15,7 @@ public interface JobPostService {
   void validateJobPost(JobPostDTO jobPostDTO);
 
   ResponseObject getAll();
+  ResponseObject getJobPostWithPage(int pageNum, int numOfRecord);
 
   ResponseObject getCandidatesApplyJobPost(long jobPostId);
 

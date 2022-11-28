@@ -12,15 +12,16 @@ import java.util.List;
 @NoArgsConstructor
 public class JobPostFilter {
     long minBudget;
-    int experienceYear;
+    long maxBudget;
+    List<String> experienceYear;
     List<String> titles;
     List<String> employmentTypes;
     List<String> cities;
     List<String> positions;
     List<String> skills;
     List<String> others;
-    int noOfRecords = 15;
+    int noOfRecords = 6;
     int pageIndex = 0;
-    boolean sortById;
+    boolean sortById = true;
 
 }

@@ -120,6 +120,19 @@ public class AdminController {
     return jobPostService.deactivateJobPost(id);
   }
 
+  @GetMapping("/admin/get-all-job-by-page")
+  public ResponseObject getJobPost(
+          @RequestParam(value = "page", required = false) Integer page, @RequestParam(required = false) Integer numOfRecord) {
+    if (page == null) {
+      page = 0;
+    }
+
+    if (numOfRecord == null) {
+      numOfRecord = 10;
+    }
+    return jobPostService.getJobPostWithPage(page, numOfRecord);
+  }
+
   @DeleteMapping("/admin/company/{id}")
   public ResponseObject delete(@PathVariable Long id) {
     return companyService.delete(id);
