@@ -88,6 +88,11 @@ public class AdminController {
     return userService.getAll();
   }
 
+  @GetMapping("/admin/get-account-by-id/{id}")
+  public ResponseObject getAllAccountById(@PathVariable(value = "id") long id) {
+    return userService.getOne(id);
+  }
+
   // Company
   @PostMapping("/admin/add-extra-info")
   public ResponseObject createExtraInfo(@RequestBody ExtraInfoDTO extraInfoDTO) {
@@ -121,7 +126,7 @@ public class AdminController {
   }
 
   @GetMapping("/admin/get-all-job-by-page")
-  public ResponseObject getJobPost(
+  public ResponseObject getJobPostByPage(
           @RequestParam(value = "page", required = false) Integer page, @RequestParam(required = false) Integer numOfRecord) {
     if (page == null) {
       page = 0;
@@ -131,6 +136,11 @@ public class AdminController {
       numOfRecord = 10;
     }
     return jobPostService.getJobPostWithPage(page, numOfRecord);
+  }
+
+  @GetMapping("/admin/get-all-job-post")
+  public ResponseObject getAllJobPost() {
+    return jobPostService.getAll();
   }
 
   @DeleteMapping("/admin/company/{id}")

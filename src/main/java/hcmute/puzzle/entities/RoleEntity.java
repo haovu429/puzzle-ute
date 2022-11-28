@@ -24,6 +24,7 @@ public class RoleEntity {
 
   public RoleEntity(String code) {
     this.code = code;
+    this.setName(code.toLowerCase());
   }
 
   //  @ManyToMany(

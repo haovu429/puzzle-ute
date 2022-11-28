@@ -16,8 +16,28 @@ public class SearchServiceImpl implements SearchService {
 
   @PersistenceContext public EntityManager em;
 
+  public static String TYPE_MATCH_TEXT = "TEXT";
+  public static String TYPE_MATCH_NUMBER = "NUMBER";
+
+  private static String checkTypeList(List list) {
+    if (list != null && !list.isEmpty()) {
+      if (list.get(0) instanceof Integer || list.get(0) instanceof Long) {
+        return TYPE_MATCH_NUMBER;
+      } else if (list.get(0) instanceof String) {
+        return TYPE_MATCH_TEXT;
+      }
+    }
+    return null;
+  }
+
   private String containmentCondition(String tableName, String fieldName, String text) {
-    String filter = " " + tableName + "." + fieldName + " LIKE '%" + text + "%' ";
+    String filter = filter = " " + tableName + "." + fieldName + " LIKE '%" + text + "%' ";
+
+    return filter;
+  }
+
+  private String equalCondition(String tableName, String fieldName, Long number) {
+    String filter = " " + tableName + "." + fieldName + " = " + number + " ";
     return filter;
   }
 
@@ -32,6 +52,24 @@ public class SearchServiceImpl implements SearchService {
     if (texts.size() > 1) {
       for (int i = 1; i < texts.size(); i++) {
         query.append(" OR " + containmentCondition(tableName, fieldName, texts.get(i)));
+      }
+    }
+
+    query.append(")");
+    return query.toString();
+  }
+
+  private String filterEqualNumber(String tableName, String fieldName, List<Long> numbers) {
+    if (numbers == null || numbers.isEmpty()) {
+      return "";
+    }
+
+    StringBuilder query = new StringBuilder(" AND ( ");
+    query.append(equalCondition(tableName, fieldName, numbers.get(0)));
+
+    if (numbers.size() > 1) {
+      for (int i = 1; i < numbers.size(); i++) {
+        query.append(" OR " + equalCondition(tableName, fieldName, numbers.get(i)));
       }
     }
 
@@ -107,7 +145,8 @@ public class SearchServiceImpl implements SearchService {
       String objectName,
       // List<Long> manufacturer,
       List<SearchBetween> searchBetweens,
-      Map<String, List<String>> fieldSearch,
+      Map<String, List<String>> fieldSearchText,
+      Map<String, List<Long>> fieldSearchNumber,
       List<String> commonFieldSearch,
       List<String> valueCommonFieldSearch,
       int noOfRecords,
@@ -143,10 +182,17 @@ public class SearchServiceImpl implements SearchService {
           });
     }
 
-    if (fieldSearch != null) {
-      fieldSearch.forEach(
+    if (fieldSearchText != null) {
+      fieldSearchText.forEach(
           (key, value) -> {
             strQuery.append(filterContain(objectAlias, key, value));
+          });
+    }
+
+    if (fieldSearchNumber != null) {
+      fieldSearchNumber.forEach(
+          (key, value) -> {
+            strQuery.append((filterEqualNumber(objectAlias, key, value)));
           });
     }
 

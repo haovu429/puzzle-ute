@@ -12,6 +12,8 @@ public interface UserService {
 
   ResponseObject getAll();
 
+  ResponseObject getOne(long id);
+
   ResponseObject getUserByAccount(String email, String password);
 
   void processOAuthPostLogin(String username);

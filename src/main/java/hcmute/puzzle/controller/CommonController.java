@@ -81,25 +81,38 @@ public class CommonController {
 
     List<SearchBetween> searchBetweenList = new ArrayList<>();
 
-    SearchBetween searchForBudgetMin =
-        new SearchBetween(
-            "minBudget",
-            Double.valueOf(jobPostFilter.getMinBudget()),
-            Double.valueOf(jobPostFilter.getMaxBudget()));
+    if (jobPostFilter.getMinBudget() != null) {
+      SearchBetween searchForBudgetMin =
+          new SearchBetween("minBudget", Double.valueOf(jobPostFilter.getMinBudget()), null);
+      searchBetweenList.add(searchForBudgetMin);
+    }
+
+    if (jobPostFilter.getMinBudget() != null) {
+      SearchBetween searchForBudgetMax =
+          new SearchBetween("maxBudget", null, Double.valueOf(jobPostFilter.getMaxBudget()));
+      searchBetweenList.add(searchForBudgetMax);
+    }
+
     //    SearchBetween searchForExperienceYearMin =
     //        new SearchBetween(
     //            "experienceYear", null, Double.valueOf(jobPostFilter.getExperienceYear()));
 
-    searchBetweenList.add(searchForBudgetMin);
     // searchBetweenList.add(searchForExperienceYearMin);
 
     Map<String, List<String>> fieldSearch = new HashMap<>();
+    Map<String, List<Long>> fieldSearchNumber = new HashMap<>();
+
     if (jobPostFilter.getTitles() != null && !jobPostFilter.getTitles().isEmpty()) {
       fieldSearch.put("title", jobPostFilter.getTitles());
     }
 
     if (jobPostFilter.getExperienceYear() != null && !jobPostFilter.getExperienceYear().isEmpty()) {
-      fieldSearch.put("experienceYear", jobPostFilter.getExperienceYear());
+      List<Long> expNums =
+          jobPostFilter.getExperienceYear().stream()
+              .map(exp -> Long.valueOf(exp))
+              .collect(Collectors.toList());
+      fieldSearchNumber.put("experienceYear", expNums);
+      // fieldSearch.put("experienceYear", jobPostFilter.getExperienceYear());
     }
 
     if (jobPostFilter.getEmploymentTypes() != null
@@ -132,6 +145,7 @@ public class CommonController {
             "JobPostEntity",
             searchBetweenList,
             fieldSearch,
+            fieldSearchNumber,
             commonFieldSearch,
             valueCommonFieldSearch,
             jobPostFilter.getNoOfRecords(),
@@ -182,6 +196,7 @@ public class CommonController {
             "CandidateEntity",
             null,
             fieldSearch,
+            null,
             commonFieldSearch,
             valueCommonFieldSearch,
             candidateFilter.getNoOfRecords(),

@@ -3,6 +3,7 @@ package hcmute.puzzle.services.Impl;
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
+import hcmute.puzzle.entities.RoleEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.RoleRepository;
@@ -116,6 +117,19 @@ public class UserServiceImpl implements UserService {
             .collect(Collectors.toSet());
 
     return new ResponseObject(HttpStatus.OK.value(), "Get all user success", userDTOS);
+  }
+
+  @Override
+  public ResponseObject getOne(long id) {
+    boolean exists = userRepository.existsById(id);
+    if (!exists) {
+      throw new CustomException("Account isn't exists");
+    }
+    Optional<UserEntity> userEntity = userRepository.findById(id);
+    userEntity.get().getRoles().add(new RoleEntity("user"));
+    userRepository.save(userEntity.get());
+
+    return new ResponseObject(HttpStatus.OK.value(), "User info", converter.toDTO(userEntity.get()));
   }
 
   @Override

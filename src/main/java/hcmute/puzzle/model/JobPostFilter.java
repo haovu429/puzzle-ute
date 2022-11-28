@@ -11,8 +11,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class JobPostFilter {
-    long minBudget;
-    long maxBudget;
+    Long minBudget;
+    Long maxBudget;
     List<String> experienceYear;
     List<String> titles;
     List<String> employmentTypes;
