@@ -23,7 +23,7 @@ public class CustomAuthenticationHandler implements AuthenticationEntryPoint {
       throws IOException, ServletException {
     ResponseObject responseObject = new ResponseObject("401", 200, authException.getMessage());
     // System.out.println(authException.getMessage());
-    responseObject.setMessage("Invalid token");
+    //responseObject.setMessage("Invalid token");
     response.setStatus(200);
     response.setContentType("application/json");
     response.getWriter().write(objectMapper.writeValueAsString(responseObject));

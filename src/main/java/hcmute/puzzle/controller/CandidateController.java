@@ -8,6 +8,7 @@ import hcmute.puzzle.entities.*;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.repository.*;
+import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -201,13 +202,14 @@ public class CandidateController {
   }
 
   @GetMapping("/candidate/apply-job-post/{postId}")
-  ResponseObject applyJobPost(
+  DataResponse applyJobPost(
       @PathVariable Long postId, @RequestHeader(value = "Authorization") String token) {
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
     if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
+      //throw new CustomException("Not found account");
+      return new DataResponse(DataResponse.ERROR_NOT_FOUND, "Not found account", DataResponse.STATUS_NOT_FOUND);
     }
 
     if (linkUser.get().getCandidateEntity() == null) {
@@ -226,13 +228,15 @@ public class CandidateController {
     }
 
     if (!jobPost.get().isActive()) {
-      throw new CustomException("You can't apply this jobPost. It isn't active");
+      // throw new CustomException("You can't apply this jobPost. It isn't active");
+      return new DataResponse(DataResponse.ERROR_INACTIVE, "You can't apply this jobPost. It isn't active", DataResponse.STATUS_CUSTOM_EXCEPTION);
     }
 
     Set<ApplicationEntity> applications =
         applicationRepository.findApplicationByCanIdAndJobPostId(linkUser.get().getId(), postId);
     if (!applications.isEmpty()) {
-      throw new CustomException("You applied for this job");
+      //throw new CustomException("You applied for this job");
+      return new DataResponse(DataResponse.ERROR_NOT_AGAIN, "You applied for this job", DataResponse.STATUS_NOT_AGAIN);
     }
 
     ApplicationEntity applicationEntity = new ApplicationEntity();
@@ -240,7 +244,7 @@ public class CandidateController {
     applicationEntity.setJobPostEntity(jobPost.get());
     applicationRepository.save(applicationEntity);
 
-    return new ResponseObject(200, "Apply success", null);
+    return new DataResponse("Apply success");
   }
 
   @GetMapping("/candidate/cancel-apply-job-post/{postId}")
