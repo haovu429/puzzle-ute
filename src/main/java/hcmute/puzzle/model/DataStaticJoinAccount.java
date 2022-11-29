@@ -11,5 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DataStaticJoinAccount {
     String name;
-    Long Total;
+    Long total;
 }
