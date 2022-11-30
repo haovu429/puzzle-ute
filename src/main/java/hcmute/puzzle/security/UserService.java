@@ -93,11 +93,11 @@ public class UserService implements UserDetailsService {
       if (user == null) {
         return null;
       }
-      Collection<? extends GrantedAuthority> a = customUserDetails.getAuthorities();
+      //Collection<? extends GrantedAuthority> a = customUserDetails.getAuthorities();
       Authentication authentication =
           authenticationManager.authenticate(
               new UsernamePasswordAuthenticationToken(
-                  email, "", customUserDetails.getAuthorities()));
+                  email, null, customUserDetails.getAuthorities()));
       //        Set in security context
       SecurityContextHolder.getContext().setAuthentication(authentication);
 //      Authentication authentication1 = authenticationManager.authenticate( createNewAccountAfterOAuthLoginSuccess()

@@ -1,15 +1,18 @@
 package hcmute.puzzle;
 
 import hcmute.puzzle.utils.Constant;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
+@EnableWebMvc
 //@EnableSwagger2
 //@EnableAsync
 // @OpenAPIDefinition(info = @Info(title = "Employees API", version = "2.0", description =

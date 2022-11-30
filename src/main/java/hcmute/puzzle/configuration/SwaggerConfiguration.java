@@ -20,11 +20,11 @@ public class SwaggerConfiguration {
 
   private ApiInfo apiInfo() {
     return new ApiInfo(
-        "My REST API",
-        "Some custom description of API.",
+        "Puzzle API",
+        "This is list our API ",
         "1.0",
         "Terms of service",
-        new Contact("Sallo Szrajbman", "www.baeldung.com", "salloszraj@gmail.com"),
+        new Contact("Hảo đẹp try", "https://www.youtube.com/channel/UC5GCMUwYXZTMKVc8OBvLbvQ", "caihoncuagiamnguc@gmail.com"),
         "License of API",
         "API license URL",
         Collections.emptyList());
@@ -33,7 +33,7 @@ public class SwaggerConfiguration {
   @Bean
   public Docket api() {
     return new Docket(DocumentationType.SWAGGER_2)
-        .host("http://localhost:8080")
+//        .host("localhost:8080")
         .apiInfo(apiInfo())
         .securityContexts(Arrays.asList(securityContext()))
         .securitySchemes(Arrays.asList(apiKey()))

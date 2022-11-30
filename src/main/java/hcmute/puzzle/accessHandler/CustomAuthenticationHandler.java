@@ -2,6 +2,7 @@ package hcmute.puzzle.accessHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.response.DataResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
@@ -21,11 +22,12 @@ public class CustomAuthenticationHandler implements AuthenticationEntryPoint {
       HttpServletResponse response,
       AuthenticationException authException)
       throws IOException, ServletException {
-    ResponseObject responseObject = new ResponseObject("401", 200, authException.getMessage());
+    DataResponse dataResponse = new DataResponse(DataResponse.ERROR_FORBIDDEN, authException.getMessage(), DataResponse.STATUS_BAD);
+    ResponseObject responseObject = new ResponseObject("401", 401, authException.getMessage());
     // System.out.println(authException.getMessage());
     //responseObject.setMessage("Invalid token");
-    response.setStatus(200);
+    //response.setStatus(401);
     response.setContentType("application/json");
-    response.getWriter().write(objectMapper.writeValueAsString(responseObject));
+    response.getWriter().write(objectMapper.writeValueAsString(dataResponse));
   }
 }
