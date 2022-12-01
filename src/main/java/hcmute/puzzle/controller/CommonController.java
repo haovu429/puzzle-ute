@@ -247,4 +247,9 @@ public class CommonController {
   ResponseObject getProfileCandidate(@PathVariable long candidateId) {
     return candidateService.getOne(candidateId);
   }
+
+  @GetMapping("/common/get-active-job-post")
+  public ResponseObject getActiveJobPost() {
+    return jobPostService.getActiveJobPost();
+  }
 }

@@ -159,6 +159,45 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   @Override
+  public ResponseObject getActiveJobPost() {
+    Set<JobPostDTO> jobPostDTOS =
+            jobPostRepository.findAllByActiveIsTrue().stream()
+                    .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+                    .collect(Collectors.toSet());
+
+    return new ResponseObject(200, "Job Post active", jobPostDTOS);
+  }
+
+  @Override
+  public ResponseObject getInactiveJobPost() {
+    Set<JobPostDTO> jobPostDTOS =
+            jobPostRepository.findAllByActiveIsFalse().stream()
+                    .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+                    .collect(Collectors.toSet());
+
+    return new ResponseObject(200, "Job Post inactive", jobPostDTOS);
+  }
+
+  public ResponseObject getActiveJobPostByCreateEmployerId(long employerId) {
+    Set<JobPostDTO> jobPostDTOS =
+            jobPostRepository.findAllActiveByCreatedEmployerId(employerId).stream()
+                    .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+                    .collect(Collectors.toSet());
+
+    return new ResponseObject(200, "Job Post active", jobPostDTOS);
+  }
+
+  @Override
+  public ResponseObject getInactiveJobPostByCreateEmployerId(long employerId) {
+    Set<JobPostDTO> jobPostDTOS =
+            jobPostRepository.findAllInactiveByCreatedEmployerId(employerId).stream()
+                    .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+                    .collect(Collectors.toSet());
+
+    return new ResponseObject(200, "Job Post inactive", jobPostDTOS);
+  }
+
+  @Override
   public ResponseObject getJobPostSavedByCandidateId(long candidateId) {
     Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
 

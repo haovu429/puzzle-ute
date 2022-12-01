@@ -1,9 +1,7 @@
 package hcmute.puzzle.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import hcmute.puzzle.accessHandler.CustomAccessDeniedHandler;
 import hcmute.puzzle.accessHandler.CustomAuthenticationHandler;
-import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.services.CustomOAuth2UserService;
@@ -12,29 +10,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 // @EnableJpaRepositories(basePackages="java")
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled=true)
 public class WebSecurityConfig {
   private static final String[] AUTH_WHITE_LIST = {
     "/v3/api-docs/**", "/swagger-ui/**", "/v2/api-docs/**", "/swagger-resources/**"
@@ -50,6 +43,14 @@ public class WebSecurityConfig {
   @Autowired UserRepository userRepository;
 
   @Autowired UserService userService;
+
+//  @Autowired
+//  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+//    auth.inMemoryAuthentication()
+//        .withUser("guest")
+//        .password(passwordEncoder().encode("guest_pass"))
+//        .authorities("GUEST");
+//  }
 
   @Bean
   public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -89,6 +90,12 @@ public class WebSecurityConfig {
   }
 
   @Bean
+  public HttpSessionEventPublisher httpSessionEventPublisher() {
+    return new HttpSessionEventPublisher();
+  }
+
+
+  @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.cors()
         .disable()
@@ -99,7 +106,7 @@ public class WebSecurityConfig {
         .accessDeniedHandler(accessDeniedHandler())
         .and()
         .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
         .and()
         .authorizeRequests()
         .antMatchers("/api/common/**")
@@ -154,6 +161,7 @@ public class WebSecurityConfig {
         .successHandler(oAuth2LoginSuccessHandler)
         .and()
         .httpBasic();
+
     http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }

@@ -31,6 +31,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   @Autowired private UserService customUserDetailsService;
   @Autowired private RedisUtils redisUtils;
 
+  private static final  String PREFIX ="Bearer ";
+
   @Override
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -117,16 +119,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     Optional<UserEntity> linkUser;
     String validUserEmail;
 
+    System.out.println(token);
+
     validUserEmail = checkToken(token);
     linkUser = userRepository.findByEmail(validUserEmail);
     if (linkUser.isEmpty()) {
-      throw new RuntimeException("Not found userId ");
+      throw new CustomException("Not found account, invalid token");
     }
 
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
+    return linkUser;
+  }
 
+  public Optional<UserEntity> getUserEntityFromRequest(HttpServletRequest request) {
+    Optional<UserEntity> linkUser;
+    String token = request.getHeader("Authorization");
+    linkUser = getUserEntityFromToken(token);
     return linkUser;
   }
 
@@ -137,8 +144,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private String tokenPreProcessing(String bearerToken) {
     // Check if bearer token is valid
-    if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-      return bearerToken.substring(7);
+    if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(PREFIX)) {
+      return bearerToken.substring(PREFIX.length());
     }
     return null;
   }

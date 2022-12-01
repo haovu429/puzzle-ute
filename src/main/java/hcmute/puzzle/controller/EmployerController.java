@@ -24,6 +24,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController
@@ -241,9 +242,45 @@ public class EmployerController {
 
   }
 
-  @GetMapping("/employer/get-application-by-job-post/{jobPostId}")
-  ResponseObject getApplicationByJobPost(@RequestHeader(value = "Authorization") String token, @PathVariable long jobPostId) {
+  @GetMapping("/employer/get-all-job-post-created-active")
+  ResponseObject getJobPostCreatedActive(@RequestHeader(value = "Authorization") String token) {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
+    // Check is Employer
+    if (linkUser.get().getEmployerEntity() == null) {
+      throw new CustomException("This account isn't Employer");
+    }
+
+    return jobPostService.getActiveJobPostByCreateEmployerId(linkUser.get().getId());
+
+  }
+
+  @GetMapping("/employer/get-all-job-post-created-inactive")
+  ResponseObject getJobPostCreatedInactive(HttpServletRequest request) {
+    //Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
+    // Check is Employer
+    if (linkUser.get().getEmployerEntity() == null) {
+      throw new CustomException("This account isn't Employer");
+    }
+
+    return jobPostService.getInactiveJobPostByCreateEmployerId(linkUser.get().getId());
+
+  }
+
+  @GetMapping("/employer/get-application-by-job-post/{jobPostId}")
+  ResponseObject getApplicationByJobPost(HttpServletRequest request, @PathVariable long jobPostId) {
+    //Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
 
     if (linkUser.isEmpty()) {
       throw new CustomException("Not found account");
