@@ -10,6 +10,7 @@ import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.model.CandidateFilter;
 import hcmute.puzzle.model.JobPostFilter;
+import hcmute.puzzle.model.ModelQuery;
 import hcmute.puzzle.model.SearchBetween;
 import hcmute.puzzle.repository.ApplicationRepository;
 import hcmute.puzzle.repository.CandidateRepository;
@@ -87,7 +88,7 @@ public class CommonController {
       searchBetweenList.add(searchForBudgetMin);
     }
 
-    if (jobPostFilter.getMinBudget() != null) {
+    if (jobPostFilter.getMaxBudget() != null) {
       SearchBetween searchForBudgetMax =
           new SearchBetween("maxBudget", null, Double.valueOf(jobPostFilter.getMaxBudget()));
       searchBetweenList.add(searchForBudgetMax);
@@ -101,40 +102,97 @@ public class CommonController {
     }
 
     Map<String, List<String>> fieldSearch = new HashMap<>();
-    Map<String, List<Long>> fieldSearchNumber = new HashMap<>();
+    Map<String, List<ModelQuery>> fieldSearchValue = new HashMap<>();
 
     if (jobPostFilter.getTitles() != null && !jobPostFilter.getTitles().isEmpty()) {
       fieldSearch.put("title", jobPostFilter.getTitles());
     }
 
-    if (jobPostFilter.getExperienceYear() != null && !jobPostFilter.getExperienceYear().isEmpty()) {
-      List<Long> expNums =
-          jobPostFilter.getExperienceYear().stream()
-              .map(exp -> Long.valueOf(exp))
-              .collect(Collectors.toList());
-      fieldSearchNumber.put("experienceYear", expNums);
-      // fieldSearch.put("experienceYear", jobPostFilter.getExperienceYear());
-    }
+//    if (jobPostFilter.getExperienceYear() != null && !jobPostFilter.getExperienceYear().isEmpty()) {
+//      List<Long> expNums =
+//          jobPostFilter.getExperienceYear().stream()
+//              .map(exp -> Long.valueOf(exp))
+//              .collect(Collectors.toList());
+//      fieldSearchValue.put(
+//          "experienceYear",
+//          expNums.stream()
+//              .map(
+//                  num ->
+//                      new ModelQuery(
+//                          ModelQuery.TYPE_QUERY_EQUAL,
+//                          ModelQuery.TYPE_ATTRIBUTE_NUMBER,
+//                          Long.valueOf(num)))
+//              .collect(Collectors.toList()));
+//    }
 
     if (jobPostFilter.getEmploymentTypes() != null
         && !jobPostFilter.getEmploymentTypes().isEmpty()) {
-      fieldSearch.put("employmentType", jobPostFilter.getEmploymentTypes());
+      fieldSearchValue.put(
+          "employmentType",
+          jobPostFilter.getEmploymentTypes().stream()
+              .map(
+                  employmentType ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE,
+                          ModelQuery.TYPE_ATTRIBUTE_STRING,
+                          employmentType))
+              .collect(Collectors.toList()));
     }
 
     if (jobPostFilter.getCities() != null && !jobPostFilter.getCities().isEmpty()) {
-      fieldSearch.put("city", jobPostFilter.getCities());
+      fieldSearchValue.put(
+          "city",
+          jobPostFilter.getCities().stream()
+              .map(
+                  city ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, city))
+              .collect(Collectors.toList()));
     }
 
     if (jobPostFilter.getPositions() != null && !jobPostFilter.getPositions().isEmpty()) {
-      fieldSearch.put("positions", jobPostFilter.getPositions());
+      fieldSearchValue.put(
+          "positions",
+          jobPostFilter.getPositions().stream()
+              .map(
+                  position ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, position))
+              .collect(Collectors.toList()));
     }
 
     if (jobPostFilter.getSkills() != null && !jobPostFilter.getSkills().isEmpty()) {
-      fieldSearch.put("skills", jobPostFilter.getSkills());
+      fieldSearchValue.put(
+          "skills",
+          jobPostFilter.getSkills().stream()
+              .map(
+                  skill ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, skill))
+              .collect(Collectors.toList()));
     }
 
+    //filer job post active
+    List<Boolean> booleanList = new ArrayList<>();
+    booleanList.add(false);
+
+    fieldSearchValue.put(
+        "isActive",
+        booleanList.stream()
+            .map(
+                boo ->
+                    new ModelQuery(
+                        ModelQuery.TYPE_QUERY_EQUAL, ModelQuery.TYPE_ATTRIBUTE_BOOLEAN, boo))
+            .collect(Collectors.toList()));
+
     List<String> commonFieldSearch = new ArrayList<>();
-    List<String> valueCommonFieldSearch = jobPostFilter.getOthers();
+    List<ModelQuery> valueCommonFieldSearch =
+        jobPostFilter.getOthers().stream()
+            .map(
+                other ->
+                    new ModelQuery(
+                        ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, other))
+            .collect(Collectors.toList());
 
     if (jobPostFilter.getOthers() != null && !jobPostFilter.getOthers().isEmpty()) {
       commonFieldSearch.add("description");
@@ -145,8 +203,7 @@ public class CommonController {
         searchService.filterObject(
             "JobPostEntity",
             searchBetweenList,
-            fieldSearch,
-            fieldSearchNumber,
+            fieldSearchValue,
             commonFieldSearch,
             valueCommonFieldSearch,
             jobPostFilter.getNoOfRecords(),
@@ -166,26 +223,62 @@ public class CommonController {
   @PostMapping("/common/candidate-filter")
   public ResponseObject filterCandidate(@RequestBody CandidateFilter candidateFilter) {
 
-    Map<String, List<String>> fieldSearch = new HashMap<>();
+    Map<String, List<ModelQuery>> fieldSearchValue = new HashMap<>();
     if (candidateFilter.getEducationLevels() != null
         && !candidateFilter.getEducationLevels().isEmpty()) {
-      fieldSearch.put("educationLevel", candidateFilter.getEducationLevels());
+      fieldSearchValue.put(
+          "educationLevel",
+          candidateFilter.getEducationLevels().stream()
+              .map(
+                  educationLevel ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE,
+                          ModelQuery.TYPE_ATTRIBUTE_STRING,
+                          educationLevel))
+              .collect(Collectors.toList()));
     }
 
     if (candidateFilter.getSkills() != null && !candidateFilter.getSkills().isEmpty()) {
-      fieldSearch.put("skills", candidateFilter.getSkills());
+      fieldSearchValue.put(
+          "skills",
+          candidateFilter.getSkills().stream()
+              .map(
+                  skill ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, skill))
+              .collect(Collectors.toList()));
     }
 
     if (candidateFilter.getPositions() != null && !candidateFilter.getPositions().isEmpty()) {
-      fieldSearch.put("positions", candidateFilter.getPositions());
+      fieldSearchValue.put(
+          "positions",
+          candidateFilter.getPositions().stream()
+              .map(
+                  position ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, position))
+              .collect(Collectors.toList()));
     }
 
     if (candidateFilter.getServices() != null && !candidateFilter.getServices().isEmpty()) {
-      fieldSearch.put("services", candidateFilter.getServices());
+      fieldSearchValue.put(
+          "services",
+          candidateFilter.getServices().stream()
+              .map(
+                  service ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, service))
+              .collect(Collectors.toList()));
     }
 
     List<String> commonFieldSearch = new ArrayList<>();
-    List<String> valueCommonFieldSearch = candidateFilter.getOthers();
+    List<ModelQuery> valueCommonFieldSearch =
+        candidateFilter.getOthers().stream()
+            .map(
+                other ->
+                    new ModelQuery(
+                        ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, other))
+            .collect(Collectors.toList());
 
     if (candidateFilter.getOthers() != null && !candidateFilter.getOthers().isEmpty()) {
       commonFieldSearch.add("introduction");
@@ -196,8 +289,7 @@ public class CommonController {
         searchService.filterObject(
             "CandidateEntity",
             null,
-            fieldSearch,
-            null,
+            fieldSearchValue,
             commonFieldSearch,
             valueCommonFieldSearch,
             candidateFilter.getNoOfRecords(),

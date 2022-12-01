@@ -1,5 +1,7 @@
 package hcmute.puzzle.services.Impl;
 
+import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.model.ModelQuery;
 import hcmute.puzzle.model.SearchBetween;
 import hcmute.puzzle.model.TableQuery;
 import hcmute.puzzle.services.SearchService;
@@ -31,27 +33,43 @@ public class SearchServiceImpl implements SearchService {
   }
 
   private String containmentCondition(String tableName, String fieldName, String text) {
-    String filter = filter = " " + tableName + "." + fieldName + " LIKE '%" + text + "%' ";
+    String filter = " " + tableName + "." + fieldName + " LIKE '%" + text + "%' ";
 
     return filter;
   }
 
-  private String equalCondition(String tableName, String fieldName, Long number) {
-    String filter = " " + tableName + "." + fieldName + " = " + number + " ";
+  private String equalCondition(String tableName, String fieldName, Object object) {
+    String filter = " " + tableName + "." + fieldName + " = " + String.valueOf(object) + " ";
     return filter;
   }
 
-  private String filterContain(String tableName, String fieldName, List<String> texts) {
-    if (texts == null || texts.isEmpty()) {
+  private String buildCondition(String tableName, String fieldName, ModelQuery modelQuery) {
+    if (modelQuery.getQueryType().equals(ModelQuery.TYPE_QUERY_LIKE)) {
+      if (modelQuery.getAttributeType().equals(ModelQuery.TYPE_ATTRIBUTE_STRING)) {
+        return containmentCondition(
+            tableName, fieldName, String.valueOf(modelQuery.getCompareValue()));
+      }
+    } else if (modelQuery.getQueryType().equals(ModelQuery.TYPE_QUERY_EQUAL)) {
+      if (modelQuery.getAttributeType().equals(ModelQuery.TYPE_ATTRIBUTE_NUMBER)
+          || modelQuery.getAttributeType().equals(ModelQuery.TYPE_ATTRIBUTE_BOOLEAN)) {
+        return equalCondition(
+            tableName, fieldName, modelQuery.getCompareValue());
+      }
+    }
+    throw new CustomException("Error filter job post");
+  }
+
+  private String filterContain(String tableName, String fieldName, List<ModelQuery> modelQueries) {
+    if (modelQueries == null || modelQueries.isEmpty()) {
       return "";
     }
 
     StringBuilder query = new StringBuilder(" AND ( ");
-    query.append(containmentCondition(tableName, fieldName, texts.get(0)));
+    query.append(buildCondition(tableName, fieldName, modelQueries.get(0)));
 
-    if (texts.size() > 1) {
-      for (int i = 1; i < texts.size(); i++) {
-        query.append(" OR " + containmentCondition(tableName, fieldName, texts.get(i)));
+    if (modelQueries.size() > 1) {
+      for (int i = 1; i < modelQueries.size(); i++) {
+        query.append(" OR " + buildCondition(tableName, fieldName, modelQueries.get(i)));
       }
     }
 
@@ -79,8 +97,11 @@ public class SearchServiceImpl implements SearchService {
 
   // Filter in one table with key of Other
   private String filterContainOtherOneTable(
-      String tableName, List<String> fieldNames, List<String> texts) {
-    if (texts == null || texts.isEmpty() || fieldNames == null || fieldNames.isEmpty()) {
+      String tableName, List<String> fieldNames, List<ModelQuery> modelQueries) {
+    if (modelQueries == null
+        || modelQueries.isEmpty()
+        || fieldNames == null
+        || fieldNames.isEmpty()) {
       return "";
     }
 
@@ -88,14 +109,14 @@ public class SearchServiceImpl implements SearchService {
     for (int i = 0; i < fieldNames.size(); i++) {
       // first field not " OR "
       if (i == 0) {
-        query.append(containmentCondition(tableName, fieldNames.get(i), texts.get(0)));
+        query.append(buildCondition(tableName, fieldNames.get(i), modelQueries.get(0)));
       } else {
-        query.append(" OR " + containmentCondition(tableName, fieldNames.get(i), texts.get(0)));
+        query.append(" OR " + buildCondition(tableName, fieldNames.get(i), modelQueries.get(0)));
       }
 
-      if (texts.size() > 1) {
-        for (int j = 1; j < texts.size(); j++) {
-          query.append(" OR " + containmentCondition(tableName, fieldNames.get(i), texts.get(j)));
+      if (modelQueries.size() > 1) {
+        for (int j = 1; j < modelQueries.size(); j++) {
+          query.append(" OR " + buildCondition(tableName, fieldNames.get(i), modelQueries.get(j)));
         }
       }
     }
@@ -103,8 +124,12 @@ public class SearchServiceImpl implements SearchService {
   }
 
   // Filter in multi table with key of Other
-  private String filterContainOther(List<TableQuery> tableQueryList, List<String> texts) {
-    if (tableQueryList == null || tableQueryList.isEmpty() || texts == null || texts.isEmpty()) {
+  private String filterContainOther(
+      List<TableQuery> tableQueryList, List<ModelQuery> modelQueries) {
+    if (tableQueryList == null
+        || tableQueryList.isEmpty()
+        || modelQueries == null
+        || modelQueries.isEmpty()) {
       return "";
     }
 
@@ -112,13 +137,15 @@ public class SearchServiceImpl implements SearchService {
     // first field not " OR "
     query.append(
         filterContainOtherOneTable(
-            tableQueryList.get(0).getName(), tableQueryList.get(0).getFieldQuery(), texts));
+            tableQueryList.get(0).getName(), tableQueryList.get(0).getFieldQuery(), modelQueries));
 
     for (int i = 1; i < tableQueryList.size(); i++) {
       query.append(
           " OR "
               + filterContainOtherOneTable(
-                  tableQueryList.get(i).getName(), tableQueryList.get(i).getFieldQuery(), texts));
+                  tableQueryList.get(i).getName(),
+                  tableQueryList.get(i).getFieldQuery(),
+                  modelQueries));
     }
 
     query.append(" ) ");
@@ -145,10 +172,9 @@ public class SearchServiceImpl implements SearchService {
       String objectName,
       // List<Long> manufacturer,
       List<SearchBetween> searchBetweens,
-      Map<String, List<String>> fieldSearchText,
-      Map<String, List<Long>> fieldSearchNumber,
+      Map<String, List<ModelQuery>> fieldSearchValue,
       List<String> commonFieldSearch,
-      List<String> valueCommonFieldSearch,
+      List<ModelQuery> valueCommonFieldSearch,
       int noOfRecords,
       int pageIndex,
       boolean sortById) {
@@ -182,17 +208,10 @@ public class SearchServiceImpl implements SearchService {
           });
     }
 
-    if (fieldSearchText != null) {
-      fieldSearchText.forEach(
+    if (fieldSearchValue != null) {
+      fieldSearchValue.forEach(
           (key, value) -> {
             strQuery.append(filterContain(objectAlias, key, value));
-          });
-    }
-
-    if (fieldSearchNumber != null) {
-      fieldSearchNumber.forEach(
-          (key, value) -> {
-            strQuery.append((filterEqualNumber(objectAlias, key, value)));
           });
     }
 

@@ -20,6 +20,7 @@ public class JobPostFilter {
     List<String> positions;
     List<String> skills;
     List<String> others;
+    boolean active;
     int noOfRecords = 6;
     int pageIndex = 0;
     boolean sortById = true;
