@@ -7,6 +7,8 @@ import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.JobPostEntity;
+import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.model.CandidateFilter;
 import hcmute.puzzle.model.JobPostFilter;
@@ -51,6 +53,8 @@ public class CommonController {
   @Autowired CompanyService companyService;
 
   @Autowired SearchService searchService;
+
+  @Autowired ExperienceService experienceService;
 
   @GetMapping("/common/job-post/get-all")
   ResponseObject getAllJobPost() {
@@ -351,4 +355,12 @@ public class CommonController {
   public ResponseObject getActiveJobPost() {
     return jobPostService.getActiveJobPost();
   }
+
+  @GetMapping("/common/get-experience-by-candidate-id/{id}")
+  ResponseObject getAllExperienceByCandidateId(
+          @PathVariable(value = "id")long id) {
+
+    return experienceService.getAllExperienceByCandidateId(id);
+  }
+
 }

@@ -23,7 +23,7 @@ public class CustomAuthenticationHandler implements AuthenticationEntryPoint {
       AuthenticationException authException)
       throws IOException, ServletException {
     DataResponse dataResponse = new DataResponse(DataResponse.ERROR_FORBIDDEN, authException.getMessage(), DataResponse.STATUS_BAD);
-    ResponseObject responseObject = new ResponseObject("401", 401, authException.getMessage());
+    ResponseObject responseObject = new ResponseObject("530", 530, authException.getMessage());
     // System.out.println(authException.getMessage());
     //responseObject.setMessage("Invalid token");
     //response.setStatus(401);
