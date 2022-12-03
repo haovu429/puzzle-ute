@@ -181,7 +181,7 @@ public class CommonController {
 
     // filer job post active
     List<Boolean> booleanList = new ArrayList<>();
-    booleanList.add(false);
+    booleanList.add(true);
 
     fieldSearchValue.put(
         "isActive",
