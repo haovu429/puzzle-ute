@@ -7,8 +7,6 @@ import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.JobPostEntity;
-import hcmute.puzzle.entities.UserEntity;
-import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.model.CandidateFilter;
 import hcmute.puzzle.model.JobPostFilter;
@@ -16,9 +14,11 @@ import hcmute.puzzle.model.ModelQuery;
 import hcmute.puzzle.model.SearchBetween;
 import hcmute.puzzle.repository.ApplicationRepository;
 import hcmute.puzzle.repository.CandidateRepository;
+import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
+import hcmute.puzzle.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +37,8 @@ public class CommonController {
   @Autowired EmployerService employerService;
 
   @Autowired JobPostService jobPostService;
+
+  @Autowired JobPostRepository jobPostRepository;
 
   @Autowired CandidateRepository candidateRepository;
 
@@ -83,29 +85,72 @@ public class CommonController {
 
   @PostMapping("/common/job-post-filter")
   public ResponseObject filterJobPost(@RequestBody(required = false) JobPostFilter jobPostFilter) {
-
+    Map<String, List<ModelQuery>> fieldSearchValue = new HashMap<>();
+    Map<String, List<ModelQuery>> fieldSearchValueSpecial = new HashMap<>();
     List<SearchBetween> searchBetweenList = new ArrayList<>();
+
+    //    if (jobPostFilter.getNumDayAgo() != -1 && jobPostFilter.getNumDayAgo() > 0) {
+    //      TimeUtil timeUtil = new TimeUtil();
+    //      Date timeLine = timeUtil.upDownTime_TimeUtil(new Date(), jobPostFilter.getNumDayAgo(),
+    // 0, 0);
+    //      SearchBetween searchForCreateTime =
+    //          new SearchBetween(
+    //              "createTime", new ModelQuery(
+    //                  ModelQuery.TYPE_QUERY_GREATER,
+    //                  ModelQuery.TYPE_ATTRIBUTE_DATE,TimeUtil.dateToString(timeLine,
+    // TimeUtil.FORMAT_TIME)), null);
+    //      searchBetweenList.add(searchForCreateTime);
+    //    }
+
+    if (jobPostFilter.getNumDayAgo() != -1 && jobPostFilter.getNumDayAgo() > 0) {
+      TimeUtil timeUtil = new TimeUtil();
+      Date timeLine = timeUtil.upDownTime_TimeUtil(new Date(), jobPostFilter.getNumDayAgo(), 0, 0);
+      List<ModelQuery> idJobCreateTimeGreater =
+          jobPostRepository.getJobPostIdByActiveAndLessThenCreatedTime(true, timeLine).stream()
+              .map(
+                  id ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_IN, ModelQuery.TYPE_ATTRIBUTE_NUMBER, id))
+              .collect(Collectors.toList());
+      System.out.println(idJobCreateTimeGreater.size());
+      fieldSearchValueSpecial.put("id", idJobCreateTimeGreater);
+    }
 
     if (jobPostFilter.getMinBudget() != null) {
       SearchBetween searchForBudgetMin =
-          new SearchBetween("minBudget", Double.valueOf(jobPostFilter.getMinBudget()), null);
+          new SearchBetween(
+              "minBudget",
+              new ModelQuery(
+                  ModelQuery.TYPE_QUERY_GREATER,
+                  ModelQuery.TYPE_ATTRIBUTE_NUMBER,
+                  Double.valueOf(jobPostFilter.getMinBudget())),
+              null);
       searchBetweenList.add(searchForBudgetMin);
     }
 
     if (jobPostFilter.getMaxBudget() != null) {
       SearchBetween searchForBudgetMax =
-          new SearchBetween("maxBudget", null, Double.valueOf(jobPostFilter.getMaxBudget()));
+          new SearchBetween(
+              "maxBudget",
+              null,
+              new ModelQuery(
+                  ModelQuery.TYPE_QUERY_LESS,
+                  ModelQuery.TYPE_ATTRIBUTE_NUMBER,
+                  Double.valueOf(jobPostFilter.getMaxBudget())));
       searchBetweenList.add(searchForBudgetMax);
     }
 
     if (jobPostFilter.getExperienceYear() != null && !jobPostFilter.getExperienceYear().isEmpty()) {
       SearchBetween searchForExperienceYearMin =
           new SearchBetween(
-              "experienceYear", null, Double.valueOf(jobPostFilter.getExperienceYear().get(0)));
+              "experienceYear",
+              null,
+              new ModelQuery(
+                  ModelQuery.TYPE_QUERY_LESS,
+                  ModelQuery.TYPE_ATTRIBUTE_NUMBER,
+                  Double.valueOf(jobPostFilter.getExperienceYear().get(0))));
       searchBetweenList.add(searchForExperienceYearMin);
     }
-
-    Map<String, List<ModelQuery>> fieldSearchValue = new HashMap<>();
 
     if (jobPostFilter.getTitles() != null && !jobPostFilter.getTitles().isEmpty()) {
       fieldSearchValue.put(
@@ -197,15 +242,16 @@ public class CommonController {
             .collect(Collectors.toList()));
 
     List<String> commonFieldSearch = new ArrayList<>();
-    List<ModelQuery> valueCommonFieldSearch =
-        jobPostFilter.getOthers().stream()
-            .map(
-                other ->
-                    new ModelQuery(
-                        ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, other))
-            .collect(Collectors.toList());
-
+    List<ModelQuery> valueCommonFieldSearch = null;
     if (jobPostFilter.getOthers() != null && !jobPostFilter.getOthers().isEmpty()) {
+      valueCommonFieldSearch =
+          jobPostFilter.getOthers().stream()
+              .map(
+                  other ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, other))
+              .collect(Collectors.toList());
+
       commonFieldSearch.add("description");
       commonFieldSearch.add("title");
     }
@@ -215,6 +261,7 @@ public class CommonController {
             "JobPostEntity",
             searchBetweenList,
             fieldSearchValue,
+            fieldSearchValueSpecial,
             commonFieldSearch,
             valueCommonFieldSearch,
             jobPostFilter.getNoOfRecords(),
@@ -301,6 +348,7 @@ public class CommonController {
             "CandidateEntity",
             null,
             fieldSearchValue,
+            null,
             commonFieldSearch,
             valueCommonFieldSearch,
             candidateFilter.getNoOfRecords(),
@@ -357,10 +405,8 @@ public class CommonController {
   }
 
   @GetMapping("/common/get-experience-by-candidate-id/{id}")
-  ResponseObject getAllExperienceByCandidateId(
-          @PathVariable(value = "id")long id) {
+  ResponseObject getAllExperienceByCandidateId(@PathVariable(value = "id") long id) {
 
     return experienceService.getAllExperienceByCandidateId(id);
   }
-
 }

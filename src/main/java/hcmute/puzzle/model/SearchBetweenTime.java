@@ -5,12 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SearchBetween {
+public class SearchBetweenTime {
     String fieldSearch;
-    ModelQuery min;
-    ModelQuery max;
+    Date startTime;
+    Date endTime;
 }

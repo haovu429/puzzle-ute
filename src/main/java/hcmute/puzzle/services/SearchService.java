@@ -12,6 +12,7 @@ public interface SearchService{
                        // List<Long> manufacturer,
                        List<SearchBetween> searchBetweens,
                        Map<String, List<ModelQuery>> fieldSearchValue,
+                       Map<String, List<ModelQuery>> valueSpecialAttributes,
                        List<String> commonFieldSearch,
                        List<ModelQuery> valueCommonFieldSearch,
                        int noOfRecords,

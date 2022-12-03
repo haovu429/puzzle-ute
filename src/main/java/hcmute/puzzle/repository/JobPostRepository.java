@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -44,12 +45,12 @@ public interface JobPostRepository extends JpaRepository<JobPostEntity, Long> {
   Set<JobPostEntity> findAllByActiveIsFalse();
 
   @Query(
-          "SELECT jp FROM JobPostEntity jp WHERE jp.isActive = TRUE AND jp.createdEmployer.id =:employerId")
-  Set<JobPostEntity> findAllActiveByCreatedEmployerId(@Param("employerId") long employerId);
+          "SELECT jp FROM JobPostEntity jp WHERE jp.isActive = :isActive AND jp.createdEmployer.id =:employerId")
+  Set<JobPostEntity> findAllByActiveAndCreatedEmployerId(@Param("isActive") boolean isActive, @Param("employerId") long employerId);
 
   @Query(
-          "SELECT jp FROM JobPostEntity jp WHERE jp.isActive = FALSE AND jp.createdEmployer.id =:employerId")
-  Set<JobPostEntity> findAllInactiveByCreatedEmployerId(@Param("employerId") long employerId);
+          "SELECT jp.id FROM JobPostEntity jp WHERE jp.isActive = :isActive AND jp.createTime >= :createTime")
+  List<Long> getJobPostIdByActiveAndLessThenCreatedTime(@Param("isActive") boolean isActive, @Param("createTime") Date createTime);
 
 //  @Query(
 //          "SELECT jp FROM JobPostEntity jp, CandidateEntity can WHERE can.id = :candidateId AND jp.id in can.savedJobPost")

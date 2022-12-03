@@ -52,8 +52,7 @@ public class SearchServiceImpl implements SearchService {
     } else if (modelQuery.getQueryType().equals(ModelQuery.TYPE_QUERY_EQUAL)) {
       if (modelQuery.getAttributeType().equals(ModelQuery.TYPE_ATTRIBUTE_NUMBER)
           || modelQuery.getAttributeType().equals(ModelQuery.TYPE_ATTRIBUTE_BOOLEAN)) {
-        return equalCondition(
-            tableName, fieldName, modelQuery.getCompareValue());
+        return equalCondition(tableName, fieldName, modelQuery.getCompareValue());
       }
     }
     throw new CustomException("Error filter job post");
@@ -153,18 +152,80 @@ public class SearchServiceImpl implements SearchService {
     return query.toString();
   }
 
-  private String filterBetweenValue(String objectAlias, String fieldName, Double min, Double max) {
+  private String filterBetweenValue(
+      String objectAlias, String fieldName, ModelQuery min, ModelQuery max) {
     String filter = "";
 
     if (min != null) {
-      filter = filter + " AND " + objectAlias + "." + fieldName + " >= " + min + " ";
+      if (min.getAttributeType().equals(ModelQuery.TYPE_ATTRIBUTE_DATE)) {
+        filter = filter + " AND " + objectAlias + "." + fieldName + " >= " + "03-12-2022" + " ";
+      } else {
+        filter =
+            filter
+                + " AND "
+                + objectAlias
+                + "."
+                + fieldName
+                + " >= "
+                + String.valueOf(min.getCompareValue())
+                + " ";
+      }
     }
 
     if (max != null) {
-      filter = filter + " AND " + objectAlias + "." + fieldName + " <= " + max + " ";
-    }
+      if (max.getAttributeType().equals(ModelQuery.TYPE_ATTRIBUTE_DATE)) {
 
+      } else {
+        filter =
+            filter
+                + " AND "
+                + objectAlias
+                + "."
+                + fieldName
+                + " <= "
+                + String.valueOf(max.getCompareValue())
+                + " ";
+      }
+    }
     return filter;
+  }
+
+  public String deleteLastSubString(String str, String lastSubString) {
+    if (lastSubString != null && !lastSubString.isEmpty()) {
+      int numOfLastCharacter = lastSubString.length();
+      if (numOfLastCharacter > str.length()) {
+        throw new CustomException("num of last character is greater string length");
+      }
+
+      if (str != null && str.length() > 0 && str.endsWith(lastSubString)) {
+
+        str = str.substring(0, str.length() - numOfLastCharacter);
+
+      }
+    }
+    return str;
+  }
+
+  public String selectInListValueSpecialAttribute(String objectAlias, String fieldName, List<ModelQuery> valueOfSpecialAttribute) {
+    String query = "";
+    if (fieldName != null && !fieldName.isEmpty()) {
+      query = " AND "  + objectAlias
+              + "."
+              + fieldName
+              + " IN (";
+      if (!valueOfSpecialAttribute.isEmpty()) {
+        String divisionSymbol = ", ";
+        for(ModelQuery value : valueOfSpecialAttribute) {
+          query = query + String.valueOf(value.getCompareValue()) + divisionSymbol;
+        }
+        query = deleteLastSubString(query,divisionSymbol);
+      } else {
+        query = query + " -1 ";
+      }
+
+      query = query + ") ";
+    }
+    return query;
   }
 
   @Override
@@ -173,6 +234,7 @@ public class SearchServiceImpl implements SearchService {
       // List<Long> manufacturer,
       List<SearchBetween> searchBetweens,
       Map<String, List<ModelQuery>> fieldSearchValue,
+      Map<String, List<ModelQuery>> valueSpecialAttributes,
       List<String> commonFieldSearch,
       List<ModelQuery> valueCommonFieldSearch,
       int noOfRecords,
@@ -213,6 +275,13 @@ public class SearchServiceImpl implements SearchService {
           (key, value) -> {
             strQuery.append(filterContain(objectAlias, key, value));
           });
+    }
+    if (valueSpecialAttributes != null) {
+      valueSpecialAttributes.forEach(
+              (key, value) -> {
+                strQuery.append(selectInListValueSpecialAttribute(objectAlias, key, value));
+              }
+      );
     }
 
     //    strQuery.append(filterContain(objectAlias, "screen", screen));

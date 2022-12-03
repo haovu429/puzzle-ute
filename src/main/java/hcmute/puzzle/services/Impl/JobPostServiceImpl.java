@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -180,7 +179,7 @@ public class JobPostServiceImpl implements JobPostService {
 
   public ResponseObject getActiveJobPostByCreateEmployerId(long employerId) {
     Set<JobPostDTO> jobPostDTOS =
-            jobPostRepository.findAllActiveByCreatedEmployerId(employerId).stream()
+            jobPostRepository.findAllByActiveAndCreatedEmployerId(true, employerId).stream()
                     .map(jobPostEntity -> converter.toDTO(jobPostEntity))
                     .collect(Collectors.toSet());
 
@@ -190,7 +189,7 @@ public class JobPostServiceImpl implements JobPostService {
   @Override
   public ResponseObject getInactiveJobPostByCreateEmployerId(long employerId) {
     Set<JobPostDTO> jobPostDTOS =
-            jobPostRepository.findAllInactiveByCreatedEmployerId(employerId).stream()
+            jobPostRepository.findAllByActiveAndCreatedEmployerId(false, employerId).stream()
                     .map(jobPostEntity -> converter.toDTO(jobPostEntity))
                     .collect(Collectors.toSet());
 
