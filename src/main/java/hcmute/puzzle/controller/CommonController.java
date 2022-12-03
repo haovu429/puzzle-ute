@@ -101,29 +101,36 @@ public class CommonController {
       searchBetweenList.add(searchForExperienceYearMin);
     }
 
-    Map<String, List<String>> fieldSearch = new HashMap<>();
     Map<String, List<ModelQuery>> fieldSearchValue = new HashMap<>();
 
     if (jobPostFilter.getTitles() != null && !jobPostFilter.getTitles().isEmpty()) {
-      fieldSearch.put("title", jobPostFilter.getTitles());
+      fieldSearchValue.put(
+          "title",
+          jobPostFilter.getTitles().stream()
+              .map(
+                  title ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, title))
+              .collect(Collectors.toList()));
     }
 
-//    if (jobPostFilter.getExperienceYear() != null && !jobPostFilter.getExperienceYear().isEmpty()) {
-//      List<Long> expNums =
-//          jobPostFilter.getExperienceYear().stream()
-//              .map(exp -> Long.valueOf(exp))
-//              .collect(Collectors.toList());
-//      fieldSearchValue.put(
-//          "experienceYear",
-//          expNums.stream()
-//              .map(
-//                  num ->
-//                      new ModelQuery(
-//                          ModelQuery.TYPE_QUERY_EQUAL,
-//                          ModelQuery.TYPE_ATTRIBUTE_NUMBER,
-//                          Long.valueOf(num)))
-//              .collect(Collectors.toList()));
-//    }
+    //    if (jobPostFilter.getExperienceYear() != null &&
+    // !jobPostFilter.getExperienceYear().isEmpty()) {
+    //      List<Long> expNums =
+    //          jobPostFilter.getExperienceYear().stream()
+    //              .map(exp -> Long.valueOf(exp))
+    //              .collect(Collectors.toList());
+    //      fieldSearchValue.put(
+    //          "experienceYear",
+    //          expNums.stream()
+    //              .map(
+    //                  num ->
+    //                      new ModelQuery(
+    //                          ModelQuery.TYPE_QUERY_EQUAL,
+    //                          ModelQuery.TYPE_ATTRIBUTE_NUMBER,
+    //                          Long.valueOf(num)))
+    //              .collect(Collectors.toList()));
+    //    }
 
     if (jobPostFilter.getEmploymentTypes() != null
         && !jobPostFilter.getEmploymentTypes().isEmpty()) {
@@ -172,7 +179,7 @@ public class CommonController {
               .collect(Collectors.toList()));
     }
 
-    //filer job post active
+    // filer job post active
     List<Boolean> booleanList = new ArrayList<>();
     booleanList.add(false);
 
