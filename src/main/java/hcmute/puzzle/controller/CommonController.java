@@ -140,7 +140,9 @@ public class CommonController {
       searchBetweenList.add(searchForBudgetMax);
     }
 
-    if (jobPostFilter.getExperienceYear() != null && !jobPostFilter.getExperienceYear().isEmpty()) {
+    if (jobPostFilter.getExperienceYear() != null
+        && !jobPostFilter.getExperienceYear().isEmpty()
+        && Double.valueOf(jobPostFilter.getExperienceYear().get(0)) > 0) {
       SearchBetween searchForExperienceYearMin =
           new SearchBetween(
               "experienceYear",
