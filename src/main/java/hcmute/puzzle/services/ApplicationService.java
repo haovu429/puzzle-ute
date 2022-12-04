@@ -16,5 +16,7 @@ public interface ApplicationService {
 
   ResponseObject getApplicationByJobPostId(long jobPostId);
 
+  ResponseObject getApplicationByJobPostIdAndCandidateId(long jobPostId, long candidateId);
+
   ResponseObject getApplicationAmount();
 }

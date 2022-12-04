@@ -124,6 +124,21 @@ public class ApplicationServiceImpl implements ApplicationService {
         200, "List application for job post id = " + jobPostId, applicationDTOS);
   }
 
+  public ResponseObject getApplicationByJobPostIdAndCandidateId(long jobPostId, long candidateId) {
+    if (!jobPostRepository.existsById(jobPostId)) {
+      throw new CustomException("Job Post isn't exists");
+    }
+
+    Optional<ApplicationEntity> applicationEntity =
+            applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPostId);
+    if(applicationEntity.isEmpty()) {
+      throw new CustomException("You have not applied for this job ");
+    }
+
+    return new ResponseObject(
+            200, "Application for job post id = " + jobPostId, converter.toDTO(applicationEntity.get()));
+  }
+
   @Override
   public ResponseObject getApplicationAmount() {
     long amount = applicationRepository.count();

@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @RestController
@@ -24,6 +25,7 @@ import java.util.*;
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class CandidateController {
 
+  @Autowired ApplicationService applicationService;
   @Autowired CandidateService candidateService;
 
   @Autowired UserRepository userRepository;
@@ -232,9 +234,9 @@ public class CandidateController {
       return new DataResponse(DataResponse.ERROR_INACTIVE, "You can't apply this jobPost. It isn't active", DataResponse.STATUS_CUSTOM_EXCEPTION);
     }
 
-    Set<ApplicationEntity> applications =
+    Optional<ApplicationEntity> application =
         applicationRepository.findApplicationByCanIdAndJobPostId(linkUser.get().getId(), postId);
-    if (!applications.isEmpty()) {
+    if (application.isPresent()) {
       //throw new CustomException("You applied for this job");
       return new DataResponse(DataResponse.ERROR_NOT_AGAIN, "You applied for this job", DataResponse.STATUS_NOT_AGAIN);
     }
@@ -261,12 +263,12 @@ public class CandidateController {
       throw new CustomException("This account isn't Candidate");
     }
 
-    Set<ApplicationEntity> applications =
+    Optional<ApplicationEntity> application =
         applicationRepository.findApplicationByCanIdAndJobPostId(linkUser.get().getId(), postId);
-    if (applications.isEmpty()) {
+    if (application.isPresent()) {
       throw new CustomException("You have not applied this JobPost or JobPost doesn't exist");
     }
-    applicationRepository.deleteAll(applications);
+    applicationRepository.delete(application.get());
 
     return new ResponseObject(200, "Cancel apply success", null);
   }
@@ -542,6 +544,28 @@ public class CandidateController {
     }
 
     return jobPostService.getJobPostSavedByCandidateId(linkUser.get().getId());
+  }
+
+  @GetMapping("/candidate/get-application-by-job-post-id-applied/{jobPostId}")
+  ResponseObject getApplicationByJobPost(HttpServletRequest request, @PathVariable long jobPostId) {
+    //Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
+    // Check is Employer
+    if (linkUser.get().getCandidateEntity() == null) {
+      throw new CustomException("This account isn't Candidate");
+    }
+
+    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+    if (jobPost.isEmpty()) {
+      throw new CustomException("Job post isn't exists");
+    }
+
+    return applicationService.getApplicationByJobPostIdAndCandidateId(jobPostId, linkUser.get().getId());
   }
 
   @GetMapping("/candidate/get-company-followed")
