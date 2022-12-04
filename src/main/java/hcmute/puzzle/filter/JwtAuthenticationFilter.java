@@ -31,25 +31,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   @Autowired private UserService customUserDetailsService;
   @Autowired private RedisUtils redisUtils;
 
+  private static final  String PREFIX ="Bearer ";
+
   @Override
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
-    //    response.setHeader("Access-Control-Allow-Origin", "*");
-    //    response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-    //    response.setHeader("Access-Control-Max-Age", "20000");
-    //    response.setHeader(
-    //        "Access-Control-Allow-Headers",
-    //        "x-requested-with, authorization, Content-Type, Authorization, credential,
-    // X-XSRF-TOKEN");
-    //
-    //    request.setAttribute("Access-Control-Allow-Origin", "*");
-    //    request.setAttribute("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-    //    request.setAttribute("Access-Control-Max-Age", "20000");
-    //    request.setAttribute(
-    //            "Access-Control-Allow-Headers",
-    //            "x-requested-with, authorization, Content-Type, Authorization, credential,
-    // X-XSRF-TOKEN");
+    response.setHeader("Access-Control-Allow-Origin", "*");
+    response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
+    response.setHeader("Access-Control-Max-Age", "20000");
+    response.setHeader(
+        "Access-Control-Allow-Headers",
+        "x-requested-with, authorization, Content-Type, Authorization, credential,X-XSRF-TOKEN");
+
+    request.setAttribute("Access-Control-Allow-Origin", "*");
+    request.setAttribute("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
+    request.setAttribute("Access-Control-Max-Age", "20000");
+    request.setAttribute(
+        "Access-Control-Allow-Headers",
+        "x-requested-with, authorization, Content-Type, Authorization, credential,X-XSRF-TOKEN");
     try {
       // get request token from header
       String jwt = getJwtFromRequest(request);
@@ -119,16 +119,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     Optional<UserEntity> linkUser;
     String validUserEmail;
 
+    System.out.println(token);
+
     validUserEmail = checkToken(token);
     linkUser = userRepository.findByEmail(validUserEmail);
     if (linkUser.isEmpty()) {
-      throw new RuntimeException("Not found userId ");
+      throw new CustomException("Not found account, invalid token");
     }
 
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
+    return linkUser;
+  }
 
+  public Optional<UserEntity> getUserEntityFromRequest(HttpServletRequest request) {
+    Optional<UserEntity> linkUser;
+    String token = request.getHeader("Authorization");
+    linkUser = getUserEntityFromToken(token);
     return linkUser;
   }
 
@@ -139,8 +144,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private String tokenPreProcessing(String bearerToken) {
     // Check if bearer token is valid
-    if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-      return bearerToken.substring(7);
+    if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(PREFIX)) {
+      return bearerToken.substring(PREFIX.length());
     }
     return null;
   }

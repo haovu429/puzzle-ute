@@ -36,6 +36,8 @@ public class AdminController {
 
   @Autowired UserService userService;
 
+  @Autowired ApplicationService applicationService;
+
   // Company
   @PostMapping("/admin/add-company")
   public ResponseObject createCompany(@RequestBody CompanyDTO companyDTO) {
@@ -88,6 +90,11 @@ public class AdminController {
     return userService.getAll();
   }
 
+  @GetMapping("/admin/get-account-by-id/{id}")
+  public ResponseObject getAllAccountById(@PathVariable(value = "id") long id) {
+    return userService.getOne(id);
+  }
+
   // Company
   @PostMapping("/admin/add-extra-info")
   public ResponseObject createExtraInfo(@RequestBody ExtraInfoDTO extraInfoDTO) {
@@ -119,4 +126,55 @@ public class AdminController {
     }
     return jobPostService.deactivateJobPost(id);
   }
+
+  @GetMapping("/admin/get-all-job-by-page")
+  public ResponseObject getJobPostByPage(
+          @RequestParam(value = "page", required = false) Integer page, @RequestParam(required = false) Integer numOfRecord) {
+    if (page == null) {
+      page = 0;
+    }
+
+    if (numOfRecord == null) {
+      numOfRecord = 10;
+    }
+    return jobPostService.getJobPostWithPage(page, numOfRecord);
+  }
+
+  @GetMapping("/admin/get-all-job-post")
+  public ResponseObject getAllJobPost() {
+    return jobPostService.getAll();
+  }
+
+  @PutMapping("/admin/company/{id}")
+  public ResponseObject updateCompany(@PathVariable Long id, @RequestBody CompanyDTO companyDTO) {
+    companyDTO.setId(id);
+    return companyService.update(companyDTO);
+    //return null;
+  }
+
+  @GetMapping("/admin/get-account-amount")
+  public ResponseObject getAccountAmount() {
+    return userService.getAccountAmount();
+  }
+
+  @GetMapping("/admin/get-job-post-amount")
+  public ResponseObject getJobPostAmount() {
+    return jobPostService.getJobPostAmount();
+  }
+
+  @GetMapping("/admin/get-application-amount")
+  public ResponseObject getApplicationAmount() {
+    return applicationService.getApplicationAmount();
+  }
+
+  @GetMapping("/admin/get-extra-info/{id}")
+  public ResponseObject getExtraInfoById(@PathVariable(value = "id")long id) {
+    return extraInfoService.getOneById(id);
+  }
+
+  @GetMapping("/admin/get-data-join-account-in-last-num-week/{numWeek}")
+  public ResponseObject getDataJoinAccountByNumWeek(@PathVariable(value = "numWeek")long numWeek) {
+    return userService.getListDataUserJoinLastNumWeeks(numWeek);
+  }
+
 }

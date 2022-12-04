@@ -23,9 +23,9 @@ public class JwtTokenProvider {
   public String generateToken(CustomUserDetails userDetails, long JWT_EXPIRATION) {
     Date now = new Date();
     Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
-    byte[] bytes = TextCodec.BASE64.decode(JWT_SECRET.getBytes().toString());
-    System.out.println(bytes);
-    System.out.println(JWT_SECRET.getBytes());
+    //byte[] bytes = TextCodec.BASE64.decode(JWT_SECRET.getBytes().toString());
+    //System.out.println(bytes);
+    //System.out.println(JWT_SECRET.getBytes());
 
     // Tạo chuỗi json web token từ id của user.
     return Jwts.builder()

@@ -79,6 +79,52 @@ public class AuthenticationController {
     }
   }
 
+//  public ResponseObject authenticateUserGoogle(
+//          @Validated @RequestBody ObjectNode objectNode,
+//          @RequestParam(value = "rememberMe", required = false) Boolean rememberMe) {
+//    try {
+//      // System.out.println("Da vao day");
+//      // String a = objectNode.get("email").toString();
+//      UserEntity user = userRepository.getByEmail(objectNode.get("email").asText());
+//      if (user != null) {
+//        Authentication authentication =
+//                authenticationManager.authenticate(
+//                        new UsernamePasswordAuthenticationToken(
+//                                objectNode.get("email").asText(), objectNode.get("password").asText()));
+//        //        Set in security context
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        Long JWT_EXPIRATION = (long) (60 * 60 * 24 * 1000); // 1 day
+//        if (rememberMe != null) {
+//          JWT_EXPIRATION *= 7; // 7 days
+//        }
+//        // get jwt token
+//        String jwt =
+//                tokenProvider.generateToken(
+//                        (CustomUserDetails) authentication.getPrincipal(), JWT_EXPIRATION);
+//
+//        // store token in redis
+//        redisUtils.set(user.getEmail(), jwt);
+//
+//        Set<String> roles =
+//                user.getRoles().stream().map(role -> role.getName()).collect(Collectors.toSet());
+//
+//        Map<String, Object> result = new HashMap<>();
+//        result.put("jwt", jwt);
+//        result.put("roles", roles);
+//
+//        return new ResponseObject(200, "Login success", result);
+//
+//      } else {
+//        return new ResponseObject("401", 200, "Login failed");
+//      }
+//    } catch (BadCredentialsException e) {
+//      throw new RuntimeException("Invalid username/password supplied");
+//    }
+//  }
+
+
+
   @GetMapping("/logout")
   public ResponseObject logout() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

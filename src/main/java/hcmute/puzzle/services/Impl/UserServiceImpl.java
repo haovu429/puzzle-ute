@@ -3,18 +3,20 @@ package hcmute.puzzle.services.Impl;
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
+import hcmute.puzzle.entities.RoleEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.model.DataStaticJoinAccount;
+import hcmute.puzzle.repository.RoleRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.services.UserService;
+import hcmute.puzzle.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +27,8 @@ public class UserServiceImpl implements UserService {
 
   @Autowired private PasswordEncoder passwordEncoder;
 
+  @Autowired private RoleRepository roleRepository;
+
   public boolean checkEmailExists(String email) {
     UserEntity user = userRepository.getUserByEmail(email);
     return user == null;
@@ -32,21 +36,15 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public ResponseObject save(UserDTO userDTO) {
-    //  hash password
-    userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
     // Cast DTO --> Entity
     UserEntity userEntity = converter.toEntity(userDTO);
-
-    // Check Role Input, Neu K tim thay Role ==> Cancel
-    //    if (userEntity.getRoles().size() == 0) {
-    //      throw new CustomException("Role not found");
-    //    }
-
     // Check Email Exists
     if (!checkEmailExists(userEntity.getEmail())) {
       throw new CustomException("Email already exists");
     }
+    //  hash password
+    userEntity.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
     UserDTO responseDTO = converter.toDTO(userEntity);
     // don't return password
@@ -60,35 +58,37 @@ public class UserServiceImpl implements UserService {
   public ResponseObject update(long id, UserDTO userDTO) {
     userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
+    Optional<UserEntity> oldUser = userRepository.findById(id);
+
+    if (oldUser.isEmpty()) {
+      throw new CustomException("This account isn't exists");
+    }
+
     UserEntity userEntity = converter.toEntity(userDTO);
 
-    if (userEntity.getRoles().size() == 0) {
-      throw new CustomException("Role not found");
-    } else {
-      UserEntity newUser =
-          userRepository
-              .findById(id)
-              .map(
-                  user -> {
-                    user.setUsername(userEntity.getUsername());
-                    user.setEmail(userEntity.getEmail());
-                    user.setAvatar(userEntity.getAvatar());
-                    user.setPhone(userEntity.getPhone());
-                    user.setOnline(userEntity.isOnline());
-                    user.setLastOnline(userEntity.getLastOnline());
-                    user.setActive(userEntity.isActive());
-                    user.setPassword(userEntity.getPassword());
-                    user.setRoles(userEntity.getRoles());
-                    return userRepository.save(user);
-                  })
-              .orElse(null);
+    UserEntity newUser =
+        userRepository
+            .findById(id)
+            .map(
+                user -> {
+                  user.setUsername(oldUser.get().getUsername());
+                  user.setEmail(oldUser.get().getEmail());
+                  user.setAvatar(userEntity.getAvatar());
+                  user.setPhone(userEntity.getPhone());
+                  // user.setOnline(userEntity.isOnline());
+                  // user.setLastOnline(userEntity.getLastOnline());
+                  user.setActive(oldUser.get().isActive());
+                  user.setPassword(oldUser.get().getPassword());
+                  user.setRoles(oldUser.get().getRoles());
+                  return userRepository.save(user);
+                })
+            .orElse(null);
 
-      if (newUser == null) {
-        throw new CustomException("User not found");
-      } else {
-        return new ResponseObject(
-            HttpStatus.OK.value(), "Update user success", converter.toDTO(newUser));
-      }
+    if (newUser == null) {
+      throw new CustomException("User not found");
+    } else {
+      return new ResponseObject(
+          HttpStatus.OK.value(), "Update user success", converter.toDTO(newUser));
     }
   }
 
@@ -106,13 +106,31 @@ public class UserServiceImpl implements UserService {
   @Override
   public ResponseObject getAll() {
     // Lay Tat Ca UserEntity
-    Set<UserDTO> userDTOS = userRepository.findAll().stream().map(userEntity -> {
-      UserDTO userDTO = converter.toDTO(userEntity);
-      userDTO.setPassword(null);
-      return userDTO;
-    }).collect(Collectors.toSet());
+    Set<UserDTO> userDTOS =
+        userRepository.findAll().stream()
+            .map(
+                userEntity -> {
+                  UserDTO userDTO = converter.toDTO(userEntity);
+                  userDTO.setPassword(null);
+                  return userDTO;
+                })
+            .collect(Collectors.toSet());
 
     return new ResponseObject(HttpStatus.OK.value(), "Get all user success", userDTOS);
+  }
+
+  @Override
+  public ResponseObject getOne(long id) {
+    boolean exists = userRepository.existsById(id);
+    if (!exists) {
+      throw new CustomException("Account isn't exists");
+    }
+    Optional<UserEntity> userEntity = userRepository.findById(id);
+    userEntity.get().getRoles().add(new RoleEntity("user"));
+    userRepository.save(userEntity.get());
+
+    return new ResponseObject(
+        HttpStatus.OK.value(), "User info", converter.toDTO(userEntity.get()));
   }
 
   @Override
@@ -127,20 +145,51 @@ public class UserServiceImpl implements UserService {
     }
   }
 
-//  @Override
-//  public ResponseObject getOne() {
-//    // Lay Tat Ca UserEntity
-//    List<UserEntity> userEntitys = userRepository.findAll();
-//    // Tao UserDTO de tra ve Json
-//    List<UserDTO> userDTOs = new ArrayList<>();
-//
-//    // Cast UserEntity --> UserDTO
-//    for (UserEntity i : userEntitys) {
-//      UserDTO user = converter.toDTO(i);
-//      userDTOs.add(user);
-//    }
-//    return new ResponseObject(HttpStatus.OK.value(), "Get all user success", userDTOs);
-//  }
+  @Override
+  public ResponseObject getAccountAmount() {
+    long count = userRepository.count();
+
+    return new ResponseObject(HttpStatus.OK.value(), "Account amount", count);
+  }
+
+  @Override
+  public ResponseObject getListDataUserJoinLastNumWeeks(long numWeek) {
+    Date timeline = new Date(); // khoi tao tg hien tai
+    // Date nextDate = new Date();
+    List<DataStaticJoinAccount> data = new ArrayList<>();
+    TimeUtil timeUtil = new TimeUtil();
+    for (int i = 0; i < numWeek; i++) {
+      Date backwardTime = timeUtil.upDownTime_TimeUtil(timeline, 7, 0, 0);
+      long count = userRepository.getCountUserJoinInTime(backwardTime, timeline);
+      //data.add(count);
+      DataStaticJoinAccount dataStaticJoinAccount = new DataStaticJoinAccount("Tuan " + (numWeek-i), count);
+      data.add(dataStaticJoinAccount);
+      System.out.println("Tuan " + (numWeek - i) + ": " + count);
+      timeline = backwardTime;
+    }
+
+    Collections.reverse(data);
+
+    return new ResponseObject(
+        HttpStatus.OK.value(),
+        "Data static for amount of join account in " + numWeek + " weeks",
+        data);
+  }
+
+  //  @Override
+  //  public ResponseObject getOne() {
+  //    // Lay Tat Ca UserEntity
+  //    List<UserEntity> userEntitys = userRepository.findAll();
+  //    // Tao UserDTO de tra ve Json
+  //    List<UserDTO> userDTOs = new ArrayList<>();
+  //
+  //    // Cast UserEntity --> UserDTO
+  //    for (UserEntity i : userEntitys) {
+  //      UserDTO user = converter.toDTO(i);
+  //      userDTOs.add(user);
+  //    }
+  //    return new ResponseObject(HttpStatus.OK.value(), "Get all user success", userDTOs);
+  //  }
 
   //  @Override
   //  public UserDetails loadUserByUsername(String email) {

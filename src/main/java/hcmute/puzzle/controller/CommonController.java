@@ -1,35 +1,28 @@
 package hcmute.puzzle.controller;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
-
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.CandidateDTO;
 import hcmute.puzzle.dto.JobPostDTO;
 import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.entities.CandidateEntity;
-import hcmute.puzzle.entities.JobAlertEntity;
 import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.model.CandidateFilter;
 import hcmute.puzzle.model.JobPostFilter;
+import hcmute.puzzle.model.ModelQuery;
 import hcmute.puzzle.model.SearchBetween;
 import hcmute.puzzle.repository.ApplicationRepository;
 import hcmute.puzzle.repository.CandidateRepository;
+import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
-import hcmute.puzzle.services.CandidateService;
-import hcmute.puzzle.services.ExtraInfoService;
-import hcmute.puzzle.services.JobPostService;
-import hcmute.puzzle.services.SearchService;
+import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
+import hcmute.puzzle.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -41,7 +34,11 @@ public class CommonController {
 
   @Autowired UserRepository userRepository;
 
+  @Autowired EmployerService employerService;
+
   @Autowired JobPostService jobPostService;
+
+  @Autowired JobPostRepository jobPostRepository;
 
   @Autowired CandidateRepository candidateRepository;
 
@@ -49,129 +46,367 @@ public class CommonController {
 
   @Autowired ApplicationRepository applicationRepository;
 
-  @Autowired
-  Converter converter;
+  @Autowired UserService userService;
 
-  @Autowired
-  ExtraInfoService extraInfoService;
+  @Autowired Converter converter;
 
-  @Autowired
-  SearchService searchService;
+  @Autowired ExtraInfoService extraInfoService;
 
-  @GetMapping("/job-post/get-all")
+  @Autowired CompanyService companyService;
+
+  @Autowired SearchService searchService;
+
+  @Autowired ExperienceService experienceService;
+
+  @GetMapping("/common/job-post/get-all")
   ResponseObject getAllJobPost() {
     return jobPostService.getAll();
   }
 
-  @GetMapping("/job-post/get-one/{jobPostId}")
+  @GetMapping("/common/job-post/get-one/{jobPostId}")
   ResponseObject getJobPostById(@PathVariable(value = "jobPostId") long jobPostId) {
     return jobPostService.getOne(jobPostId);
   }
 
-  @GetMapping("/get-all-extra-info-by-type")
+  @GetMapping("/common/company")
+  public ResponseObject getAllCompany() {
+    return companyService.getAll();
+  }
+
+  @GetMapping("/common/company/get-one-company/{id}")
+  public ResponseObject getOneCompany(@PathVariable Long id) {
+    return companyService.getOneById(id);
+  }
+
+  @GetMapping("/common/get-all-extra-info-by-type")
   public ResponseObject getAllExtraInfoByType(@RequestParam String type) {
     return extraInfoService.getByType(type);
   }
 
   @PostMapping("/common/job-post-filter")
   public ResponseObject filterJobPost(@RequestBody(required = false) JobPostFilter jobPostFilter) {
-
+    Map<String, List<ModelQuery>> fieldSearchValue = new HashMap<>();
+    Map<String, List<ModelQuery>> fieldSearchValueSpecial = new HashMap<>();
     List<SearchBetween> searchBetweenList = new ArrayList<>();
 
-    SearchBetween searchForBudgetMin = new SearchBetween("minBudget", Double.valueOf(jobPostFilter.getMinBudget()), null);
-    SearchBetween searchForExperienceYearMin = new SearchBetween("experienceYear", null, Double.valueOf(jobPostFilter.getExperienceYear()));
+    //    if (jobPostFilter.getNumDayAgo() != -1 && jobPostFilter.getNumDayAgo() > 0) {
+    //      TimeUtil timeUtil = new TimeUtil();
+    //      Date timeLine = timeUtil.upDownTime_TimeUtil(new Date(), jobPostFilter.getNumDayAgo(),
+    // 0, 0);
+    //      SearchBetween searchForCreateTime =
+    //          new SearchBetween(
+    //              "createTime", new ModelQuery(
+    //                  ModelQuery.TYPE_QUERY_GREATER,
+    //                  ModelQuery.TYPE_ATTRIBUTE_DATE,TimeUtil.dateToString(timeLine,
+    // TimeUtil.FORMAT_TIME)), null);
+    //      searchBetweenList.add(searchForCreateTime);
+    //    }
 
-    searchBetweenList.add(searchForBudgetMin);
-    searchBetweenList.add(searchForExperienceYearMin);
-
-    Map<String,List<String>> fieldSearch = new HashMap<>();
-    if (jobPostFilter.getTitles() != null && !jobPostFilter.getTitles().isEmpty()) {
-      fieldSearch.put("title", jobPostFilter.getTitles());
+    if (jobPostFilter.getNumDayAgo() != -1 && jobPostFilter.getNumDayAgo() > 0) {
+      TimeUtil timeUtil = new TimeUtil();
+      Date timeLine = timeUtil.upDownTime_TimeUtil(new Date(), jobPostFilter.getNumDayAgo(), 0, 0);
+      List<ModelQuery> idJobCreateTimeGreater =
+          jobPostRepository.getJobPostIdByActiveAndLessThenCreatedTime(true, timeLine).stream()
+              .map(
+                  id ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_IN, ModelQuery.TYPE_ATTRIBUTE_NUMBER, id))
+              .collect(Collectors.toList());
+      System.out.println(idJobCreateTimeGreater.size());
+      fieldSearchValueSpecial.put("id", idJobCreateTimeGreater);
     }
 
-    if (jobPostFilter.getEmploymentTypes() != null && !jobPostFilter.getEmploymentTypes().isEmpty()) {
-      fieldSearch.put("employmentType", jobPostFilter.getEmploymentTypes());
+    if (jobPostFilter.getMinBudget() != null) {
+      SearchBetween searchForBudgetMin =
+          new SearchBetween(
+              "minBudget",
+              new ModelQuery(
+                  ModelQuery.TYPE_QUERY_GREATER,
+                  ModelQuery.TYPE_ATTRIBUTE_NUMBER,
+                  Double.valueOf(jobPostFilter.getMinBudget())),
+              null);
+      searchBetweenList.add(searchForBudgetMin);
+    }
+
+    if (jobPostFilter.getMaxBudget() != null) {
+      SearchBetween searchForBudgetMax =
+          new SearchBetween(
+              "maxBudget",
+              null,
+              new ModelQuery(
+                  ModelQuery.TYPE_QUERY_LESS,
+                  ModelQuery.TYPE_ATTRIBUTE_NUMBER,
+                  Double.valueOf(jobPostFilter.getMaxBudget())));
+      searchBetweenList.add(searchForBudgetMax);
+    }
+
+    if (jobPostFilter.getExperienceYear() != null && !jobPostFilter.getExperienceYear().isEmpty()) {
+      SearchBetween searchForExperienceYearMin =
+          new SearchBetween(
+              "experienceYear",
+              null,
+              new ModelQuery(
+                  ModelQuery.TYPE_QUERY_LESS,
+                  ModelQuery.TYPE_ATTRIBUTE_NUMBER,
+                  Double.valueOf(jobPostFilter.getExperienceYear().get(0))));
+      searchBetweenList.add(searchForExperienceYearMin);
+    }
+
+    if (jobPostFilter.getTitles() != null && !jobPostFilter.getTitles().isEmpty()) {
+      fieldSearchValue.put(
+          "title",
+          jobPostFilter.getTitles().stream()
+              .map(
+                  title ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, title))
+              .collect(Collectors.toList()));
+    }
+
+    //    if (jobPostFilter.getExperienceYear() != null &&
+    // !jobPostFilter.getExperienceYear().isEmpty()) {
+    //      List<Long> expNums =
+    //          jobPostFilter.getExperienceYear().stream()
+    //              .map(exp -> Long.valueOf(exp))
+    //              .collect(Collectors.toList());
+    //      fieldSearchValue.put(
+    //          "experienceYear",
+    //          expNums.stream()
+    //              .map(
+    //                  num ->
+    //                      new ModelQuery(
+    //                          ModelQuery.TYPE_QUERY_EQUAL,
+    //                          ModelQuery.TYPE_ATTRIBUTE_NUMBER,
+    //                          Long.valueOf(num)))
+    //              .collect(Collectors.toList()));
+    //    }
+
+    if (jobPostFilter.getEmploymentTypes() != null
+        && !jobPostFilter.getEmploymentTypes().isEmpty()) {
+      fieldSearchValue.put(
+          "employmentType",
+          jobPostFilter.getEmploymentTypes().stream()
+              .map(
+                  employmentType ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE,
+                          ModelQuery.TYPE_ATTRIBUTE_STRING,
+                          employmentType))
+              .collect(Collectors.toList()));
     }
 
     if (jobPostFilter.getCities() != null && !jobPostFilter.getCities().isEmpty()) {
-      fieldSearch.put("city", jobPostFilter.getCities());
+      fieldSearchValue.put(
+          "city",
+          jobPostFilter.getCities().stream()
+              .map(
+                  city ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, city))
+              .collect(Collectors.toList()));
     }
 
     if (jobPostFilter.getPositions() != null && !jobPostFilter.getPositions().isEmpty()) {
-      fieldSearch.put("positions", jobPostFilter.getPositions());
+      fieldSearchValue.put(
+          "positions",
+          jobPostFilter.getPositions().stream()
+              .map(
+                  position ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, position))
+              .collect(Collectors.toList()));
     }
 
     if (jobPostFilter.getSkills() != null && !jobPostFilter.getSkills().isEmpty()) {
-      fieldSearch.put("skills", jobPostFilter.getSkills());
+      fieldSearchValue.put(
+          "skills",
+          jobPostFilter.getSkills().stream()
+              .map(
+                  skill ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, skill))
+              .collect(Collectors.toList()));
     }
 
-    List<String> commonFieldSearch = new ArrayList<>();
-    List<String> valueCommonFieldSearch = jobPostFilter.getOthers();
+    // filer job post active
+    List<Boolean> booleanList = new ArrayList<>();
+    booleanList.add(true);
 
+    fieldSearchValue.put(
+        "isActive",
+        booleanList.stream()
+            .map(
+                boo ->
+                    new ModelQuery(
+                        ModelQuery.TYPE_QUERY_EQUAL, ModelQuery.TYPE_ATTRIBUTE_BOOLEAN, boo))
+            .collect(Collectors.toList()));
+
+    List<String> commonFieldSearch = new ArrayList<>();
+    List<ModelQuery> valueCommonFieldSearch = null;
     if (jobPostFilter.getOthers() != null && !jobPostFilter.getOthers().isEmpty()) {
+      valueCommonFieldSearch =
+          jobPostFilter.getOthers().stream()
+              .map(
+                  other ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, other))
+              .collect(Collectors.toList());
+
       commonFieldSearch.add("description");
       commonFieldSearch.add("title");
     }
 
-    List<JobPostEntity> jobPostEntities = searchService.filterObject(
+    List<JobPostEntity> jobPostEntities =
+        searchService.filterObject(
             "JobPostEntity",
             searchBetweenList,
-            fieldSearch,
+            fieldSearchValue,
+            fieldSearchValueSpecial,
             commonFieldSearch,
             valueCommonFieldSearch,
             jobPostFilter.getNoOfRecords(),
             jobPostFilter.getPageIndex(),
             jobPostFilter.isSortById());
 
-    List<JobPostDTO> jobPostDTOS = jobPostEntities.stream().map(jobPost -> converter.toDTO(jobPost)).collect(Collectors.toList());
+    List<JobPostDTO> jobPostDTOS =
+        jobPostEntities.stream()
+            .map(jobPost -> converter.toDTO(jobPost))
+            .collect(Collectors.toList());
 
-    //JobPostFilter jobPostFilter1 = new JobPostFilter();
+    // JobPostFilter jobPostFilter1 = new JobPostFilter();
 
-    return new ResponseObject(200 , "Result for filter job post", jobPostDTOS);
+    return new ResponseObject(200, "Result for filter job post", jobPostDTOS);
   }
 
   @PostMapping("/common/candidate-filter")
-  public ResponseObject filterCandidate(@RequestBody(required = false) CandidateFilter candidateFilter) {
+  public ResponseObject filterCandidate(@RequestBody CandidateFilter candidateFilter) {
 
-    Map<String,List<String>> fieldSearch = new HashMap<>();
-    if (candidateFilter.getEducationLevels() != null && !candidateFilter.getEducationLevels().isEmpty()) {
-      fieldSearch.put("educationLevel", candidateFilter.getEducationLevels());
+    Map<String, List<ModelQuery>> fieldSearchValue = new HashMap<>();
+    if (candidateFilter.getEducationLevels() != null
+        && !candidateFilter.getEducationLevels().isEmpty()) {
+      fieldSearchValue.put(
+          "educationLevel",
+          candidateFilter.getEducationLevels().stream()
+              .map(
+                  educationLevel ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE,
+                          ModelQuery.TYPE_ATTRIBUTE_STRING,
+                          educationLevel))
+              .collect(Collectors.toList()));
     }
 
     if (candidateFilter.getSkills() != null && !candidateFilter.getSkills().isEmpty()) {
-      fieldSearch.put("skills", candidateFilter.getSkills());
+      fieldSearchValue.put(
+          "skills",
+          candidateFilter.getSkills().stream()
+              .map(
+                  skill ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, skill))
+              .collect(Collectors.toList()));
     }
 
     if (candidateFilter.getPositions() != null && !candidateFilter.getPositions().isEmpty()) {
-      fieldSearch.put("positions", candidateFilter.getPositions());
+      fieldSearchValue.put(
+          "positions",
+          candidateFilter.getPositions().stream()
+              .map(
+                  position ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, position))
+              .collect(Collectors.toList()));
     }
 
     if (candidateFilter.getServices() != null && !candidateFilter.getServices().isEmpty()) {
-      fieldSearch.put("services", candidateFilter.getServices());
+      fieldSearchValue.put(
+          "services",
+          candidateFilter.getServices().stream()
+              .map(
+                  service ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, service))
+              .collect(Collectors.toList()));
     }
 
     List<String> commonFieldSearch = new ArrayList<>();
-    List<String> valueCommonFieldSearch = candidateFilter.getOthers();
+    List<ModelQuery> valueCommonFieldSearch =
+        candidateFilter.getOthers().stream()
+            .map(
+                other ->
+                    new ModelQuery(
+                        ModelQuery.TYPE_QUERY_LIKE, ModelQuery.TYPE_ATTRIBUTE_STRING, other))
+            .collect(Collectors.toList());
 
     if (candidateFilter.getOthers() != null && !candidateFilter.getOthers().isEmpty()) {
       commonFieldSearch.add("introduction");
       commonFieldSearch.add("phoneNum");
     }
 
-    List<CandidateEntity> candidateEntity = searchService.filterObject(
+    List<CandidateEntity> candidateEntity =
+        searchService.filterObject(
             "CandidateEntity",
             null,
-            fieldSearch,
+            fieldSearchValue,
+            null,
             commonFieldSearch,
             valueCommonFieldSearch,
             candidateFilter.getNoOfRecords(),
             candidateFilter.getPageIndex(),
             candidateFilter.isSortById());
 
-    List<CandidateDTO> candidateDTOS = candidateEntity.stream().map(candidate -> converter.toDTO(candidate)).collect(Collectors.toList());
+    List<CandidateDTO> candidateDTOS =
+        candidateEntity.stream()
+            .map(candidate -> converter.toDTO(candidate))
+            .collect(Collectors.toList());
 
-    //CandidateFilter candidateFilter1 = new CandidateFilter();
+    // CandidateFilter candidateFilter1 = new CandidateFilter();
 
-    return new ResponseObject(200 , "Result for filter candidate", candidateDTOS);
+    return new ResponseObject(200, "Result for filter candidate", candidateDTOS);
+  }
+
+  @GetMapping("/common/get-all-extra-info")
+  public ResponseObject getAllExtraInfo() {
+    return extraInfoService.getAll();
+  }
+
+  @GetMapping("/common/employer/get-employer-by-id/{id}")
+  ResponseObject getById(@PathVariable long id) {
+    return employerService.getOne(id);
+  }
+
+  @PostMapping("/common/register")
+  public ResponseObject save(@RequestBody UserDTO user) {
+    Set<String> roleCodes = new HashSet<>();
+    roleCodes.add("user");
+
+    user.setRoleCodes(roleCodes);
+    return userService.save(user);
+  }
+
+  @GetMapping("/common/get-hot-job-post")
+  public ResponseObject getHotJobPost() {
+    return jobPostService.getHotJobPost();
+  }
+
+  @GetMapping("/common/get-job-post-due-soon")
+  public ResponseObject getJobPostDueSoon() {
+    return jobPostService.getJobPostDueSoon();
+  }
+
+  @GetMapping("/common/get-profile-candidate/{candidateId}")
+  ResponseObject getProfileCandidate(@PathVariable long candidateId) {
+    return candidateService.getOne(candidateId);
+  }
+
+  @GetMapping("/common/get-active-job-post")
+  public ResponseObject getActiveJobPost() {
+    return jobPostService.getActiveJobPost();
+  }
+
+  @GetMapping("/common/get-experience-by-candidate-id/{id}")
+  ResponseObject getAllExperienceByCandidateId(@PathVariable(value = "id") long id) {
+
+    return experienceService.getAllExperienceByCandidateId(id);
   }
 }

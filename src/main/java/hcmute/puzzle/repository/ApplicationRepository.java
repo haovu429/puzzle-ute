@@ -15,4 +15,9 @@ public interface ApplicationRepository extends JpaRepository<ApplicationEntity, 
       "SELECT a FROM ApplicationEntity a WHERE a.candidateEntity.id = :candidateId AND a.jobPostEntity.id = :jobPostId")
   Set<ApplicationEntity> findApplicationByCanIdAndJobPostId(
       @Param("candidateId") long candidateId, @Param("jobPostId") long jobPostId);
+
+  @Query(
+          "SELECT a FROM ApplicationEntity a WHERE a.jobPostEntity.id = :jobPostId")
+  Set<ApplicationEntity> findApplicationByJobPostId(@Param("jobPostId") long jobPostId);
+
 }

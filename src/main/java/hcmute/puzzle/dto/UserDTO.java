@@ -1,10 +1,15 @@
 package hcmute.puzzle.dto;
 
+import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.utils.Constant;
+import hcmute.puzzle.utils.Provider;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -41,6 +46,10 @@ public class UserDTO {
   private Date lastOnline;
 
   private boolean isActive = true;
+
+  private String provider;
+
+  private String fullName;
 
   private Set<String> roleCodes = new HashSet<>();
 }

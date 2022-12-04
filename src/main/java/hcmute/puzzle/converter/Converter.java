@@ -4,6 +4,7 @@ import hcmute.puzzle.dto.*;
 import hcmute.puzzle.entities.*;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.*;
+import hcmute.puzzle.utils.Provider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -69,6 +70,10 @@ public class Converter {
     //        Set<RoleEntity> roleEntities = dto.getRoles().stream().map(role -> toEntity(role))
     //                .collect(Collectors.toSet());
 
+    Provider provider = Provider.asProvider(dto.getProvider());
+    userEntity.setProvider(provider);
+    userEntity.setFullName(dto.getFullName());
+
     Set<RoleEntity> roleEntities = new HashSet<>();
     for (String code : dto.getRoleCodes()) {
       if (roleRepository.existsById(code)) {
@@ -105,7 +110,7 @@ public class Converter {
     applicationDTO.setNote(entity.getNote());
 
     if (entity.getCandidateEntity() != null) {
-      applicationDTO.setCandidateId(entity.getId());
+      applicationDTO.setCandidateId(entity.getCandidateEntity().getId());
     }
 
     if (entity.getJobPostEntity() != null) {
@@ -426,6 +431,7 @@ public class Converter {
     dto.setQuantity(entity.getQuantity());
     dto.setMinBudget(entity.getMinBudget());
     dto.setMaxBudget(entity.getMaxBudget());
+    dto.setCreateTime(entity.getCreateTime());
     dto.setDueTime(entity.getDueTime());
     dto.setWorkStatus(entity.getWorkStatus());
     dto.setBlind(entity.isBlind());
@@ -458,6 +464,7 @@ public class Converter {
     entity.setQuantity(dto.getQuantity());
     entity.setMinBudget(dto.getMinBudget());
     entity.setMaxBudget(dto.getMaxBudget());
+    entity.setCreateTime(dto.getCreateTime());
     entity.setDueTime(dto.getDueTime());
     entity.setWorkStatus(dto.getWorkStatus());
     entity.setBlind(dto.isBlind());

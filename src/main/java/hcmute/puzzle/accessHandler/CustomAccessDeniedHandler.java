@@ -2,6 +2,7 @@ package hcmute.puzzle.accessHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.response.DataResponse;
 import org.slf4j.Logger;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -27,7 +28,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
       throws IOException, ServletException {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     ResponseObject responseObject =
-        new ResponseObject("403", 200, accessDeniedException.getMessage());
+        new ResponseObject("403", DataResponse.STATUS_FORBIDDEN, accessDeniedException.getMessage());
 
     if (auth != null) {
       LOG.warn(
@@ -42,7 +43,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
               + request.getRequestURI());
     }
 
-    response.setStatus(200);
+    response.setStatus(403);
     response.setContentType("application/json");
     response.getWriter().write(objectMapper.writeValueAsString(responseObject));
   }

@@ -12,7 +12,15 @@ public interface UserService {
 
   ResponseObject getAll();
 
+  ResponseObject getOne(long id);
+
   ResponseObject getUserByAccount(String email, String password);
+
+  ResponseObject getAccountAmount();
+
+  ResponseObject getListDataUserJoinLastNumWeeks(long numWeek);
+
+  // void processOAuthPostLogin(String username);
 
   // UserDetails loadUserByUsername(String email);
 }

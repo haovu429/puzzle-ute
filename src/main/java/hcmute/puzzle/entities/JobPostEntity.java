@@ -3,6 +3,7 @@ package hcmute.puzzle.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -52,6 +53,11 @@ public class JobPostEntity {
 
   @Column(name = "max_budget")
   private long maxBudget;
+
+  @Column(name = "create_time")
+  @CreatedDate
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date createTime;
 
   @Column(name = "due_time")
   @Temporal(TemporalType.TIMESTAMP)

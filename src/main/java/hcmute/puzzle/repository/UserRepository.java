@@ -3,7 +3,9 @@ package hcmute.puzzle.repository;
 import hcmute.puzzle.entities.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.util.Date;
 import java.util.Optional;
 
 // @Scope(value = "singleton")
@@ -23,6 +25,13 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
   UserEntity getUserByAccount(String email, String password);
 
   Optional<UserEntity> findByEmail(String email);
+
+  @Query("SELECT u FROM UserEntity u WHERE u.username = :username")
+  UserEntity getUserByUsername(@Param("username") String username);
+
+  @Query(
+      "SELECT COUNT(u) FROM UserEntity u WHERE u.joinDate > :startTime AND u.joinDate <= :endTime")
+  long getCountUserJoinInTime(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
   UserEntity getByEmail(String email);
 }

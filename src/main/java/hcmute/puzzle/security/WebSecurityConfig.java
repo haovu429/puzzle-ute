@@ -3,11 +3,14 @@ package hcmute.puzzle.security;
 import hcmute.puzzle.accessHandler.CustomAccessDeniedHandler;
 import hcmute.puzzle.accessHandler.CustomAuthenticationHandler;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
+import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.services.CustomOAuth2UserService;
 import hcmute.puzzle.utils.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,11 +22,12 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 // @EnableJpaRepositories(basePackages="java")
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled=true)
 public class WebSecurityConfig {
   private static final String[] AUTH_WHITE_LIST = {
     "/v3/api-docs/**", "/swagger-ui/**", "/v2/api-docs/**", "/swagger-resources/**"
@@ -31,7 +35,22 @@ public class WebSecurityConfig {
 
   //    @Autowired
   //    private AuthEntryPointJwt unauthorizedHandler;
+
+  @Autowired CustomOAuth2UserService oauthUserService;
+
+  @Autowired OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+
+  @Autowired UserRepository userRepository;
+
   @Autowired UserService userService;
+
+//  @Autowired
+//  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+//    auth.inMemoryAuthentication()
+//        .withUser("guest")
+//        .password(passwordEncoder().encode("guest_pass"))
+//        .authorities("GUEST");
+//  }
 
   @Bean
   public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -71,6 +90,12 @@ public class WebSecurityConfig {
   }
 
   @Bean
+  public HttpSessionEventPublisher httpSessionEventPublisher() {
+    return new HttpSessionEventPublisher();
+  }
+
+
+  @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.cors()
         .disable()
@@ -81,21 +106,31 @@ public class WebSecurityConfig {
         .accessDeniedHandler(accessDeniedHandler())
         .and()
         .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
         .and()
         .authorizeRequests()
-        .antMatchers("/api/**")
+        .antMatchers("/api/common/**")
         .permitAll()
-        //        .antMatchers("/api/role/code/**")
-        //        .permitAll()
-        //        .antMatchers(AUTH_WHITE_LIST)
-        //        .permitAll()
-        //        .antMatchers("/api/user/**")
-        //        .permitAll()
+        .antMatchers("/api/role/code/**")
+        .permitAll()
+        .antMatchers(AUTH_WHITE_LIST)
+        .permitAll()
+        .antMatchers("/api/user/**")
+        .hasAuthority(Roles.USER.value)
         .antMatchers("/api/login/**")
         .permitAll()
         .antMatchers("/api/role/admin")
         .hasAnyAuthority(Roles.ADMIN.value)
+        .antMatchers("/api/candidate/**")
+        .hasAuthority(Roles.CANDIDATE.value)
+        .antMatchers("/api/employer/**")
+        .hasAuthority(Roles.EMPLOYER.value)
+        .antMatchers("/api/admin/**")
+        .hasAuthority(Roles.ADMIN.value)
+        .antMatchers("/api/init-db")
+        .permitAll()
+        .antMatchers("/oauth2/**")
+        .permitAll()
         //        .antMatchers("/api/auth/**")
         //        .permitAll()
         //        .antMatchers("/api/test/**")
@@ -104,13 +139,12 @@ public class WebSecurityConfig {
         //        .permitAll()
         .antMatchers("/swagger-ui/**", "/puzzle-api/**")
         .permitAll()
+        .antMatchers("/", "/login", "/oauth/**")
+        .permitAll()
         .anyRequest()
-        // .antMatchers("/**")
         .authenticated()
         .and()
         .formLogin()
-        .loginPage("/login")
-        .usernameParameter("email")
         .permitAll()
         .and()
         .rememberMe()
@@ -119,17 +153,25 @@ public class WebSecurityConfig {
         .logout()
         .permitAll()
         .and()
+        .oauth2Login()
+        .loginPage("/login")
+        .userInfoEndpoint()
+        .userService(oauthUserService)
+        .and()
+        .successHandler(oAuth2LoginSuccessHandler)
+        .and()
         .httpBasic();
+
     http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
 
-  //  @Bean
-  //  public WebSecurityCustomizer webSecurityCustomizer() {
-  //    return (web) ->
-  //        web.ignoring()
-  //            .antMatchers(
-  //                "/images/**", "/js/**", "/webjars/**", "/css/**", "/lib/**", "/favicon.ico");
-  //  }
+  //    @Bean
+  //    public WebSecurityCustomizer webSecurityCustomizer() {
+  //      return (web) ->
+  //          web.ignoring()
+  //              .antMatchers(
+  //                  "/images/**", "/js/**", "/webjars/**", "/css/**", "/lib/**", "/favicon.ico");
+  //    }
   // https://viblo.asia/p/securing-spring-boot-with-jwt-part-2-xac-thuc-nguoi-dung-dua-tren-du-lieu-trong-co-so-du-lieu-63vKjnJVK2R
 }

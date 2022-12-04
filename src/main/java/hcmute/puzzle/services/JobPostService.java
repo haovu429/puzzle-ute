@@ -15,6 +15,7 @@ public interface JobPostService {
   void validateJobPost(JobPostDTO jobPostDTO);
 
   ResponseObject getAll();
+  ResponseObject getJobPostWithPage(int pageNum, int numOfRecord);
 
   ResponseObject getCandidatesApplyJobPost(long jobPostId);
 
@@ -24,7 +25,21 @@ public interface JobPostService {
 
   ResponseObject getJobPostSavedByCandidateId(long candidateId);
 
+  ResponseObject getActiveJobPost();
+
+  ResponseObject getInactiveJobPost();
+
+  ResponseObject getActiveJobPostByCreateEmployerId(long employerId);
+
+  ResponseObject getInactiveJobPostByCreateEmployerId(long employerId);
+
   ResponseObject activateJobPost(long jobPostId);
 
   ResponseObject deactivateJobPost(long jobPostId);
+
+  ResponseObject getJobPostDueSoon();
+
+  ResponseObject getHotJobPost();
+
+  ResponseObject getJobPostAmount();
 }

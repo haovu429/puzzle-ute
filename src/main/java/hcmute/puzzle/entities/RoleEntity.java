@@ -22,6 +22,11 @@ public class RoleEntity {
   @Column(name = "name")
   private String name;
 
+  public RoleEntity(String code) {
+    this.code = code;
+    this.setName(code.toLowerCase());
+  }
+
   //  @ManyToMany(
   //      mappedBy = "roles",
   //      cascade = CascadeType.ALL) // mappeBy = List được định nghĩa bên UserEntity
