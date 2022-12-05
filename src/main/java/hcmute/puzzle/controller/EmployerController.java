@@ -10,6 +10,9 @@ import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
+import hcmute.puzzle.mail.MailObject;
+import hcmute.puzzle.mail.SendMail;
+import hcmute.puzzle.model.ResponseApplication;
 import hcmute.puzzle.repository.ApplicationRepository;
 import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
@@ -225,6 +228,67 @@ public class EmployerController {
     return applicationService.responseApplication(applicationId, result, note);
   }
 
+  @PostMapping("/employer/response-application-by-candidate-and-job-post")
+  ResponseObject responseApplicationByCandidateIdAndJobPostId(
+      @RequestBody ResponseApplication responseApplication,
+      @RequestHeader(value = "Authorization") String token) {
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    // Check is Employer
+    if (linkUser.get().getEmployerEntity() == null) {
+      throw new CustomException("This account isn't Employer");
+    }
+
+    Optional<ApplicationEntity> application =
+        applicationRepository.findApplicationByCanIdAndJobPostId(
+            responseApplication.getCandidateId(), responseApplication.getJobPostId());
+
+    if (application.isEmpty()) {
+      throw new CustomException("Application isn't exist");
+    }
+
+    if (application.get().getJobPostEntity().getCreatedEmployer().getId() != linkUser.get().getId()) {
+      throw new CustomException("You don't have rights for this application");
+    }
+
+    application.get().setNote(responseApplication.getNote());
+
+    String strResult = "ACCEPT";
+    if (!responseApplication.isResult()) {
+      strResult = "REJECT";
+    }
+
+    String contentMail =
+        "Result: "
+            + strResult
+            + "\nEmail HR contact: "
+            + responseApplication.getEmail()
+            + "\n"
+            + responseApplication.getNote();
+
+    MailObject mailObject =
+        new MailObject(
+                application.get().getCandidateEntity().getEmailContact(), responseApplication.getSubject(), contentMail);
+
+    Runnable myRunnable =
+        new Runnable() {
+          public void run() {
+            SendMail.sendMail(mailObject);
+          }
+        };
+
+    Thread thread = new Thread(myRunnable);
+    thread.start();
+
+    // return new ResponseObject(200, "Response success", new ResponseApplication());
+
+    return applicationService.responseApplicationByCandidateAndJobPost(
+        responseApplication.getCandidateId(),
+        responseApplication.getJobPostId(),
+        responseApplication.isResult(),
+        responseApplication.getNote());
+  }
+
   @GetMapping("/employer/get-all-job-post-created")
   ResponseObject getJobPostCreated(@RequestHeader(value = "Authorization") String token) {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
@@ -239,7 +303,6 @@ public class EmployerController {
     }
 
     return jobPostService.getJobPostCreatedByEmployerId(linkUser.get().getId());
-
   }
 
   @GetMapping("/employer/get-all-job-post-created-active")
@@ -256,12 +319,11 @@ public class EmployerController {
     }
 
     return jobPostService.getActiveJobPostByCreateEmployerId(linkUser.get().getId());
-
   }
 
   @GetMapping("/employer/get-all-job-post-created-inactive")
   ResponseObject getJobPostCreatedInactive(HttpServletRequest request) {
-    //Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    // Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
 
     if (linkUser.isEmpty()) {
@@ -274,12 +336,11 @@ public class EmployerController {
     }
 
     return jobPostService.getInactiveJobPostByCreateEmployerId(linkUser.get().getId());
-
   }
 
   @GetMapping("/employer/get-application-by-job-post/{jobPostId}")
   ResponseObject getApplicationByJobPost(HttpServletRequest request, @PathVariable long jobPostId) {
-    //Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    // Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
 
     if (linkUser.isEmpty()) {

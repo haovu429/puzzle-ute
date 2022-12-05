@@ -100,6 +100,21 @@ public class ApplicationServiceImpl implements ApplicationService {
     return new ResponseObject(200, "Response success", null);
   }
 
+  @Override
+  public ResponseObject responseApplicationByCandidateAndJobPost(
+      long candidateId, long joPostId, boolean isAccept, String note) {
+    Optional<ApplicationEntity> application =
+        applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, joPostId);
+    if (isAccept) {
+      application.get().setResult("ACCEPT");
+    } else {
+      application.get().setResult("REJECT");
+    }
+    application.get().setNote(note);
+    applicationRepository.save(application.get());
+    return new ResponseObject(200, "Response success", null);
+  }
+
   public ResponseObject getApplicationByJobPostId(long jobPostId) {
     if (!jobPostRepository.existsById(jobPostId)) {
       throw new CustomException("Job Post isn't exists");
@@ -130,13 +145,15 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     Optional<ApplicationEntity> applicationEntity =
-            applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPostId);
-    if(applicationEntity.isEmpty()) {
+        applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPostId);
+    if (applicationEntity.isEmpty()) {
       throw new CustomException("You have not applied for this job ");
     }
 
     return new ResponseObject(
-            200, "Application for job post id = " + jobPostId, converter.toDTO(applicationEntity.get()));
+        200,
+        "Application for job post id = " + jobPostId,
+        converter.toDTO(applicationEntity.get()));
   }
 
   @Override
