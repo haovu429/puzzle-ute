@@ -18,6 +18,6 @@ public class CompanyDTO {
   private boolean isActive = false;
 
   private Long createdEmployerId;
-  private List<Long> followingCandidateIds = new ArrayList<>();
-  private List<Long> jobPostIds = new ArrayList<>();
+  // private List<Long> followingCandidateIds = new ArrayList<>();
+  // private List<Long> jobPostIds = new ArrayList<>();
 }

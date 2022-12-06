@@ -265,7 +265,7 @@ public class CandidateController {
 
     Optional<ApplicationEntity> application =
         applicationRepository.findApplicationByCanIdAndJobPostId(linkUser.get().getId(), postId);
-    if (application.isPresent()) {
+    if (!application.isPresent()) {
       throw new CustomException("You have not applied this JobPost or JobPost doesn't exist");
     }
     applicationRepository.delete(application.get());
