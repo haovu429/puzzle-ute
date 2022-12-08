@@ -5,20 +5,21 @@ import hcmute.puzzle.dto.ApplicationDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.ApplicationEntity;
 import hcmute.puzzle.entities.CandidateEntity;
+import hcmute.puzzle.entities.EmployerEntity;
 import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.ApplicationRepository;
 import hcmute.puzzle.repository.CandidateRepository;
+import hcmute.puzzle.repository.EmployerRepository;
 import hcmute.puzzle.repository.JobPostRepository;
+import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 
   @Autowired JobPostRepository jobPostRepository;
   @Autowired Converter converter;
+
+  @Autowired EmployerRepository employerRepository;
 
   @Override
   public ResponseObject findById(Long id) {
@@ -139,6 +142,36 @@ public class ApplicationServiceImpl implements ApplicationService {
         200, "List application for job post id = " + jobPostId, applicationDTOS);
   }
 
+  public DataResponse getCandidateAppliedToJobPostIdAndResult(long jobPostId) {
+    if (!jobPostRepository.existsById(jobPostId)) {
+      throw new CustomException("Job Post isn't exists");
+    }
+
+    List<Map<String, Object>> response =
+        applicationRepository.findApplicationByJobPostId(jobPostId).stream()
+            .map(
+                application -> {
+                  // ApplicationDTO applicationDTO = converter.toDTO(application);
+                  Optional<CandidateEntity> candidate =
+                      candidateRepository.findById(application.getCandidateEntity().getId());
+                  if (candidate.isEmpty()) {
+                    throw new CustomException("Data candidate is wrong");
+                  }
+                  Map<String, Object> candidateAndResult = new HashMap<>();
+                  // applicationDTO.setCandidateDTO(converter.toDTO(candidate.get()));
+                  candidateAndResult.put("candidate", converter.toDTO(candidate.get()));
+                  if (application.getResult().equalsIgnoreCase("accept")) {
+                    candidateAndResult.put("result", true);
+                  } else {
+                    candidateAndResult.put("result", false);
+                  }
+
+                  return candidateAndResult;
+                })
+            .collect(Collectors.toList());
+    return new DataResponse(response);
+  }
+
   public ResponseObject getApplicationByJobPostIdAndCandidateId(long jobPostId, long candidateId) {
     if (!jobPostRepository.existsById(jobPostId)) {
       throw new CustomException("Job Post isn't exists");
@@ -161,5 +194,24 @@ public class ApplicationServiceImpl implements ApplicationService {
     long amount = applicationRepository.count();
 
     return new ResponseObject(200, "Application amount", amount);
+  }
+
+  @Override
+  public DataResponse getAmountApplicationToEmployer(long employerId) {
+    Optional<EmployerEntity> employerEntity = employerRepository.findById(employerId);
+    if (employerEntity.isEmpty()) {
+      throw new CustomException("Employer is not exists");
+    }
+    return new DataResponse(applicationRepository.getAmountApplicationToEmployer(employerId));
+  }
+
+  @Override
+  public DataResponse getAmountApplicationByJobPostId(long jobPostId) {
+    Optional<JobPostEntity> jobPostEntity = jobPostRepository.findById(jobPostId);
+    if (jobPostEntity.isEmpty()) {
+      throw new CustomException("Job Post is not exists");
+    }
+
+    return new DataResponse(applicationRepository.getAmountApplicationByJobPostId(jobPostId));
   }
 }

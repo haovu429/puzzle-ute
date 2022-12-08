@@ -16,6 +16,7 @@ import hcmute.puzzle.model.ResponseApplication;
 import hcmute.puzzle.repository.ApplicationRepository;
 import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.ApplicationService;
 import hcmute.puzzle.services.CompanyService;
 import hcmute.puzzle.services.EmployerService;
@@ -362,5 +363,50 @@ public class EmployerController {
     }
 
     return applicationService.getApplicationByJobPostId(jobPostId);
+  }
+
+  @GetMapping("/employer/get-candidate-and-result-by-job-post/{jobPostId}")
+  DataResponse getCandidateAndApplicationResultByJobPost(HttpServletRequest request, @PathVariable long jobPostId) {
+    // Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
+    // Check is Employer
+    if (linkUser.get().getEmployerEntity() == null) {
+      throw new CustomException("This account isn't Employer");
+    }
+
+    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+    if (jobPost.isEmpty()) {
+      throw new CustomException("Job post isn't exists");
+    }
+
+    if (jobPost.get().getCreatedEmployer().getId() != linkUser.get().getId()) {
+      throw new CustomException("You don't have rights for this job post");
+    }
+
+    return applicationService.getCandidateAppliedToJobPostIdAndResult(jobPostId);
+  }
+
+  // This API get amount application to one Employer by employer id
+  // , from all job post which this employer created
+  @GetMapping("/employer/get-amount-application-to-employer")
+  DataResponse getAmountApplicationToEmployer(HttpServletRequest request) {
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
+    // Check is Employer
+    if (linkUser.get().getEmployerEntity() == null) {
+      throw new CustomException("This account isn't Employer");
+    }
+
+    return applicationService.getAmountApplicationToEmployer(linkUser.get().getId());
   }
 }

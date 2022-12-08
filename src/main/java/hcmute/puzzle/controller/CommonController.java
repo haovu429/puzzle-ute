@@ -18,12 +18,14 @@ import hcmute.puzzle.repository.ApplicationRepository;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -57,6 +59,8 @@ public class CommonController {
   @Autowired CompanyService companyService;
 
   @Autowired SearchService searchService;
+
+  @Autowired ApplicationService applicationService;
 
   @Autowired ExperienceService experienceService;
 
@@ -417,6 +421,21 @@ public class CommonController {
   @GetMapping("/common/candidate-profile/{candidateId}")
   ResponseObject getCandidateProfile(@PathVariable(value = "candidateId") long candidateId) {
     return candidateService.getOne(candidateId);
+  }
+
+  @GetMapping("/common/get-amount-application-to-job-post/{jobPostId}")
+  DataResponse getAmountApplicationToEmployer(@PathVariable(value = "jobPostId")long jobPostId) {
+    return applicationService.getAmountApplicationByJobPostId(jobPostId);
+  }
+
+  @GetMapping("/common/get-job-post-amount")
+  public ResponseObject getJobPostAmount() {
+    return jobPostService.getJobPostAmount();
+  }
+
+  @GetMapping("/common/get-application-amount")
+  public ResponseObject getApplicationAmount() {
+    return applicationService.getApplicationAmount();
   }
 
 }

@@ -38,7 +38,7 @@ public class AdminController {
 
   @Autowired ApplicationService applicationService;
 
-  // Company
+  // Company, add new company
   @PostMapping("/admin/add-company")
   public ResponseObject createCompany(@RequestBody CompanyDTO companyDTO) {
     return companyService.save(companyDTO);
