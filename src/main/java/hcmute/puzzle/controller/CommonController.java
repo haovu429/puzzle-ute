@@ -7,6 +7,8 @@ import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.JobPostEntity;
+import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.model.CandidateFilter;
 import hcmute.puzzle.model.JobPostFilter;
@@ -16,12 +18,14 @@ import hcmute.puzzle.repository.ApplicationRepository;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -55,6 +59,8 @@ public class CommonController {
   @Autowired CompanyService companyService;
 
   @Autowired SearchService searchService;
+
+  @Autowired ApplicationService applicationService;
 
   @Autowired ExperienceService experienceService;
 
@@ -140,7 +146,9 @@ public class CommonController {
       searchBetweenList.add(searchForBudgetMax);
     }
 
-    if (jobPostFilter.getExperienceYear() != null && !jobPostFilter.getExperienceYear().isEmpty()) {
+    if (jobPostFilter.getExperienceYear() != null
+        && !jobPostFilter.getExperienceYear().isEmpty()
+        && Double.valueOf(jobPostFilter.getExperienceYear().get(0)) > 0) {
       SearchBetween searchForExperienceYearMin =
           new SearchBetween(
               "experienceYear",
@@ -409,4 +417,25 @@ public class CommonController {
 
     return experienceService.getAllExperienceByCandidateId(id);
   }
+
+  @GetMapping("/common/candidate-profile/{candidateId}")
+  ResponseObject getCandidateProfile(@PathVariable(value = "candidateId") long candidateId) {
+    return candidateService.getOne(candidateId);
+  }
+
+  @GetMapping("/common/get-amount-application-to-job-post/{jobPostId}")
+  DataResponse getAmountApplicationToEmployer(@PathVariable(value = "jobPostId")long jobPostId) {
+    return applicationService.getAmountApplicationByJobPostId(jobPostId);
+  }
+
+  @GetMapping("/common/get-job-post-amount")
+  public ResponseObject getJobPostAmount() {
+    return jobPostService.getJobPostAmount();
+  }
+
+  @GetMapping("/common/get-application-amount")
+  public ResponseObject getApplicationAmount() {
+    return applicationService.getApplicationAmount();
+  }
+
 }
