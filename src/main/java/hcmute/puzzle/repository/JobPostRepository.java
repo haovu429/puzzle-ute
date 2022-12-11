@@ -43,7 +43,7 @@ public interface JobPostRepository extends JpaRepository<JobPostEntity, Long> {
   @Query("SELECT COUNT(jp) FROM JobPostEntity jp WHERE jp.id IN (SELECT jps.id FROM UserEntity u INNER JOIN u.viewJobPosts jps WHERE u.id =:userId)")
   long getViewedJobPostAmountByUser(@Param("userId") long userId);
 
-  @Query("SELECT COUNT(usr) FROM UserEntity usr WHERE usr.id IN (SELECT u.id FROM JobPostEntity jp INNER JOIN jp.viewedUsers u WHERE jp.id =:jobPostId AND u.candidateEntity IS NOT NULL)")
+  @Query("SELECT COUNT(usr) FROM UserEntity usr WHERE usr.id IN (SELECT u.id FROM JobPostEntity jp INNER JOIN jp.viewedUsers u WHERE jp.id =:jobPostId AND u.candidateEntity.id IS NOT NULL)")
   long getViewedCandidateAmountByJobPostId(@Param("jobPostId") long jobPostId);
 
 
