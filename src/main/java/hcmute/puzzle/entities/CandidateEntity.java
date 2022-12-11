@@ -113,7 +113,7 @@ public class CandidateEntity implements Serializable {
   @JoinTable(
       name = "saved_job_post",
       joinColumns = @JoinColumn(name = "candidate_id"),
-      inverseJoinColumns = @JoinColumn(name = "company_id"))
+      inverseJoinColumns = @JoinColumn(name = "job_post_id"))
   private Set<JobPostEntity> savedJobPost = new HashSet<>();
 
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

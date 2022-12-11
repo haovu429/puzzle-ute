@@ -6,10 +6,13 @@ import hcmute.puzzle.dto.JobPostDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.JobPostEntity;
+import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.ApplicationRepository;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.JobPostRepository;
+import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.JobPostService;
 import hcmute.puzzle.utils.CustomNullsFirstInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,9 @@ public class JobPostServiceImpl implements JobPostService {
   @Autowired CandidateRepository candidateRepository;
 
   @Autowired ApplicationRepository applicationRepository;
+
+  @Autowired
+  UserRepository userRepository;
 
   public ResponseObject add(JobPostDTO jobPostDTO) {
 
@@ -275,5 +281,30 @@ public class JobPostServiceImpl implements JobPostService {
     long amount = jobPostRepository.count();
 
     return new ResponseObject(200, "Job Post amount", amount);
+  }
+
+  @Override
+  public DataResponse getViewedJobPostAmountByUserId(long userId) {
+    long amount = jobPostRepository.getViewedJobPostAmountByUser(userId);
+
+    return new DataResponse(amount);
+  }
+
+  @Override
+  public DataResponse viewJobPost(long userId, long jobPostId) {
+    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+    if (jobPost.isEmpty()) {
+      throw new CustomException("Cannot find job post with id = " + jobPostId);
+    }
+
+    Optional<UserEntity> userEntity = userRepository.findById(userId);
+    if (userEntity.isEmpty()) {
+      throw new CustomException("Not found user");
+    }
+
+    jobPost.get().getViewedUsers().add(userEntity.get());
+    jobPostRepository.save(jobPost.get());
+
+    return new DataResponse(null);
   }
 }

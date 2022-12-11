@@ -17,42 +17,48 @@ public interface JobPostRepository extends JpaRepository<JobPostEntity, Long> {
   Set<CandidateEntity> getCandidateApplyJobPost(@Param("jobPostId") long jobPostId);
 
   @Query(
-          "SELECT jp FROM JobPostEntity jp WHERE jp.id in (SELECT a.jobPostEntity.id FROM ApplicationEntity a WHERE a.candidateEntity.id = :candidateId)")
+      "SELECT jp FROM JobPostEntity jp WHERE jp.id in (SELECT a.jobPostEntity.id FROM ApplicationEntity a WHERE a.candidateEntity.id = :candidateId)")
   Set<JobPostEntity> getJobPostCandidateApplied(@Param("candidateId") long candidateId);
 
   @Query(
       "SELECT jp FROM JobPostEntity jp, ApplicationEntity ap, CandidateEntity can WHERE can.id = :candidateId AND ap.candidateEntity.id = can.id AND ap.jobPostEntity.id = jp.id")
   Set<JobPostEntity> findAllByAppliedCandidateId(@Param("candidateId") long candidateId);
 
-  @Query(
-          "SELECT jp FROM JobPostEntity jp WHERE jp.createdEmployer.id = :employerId")
+  @Query("SELECT jp FROM JobPostEntity jp WHERE jp.createdEmployer.id = :employerId")
   Set<JobPostEntity> findAllByCreatedEmployerId(@Param("employerId") long employerId);
 
-  @Query(
-          "SELECT jp FROM JobPostEntity jp ORDER BY jp.dueTime DESC NULLS LAST ")
+  @Query("SELECT jp FROM JobPostEntity jp ORDER BY jp.dueTime DESC NULLS LAST ")
   Set<JobPostEntity> getJobPostDueSoon();
 
-  @Query(
-          "SELECT jp FROM JobPostEntity jp ORDER BY jp.createTime ASC NULLS LAST")
+  @Query("SELECT jp FROM JobPostEntity jp ORDER BY jp.createTime ASC NULLS LAST")
   Set<JobPostEntity> getHotJobPost();
 
-  @Query(
-          "SELECT jp FROM JobPostEntity jp WHERE jp.isActive = TRUE")
+  @Query("SELECT jp FROM JobPostEntity jp WHERE jp.isActive = TRUE")
   Set<JobPostEntity> findAllByActiveIsTrue();
 
-  @Query(
-          "SELECT jp FROM JobPostEntity jp WHERE jp.isActive = FALSE")
+  @Query("SELECT jp FROM JobPostEntity jp WHERE jp.isActive = FALSE")
   Set<JobPostEntity> findAllByActiveIsFalse();
 
-  @Query(
-          "SELECT jp FROM JobPostEntity jp WHERE jp.isActive = :isActive AND jp.createdEmployer.id =:employerId")
-  Set<JobPostEntity> findAllByActiveAndCreatedEmployerId(@Param("isActive") boolean isActive, @Param("employerId") long employerId);
+  // https://stackoverflow.com/questions/13350858/count-the-number-of-rows-in-many-to-many-relationships-in-hibernate
+  @Query("SELECT COUNT(jp) FROM JobPostEntity jp WHERE jp.id IN (SELECT jps.id FROM UserEntity u INNER JOIN u.viewJobPosts jps WHERE u.id =:userId)")
+  long getViewedJobPostAmountByUser(@Param("userId") long userId);
+
+//  @Query("SELECT COUNT(jp) FROM JobPostEntity jp WHERE jp.id IN (SELECT jps.id FROM UserEntity u INNER JOIN u.viewJobPosts jps WHERE u.id =:userId AND u.candidateEntity != NULL)")
+//  long getViewedJobPostAmountByUser(@Param("userId") long userId);
+
 
   @Query(
-          "SELECT jp.id FROM JobPostEntity jp WHERE jp.isActive = :isActive AND jp.createTime >= :createTime")
-  List<Long> getJobPostIdByActiveAndLessThenCreatedTime(@Param("isActive") boolean isActive, @Param("createTime") Date createTime);
+      "SELECT jp FROM JobPostEntity jp WHERE jp.isActive = :isActive AND jp.createdEmployer.id =:employerId")
+  Set<JobPostEntity> findAllByActiveAndCreatedEmployerId(
+      @Param("isActive") boolean isActive, @Param("employerId") long employerId);
 
-//  @Query(
-//          "SELECT jp FROM JobPostEntity jp, CandidateEntity can WHERE can.id = :candidateId AND jp.id in can.savedJobPost")
-//  Set<JobPostEntity> findAllBySavedCandidateId(@Param("candidateId") long candidateId);
+  @Query(
+      "SELECT jp.id FROM JobPostEntity jp WHERE jp.isActive = :isActive AND jp.createTime >= :createTime")
+  List<Long> getJobPostIdByActiveAndLessThenCreatedTime(
+      @Param("isActive") boolean isActive, @Param("createTime") Date createTime);
+
+  //  @Query(
+  //          "SELECT jp FROM JobPostEntity jp, CandidateEntity can WHERE can.id = :candidateId AND
+  // jp.id in can.savedJobPost")
+  //  Set<JobPostEntity> findAllBySavedCandidateId(@Param("candidateId") long candidateId);
 }
