@@ -246,6 +246,9 @@ public class CandidateController {
     applicationEntity.setJobPostEntity(jobPost.get());
     applicationRepository.save(applicationEntity);
 
+    jobPost.get().getViewedUsers().add(linkUser.get());
+    jobPostRepository.save(jobPost.get());
+
     return new DataResponse("Apply success");
   }
 

@@ -248,7 +248,8 @@ public class EmployerController {
       throw new CustomException("Application isn't exist");
     }
 
-    if (application.get().getJobPostEntity().getCreatedEmployer().getId() != linkUser.get().getId()) {
+    if (application.get().getJobPostEntity().getCreatedEmployer().getId()
+        != linkUser.get().getId()) {
       throw new CustomException("You don't have rights for this application");
     }
 
@@ -269,7 +270,9 @@ public class EmployerController {
 
     MailObject mailObject =
         new MailObject(
-                application.get().getCandidateEntity().getEmailContact(), responseApplication.getSubject(), contentMail);
+            application.get().getCandidateEntity().getEmailContact(),
+            responseApplication.getSubject(),
+            contentMail);
 
     Runnable myRunnable =
         new Runnable() {
@@ -366,7 +369,8 @@ public class EmployerController {
   }
 
   @GetMapping("/employer/get-candidate-and-result-by-job-post/{jobPostId}")
-  DataResponse getCandidateAndApplicationResultByJobPost(HttpServletRequest request, @PathVariable long jobPostId) {
+  DataResponse getCandidateAndApplicationResultByJobPost(
+      HttpServletRequest request, @PathVariable long jobPostId) {
     // Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
 
@@ -408,5 +412,33 @@ public class EmployerController {
     }
 
     return applicationService.getAmountApplicationToEmployer(linkUser.get().getId());
+  }
+
+  @GetMapping("/employer/get-application-rate-of-job-post/{jobPostId}")
+  DataResponse getApplicationRateOfJobPost(
+      HttpServletRequest request, @PathVariable(value = "jobPostId") long jobPostId) {
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
+    // Check is Employer
+    if (linkUser.get().getEmployerEntity() == null) {
+      throw new CustomException("This account isn't Employer");
+    }
+
+    // Check have rights
+    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+    if (jobPost.isEmpty()) {
+      throw new CustomException("Job post isn't exists");
+    }
+
+    if (jobPost.get().getCreatedEmployer().getId() != linkUser.get().getId()) {
+      throw new CustomException("You don't have rights for this job post");
+    }
+
+    return jobPostService.getApplicationRateByJobPostId(jobPostId);
   }
 }

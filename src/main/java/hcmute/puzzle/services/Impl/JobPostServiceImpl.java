@@ -307,4 +307,25 @@ public class JobPostServiceImpl implements JobPostService {
 
     return new DataResponse(null);
   }
+
+  @Override
+  public DataResponse getApplicationRateByJobPostId(long jobPostId) {
+    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+    if (jobPost.isEmpty()) {
+      throw new CustomException("Cannot find job post with id = " + jobPostId);
+    }
+
+    double rate = 0; // mac dinh, hoi sai neu view = 0 và application > 0
+    long viewOfCandidateAmount = jobPostRepository.getViewedCandidateAmountByJobPostId(jobPostId);
+    long applicationOfCandidateAmount = applicationRepository.getAmountApplicationByJobPostId(jobPostId);
+
+    if (viewOfCandidateAmount != 0 && viewOfCandidateAmount >= applicationOfCandidateAmount) {
+      rate = Double.valueOf(applicationOfCandidateAmount)/viewOfCandidateAmount;
+      rate = rate * 100; // doi ti le ra phan tram
+      // lam tron 2 chu so thap phan
+      rate = Math.round(rate * 100.0) / 100.0;
+    }
+
+    return new DataResponse(rate);
+  }
 }

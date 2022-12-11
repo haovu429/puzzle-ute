@@ -47,4 +47,6 @@ public interface JobPostService {
   DataResponse getViewedJobPostAmountByUserId(long userId);
 
   DataResponse viewJobPost(long userId, long jobPostId);
+
+  DataResponse getApplicationRateByJobPostId(long jobPostId);
 }
