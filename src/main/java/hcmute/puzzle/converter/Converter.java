@@ -147,6 +147,7 @@ public class Converter {
     dto.setId(entity.getId());
     dto.setFirstName(entity.getFirstName());
     dto.setLastName(entity.getLastName());
+    dto.setEmailContact(entity.getEmailContact());
     dto.setPhoneNum(entity.getPhoneNum());
     dto.setIntroduction(entity.getIntroduction());
     dto.setEducationLevel(entity.getEducationLevel());
@@ -176,6 +177,7 @@ public class Converter {
     entity.setId(dto.getId());
     entity.setFirstName(dto.getFirstName());
     entity.setLastName(dto.getLastName());
+    entity.setEmailContact(dto.getEmailContact());
     entity.setPhoneNum(dto.getPhoneNum());
     entity.setIntroduction(dto.getIntroduction());
     entity.setEducationLevel(dto.getEducationLevel());

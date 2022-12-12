@@ -1,6 +1,7 @@
 package hcmute.puzzle.services;
 
 import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.response.DataResponse;
 import org.springframework.data.domain.Pageable;
 
 public interface ApplicationService {
@@ -16,5 +17,15 @@ public interface ApplicationService {
 
   ResponseObject getApplicationByJobPostId(long jobPostId);
 
+  ResponseObject getApplicationByJobPostIdAndCandidateId(long jobPostId, long candidateId);
+
+  ResponseObject responseApplicationByCandidateAndJobPost(long candidateId, long joPostId, boolean isAccept, String note);
+
   ResponseObject getApplicationAmount();
+
+  DataResponse getAmountApplicationToEmployer(long employerId);
+
+  DataResponse getAmountApplicationByJobPostId(long jobPostId);
+
+  DataResponse getCandidateAppliedToJobPostIdAndResult(long jobPostId);
 }

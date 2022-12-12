@@ -86,6 +86,9 @@ public class UserEntity {
   @OneToMany(mappedBy = "userEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   private Set<NotificationEntity> notificationEntities = new HashSet<>();
 
+  @ManyToMany(mappedBy = "viewedUsers", cascade = CascadeType.DETACH)
+  private Set<JobPostEntity> viewJobPosts = new HashSet<>();
+
 
 }
 

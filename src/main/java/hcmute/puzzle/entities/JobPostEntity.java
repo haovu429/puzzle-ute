@@ -87,11 +87,21 @@ public class JobPostEntity {
   @Column(name = "positions", columnDefinition = "TEXT")
   private String positions;
 
+  @Column(name = "views")
+  private long views = 0;
+
   @Column(name = "is_active")
   private boolean isActive = false;
 
   @OneToMany(mappedBy = "jobPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<ApplicationEntity> applicationEntities = new HashSet<>();
+
+  @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  @JoinTable(
+          name = "viewed_user",
+          joinColumns = @JoinColumn(name = "job_post_id"),
+          inverseJoinColumns = @JoinColumn(name = "user_id"))
+  private Set<UserEntity> viewedUsers = new HashSet<>();
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "created_employer")

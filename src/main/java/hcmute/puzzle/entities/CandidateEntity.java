@@ -27,6 +27,9 @@ public class CandidateEntity implements Serializable {
   @Column(name = "last_name", columnDefinition = "VARCHAR(50)")
   private String lastName;
 
+  @Column(name = "email_contact", columnDefinition = "VARCHAR(100)")
+  private String emailContact;
+
   @Column(name = "phone_num", columnDefinition = "VARCHAR(20)")
   private String phoneNum;
 
@@ -110,7 +113,7 @@ public class CandidateEntity implements Serializable {
   @JoinTable(
       name = "saved_job_post",
       joinColumns = @JoinColumn(name = "candidate_id"),
-      inverseJoinColumns = @JoinColumn(name = "company_id"))
+      inverseJoinColumns = @JoinColumn(name = "job_post_id"))
   private Set<JobPostEntity> savedJobPost = new HashSet<>();
 
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

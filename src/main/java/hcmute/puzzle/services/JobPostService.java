@@ -2,6 +2,7 @@ package hcmute.puzzle.services;
 
 import hcmute.puzzle.dto.JobPostDTO;
 import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.response.DataResponse;
 
 public interface JobPostService {
   ResponseObject add(JobPostDTO jobPostDTO);
@@ -42,4 +43,10 @@ public interface JobPostService {
   ResponseObject getHotJobPost();
 
   ResponseObject getJobPostAmount();
+
+  DataResponse getViewedJobPostAmountByUserId(long userId);
+
+  DataResponse viewJobPost(long userId, long jobPostId);
+
+  DataResponse getApplicationRateByJobPostId(long jobPostId);
 }

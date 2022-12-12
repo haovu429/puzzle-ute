@@ -6,9 +6,13 @@ import hcmute.puzzle.dto.JobPostDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.JobPostEntity;
+import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.repository.ApplicationRepository;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.JobPostRepository;
+import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.JobPostService;
 import hcmute.puzzle.utils.CustomNullsFirstInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +23,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +36,11 @@ public class JobPostServiceImpl implements JobPostService {
   @Autowired JobPostRepository jobPostRepository;
 
   @Autowired CandidateRepository candidateRepository;
+
+  @Autowired ApplicationRepository applicationRepository;
+
+  @Autowired
+  UserRepository userRepository;
 
   public ResponseObject add(JobPostDTO jobPostDTO) {
 
@@ -108,10 +114,9 @@ public class JobPostServiceImpl implements JobPostService {
 
     Pageable pageable = PageRequest.of(pageNum, numOfRecord);
 
-    Page<JobPostEntity> jobPostEntities =  jobPostRepository.findAll(pageable);
+    Page<JobPostEntity> jobPostEntities = jobPostRepository.findAll(pageable);
 
-    Page<Object> jobPostDTOS =
-            jobPostEntities.map(entity -> converter.toDTO(entity));
+    Page<Object> jobPostDTOS = jobPostEntities.map(entity -> converter.toDTO(entity));
 
     return new ResponseObject(200, "Info of job post", jobPostDTOS);
   }
@@ -149,20 +154,28 @@ public class JobPostServiceImpl implements JobPostService {
 
   @Override
   public ResponseObject getJobPostCreatedByEmployerId(long employerId) {
-    Set<JobPostDTO> jobPostDTOS =
-        jobPostRepository.findAllByCreatedEmployerId(employerId).stream()
-            .map(jobPostEntity -> converter.toDTO(jobPostEntity))
-            .collect(Collectors.toSet());
+    List<Map<String, Object>> response = new ArrayList<>();
+    // Set<JobPostDTO> jobPostDTOS =
+    jobPostRepository.findAllByCreatedEmployerId(employerId).stream()
+        .forEach(
+            jobPostEntity -> {
+              Map<String, Object> items = new HashMap<>();
+              items.put("job_post", converter.toDTO(jobPostEntity));
+              items.put(
+                  "application_amount",
+                  applicationRepository.getAmountApplicationByJobPostId(jobPostEntity.getId()));
+              response.add(items);
+            });
 
-    return new ResponseObject(200, "Job Post created", jobPostDTOS);
+    return new ResponseObject(200, "Job Post created", response);
   }
 
   @Override
   public ResponseObject getActiveJobPost() {
     Set<JobPostDTO> jobPostDTOS =
-            jobPostRepository.findAllByActiveIsTrue().stream()
-                    .map(jobPostEntity -> converter.toDTO(jobPostEntity))
-                    .collect(Collectors.toSet());
+        jobPostRepository.findAllByActiveIsTrue().stream()
+            .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+            .collect(Collectors.toSet());
 
     return new ResponseObject(200, "Job Post active", jobPostDTOS);
   }
@@ -170,18 +183,18 @@ public class JobPostServiceImpl implements JobPostService {
   @Override
   public ResponseObject getInactiveJobPost() {
     Set<JobPostDTO> jobPostDTOS =
-            jobPostRepository.findAllByActiveIsFalse().stream()
-                    .map(jobPostEntity -> converter.toDTO(jobPostEntity))
-                    .collect(Collectors.toSet());
+        jobPostRepository.findAllByActiveIsFalse().stream()
+            .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+            .collect(Collectors.toSet());
 
     return new ResponseObject(200, "Job Post inactive", jobPostDTOS);
   }
 
   public ResponseObject getActiveJobPostByCreateEmployerId(long employerId) {
     Set<JobPostDTO> jobPostDTOS =
-            jobPostRepository.findAllByActiveAndCreatedEmployerId(true, employerId).stream()
-                    .map(jobPostEntity -> converter.toDTO(jobPostEntity))
-                    .collect(Collectors.toSet());
+        jobPostRepository.findAllByActiveAndCreatedEmployerId(true, employerId).stream()
+            .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+            .collect(Collectors.toSet());
 
     return new ResponseObject(200, "Job Post active", jobPostDTOS);
   }
@@ -189,9 +202,9 @@ public class JobPostServiceImpl implements JobPostService {
   @Override
   public ResponseObject getInactiveJobPostByCreateEmployerId(long employerId) {
     Set<JobPostDTO> jobPostDTOS =
-            jobPostRepository.findAllByActiveAndCreatedEmployerId(false, employerId).stream()
-                    .map(jobPostEntity -> converter.toDTO(jobPostEntity))
-                    .collect(Collectors.toSet());
+        jobPostRepository.findAllByActiveAndCreatedEmployerId(false, employerId).stream()
+            .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+            .collect(Collectors.toSet());
 
     return new ResponseObject(200, "Job Post inactive", jobPostDTOS);
   }
@@ -268,5 +281,51 @@ public class JobPostServiceImpl implements JobPostService {
     long amount = jobPostRepository.count();
 
     return new ResponseObject(200, "Job Post amount", amount);
+  }
+
+  @Override
+  public DataResponse getViewedJobPostAmountByUserId(long userId) {
+    long amount = jobPostRepository.getViewedJobPostAmountByUser(userId);
+
+    return new DataResponse(amount);
+  }
+
+  @Override
+  public DataResponse viewJobPost(long userId, long jobPostId) {
+    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+    if (jobPost.isEmpty()) {
+      throw new CustomException("Cannot find job post with id = " + jobPostId);
+    }
+
+    Optional<UserEntity> userEntity = userRepository.findById(userId);
+    if (userEntity.isEmpty()) {
+      throw new CustomException("Not found user");
+    }
+
+    jobPost.get().getViewedUsers().add(userEntity.get());
+    jobPostRepository.save(jobPost.get());
+
+    return new DataResponse(null);
+  }
+
+  @Override
+  public DataResponse getApplicationRateByJobPostId(long jobPostId) {
+    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+    if (jobPost.isEmpty()) {
+      throw new CustomException("Cannot find job post with id = " + jobPostId);
+    }
+
+    double rate = 0; // mac dinh, hoi sai neu view = 0 và application > 0
+    long viewOfCandidateAmount = jobPostRepository.getViewedCandidateAmountByJobPostId(jobPostId);
+    long applicationOfCandidateAmount = applicationRepository.getAmountApplicationByJobPostId(jobPostId);
+
+    if (viewOfCandidateAmount != 0 && viewOfCandidateAmount >= applicationOfCandidateAmount) {
+      rate = Double.valueOf(applicationOfCandidateAmount)/viewOfCandidateAmount;
+      rate = rate * 100; // doi ti le ra phan tram
+      // lam tron 2 chu so thap phan
+      rate = Math.round(rate * 100.0) / 100.0;
+    }
+
+    return new DataResponse(rate);
   }
 }

@@ -15,7 +15,7 @@ public class SkillDTO {
   private String name;
   private boolean isActive;
 
-  private List<Long> candidateIds = new ArrayList<>();
-  private List<Long> jobPostIds = new ArrayList<>();
-  private List<Long> experienceIds = new ArrayList<>();
+  // private List<Long> candidateIds = new ArrayList<>();
+  // private List<Long> jobPostIds = new ArrayList<>();
+  // private List<Long> experienceIds = new ArrayList<>();
 }

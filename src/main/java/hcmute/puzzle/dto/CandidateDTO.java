@@ -11,6 +11,7 @@ public class CandidateDTO {
   private long id;
   private String firstName;
   private String lastName;
+  private String emailContact;
   private String phoneNum;
   private String introduction;
   private String educationLevel;

@@ -9,10 +9,8 @@ import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.repository.UserRepository;
-import hcmute.puzzle.services.CandidateService;
-import hcmute.puzzle.services.EmployerService;
-import hcmute.puzzle.services.FilesStorageService;
-import hcmute.puzzle.services.UserService;
+import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.TimeUtil;
 import hcmute.puzzle.utils.Util;
@@ -23,6 +21,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @RestController
@@ -49,6 +48,9 @@ public class UserController {
 
   @Autowired
   CandidateService candidateService;
+
+  @Autowired
+  JobPostService jobPostService;
 
   @GetMapping("/user")
   public ResponseObject getAll() {
@@ -248,6 +250,30 @@ public class UserController {
 
     //        return new ResponseObject(
     //                HttpStatus.OK.value(), "Create candidate successfully", new CandidateDTO());
+  }
+
+  @GetMapping("/user/get-viewed-job-post-amount")
+  DataResponse getAmountApplicationToEmployer(HttpServletRequest request) {
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
+    return jobPostService.getViewedJobPostAmountByUserId(linkUser.get().getId());
+  }
+
+  @GetMapping("/user/view-job-post/{jobPostId}")
+  DataResponse getViewJobPost(HttpServletRequest request, @PathVariable(value = "jobPostId") long jobPostId) {
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
+    return jobPostService.viewJobPost(linkUser.get().getId(), jobPostId);
   }
 
 }
