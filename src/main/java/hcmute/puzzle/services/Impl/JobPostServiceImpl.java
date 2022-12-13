@@ -222,7 +222,7 @@ public class JobPostServiceImpl implements JobPostService {
             .map(jobPost -> converter.toDTO(jobPost))
             .collect(Collectors.toSet());
 
-    return new ResponseObject(200, "Job Posts applied", jobPostDTOS);
+    return new ResponseObject(200, "Job Posts is saved", jobPostDTOS);
   }
 
   public ResponseObject activateJobPost(long jobPostId) {
