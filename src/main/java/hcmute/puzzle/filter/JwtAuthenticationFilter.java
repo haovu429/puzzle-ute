@@ -3,6 +3,7 @@ package hcmute.puzzle.filter;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.security.JwtTokenProvider;
 import hcmute.puzzle.security.UserService;
 import hcmute.puzzle.utils.RedisUtils;
@@ -58,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // get email from token
         String email = tokenProvider.getEmailFromJWT(jwt);
         // get user from email
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+        CustomUserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
         // get token from redis
         String token = redisUtils.get(email) == null ? "" : redisUtils.get(email).toString();
         // System.out.println("Dung? :" + token.equals(jwt));

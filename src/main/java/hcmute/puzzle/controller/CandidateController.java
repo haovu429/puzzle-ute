@@ -9,10 +9,13 @@ import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.repository.*;
 import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -538,15 +541,17 @@ public class CandidateController {
   }
 
   @GetMapping("/candidate/get-job-post-saved")
-  ResponseObject getJobPostSavedByCandidate(
-          @RequestHeader(value = "Authorization") String token) {
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+  ResponseObject getJobPostSavedByCandidate(Authentication authentication
+          /*@RequestHeader(value = "Authorization") String token*/) {
+//    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+//
+//    if (linkUser.isEmpty()) {
+//      throw new CustomException("Not found account");
+//    }
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    //System.out.println("User has authorities: " + userDetails.getAuthorities());
 
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
-
-    return jobPostService.getJobPostSavedByCandidateId(linkUser.get().getId());
+    return jobPostService.getJobPostSavedByCandidateId(userDetails.getUser().getId());
   }
 
   @GetMapping("/candidate/get-application-by-job-post-id-applied/{jobPostId}")

@@ -37,7 +37,7 @@ public class UserService implements UserDetailsService {
   // @PersistenceContext public EntityManager em;
 
   @Override
-  public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+  public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
     // Avoid Error: failed to lazily initialize a collection of role:
     // hcmute.puzzle.entities.UserEntity.roles, could not initialize proxy - no Session
     // https://www.baeldung.com/hibernate-initialize-proxy-exception
