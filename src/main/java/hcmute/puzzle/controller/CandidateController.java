@@ -529,15 +529,16 @@ public class CandidateController {
   }
 
   @GetMapping("/candidate/get-job-post-applied")
-  ResponseObject getJobPostAppliedByCandidate(
-          @RequestHeader(value = "Authorization") String token) {
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+  ResponseObject getJobPostAppliedByCandidate(Authentication authentication
+          /*@RequestHeader(value = "Authorization") String token*/) {
+//    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+//
+//    if (linkUser.isEmpty()) {
+//      throw new CustomException("Not found account");
+//    }
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
-
-    return jobPostService.getJobPostAppliedByCandidateId(linkUser.get().getId());
+    return jobPostService.getJobPostAppliedByCandidateId(userDetails.getUser().getId());
   }
 
   @GetMapping("/candidate/get-job-post-saved")
