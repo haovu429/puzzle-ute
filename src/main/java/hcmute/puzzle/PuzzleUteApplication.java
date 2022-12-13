@@ -26,10 +26,6 @@ public class PuzzleUteApplication {
   public static void main(String[] args) {
     SpringApplication.run(PuzzleUteApplication.class, args);
   }
-
-  @Autowired
-  //@Qualifier("mysqlDataSource")
-  DataSource dataSource;
   @Bean
   public WebMvcConfigurer corsConfigurer() {
     return new WebMvcConfigurer() {
