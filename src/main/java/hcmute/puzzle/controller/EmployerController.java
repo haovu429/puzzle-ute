@@ -440,5 +440,23 @@ public class EmployerController {
     }
 
     return jobPostService.getApplicationRateByJobPostId(jobPostId);
+  } //getApplicationRateEmployerId
+
+  @GetMapping("/employer/get-application-rate-of-employer")
+  DataResponse getApplicationRateOfEmployer(
+          HttpServletRequest request) {
+
+    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
+
+    if (linkUser.isEmpty()) {
+      throw new CustomException("Not found account");
+    }
+
+    // Check is Employer
+    if (linkUser.get().getEmployerEntity() == null) {
+      throw new CustomException("This account isn't Employer");
+    }
+
+    return employerService.getApplicationRateEmployerId(linkUser.get().getId());
   }
 }

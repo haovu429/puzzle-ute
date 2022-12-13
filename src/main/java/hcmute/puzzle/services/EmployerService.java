@@ -2,6 +2,7 @@ package hcmute.puzzle.services;
 
 import hcmute.puzzle.dto.EmployerDTO;
 import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.response.DataResponse;
 
 import java.util.Optional;
 
@@ -15,4 +16,6 @@ public interface EmployerService {
   ResponseObject getOne(long id);
 
   ResponseObject getEmployerFollowedByCandidateId(long candidateId);
+
+  DataResponse getApplicationRateEmployerId(long employerId);
 }

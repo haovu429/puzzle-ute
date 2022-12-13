@@ -4,6 +4,8 @@ import hcmute.puzzle.exception.CustomException;
 
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Constant {
@@ -22,6 +24,7 @@ public class Constant {
 
   public static final String LOCAL_URL = "http://localhost:3000";
   public static final String ONLINE_URL = "https://puzzle-client-eight.vercel.app";
+  public static final String ONLINE1_URL = "https://github.com/ngocdiem138/TLCN_PUZZLE";
 
   public static final String POSITION = "POSITION";
   public static final String SKILL = "SKILL";
@@ -35,5 +38,7 @@ public class Constant {
     if (type.equals(SERVICE)) return SERVICE;
     throw new CustomException("Type isn't exist");
   }
+
+  public static final String[] LIST_HOST_FRONT_END = new String[] {LOCAL_URL, ONLINE_URL, ONLINE1_URL};
 
 }

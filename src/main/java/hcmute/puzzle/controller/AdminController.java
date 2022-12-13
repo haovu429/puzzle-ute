@@ -151,7 +151,6 @@ public class AdminController {
     return companyService.update(companyDTO);
     //return null;
   }
-
   @GetMapping("/admin/get-account-amount")
   public ResponseObject getAccountAmount() {
     return userService.getAccountAmount();

@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import static hcmute.puzzle.utils.Constant.LIST_HOST_FRONT_END;
+
 @Configuration
 public class CorsConfiguration implements WebMvcConfigurer {
   //    @Bean
@@ -27,7 +29,7 @@ public class CorsConfiguration implements WebMvcConfigurer {
       registry
           .addMapping("/**")
           .allowedMethods("*")
-          .allowedOrigins("http://localhost:8000", "http://localhost:8080", "http://localhost:5000")
+          .allowedOrigins(LIST_HOST_FRONT_END)
           .allowCredentials(true)
           .maxAge(3600);
       ;

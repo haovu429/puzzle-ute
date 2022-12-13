@@ -4,15 +4,10 @@ import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.CompanyDTO;
 import hcmute.puzzle.dto.EmployerDTO;
 import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.entities.CandidateEntity;
-import hcmute.puzzle.entities.EmployerEntity;
-import hcmute.puzzle.entities.RoleEntity;
-import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.entities.*;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.repository.CandidateRepository;
-import hcmute.puzzle.repository.EmployerRepository;
-import hcmute.puzzle.repository.RoleRepository;
-import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.repository.*;
+import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.EmployerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +24,11 @@ public class EmployerServiceImpl implements EmployerService {
   @Autowired EmployerRepository employerRepository;
 
   @Autowired UserRepository userRepository;
+
+  @Autowired
+  JobPostRepository jobPostRepository;
+
+  @Autowired ApplicationRepository applicationRepository;
 
   @Autowired
   RoleRepository roleRepository;
@@ -118,5 +118,26 @@ public class EmployerServiceImpl implements EmployerService {
                     .collect(Collectors.toSet());
 
     return new ResponseObject(200, "Employer followed", employerDTOS);
+  }
+
+  @Override
+  public DataResponse getApplicationRateEmployerId(long employerId) {
+    Optional<EmployerEntity> employer = employerRepository.findById(employerId);
+    if (employer.isEmpty()) {
+      throw new CustomException("Cannot find employer with id = " + employerId);
+    }
+
+    double rate = 0; // mac dinh, hoi sai neu view = 0 và application > 0
+    long viewOfCandidateAmount = jobPostRepository.getViewedCandidateAmountToJobPostCreatedByEmployer(employerId);
+    long applicationOfCandidateAmount = applicationRepository.getAmountApplicationToEmployer(employerId);
+
+    if (viewOfCandidateAmount != 0 && viewOfCandidateAmount >= applicationOfCandidateAmount) {
+      rate = Double.valueOf(applicationOfCandidateAmount)/viewOfCandidateAmount;
+      rate = rate * 100; // doi ti le ra phan tram
+      // lam tron 2 chu so thap phan
+      rate = Math.round(rate * 100.0) / 100.0;
+    }
+
+    return new DataResponse(rate);
   }
 }
