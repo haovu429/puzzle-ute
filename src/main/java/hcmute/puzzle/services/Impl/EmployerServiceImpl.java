@@ -120,6 +120,8 @@ public class EmployerServiceImpl implements EmployerService {
     return new ResponseObject(200, "Employer followed", employerDTOS);
   }
 
+  //markingJobpostWasDeleted
+
   @Override
   public DataResponse getApplicationRateEmployerId(long employerId) {
     Optional<EmployerEntity> employer = employerRepository.findById(employerId);

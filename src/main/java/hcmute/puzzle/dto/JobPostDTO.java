@@ -1,5 +1,6 @@
 package hcmute.puzzle.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,7 +26,11 @@ public class JobPostDTO implements Serializable {
   private int quantity;
   private long minBudget;
   private long maxBudget;
+
+  //@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
   private Date createTime;
+
+  //@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
   private Date dueTime;
   private String workStatus;
   private boolean blind;
@@ -35,7 +40,7 @@ public class JobPostDTO implements Serializable {
   private boolean labor;
   private String skills;
   private boolean isActive;
-
+  private boolean isDeleted;
   // private List<Long> applicationIds = new ArrayList<>();
   // private List<Long> savedCandidateIds = new ArrayList<>();
   // private List<Long> skillIds = new ArrayList<>();

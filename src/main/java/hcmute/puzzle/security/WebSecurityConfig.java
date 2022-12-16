@@ -106,7 +106,7 @@ public class WebSecurityConfig {
         .accessDeniedHandler(accessDeniedHandler())
         .and()
         .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeRequests()
         .antMatchers("/api/common/**")

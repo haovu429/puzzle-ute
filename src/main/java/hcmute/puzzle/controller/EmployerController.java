@@ -7,7 +7,6 @@ import hcmute.puzzle.dto.JobPostDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.ApplicationEntity;
 import hcmute.puzzle.entities.JobPostEntity;
-import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.mail.MailObject;
@@ -17,6 +16,7 @@ import hcmute.puzzle.repository.ApplicationRepository;
 import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.services.ApplicationService;
 import hcmute.puzzle.services.CompanyService;
 import hcmute.puzzle.services.EmployerService;
@@ -24,11 +24,11 @@ import hcmute.puzzle.services.JobPostService;
 import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController
@@ -53,78 +53,68 @@ public class EmployerController {
 
   @Autowired ApplicationService applicationService;
 
-  @DeleteMapping("/employer/{id}")
-  ResponseObject delete(
-      @PathVariable Long id, @RequestHeader(value = "Authorization") String token) {
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-    return employerService.delete(linkUser.get().getId());
+  @DeleteMapping("/employer")
+  ResponseObject delete(Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    return employerService.delete(userDetails.getUser().getId());
   }
 
   @PutMapping("/employer/update")
   ResponseObject update(
       @RequestBody @Validated EmployerDTO employer,
       BindingResult bindingResult,
-      @RequestHeader(value = "Authorization") String token) {
+      Authentication authentication) {
     if (bindingResult.hasErrors()) {
       throw new CustomException(bindingResult.getFieldError().toString());
     }
 
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-    employer.setUserId(linkUser.get().getId());
-    employer.setId(linkUser.get().getId());
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    employer.setUserId(userDetails.getUser().getId());
+    employer.setId(userDetails.getUser().getId());
 
     return employerService.update(employer);
   }
 
   @GetMapping("/employer/profile")
-  ResponseObject getById(@RequestHeader(value = "Authorization") String token) {
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-
-    // Check is Employer
-    if (linkUser.get().getEmployerEntity() == null) {
-      throw new CustomException("This account isn't Employer");
-    }
-    return employerService.getOne(linkUser.get().getId());
+  ResponseObject getById(Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    return employerService.getOne(userDetails.getUser().getId());
   }
 
   @PostMapping("/employer/post-job")
-  ResponseObject postJob(
-      @RequestBody @Validated JobPostDTO jobPostDTO,
-      @RequestHeader(value = "Authorization") String token) {
+  ResponseObject createJobPost(
+      @RequestBody @Validated JobPostDTO jobPostDTO, Authentication authentication) {
 
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-    // Check is Employer
-    if (linkUser.get().getEmployerEntity() == null) {
-      throw new CustomException("This account isn't Employer");
-    }
-
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     // Validate JobPost
     jobPostService.validateJobPost(jobPostDTO);
 
     // Set default createEmployer is Employer create first (this valid user requesting)
-    jobPostDTO.setCreatedEmployerId(linkUser.get().getId());
+    jobPostDTO.setCreatedEmployerId(userDetails.getUser().getId());
 
     return new ResponseObject(
         HttpStatus.OK.value(), "Post job success.", jobPostService.add(jobPostDTO));
   }
 
   @DeleteMapping("/employer/delete-job-post/{id}")
-  ResponseObject deleteJobPost(
-      @PathVariable Long id, @RequestHeader(value = "Authorization") String token) {
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-    // Check rights
-    pipelineCheckRights(id, linkUser);
-    return jobPostService.delete(id);
+  DataResponse deleteJobPost(@PathVariable Long id, Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    // employer can not change active status
+    Optional<JobPostEntity> jobPost = jobPostRepository.findById(id);
+    if (jobPost.isEmpty()) {
+      throw new CustomException("Job post isn't exists");
+    }
+
+    if (jobPost.get().getCreatedEmployer().getId() != userDetails.getUser().getId()) {
+      throw new CustomException("You don't have rights for this jobPost");
+    }
+    return jobPostService.markJobPostWasDelete(id);
   }
 
   @PutMapping("/employer/update-job-post")
   ResponseObject updateJobPost(
-      @RequestBody @Validated JobPostDTO jobPostDTO,
-      @RequestHeader(value = "Authorization") String token) {
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-
-    // Check rights
-    pipelineCheckRights(jobPostDTO.getId(), linkUser);
+      @RequestBody @Validated JobPostDTO jobPostDTO, Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
     // Validate JobPost
     jobPostService.validateJobPost(jobPostDTO);
@@ -137,57 +127,47 @@ public class EmployerController {
     jobPostDTO.setActive(oldJobPost.get().isActive());
 
     // Set default createEmployer is Employer create first (this valid user requesting)
-    jobPostDTO.setCreatedEmployerId(linkUser.get().getId());
+    jobPostDTO.setCreatedEmployerId(userDetails.getUser().getId());
 
     return new ResponseObject(
         HttpStatus.OK.value(), "Post job success.", jobPostService.update(jobPostDTO));
   }
 
-  void pipelineCheckRights(long jobPostId, Optional<UserEntity> linkUser) {
-
-    // Check is Employer
-    if (linkUser.get().getEmployerEntity() == null) {
-      throw new CustomException("This account isn't Employer");
-    }
-
-    Optional<JobPostEntity> jobPostEntity = jobPostRepository.findById(jobPostId);
-    // Check job post exists
-    if (jobPostEntity.isEmpty()) {
-      throw new CustomException("Job post isn't exists!");
-    }
-
-    // Check employer update is created employer.
-    if (jobPostEntity.get().getCreatedEmployer().getId() != linkUser.get().getId()) {
-      throw new CustomException("You have no rights to this post!");
-    }
-  }
+  //  void pipelineCheckRights(long jobPostId, Optional<UserEntity> linkUser) {
+  //
+  //    // Check is Employer
+  //    if (linkUser.get().getEmployerEntity() == null) {
+  //      throw new CustomException("This account isn't Employer");
+  //    }
+  //
+  //    Optional<JobPostEntity> jobPostEntity = jobPostRepository.findById(jobPostId);
+  //    // Check job post exists
+  //    if (jobPostEntity.isEmpty()) {
+  //      throw new CustomException("Job post isn't exists!");
+  //    }
+  //
+  //    // Check employer update is created employer.
+  //    if (jobPostEntity.get().getCreatedEmployer().getId() != userDetails.getUser().getId()) {
+  //      throw new CustomException("You have no rights to this post!");
+  //    }
+  //  }
 
   @PostMapping("/create-info-company")
   public ResponseObject saveCompany(
-      @RequestBody CompanyDTO companyDTO,
-      @RequestHeader(value = "Authorization", required = true) String token) {
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-
-    // Check is Employer
-    if (linkUser.get().getEmployerEntity() == null) {
-      throw new CustomException("This account isn't Employer");
-    }
+      @RequestBody CompanyDTO companyDTO, Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
     companyDTO.setActive(false);
-    companyDTO.setCreatedEmployerId(linkUser.get().getId());
+    companyDTO.setCreatedEmployerId(userDetails.getUser().getId());
     return companyService.save(companyDTO);
   }
 
   // Lấy danh sách ứng viên đã apply vào một jobPost
   @GetMapping("/employer/candidate-apply-jobpost/{jobPostId}")
   ResponseObject getCandidateApplyJobPost(
-      @PathVariable Long jobPostId, @RequestHeader(value = "Authorization") String token) {
+      @PathVariable Long jobPostId, Authentication authentication) {
 
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-    // Check is Employer
-    if (linkUser.get().getEmployerEntity() == null) {
-      throw new CustomException("This account isn't Employer");
-    }
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
     Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
 
@@ -195,7 +175,7 @@ public class EmployerController {
       throw new CustomException("JobPost isn't exist");
     }
 
-    if (jobPost.get().getCreatedEmployer().getId() != linkUser.get().getId()) {
+    if (jobPost.get().getCreatedEmployer().getId() != userDetails.getUser().getId()) {
       throw new CustomException("You don't have rights for this jobPost");
     }
 
@@ -207,13 +187,9 @@ public class EmployerController {
       @RequestParam long applicationId,
       @RequestParam boolean result,
       @RequestParam String note,
-      @RequestHeader(value = "Authorization") String token) {
+      Authentication authentication) {
 
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-    // Check is Employer
-    if (linkUser.get().getEmployerEntity() == null) {
-      throw new CustomException("This account isn't Employer");
-    }
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
     Optional<ApplicationEntity> application = applicationRepository.findById(applicationId);
 
@@ -222,7 +198,7 @@ public class EmployerController {
     }
 
     if (application.get().getJobPostEntity().getCreatedEmployer().getId()
-        != linkUser.get().getId()) {
+        != userDetails.getUser().getId()) {
       throw new CustomException("You don't have rights for this application");
     }
 
@@ -231,14 +207,9 @@ public class EmployerController {
 
   @PostMapping("/employer/response-application-by-candidate-and-job-post")
   ResponseObject responseApplicationByCandidateIdAndJobPostId(
-      @RequestBody ResponseApplication responseApplication,
-      @RequestHeader(value = "Authorization") String token) {
+      @RequestBody ResponseApplication responseApplication, Authentication authentication) {
 
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-    // Check is Employer
-    if (linkUser.get().getEmployerEntity() == null) {
-      throw new CustomException("This account isn't Employer");
-    }
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
     Optional<ApplicationEntity> application =
         applicationRepository.findApplicationByCanIdAndJobPostId(
@@ -249,7 +220,7 @@ public class EmployerController {
     }
 
     if (application.get().getJobPostEntity().getCreatedEmployer().getId()
-        != linkUser.get().getId()) {
+        != userDetails.getUser().getId()) {
       throw new CustomException("You don't have rights for this application");
     }
 
@@ -294,74 +265,33 @@ public class EmployerController {
   }
 
   @GetMapping("/employer/get-all-job-post-created")
-  ResponseObject getJobPostCreated(@RequestHeader(value = "Authorization") String token) {
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
-
-    // Check is Employer
-    if (linkUser.get().getEmployerEntity() == null) {
-      throw new CustomException("This account isn't Employer");
-    }
-
-    return jobPostService.getJobPostCreatedByEmployerId(linkUser.get().getId());
+  ResponseObject getJobPostCreated(Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    return jobPostService.getJobPostCreatedByEmployerId(userDetails.getUser().getId());
   }
 
   @GetMapping("/employer/get-all-job-post-created-active")
-  ResponseObject getJobPostCreatedActive(@RequestHeader(value = "Authorization") String token) {
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
-
-    // Check is Employer
-    if (linkUser.get().getEmployerEntity() == null) {
-      throw new CustomException("This account isn't Employer");
-    }
-
-    return jobPostService.getActiveJobPostByCreateEmployerId(linkUser.get().getId());
+  ResponseObject getJobPostCreatedActive(Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    return jobPostService.getActiveJobPostByCreateEmployerId(userDetails.getUser().getId());
   }
 
   @GetMapping("/employer/get-all-job-post-created-inactive")
-  ResponseObject getJobPostCreatedInactive(HttpServletRequest request) {
-    // Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
-
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
-
-    // Check is Employer
-    if (linkUser.get().getEmployerEntity() == null) {
-      throw new CustomException("This account isn't Employer");
-    }
-
-    return jobPostService.getInactiveJobPostByCreateEmployerId(linkUser.get().getId());
+  ResponseObject getJobPostCreatedInactive(Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    return jobPostService.getInactiveJobPostByCreateEmployerId(userDetails.getUser().getId());
   }
 
   @GetMapping("/employer/get-application-by-job-post/{jobPostId}")
-  ResponseObject getApplicationByJobPost(HttpServletRequest request, @PathVariable long jobPostId) {
-    // Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
-
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
-
-    // Check is Employer
-    if (linkUser.get().getEmployerEntity() == null) {
-      throw new CustomException("This account isn't Employer");
-    }
-
+  ResponseObject getApplicationByJobPost(
+      Authentication authentication, @PathVariable long jobPostId) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
     if (jobPost.isEmpty()) {
       throw new CustomException("Job post isn't exists");
     }
 
-    if (jobPost.get().getCreatedEmployer().getId() != linkUser.get().getId()) {
+    if (jobPost.get().getCreatedEmployer().getId() != userDetails.getUser().getId()) {
       throw new CustomException("You don't have rights for this job post");
     }
 
@@ -370,25 +300,14 @@ public class EmployerController {
 
   @GetMapping("/employer/get-candidate-and-result-by-job-post/{jobPostId}")
   DataResponse getCandidateAndApplicationResultByJobPost(
-      HttpServletRequest request, @PathVariable long jobPostId) {
-    // Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
-
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
-
-    // Check is Employer
-    if (linkUser.get().getEmployerEntity() == null) {
-      throw new CustomException("This account isn't Employer");
-    }
-
+      Authentication authentication, @PathVariable long jobPostId) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
     if (jobPost.isEmpty()) {
       throw new CustomException("Job post isn't exists");
     }
 
-    if (jobPost.get().getCreatedEmployer().getId() != linkUser.get().getId()) {
+    if (jobPost.get().getCreatedEmployer().getId() != userDetails.getUser().getId()) {
       throw new CustomException("You don't have rights for this job post");
     }
 
@@ -398,65 +317,31 @@ public class EmployerController {
   // This API get amount application to one Employer by employer id
   // , from all job post which this employer created
   @GetMapping("/employer/get-amount-application-to-employer")
-  DataResponse getAmountApplicationToEmployer(HttpServletRequest request) {
-
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
-
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
-
-    // Check is Employer
-    if (linkUser.get().getEmployerEntity() == null) {
-      throw new CustomException("This account isn't Employer");
-    }
-
-    return applicationService.getAmountApplicationToEmployer(linkUser.get().getId());
+  DataResponse getAmountApplicationToEmployer(Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    return applicationService.getAmountApplicationToEmployer(userDetails.getUser().getId());
   }
 
   @GetMapping("/employer/get-application-rate-of-job-post/{jobPostId}")
   DataResponse getApplicationRateOfJobPost(
-      HttpServletRequest request, @PathVariable(value = "jobPostId") long jobPostId) {
-
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
-
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
-
-    // Check is Employer
-    if (linkUser.get().getEmployerEntity() == null) {
-      throw new CustomException("This account isn't Employer");
-    }
-
+      Authentication authentication, @PathVariable(value = "jobPostId") long jobPostId) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     // Check have rights
     Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
     if (jobPost.isEmpty()) {
       throw new CustomException("Job post isn't exists");
     }
 
-    if (jobPost.get().getCreatedEmployer().getId() != linkUser.get().getId()) {
+    if (jobPost.get().getCreatedEmployer().getId() != userDetails.getUser().getId()) {
       throw new CustomException("You don't have rights for this job post");
     }
 
     return jobPostService.getApplicationRateByJobPostId(jobPostId);
-  } //getApplicationRateEmployerId
+  } // getApplicationRateEmployerId
 
   @GetMapping("/employer/get-application-rate-of-employer")
-  DataResponse getApplicationRateOfEmployer(
-          HttpServletRequest request) {
-
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
-
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
-
-    // Check is Employer
-    if (linkUser.get().getEmployerEntity() == null) {
-      throw new CustomException("This account isn't Employer");
-    }
-
-    return employerService.getApplicationRateEmployerId(linkUser.get().getId());
+  DataResponse getApplicationRateOfEmployer(Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    return employerService.getApplicationRateEmployerId(userDetails.getUser().getId());
   }
 }
