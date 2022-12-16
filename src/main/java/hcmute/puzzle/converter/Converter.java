@@ -443,6 +443,7 @@ public class Converter {
     dto.setLabor(entity.isLabor());
     dto.setSkills(entity.getSkills());
     dto.setActive(entity.isActive());
+    dto.setDeleted(entity.isDeleted());
 
     if (entity.getCreatedEmployer() == null) {
       throw new CustomException("Can't convert createEntity because it is null");

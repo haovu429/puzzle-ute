@@ -9,6 +9,8 @@ public interface JobPostService {
 
   ResponseObject delete(long id);
 
+  DataResponse markJobPostWasDelete(long id);
+
   ResponseObject update(JobPostDTO jobPostDTO);
 
   ResponseObject getOne(long id);

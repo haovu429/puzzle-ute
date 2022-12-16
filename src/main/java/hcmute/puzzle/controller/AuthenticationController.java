@@ -8,19 +8,25 @@ import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.security.JwtTokenProvider;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.RedisUtils;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @RestController
 @RequestMapping(path = "/api")
@@ -37,6 +43,7 @@ public class AuthenticationController {
   @PostMapping("/login")
   public ResponseObject authenticateUser(
       @Validated @RequestBody ObjectNode objectNode,
+      HttpServletRequest req,
       @RequestParam(value = "rememberMe", required = false) Boolean rememberMe) {
     try {
       // System.out.println("Da vao day");
@@ -48,7 +55,11 @@ public class AuthenticationController {
                 new UsernamePasswordAuthenticationToken(
                     objectNode.get("email").asText(), objectNode.get("password").asText()));
         //        Set in security context
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        // SecurityContextHolder.getContext().setAuthentication(authentication);
+//        SecurityContext sc = SecurityContextHolder.getContext();
+//        sc.setAuthentication(authentication);
+//        HttpSession session = req.getSession(true);
+//        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
 
         Long JWT_EXPIRATION = (long) (60 * 60 * 24 * 1000); // 1 day
         if (rememberMe != null) {
@@ -79,51 +90,51 @@ public class AuthenticationController {
     }
   }
 
-//  public ResponseObject authenticateUserGoogle(
-//          @Validated @RequestBody ObjectNode objectNode,
-//          @RequestParam(value = "rememberMe", required = false) Boolean rememberMe) {
-//    try {
-//      // System.out.println("Da vao day");
-//      // String a = objectNode.get("email").toString();
-//      UserEntity user = userRepository.getByEmail(objectNode.get("email").asText());
-//      if (user != null) {
-//        Authentication authentication =
-//                authenticationManager.authenticate(
-//                        new UsernamePasswordAuthenticationToken(
-//                                objectNode.get("email").asText(), objectNode.get("password").asText()));
-//        //        Set in security context
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//        Long JWT_EXPIRATION = (long) (60 * 60 * 24 * 1000); // 1 day
-//        if (rememberMe != null) {
-//          JWT_EXPIRATION *= 7; // 7 days
-//        }
-//        // get jwt token
-//        String jwt =
-//                tokenProvider.generateToken(
-//                        (CustomUserDetails) authentication.getPrincipal(), JWT_EXPIRATION);
-//
-//        // store token in redis
-//        redisUtils.set(user.getEmail(), jwt);
-//
-//        Set<String> roles =
-//                user.getRoles().stream().map(role -> role.getName()).collect(Collectors.toSet());
-//
-//        Map<String, Object> result = new HashMap<>();
-//        result.put("jwt", jwt);
-//        result.put("roles", roles);
-//
-//        return new ResponseObject(200, "Login success", result);
-//
-//      } else {
-//        return new ResponseObject("401", 200, "Login failed");
-//      }
-//    } catch (BadCredentialsException e) {
-//      throw new RuntimeException("Invalid username/password supplied");
-//    }
-//  }
-
-
+  //  public ResponseObject authenticateUserGoogle(
+  //          @Validated @RequestBody ObjectNode objectNode,
+  //          @RequestParam(value = "rememberMe", required = false) Boolean rememberMe) {
+  //    try {
+  //      // System.out.println("Da vao day");
+  //      // String a = objectNode.get("email").toString();
+  //      UserEntity user = userRepository.getByEmail(objectNode.get("email").asText());
+  //      if (user != null) {
+  //        Authentication authentication =
+  //                authenticationManager.authenticate(
+  //                        new UsernamePasswordAuthenticationToken(
+  //                                objectNode.get("email").asText(),
+  // objectNode.get("password").asText()));
+  //        //        Set in security context
+  //        SecurityContextHolder.getContext().setAuthentication(authentication);
+  //
+  //        Long JWT_EXPIRATION = (long) (60 * 60 * 24 * 1000); // 1 day
+  //        if (rememberMe != null) {
+  //          JWT_EXPIRATION *= 7; // 7 days
+  //        }
+  //        // get jwt token
+  //        String jwt =
+  //                tokenProvider.generateToken(
+  //                        (CustomUserDetails) authentication.getPrincipal(), JWT_EXPIRATION);
+  //
+  //        // store token in redis
+  //        redisUtils.set(user.getEmail(), jwt);
+  //
+  //        Set<String> roles =
+  //                user.getRoles().stream().map(role ->
+  // role.getName()).collect(Collectors.toSet());
+  //
+  //        Map<String, Object> result = new HashMap<>();
+  //        result.put("jwt", jwt);
+  //        result.put("roles", roles);
+  //
+  //        return new ResponseObject(200, "Login success", result);
+  //
+  //      } else {
+  //        return new ResponseObject("401", 200, "Login failed");
+  //      }
+  //    } catch (BadCredentialsException e) {
+  //      throw new RuntimeException("Invalid username/password supplied");
+  //    }
+  //  }
 
   @GetMapping("/logout")
   public ResponseObject logout() {

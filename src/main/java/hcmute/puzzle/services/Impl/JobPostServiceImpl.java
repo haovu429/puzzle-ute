@@ -65,6 +65,16 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   @Override
+  public DataResponse markJobPostWasDelete(long id) {
+    boolean exists = jobPostRepository.existsById(id);
+    if (exists) {
+      jobPostRepository.markJobPostWasDelete(id);
+      return new DataResponse("Delete job post Successfully");
+    }
+    throw new CustomException("Cannot find job post with id =" + id);
+  }
+
+  @Override
   public ResponseObject update(JobPostDTO JobPostDTO) {
 
     boolean exists = jobPostRepository.existsById(JobPostDTO.getId());

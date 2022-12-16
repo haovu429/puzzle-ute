@@ -52,6 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         "Access-Control-Allow-Headers",
         "x-requested-with, authorization, Content-Type, Authorization, credential,X-XSRF-TOKEN");
     try {
+      SecurityContextHolder.clearContext();
       // get request token from header
       String jwt = getJwtFromRequest(request);
 
@@ -72,7 +73,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
           SecurityContextHolder.getContext().setAuthentication(authentication);
         } else {
-          System.out.println("Truot");
+          System.out.println("UserDetail is none!");
         }
       }
     } catch (AccessDeniedException ex) {
