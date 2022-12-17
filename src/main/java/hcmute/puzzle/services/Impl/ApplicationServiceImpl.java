@@ -19,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -33,6 +35,8 @@ public class ApplicationServiceImpl implements ApplicationService {
   @Autowired Converter converter;
 
   @Autowired EmployerRepository employerRepository;
+
+  @PersistenceContext public EntityManager em;
 
   @Override
   public ResponseObject findById(Long id) {
@@ -143,32 +147,43 @@ public class ApplicationServiceImpl implements ApplicationService {
   }
 
   public DataResponse getCandidateAppliedToJobPostIdAndResult(long jobPostId) {
-    if (!jobPostRepository.existsById(jobPostId)) {
-      throw new CustomException("Job Post isn't exists");
+    String sql =
+        "SELECT ap, can, jp.title FROM ApplicationEntity ap, CandidateEntity can, JobPostEntity jp  WHERE ap.candidateEntity.id=can.id AND ap.jobPostEntity.id=jp.id AND ap.jobPostEntity.id=:jobPostId";
+    // Join example with addEntity and addJoin
+    List<Object[]> rows = em.createQuery(sql).setParameter("jobPostId", jobPostId).getResultList();
+    //    for (Object[] row : rows) {
+    //      for(Object obj : row) {
+    //        System.out.print(obj + "::");
+    //      }
+    //      System.out.println("\n");
+    //    }
+    // Above join returns both Employee and Address Objects in the array
+    List<Map<String, Object>> response = new ArrayList<>();
+    for (Object[] row : rows) {
+      Map<String, Object> candidateAndResult = new HashMap<>();
+      String position = (String) row[2];
+      ApplicationEntity application = (ApplicationEntity) row[0];
+      System.out.println("Application Info::" + application);
+      CandidateEntity candidate = (CandidateEntity) row[1];
+      System.out.println("Candidate Info::" + candidate);
+      candidateAndResult.put("position", position);
+      candidateAndResult.put("candidate", converter.toDTO(candidate));
+      candidateAndResult.put("application", converter.toDTO(application));
+      response.add(candidateAndResult);
     }
 
-    List<Map<String, Object>> response =
-        applicationRepository.findApplicationByJobPostId(jobPostId).stream()
-            .map(
-                application -> {
-                  // ApplicationDTO applicationDTO = converter.toDTO(application);
-                  Optional<CandidateEntity> candidate =
-                      candidateRepository.findById(application.getCandidateEntity().getId());
-                  if (candidate.isEmpty()) {
-                    throw new CustomException("Data candidate is wrong");
-                  }
-                  Map<String, Object> candidateAndResult = new HashMap<>();
-                  // applicationDTO.setCandidateDTO(converter.toDTO(candidate.get()));
-                  candidateAndResult.put("candidate", converter.toDTO(candidate.get()));
-                  if (application.getResult().equalsIgnoreCase("accept")) {
-                    candidateAndResult.put("result", true);
-                  } else {
-                    candidateAndResult.put("result", false);
-                  }
-
-                  return candidateAndResult;
-                })
-            .collect(Collectors.toList());
+    //    List<Map<String, Object>> response =
+    //        applicationRepository.findApplicationByJobPostId(jobPostId).stream()
+    //            .map(
+    //                application -> {
+    //                  CandidateEntity candidate = application.getCandidateEntity();
+    //                  Map<String, Object> candidateAndResult = new HashMap<>();
+    //                  candidateAndResult.put("position", position);
+    //                  candidateAndResult.put("candidate", converter.toDTO(candidate));
+    //                  candidateAndResult.put("application", converter.toDTO(application));
+    //                  return candidateAndResult;
+    //                })
+    //            .collect(Collectors.toList());
     return new DataResponse(response);
   }
 

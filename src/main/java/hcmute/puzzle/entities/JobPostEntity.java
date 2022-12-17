@@ -26,7 +26,7 @@ public class JobPostEntity {
   @Column(name = "title", columnDefinition = "VARCHAR(200)")
   private String title;
 
-  @Column(name = "employment_type", columnDefinition = "VARCHAR(50)")
+  @Column(name = "employment_type", nullable = false, columnDefinition = "VARCHAR(50)")
   private String employmentType;
 
   @Column(name = "workplace_type", columnDefinition = "VARCHAR(50)")
@@ -50,10 +50,10 @@ public class JobPostEntity {
   @Column(name = "quantity")
   private int quantity;
 
-  @Column(name = "min_budget")
+  @Column(name = "min_budget", nullable = false)
   private long minBudget;
 
-  @Column(name = "max_budget")
+  @Column(name = "max_budget", nullable = false)
   private long maxBudget;
 
   @Column(name = "create_time")

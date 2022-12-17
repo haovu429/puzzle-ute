@@ -19,6 +19,10 @@ public interface JobPostRepository extends JpaRepository<JobPostEntity, Long> {
   Set<CandidateEntity> getCandidateApplyJobPost(@Param("jobPostId") long jobPostId);
 
   @Query(
+          "SELECT c FROM CandidateEntity c WHERE c.id in (SELECT a.candidateEntity.id FROM ApplicationEntity a WHERE a.jobPostEntity.id = :jobPostId)")
+  Set<CandidateEntity> getCandidateApplyToEmployer(@Param("jobPostId") long jobPostId);
+
+  @Query(
       "SELECT jp FROM JobPostEntity jp WHERE jp.id in (SELECT a.jobPostEntity.id FROM ApplicationEntity a WHERE a.candidateEntity.id = :candidateId)")
   Set<JobPostEntity> getJobPostCandidateApplied(@Param("candidateId") long candidateId);
 

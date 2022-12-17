@@ -130,7 +130,7 @@ public class WebSecurityConfig {
         .antMatchers("/api/init-db")
         .permitAll()
         .antMatchers("/oauth2/**")
-        .permitAll()
+        .permitAll().antMatchers("/api/pay/**").permitAll()
         //        .antMatchers("/api/auth/**")
         //        .permitAll()
         //        .antMatchers("/api/test/**")

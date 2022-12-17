@@ -3,6 +3,7 @@ package hcmute.puzzle.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -30,4 +31,13 @@ public class ApplicationEntity {
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
   @JoinColumn(name = "candidate_id", nullable = false)
   private CandidateEntity candidateEntity;
+
+  @Override
+  public String toString() {
+    return "ApplicationEntity{" +
+            "id=" + id +
+            ", result='" + result + '\'' +
+            ", note='" + note + '\'' +
+            '}';
+  }
 }
