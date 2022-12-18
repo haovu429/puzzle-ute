@@ -28,4 +28,6 @@ public interface ApplicationService {
   DataResponse getAmountApplicationByJobPostId(long jobPostId);
 
   DataResponse getCandidateAppliedToJobPostIdAndResult(long jobPostId);
+
+  DataResponse getCandidateAppliedToEmployerAndResult(long employerId);
 }

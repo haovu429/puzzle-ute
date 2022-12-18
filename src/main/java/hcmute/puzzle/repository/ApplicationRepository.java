@@ -20,6 +20,9 @@ public interface ApplicationRepository extends JpaRepository<ApplicationEntity, 
   @Query("SELECT a FROM ApplicationEntity a WHERE a.jobPostEntity.id = :jobPostId")
   Set<ApplicationEntity> findApplicationByJobPostId(@Param("jobPostId") long jobPostId);
 
+  @Query("SELECT a FROM ApplicationEntity a WHERE a.jobPostEntity.createdEmployer.id = :employerId")
+  Set<ApplicationEntity> findApplicationByEmployerId(@Param("employerId") long employerId);
+
   @Query("SELECT COUNT(a) FROM ApplicationEntity a WHERE a.jobPostEntity.createdEmployer.id = :employerId")
   long getAmountApplicationToEmployer(@Param("employerId") long employerId);
 

@@ -22,6 +22,7 @@ import hcmute.puzzle.services.CompanyService;
 import hcmute.puzzle.services.EmployerService;
 import hcmute.puzzle.services.JobPostService;
 import hcmute.puzzle.utils.Constant;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+@Log4j2
 @RestController
 @RequestMapping(path = "/api")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
@@ -313,6 +315,14 @@ public class EmployerController {
 
     return applicationService.getCandidateAppliedToJobPostIdAndResult(jobPostId);
   }
+
+  @GetMapping("/employer/get-all-candidate-and-result-to-employer")
+  DataResponse getCandidateAndApplicationResultByEmployerId(
+          Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    return applicationService.getCandidateAppliedToEmployerAndResult(userDetails.getUser().getId());
+  }
+
 
   // This API get amount application to one Employer by employer id
   // , from all job post which this employer created

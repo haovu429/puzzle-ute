@@ -147,45 +147,67 @@ public class ApplicationServiceImpl implements ApplicationService {
   }
 
   public DataResponse getCandidateAppliedToJobPostIdAndResult(long jobPostId) {
-    String sql =
-        "SELECT ap, can, jp.title FROM ApplicationEntity ap, CandidateEntity can, JobPostEntity jp  WHERE ap.candidateEntity.id=can.id AND ap.jobPostEntity.id=jp.id AND ap.jobPostEntity.id=:jobPostId";
-    // Join example with addEntity and addJoin
-    List<Object[]> rows = em.createQuery(sql).setParameter("jobPostId", jobPostId).getResultList();
-    //    for (Object[] row : rows) {
-    //      for(Object obj : row) {
-    //        System.out.print(obj + "::");
-    //      }
-    //      System.out.println("\n");
-    //    }
-    // Above join returns both Employee and Address Objects in the array
-    List<Map<String, Object>> response = new ArrayList<>();
-    for (Object[] row : rows) {
-      Map<String, Object> candidateAndResult = new HashMap<>();
-      String position = (String) row[2];
-      ApplicationEntity application = (ApplicationEntity) row[0];
-      System.out.println("Application Info::" + application);
-      CandidateEntity candidate = (CandidateEntity) row[1];
-      System.out.println("Candidate Info::" + candidate);
-      candidateAndResult.put("position", position);
-      candidateAndResult.put("candidate", converter.toDTO(candidate));
-      candidateAndResult.put("application", converter.toDTO(application));
-      response.add(candidateAndResult);
-    }
+//    String sql =
+//        "SELECT ap, can, jp.title FROM ApplicationEntity ap, CandidateEntity can, JobPostEntity jp  WHERE ap.candidateEntity.id=can.id AND ap.jobPostEntity.id=jp.id AND ap.jobPostEntity.id=:jobPostId";
+//    // Join example with addEntity and addJoin
+//    List<Object[]> rows = em.createQuery(sql).setParameter("jobPostId", jobPostId).getResultList();
+//    //    for (Object[] row : rows) {
+//    //      for(Object obj : row) {
+//    //        System.out.print(obj + "::");
+//    //      }
+//    //      System.out.println("\n");
+//    //    }
+//    // Above join returns both Employee and Address Objects in the array
+//    List<Map<String, Object>> response = new ArrayList<>();
+//    for (Object[] row : rows) {
+//      Map<String, Object> candidateAndResult = new HashMap<>();
+//      String position = (String) row[2];
+//      ApplicationEntity application = (ApplicationEntity) row[0];
+//      System.out.println("Application Info::" + application);
+//      CandidateEntity candidate = (CandidateEntity) row[1];
+//      System.out.println("Candidate Info::" + candidate);
+//      candidateAndResult.put("position", position);
+//      candidateAndResult.put("candidate", converter.toDTO(candidate));
+//      candidateAndResult.put("application", converter.toDTO(application));
+//      response.add(candidateAndResult);
+//    }
+        Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+        if (jobPost.isEmpty()) {
+          throw new CustomException("Job Post isn't exists");
+        }
+        String position = jobPost.get().getTitle();
 
-    //    List<Map<String, Object>> response =
-    //        applicationRepository.findApplicationByJobPostId(jobPostId).stream()
-    //            .map(
-    //                application -> {
-    //                  CandidateEntity candidate = application.getCandidateEntity();
-    //                  Map<String, Object> candidateAndResult = new HashMap<>();
-    //                  candidateAndResult.put("position", position);
-    //                  candidateAndResult.put("candidate", converter.toDTO(candidate));
-    //                  candidateAndResult.put("application", converter.toDTO(application));
-    //                  return candidateAndResult;
-    //                })
-    //            .collect(Collectors.toList());
+        List<Map<String, Object>> response =
+            applicationRepository.findApplicationByJobPostId(jobPostId).stream()
+                .map(
+                    application -> {
+                      CandidateEntity candidate = application.getCandidateEntity();
+                      Map<String, Object> candidateAndResult = new HashMap<>();
+                      candidateAndResult.put("position", position);
+                      candidateAndResult.put("candidate", converter.toDTO(candidate));
+                      candidateAndResult.put("application", converter.toDTO(application));
+                      return candidateAndResult;
+                    })
+                .collect(Collectors.toList());
     return new DataResponse(response);
   }
+
+  public DataResponse getCandidateAppliedToEmployerAndResult(long employerId) {
+    List<Map<String, Object>> response =
+            applicationRepository.findApplicationByEmployerId(employerId).stream()
+                    .map(
+                            application -> {
+                              CandidateEntity candidate = application.getCandidateEntity();
+                              Map<String, Object> candidateAndResult = new HashMap<>();
+                              candidateAndResult.put("position", application.getJobPostEntity().getTitle());
+                              candidateAndResult.put("candidate", converter.toDTO(candidate));
+                              candidateAndResult.put("application", converter.toDTO(application));
+                              return candidateAndResult;
+                            })
+                    .collect(Collectors.toList());
+    return new DataResponse(response);
+  }
+
 
   public ResponseObject getApplicationByJobPostIdAndCandidateId(long jobPostId, long candidateId) {
     if (!jobPostRepository.existsById(jobPostId)) {
