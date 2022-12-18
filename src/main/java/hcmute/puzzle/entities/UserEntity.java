@@ -11,6 +11,7 @@ import org.hibernate.annotations.FetchMode;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +23,7 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 // Avoid Error table name is "user" in database
 @Table(name = "users")
-public class UserEntity {
+public class UserEntity implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -92,6 +93,8 @@ public class UserEntity {
   @ManyToMany(mappedBy = "viewedUsers", cascade = CascadeType.DETACH)
   private Set<JobPostEntity> viewJobPosts = new HashSet<>();
 
+  @OneToMany(mappedBy = "packageEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private Set<SubscribeEntity> subscribeEntities = new HashSet<>();
 
 }
 

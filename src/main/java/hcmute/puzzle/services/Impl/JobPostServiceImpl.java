@@ -23,11 +23,14 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.security.PublicKey;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class JobPostServiceImpl implements JobPostService {
+
+  public static int LIMITED_NUMBER_OF_JOB_POSTS_CREATED_DEFAULT = 2;
 
   @PersistenceContext public EntityManager em;
 
@@ -337,5 +340,12 @@ public class JobPostServiceImpl implements JobPostService {
     }
 
     return new DataResponse(rate);
+  }
+
+  public long getLimitedNumberOfJobPostsCreatedForEmployer(long employerId) {
+    //check subscribes of employer
+
+
+    return LIMITED_NUMBER_OF_JOB_POSTS_CREATED_DEFAULT;
   }
 }

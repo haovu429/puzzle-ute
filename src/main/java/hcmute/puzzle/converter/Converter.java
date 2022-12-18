@@ -511,63 +511,6 @@ public class Converter {
     return entity;
   }
 
-//  // Service
-//  public ServiceDTO toDTO(ServiceEntity entity) {
-//    ServiceDTO dto = new ServiceDTO();
-//    dto.setId(entity.getId());
-//    dto.setName(entity.getName());
-//    dto.setActive(entity.isActive());
-//
-//    return dto;
-//  }
-//
-//  public ServiceEntity toEntity(ServiceDTO dto) {
-//    ServiceEntity entity = new ServiceEntity();
-//    entity.setId(dto.getId());
-//    entity.setName(dto.getName());
-//    entity.setActive(dto.isActive());
-//
-//    return entity;
-//  }
-//
-//  // Skill
-//  public SkillDTO toDTO(SkillEntity entity) {
-//    SkillDTO dto = new SkillDTO();
-//    dto.setId(entity.getId());
-//    dto.setName(entity.getName());
-//    dto.setActive(entity.isActive());
-//
-//    return dto;
-//  }
-//
-//  public SkillEntity toEntity(SkillDTO dto) {
-//    SkillEntity entity = new SkillEntity();
-//    entity.setId(dto.getId());
-//    entity.setName(dto.getName());
-//    entity.setActive(dto.isActive());
-//
-//    return entity;
-//  }
-//
-//  // Position
-//  public PositionDTO toDTO(PositionEntity entity) {
-//    PositionDTO dto = new PositionDTO();
-//    dto.setId(entity.getId());
-//    dto.setName(entity.getName());
-//    dto.setActive(entity.isActive());
-//
-//    return dto;
-//  }
-//
-//  public PositionEntity toEntity(PositionDTO dto) {
-//    PositionEntity entity = new PositionEntity();
-//    entity.setId(dto.getId());
-//    entity.setName(dto.getName());
-//    entity.setActive(dto.isActive());
-//
-//    return entity;
-//  }
-
   public ExtraInfoDTO toDTO(ExtraInfoEntity entity) {
     ExtraInfoDTO dto = new ExtraInfoDTO();
     dto.setId(entity.getId());
@@ -587,4 +530,84 @@ public class Converter {
 
     return entity;
   }
+
+  public InvoiceDTO toDTO(InvoiceEntity entity) {
+    InvoiceDTO dto = new InvoiceDTO();
+    dto.setId(entity.getId());
+    dto.setEmail(entity.getEmail());
+    dto.setPhone(entity.getPhone());
+    dto.setServiceType(entity.getServiceType());
+    dto.setPrice(entity.getPrice());
+    dto.setTransactionCode(entity.getTransactionCode());
+    dto.setPayTime(entity.getPayTime());
+    dto.setPaymentMethod(entity.getPaymentMethod());
+    dto.setStatus(entity.getStatus());
+
+    return dto;
+  }
+
+  public InvoiceEntity toEntity(InvoiceDTO dto) {
+    InvoiceEntity entity = new InvoiceEntity();
+    entity.setId(dto.getId());
+    entity.setEmail(dto.getEmail());
+    entity.setPhone(dto.getPhone());
+    entity.setServiceType(dto.getServiceType());
+    entity.setPrice(dto.getPrice());
+    entity.setTransactionCode(dto.getTransactionCode());
+    entity.setPayTime(dto.getPayTime());
+    entity.setPaymentMethod(dto.getPaymentMethod());
+    entity.setStatus(dto.getStatus());
+
+    return entity;
+  }
+
+  public PackageDTO toDTO(PackageEntity entity) {
+    PackageDTO dto = new PackageDTO();
+    dto.setId(entity.getId());
+    dto.setName(entity.getName());
+    dto.setCode(entity.getCode());
+    dto.setPrice(entity.getPrice());
+    dto.setCost(entity.getCost());
+    dto.setDuration(entity.getDuration());
+    dto.setDescription(entity.getDescription());
+    dto.setServiceType(entity.getServiceType());
+    dto.setPublicTime(entity.getPublicTime());
+    dto.setForUserType(entity.getForUserType());
+
+    return null;
+  }
+
+  public PackageEntity toEntity(PackageDTO dto) {
+    PackageEntity entity = new PackageEntity();
+    entity.setId(dto.getId());
+    entity.setName(dto.getName());
+    entity.setCode(dto.getCode());
+    entity.setPrice(dto.getPrice());
+    entity.setCost(dto.getCost());
+    entity.setDuration(dto.getDuration());
+    entity.setDescription(dto.getDescription());
+    entity.setServiceType(dto.getServiceType());
+    entity.setPublicTime(dto.getPublicTime());
+    entity.setForUserType(dto.getForUserType());
+
+    return entity;
+  }
+
+  public SubscribeDTO toDTO(SubscribeEntity entity) {
+    SubscribeDTO dto = new SubscribeDTO();
+    dto.setId(entity.getId());
+    dto.setStartTime(entity.getStartTime());
+    dto.setExpirationTime(entity.getExpirationTime());
+    return dto;
+  }
+
+  public SubscribeEntity toEntity(SubscribeDTO dto) {
+    SubscribeEntity entity = new SubscribeEntity();
+    entity.setId(dto.getId());
+    entity.setStartTime(dto.getStartTime());
+    entity.setExpirationTime(dto.getExpirationTime());
+
+    return entity;
+  }
+
 }
