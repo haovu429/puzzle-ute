@@ -90,6 +90,7 @@ public class EmployerController {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     // Validate JobPost
     jobPostService.validateJobPost(jobPostDTO);
+    jobPostService.checkCreatedJobPostLimit(userDetails.getUser().getId());
 
     // Set default createEmployer is Employer create first (this valid user requesting)
     jobPostDTO.setCreatedEmployerId(userDetails.getUser().getId());

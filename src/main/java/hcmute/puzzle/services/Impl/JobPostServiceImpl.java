@@ -355,4 +355,23 @@ public class JobPostServiceImpl implements JobPostService {
 
     return LIMITED_NUMBER_OF_JOB_POSTS_CREATED_DEFAULT + limitNum;
   }
+
+  public long getCurrentNumberOfJobPostsCreatedByEmployer(long employerId) {
+    // check subscribes of employer
+    String sql =
+        "SELECT COUNT(jp) FROM JobPostEntity jp WHERE jp.createdEmployer.id = :employerId AND jp.isDeleted = FALSE";
+    long count =
+        (long) em.createQuery(sql).setParameter("employerId", employerId).getSingleResult();
+
+    return count;
+  }
+
+  public void checkCreatedJobPostLimit(long employerId) {
+    long limit = getLimitNumberOfJobPostsCreatedForEmployer(employerId);
+    long current = getCurrentNumberOfJobPostsCreatedByEmployer(employerId);
+
+    if (current > limit) {
+      throw new CustomException("Your current number of created jobs is" + current  + ", which has exceeded the limit of " + limit);
+    }
+  }
 }

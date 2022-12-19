@@ -53,4 +53,6 @@ public interface JobPostService {
   DataResponse getApplicationRateByJobPostId(long jobPostId);
 
   long getLimitNumberOfJobPostsCreatedForEmployer(long employerId);
+
+  void checkCreatedJobPostLimit(long employerId);
 }
