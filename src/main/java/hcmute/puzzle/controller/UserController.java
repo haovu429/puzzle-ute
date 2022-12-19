@@ -287,7 +287,7 @@ public class UserController {
     return invoiceService.getInvoiceByEmailUser(userDetails.getUser().getEmail());
   }
 
-  @GetMapping("/user/get-subscribed_package")
+  @GetMapping("/user/get-subscribed-package")
   public DataResponse getPackageSubscribe(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return new DataResponse(userDetails.getUser().getSubscribeEntities());

@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -24,6 +26,12 @@ public class ApplicationEntity implements Serializable {
 
   @Column(name = "note", columnDefinition = "VARCHAR(200)")
   private String note;
+
+  @Column(name = "create_time")
+  @CreatedDate
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date createTime;
+
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
   @JoinColumn(name = "job_post_id", nullable = false)

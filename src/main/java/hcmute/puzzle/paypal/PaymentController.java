@@ -42,7 +42,7 @@ public class PaymentController {
     public String index(){
         return "index";
     }
-    @PostMapping("/api/pay")
+    @GetMapping("/api/pay")
     public DataResponse pay(HttpServletRequest request, Authentication authentication, @RequestParam("packageCode") String packageCode ){
         // Custom logic
         Optional<PackageEntity> packageEntity = packageRepository.findByCode(packageCode);

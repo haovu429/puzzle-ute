@@ -108,6 +108,7 @@ public class Converter {
     applicationDTO.setId(entity.getId());
     applicationDTO.setResult(entity.getResult());
     applicationDTO.setNote(entity.getNote());
+    applicationDTO.setCreateTime(entity.getCreateTime());
 
     if (entity.getCandidateEntity() != null) {
       applicationDTO.setCandidateId(entity.getCandidateEntity().getId());
@@ -125,6 +126,7 @@ public class Converter {
     entity.setId(dto.getId());
     entity.setResult(dto.getResult());
     entity.setNote(dto.getNote());
+    entity.setCreateTime(dto.getCreateTime());
     //      try {
     //        Optional<CandidateEntity> candidate = candidateRepository.findById(dto.getId());
     //        if (candidate.isPresent()) {
