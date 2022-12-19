@@ -10,12 +10,14 @@ import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.TimeUtil;
 import hcmute.puzzle.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -51,6 +53,9 @@ public class UserController {
 
   @Autowired
   JobPostService jobPostService;
+
+  @Autowired
+  InvoiceService invoiceService;
 
   @GetMapping("/user")
   public ResponseObject getAll() {
@@ -274,6 +279,18 @@ public class UserController {
     }
 
     return jobPostService.viewJobPost(linkUser.get().getId(), jobPostId);
+  }
+
+  @GetMapping("/user/get-invoice")
+  public DataResponse getInvoiceForUser(Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    return invoiceService.getInvoiceByEmailUser(userDetails.getUser().getEmail());
+  }
+
+  @GetMapping("/user/get-subscribed_package")
+  public DataResponse getPackageSubscribe(Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    return new DataResponse(userDetails.getUser().getSubscribeEntities());
   }
 
 }

@@ -9,12 +9,14 @@ import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.model.DataStaticJoinAccount;
 import hcmute.puzzle.repository.RoleRepository;
 import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.UserService;
 import hcmute.puzzle.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -175,6 +177,9 @@ public class UserServiceImpl implements UserService {
         "Data static for amount of join account in " + numWeek + " weeks",
         data);
   }
+
+
+
 
   //  @Override
   //  public ResponseObject getOne() {
