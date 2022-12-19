@@ -23,6 +23,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -188,6 +189,7 @@ public class CandidateController {
     ApplicationEntity applicationEntity = new ApplicationEntity();
     applicationEntity.setCandidateEntity(userDetails.getUser().getCandidateEntity());
     applicationEntity.setJobPostEntity(jobPost.get());
+    applicationEntity.setCreateTime(new Date());
     applicationRepository.save(applicationEntity);
 
     jobPost.get().getViewedUsers().add(userDetails.getUser());
