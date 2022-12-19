@@ -57,6 +57,9 @@ public class UserController {
   @Autowired
   InvoiceService invoiceService;
 
+  @Autowired
+  SubscribeService subscribeService;
+
   @GetMapping("/user")
   public ResponseObject getAll() {
     return userService.getAll();
@@ -290,7 +293,8 @@ public class UserController {
   @GetMapping("/user/get-subscribed-package")
   public DataResponse getPackageSubscribe(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return new DataResponse(userDetails.getUser().getSubscribeEntities());
+
+    return subscribeService.getAllSubscriptionsByUserId(userDetails.getUser().getId());
   }
 
 }

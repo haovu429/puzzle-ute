@@ -18,5 +18,7 @@ public interface SubscribeService {
 
   List<SubscribeEntity> getCurrentSubscribeByUserIdAndPackId(long userId, long packId);
 
-  DataResponse getCurrentSubscribe(long userId);
+  DataResponse getCurrentValidSubscriptions(long userId);
+
+  DataResponse getAllSubscriptionsByUserId(long userId);
 }

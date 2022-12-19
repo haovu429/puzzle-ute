@@ -577,7 +577,7 @@ public class Converter {
     dto.setPublicTime(entity.getPublicTime());
     dto.setForUserType(entity.getForUserType());
 
-    return null;
+    return dto;
   }
 
   public PackageEntity toEntity(PackageDTO dto) {
