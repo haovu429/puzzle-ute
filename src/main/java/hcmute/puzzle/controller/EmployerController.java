@@ -90,6 +90,7 @@ public class EmployerController {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     // Validate JobPost
     jobPostService.validateJobPost(jobPostDTO);
+    jobPostService.checkCreatedJobPostLimit(userDetails.getUser().getId());
 
     // Set default createEmployer is Employer create first (this valid user requesting)
     jobPostDTO.setCreatedEmployerId(userDetails.getUser().getId());
@@ -354,4 +355,12 @@ public class EmployerController {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return employerService.getApplicationRateEmployerId(userDetails.getUser().getId());
   }
+
+  @GetMapping("/employer/get-limit-num-of-job-post-created")
+  DataResponse getLimitNumOfJobPostCreated(Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    long limit = jobPostService.getLimitNumberOfJobPostsCreatedForEmployer(userDetails.getUser().getId());
+    return new DataResponse(limit);
+  }
+
 }

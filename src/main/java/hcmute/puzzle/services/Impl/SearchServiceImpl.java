@@ -157,19 +157,15 @@ public class SearchServiceImpl implements SearchService {
     String filter = "";
 
     if (min != null) {
-      if (min.getAttributeType().equals(ModelQuery.TYPE_ATTRIBUTE_DATE)) {
-        filter = filter + " AND " + objectAlias + "." + fieldName + " >= " + "03-12-2022" + " ";
-      } else {
-        filter =
-            filter
-                + " AND "
-                + objectAlias
-                + "."
-                + fieldName
-                + " >= "
-                + String.valueOf(min.getCompareValue())
-                + " ";
-      }
+      filter =
+          filter
+              + " AND "
+              + objectAlias
+              + "."
+              + fieldName
+              + " >= "
+              + String.valueOf(min.getCompareValue())
+              + " ";
     }
 
     if (max != null) {
@@ -200,25 +196,22 @@ public class SearchServiceImpl implements SearchService {
       if (str != null && str.length() > 0 && str.endsWith(lastSubString)) {
 
         str = str.substring(0, str.length() - numOfLastCharacter);
-
       }
     }
     return str;
   }
 
-  public String selectInListValueSpecialAttribute(String objectAlias, String fieldName, List<ModelQuery> valueOfSpecialAttribute) {
+  public String selectInListValueSpecialAttribute(
+      String objectAlias, String fieldName, List<ModelQuery> valueOfSpecialAttribute) {
     String query = "";
     if (fieldName != null && !fieldName.isEmpty()) {
-      query = " AND "  + objectAlias
-              + "."
-              + fieldName
-              + " IN (";
+      query = " AND " + objectAlias + "." + fieldName + " IN (";
       if (!valueOfSpecialAttribute.isEmpty()) {
         String divisionSymbol = ", ";
-        for(ModelQuery value : valueOfSpecialAttribute) {
+        for (ModelQuery value : valueOfSpecialAttribute) {
           query = query + String.valueOf(value.getCompareValue()) + divisionSymbol;
         }
-        query = deleteLastSubString(query,divisionSymbol);
+        query = deleteLastSubString(query, divisionSymbol);
       } else {
         query = query + " -1 ";
       }
@@ -278,10 +271,9 @@ public class SearchServiceImpl implements SearchService {
     }
     if (valueSpecialAttributes != null) {
       valueSpecialAttributes.forEach(
-              (key, value) -> {
-                strQuery.append(selectInListValueSpecialAttribute(objectAlias, key, value));
-              }
-      );
+          (key, value) -> {
+            strQuery.append(selectInListValueSpecialAttribute(objectAlias, key, value));
+          });
     }
 
     //    strQuery.append(filterContain(objectAlias, "screen", screen));

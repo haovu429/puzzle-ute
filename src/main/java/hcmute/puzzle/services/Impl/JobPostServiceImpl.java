@@ -29,6 +29,8 @@ import java.util.stream.Collectors;
 @Service
 public class JobPostServiceImpl implements JobPostService {
 
+  public static int LIMITED_NUMBER_OF_JOB_POSTS_CREATED_DEFAULT = 2;
+
   @PersistenceContext public EntityManager em;
 
   @Autowired Converter converter;
@@ -39,8 +41,7 @@ public class JobPostServiceImpl implements JobPostService {
 
   @Autowired ApplicationRepository applicationRepository;
 
-  @Autowired
-  UserRepository userRepository;
+  @Autowired UserRepository userRepository;
 
   public ResponseObject add(JobPostDTO jobPostDTO) {
 
@@ -327,15 +328,50 @@ public class JobPostServiceImpl implements JobPostService {
 
     double rate = 0; // mac dinh, hoi sai neu view = 0 và application > 0
     long viewOfCandidateAmount = jobPostRepository.getViewedCandidateAmountByJobPostId(jobPostId);
-    long applicationOfCandidateAmount = applicationRepository.getAmountApplicationByJobPostId(jobPostId);
+    long applicationOfCandidateAmount =
+        applicationRepository.getAmountApplicationByJobPostId(jobPostId);
 
     if (viewOfCandidateAmount != 0 && viewOfCandidateAmount >= applicationOfCandidateAmount) {
-      rate = Double.valueOf(applicationOfCandidateAmount)/viewOfCandidateAmount;
+      rate = Double.valueOf(applicationOfCandidateAmount) / viewOfCandidateAmount;
       rate = rate * 100; // doi ti le ra phan tram
       // lam tron 2 chu so thap phan
       rate = Math.round(rate * 100.0) / 100.0;
     }
 
     return new DataResponse(rate);
+  }
+
+  public long getLimitNumberOfJobPostsCreatedForEmployer(long employerId) {
+    // check subscribes of employer
+    String sql =
+        "SELECT SUM(pack.numOfJobPost) FROM SubscribeEntity sub, PackageEntity pack, UserEntity u WHERE sub.packageEntity.id = pack.id "
+            + "AND sub.regUser.id = u.id AND u.id=:userId AND sub.expirationTime > :nowTime ";
+    long limitNum =
+        (long)
+            em.createQuery(sql)
+                .setParameter("userId", employerId)
+                .setParameter("nowTime", new Date())
+                .getSingleResult();
+
+    return LIMITED_NUMBER_OF_JOB_POSTS_CREATED_DEFAULT + limitNum;
+  }
+
+  public long getCurrentNumberOfJobPostsCreatedByEmployer(long employerId) {
+    // check subscribes of employer
+    String sql =
+        "SELECT COUNT(jp) FROM JobPostEntity jp WHERE jp.createdEmployer.id = :employerId AND jp.isDeleted = FALSE";
+    long count =
+        (long) em.createQuery(sql).setParameter("employerId", employerId).getSingleResult();
+
+    return count;
+  }
+
+  public void checkCreatedJobPostLimit(long employerId) {
+    long limit = getLimitNumberOfJobPostsCreatedForEmployer(employerId);
+    long current = getCurrentNumberOfJobPostsCreatedByEmployer(employerId);
+
+    if (current > limit) {
+      throw new CustomException("Your current number of created jobs is" + current  + ", which has exceeded the limit of " + limit);
+    }
   }
 }

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,7 +26,7 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 // @EnableJpaRepositories(basePackages="java")
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled=true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class WebSecurityConfig {
   private static final String[] AUTH_WHITE_LIST = {
     "/v3/api-docs/**", "/swagger-ui/**", "/v2/api-docs/**", "/swagger-resources/**"
@@ -44,13 +43,13 @@ public class WebSecurityConfig {
 
   @Autowired UserService userService;
 
-//  @Autowired
-//  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//    auth.inMemoryAuthentication()
-//        .withUser("guest")
-//        .password(passwordEncoder().encode("guest_pass"))
-//        .authorities("GUEST");
-//  }
+  //  @Autowired
+  //  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+  //    auth.inMemoryAuthentication()
+  //        .withUser("guest")
+  //        .password(passwordEncoder().encode("guest_pass"))
+  //        .authorities("GUEST");
+  //  }
 
   @Bean
   public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -94,7 +93,6 @@ public class WebSecurityConfig {
     return new HttpSessionEventPublisher();
   }
 
-
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.cors()
@@ -130,7 +128,11 @@ public class WebSecurityConfig {
         .antMatchers("/api/init-db")
         .permitAll()
         .antMatchers("/oauth2/**")
-        .permitAll().antMatchers("/api/pay/**").permitAll()
+        .permitAll()
+        .antMatchers("/api/pay/**")
+        .hasAuthority(Roles.EMPLOYER.value)
+        .antMatchers("/api/pay-result/**")
+        .permitAll()
         //        .antMatchers("/api/auth/**")
         //        .permitAll()
         //        .antMatchers("/api/test/**")
