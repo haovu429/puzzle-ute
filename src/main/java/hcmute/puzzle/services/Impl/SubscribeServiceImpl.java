@@ -117,7 +117,7 @@ public class SubscribeServiceImpl implements SubscribeService {
   }
 
   // Lấy các đối tượng đăng ký các dịch vụ đang có hiện tại (chưa hết hạn)
-  public DataResponse getCurrentSubscribe(long userId) {
+  public DataResponse getCurrentValidSubscriptions(long userId) {
     String sql =
         "SELECT sub, pack FROM SubscribeEntity sub, PackageEntity pack, UserEntity u WHERE sub.packageEntity.id = pack.id"
             + " AND sub.regUser.id = u.id AND u.id=:userId AND sub.expirationTime > :nowTime";
@@ -137,6 +137,36 @@ public class SubscribeServiceImpl implements SubscribeService {
       System.out.println("Candidate Info::" + packageEntity);
       subAndPack.put("subscribe", converter.toDTO(subscribe));
       subAndPack.put("package", converter.toDTO(packageEntity));
+      response.add(subAndPack);
+    }
+    return new DataResponse(response);
+  }
+
+  public DataResponse getAllSubscriptionsByUserId(long userId) {
+    String sql =
+            "SELECT sub, pack FROM SubscribeEntity sub, PackageEntity pack, UserEntity u WHERE sub.packageEntity.id = pack.id"
+                    + " AND sub.regUser.id = u.id AND u.id=:userId";
+    // Join example with addEntity and addJoin
+    List<Object[]> rows =
+            em.createQuery(sql)
+                    .setParameter("userId", userId)
+                    .getResultList();
+    Date nowTime = new Date();
+    List<Map<String, Object>> response = new ArrayList<>();
+    for (Object[] row : rows) {
+      Map<String, Object> subAndPack = new HashMap<>();
+      SubscribeEntity subscribe = (SubscribeEntity) row[0];
+      //System.out.println("subscribe Info::" + subscribe);
+      PackageEntity packageEntity = (PackageEntity) row[1];
+      //System.out.println("packageEntity Info::" + packageEntity);
+      subAndPack.put("subscribe", converter.toDTO(subscribe));
+      subAndPack.put("package", converter.toDTO(packageEntity));
+      if (subscribe.getExpirationTime().getTime() > nowTime.getTime()){
+        subAndPack.put("is_expired", false);
+      } else {
+        subAndPack.put("is_expired", true);
+      }
+
       response.add(subAndPack);
     }
     return new DataResponse(response);
