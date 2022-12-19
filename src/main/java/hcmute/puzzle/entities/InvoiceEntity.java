@@ -45,7 +45,7 @@ public class InvoiceEntity implements Serializable {
     @Column(name = "status", columnDefinition = "VARCHAR(30)")
     private String status;
 
-    @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-    @JoinColumn(name = "subscribe_id")
-    private SubscribeEntity subscribeEntity;
+//    @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "subscribe_id")
+//    private SubscribeEntity subscribeEntity;
 }

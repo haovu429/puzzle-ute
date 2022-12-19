@@ -48,8 +48,7 @@ public class SubscribeServiceImpl implements SubscribeService {
 
     // Hoá đơn đã lưu trong db rồi thì mới set
     // Lưu hai chiều vì để cascade là DETACH
-    subscribe.setInvoiceEntity(invoiceEntity);
-    invoiceEntity.setSubscribeEntity(subscribe);
+    subscribe.setPaymentTransactionCode(invoiceEntity.getTransactionCode());
 
     subscribeRepository.save(subscribe);
 

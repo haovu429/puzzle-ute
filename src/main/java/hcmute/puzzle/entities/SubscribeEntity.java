@@ -34,8 +34,11 @@ public class SubscribeEntity implements Serializable {
     @JoinColumn(name = "package_id", nullable = false)
     private PackageEntity packageEntity;
 
-    @OneToOne(mappedBy = "subscribeEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-    private InvoiceEntity invoiceEntity;
+//    @OneToOne(mappedBy = "subscribeEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+//    private InvoiceEntity invoiceEntity;
+
+    @Column(name = "payment_transaction_code", columnDefinition = "VARCHAR(30)")
+    private String paymentTransactionCode;
 
     @Override
     public String toString() {
@@ -45,7 +48,7 @@ public class SubscribeEntity implements Serializable {
                 ", expirationTime=" + expirationTime +
                 ", regUser=" + regUser.getEmail() +
                 ", packageEntity=" + packageEntity.getName() +
-                ", invoiceEntity=" + invoiceEntity.getTransactionCode() +
+                ", invoiceEntity=" + paymentTransactionCode +
                 '}';
     }
 }

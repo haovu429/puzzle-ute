@@ -17,6 +17,7 @@ public class PackageDTO {
     private Long price; // giá bán, không lưu vào db
     private long cost; // giá gốc
     private long duration; // tính theo giây
+    private int numOfJobPost; // só job post mua thêm
     private String description;
     private String serviceType;
     private Date publicTime;

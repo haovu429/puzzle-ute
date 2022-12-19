@@ -35,6 +35,9 @@ public class PackageEntity implements Serializable {
     @Column(name = "duration", nullable = false)
     private long duration; // tính theo giây
 
+    @Column(name = "num_of_job_post", nullable = false)
+    private int numOfJobPost; // só job post mua thêm
+
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 

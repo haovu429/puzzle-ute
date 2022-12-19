@@ -14,4 +14,6 @@ public class SubscribeDTO {
     private long id;
     private Date startTime;
     private Date expirationTime;
+    private String transactionCode;
+
 }

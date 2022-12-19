@@ -569,6 +569,7 @@ public class Converter {
     dto.setPrice(entity.getPrice());
     dto.setCost(entity.getCost());
     dto.setDuration(entity.getDuration());
+    dto.setNumOfJobPost(entity.getNumOfJobPost());
     dto.setDescription(entity.getDescription());
     dto.setServiceType(entity.getServiceType());
     dto.setPublicTime(entity.getPublicTime());
@@ -585,6 +586,7 @@ public class Converter {
     entity.setPrice(dto.getPrice());
     entity.setCost(dto.getCost());
     entity.setDuration(dto.getDuration());
+    entity.setNumOfJobPost(dto.getNumOfJobPost());
     entity.setDescription(dto.getDescription());
     entity.setServiceType(dto.getServiceType());
     entity.setPublicTime(dto.getPublicTime());
@@ -598,6 +600,7 @@ public class Converter {
     dto.setId(entity.getId());
     dto.setStartTime(entity.getStartTime());
     dto.setExpirationTime(entity.getExpirationTime());
+    dto.setTransactionCode(entity.getPaymentTransactionCode());
     return dto;
   }
 
@@ -606,7 +609,7 @@ public class Converter {
     entity.setId(dto.getId());
     entity.setStartTime(dto.getStartTime());
     entity.setExpirationTime(dto.getExpirationTime());
-
+    entity.setPaymentTransactionCode(dto.getTransactionCode());
     return entity;
   }
 
