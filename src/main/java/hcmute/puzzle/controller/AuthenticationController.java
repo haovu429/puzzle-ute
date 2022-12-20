@@ -97,7 +97,8 @@ public class AuthenticationController {
 
   @PostMapping("/login-google")
   public DataResponse loginGoogle(@RequestBody Map<String, Object> input)
-          throws ClientProtocolException, IOException, GeneralSecurityException, NoSuchFieldException, IllegalAccessException {
+      throws ClientProtocolException, IOException, GeneralSecurityException, NoSuchFieldException,
+          IllegalAccessException {
     //    String code = request.getParameter("code");
     //
     //    if (code == null || code.isEmpty()) {

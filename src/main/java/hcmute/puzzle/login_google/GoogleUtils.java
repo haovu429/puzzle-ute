@@ -127,7 +127,7 @@ public class GoogleUtils {
       googlePojo.setFamily_name(familyName);
       googlePojo.setGiven_name(givenName);
       googlePojo.setPicture(pictureUrl);
-      googlePojo.setFamily_name(name);
+      googlePojo.setName(name);
 
       System.out.println(googlePojo);
 
