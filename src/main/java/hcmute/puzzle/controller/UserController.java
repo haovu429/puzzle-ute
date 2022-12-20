@@ -87,6 +87,8 @@ public class UserController {
     data.put("fullName", userDTO.getFullName());
     data.put("roleCodes", userDTO.getRoleCodes());
     data.put("active", userDTO.isActive());
+    data.put("email_verified", userDTO.isEmailVerified());
+    data.put("locale", userDTO.getLocale());
 
     userDTO.setPassword(null);
 

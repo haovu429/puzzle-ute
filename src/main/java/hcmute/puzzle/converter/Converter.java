@@ -46,6 +46,10 @@ public class Converter {
     userDTO.setJoinDate(entity.getJoinDate());
     userDTO.setLastOnline(entity.getLastOnline());
     userDTO.setActive(entity.isActive());
+    userDTO.setProvider(entity.getProvider());
+    userDTO.setFullName(entity.getFullName());
+    userDTO.setEmailVerified(entity.isEmailVerified());
+    userDTO.setLocale(entity.getLocale());
 
     if (!entity.getRoles().isEmpty()) {
       userDTO.setRoleCodes(
@@ -70,9 +74,11 @@ public class Converter {
     //        Set<RoleEntity> roleEntities = dto.getRoles().stream().map(role -> toEntity(role))
     //                .collect(Collectors.toSet());
 
-    Provider provider = Provider.asProvider(dto.getProvider());
-    userEntity.setProvider(provider);
+    //Provider provider = Provider.asProvider(dto.getProvider());
+    userEntity.setProvider(dto.getProvider());
     userEntity.setFullName(dto.getFullName());
+    userEntity.setEmailVerified(dto.isEmailVerified());
+    userEntity.setLocale(dto.getLocale());
 
     Set<RoleEntity> roleEntities = new HashSet<>();
     for (String code : dto.getRoleCodes()) {

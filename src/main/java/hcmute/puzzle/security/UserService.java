@@ -3,6 +3,7 @@ package hcmute.puzzle.security;
 import hcmute.puzzle.entities.RoleEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.login_google.GooglePojo;
 import hcmute.puzzle.repository.RoleRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.utils.Provider;
@@ -11,15 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Optional;
 
 @Service
@@ -50,13 +47,13 @@ public class UserService implements UserDetailsService {
     return new CustomUserDetails(userEntity);
   }
 
-  public String processOAuthPostLogin(String email, String name) {
-    UserEntity existUser = userRepository.getUserByEmail(email);
+  public String processOAuthPostLogin(GooglePojo googlePojo) {
+    UserEntity existUser = userRepository.getUserByEmail(googlePojo.getEmail());
 
     if (existUser == null) {
-      existUser = createNewAccountAfterOAuthLoginSuccess(email, name);
+      existUser = createNewAccountAfterOAuthGoogleLoginSuccess(googlePojo);
     } else {
-      updateCustomerAfterOAuthLoginSuccess(existUser, name);
+      updateCustomerAfterOAuthLoginSuccess(existUser, googlePojo);
     }
     if (existUser == null) {
       throw new CustomException("Error create account from OAuth2");
@@ -65,10 +62,13 @@ public class UserService implements UserDetailsService {
     return generateTokenOAuth2(existUser.getEmail());
   }
 
-  public UserEntity createNewAccountAfterOAuthLoginSuccess(String email, String name) {
+  public UserEntity createNewAccountAfterOAuthGoogleLoginSuccess(GooglePojo googlePojo) {
     UserEntity newUser = new UserEntity();
-    newUser.setEmail(email);
-    newUser.setFullName(name);
+    newUser.setEmail(googlePojo.getEmail());
+    newUser.setFullName(googlePojo.getName());
+    newUser.setAvatar(googlePojo.getPicture());
+    newUser.setEmailVerified(googlePojo.isVerified_email());
+    newUser.setLocale(googlePojo.getLocale());
     newUser.setProvider(Provider.GOOGLE);
     Optional<RoleEntity> role = roleRepository.findById("user");
     if (role.isEmpty()) {
@@ -80,8 +80,12 @@ public class UserService implements UserDetailsService {
     return userRepository.save(newUser);
   }
 
-  public void updateCustomerAfterOAuthLoginSuccess(UserEntity userEntity, String name) {
-    userEntity.setFullName(name);
+  public void updateCustomerAfterOAuthLoginSuccess(UserEntity userEntity, GooglePojo googlePojo) {
+    if (userEntity.getFullName() == null) {
+      userEntity.setFullName(googlePojo.getName());
+    }
+
+    if (userEntity.getAvatar() == null)
     userEntity.setProvider(Provider.GOOGLE);
     userRepository.save(userEntity);
   }
@@ -94,15 +98,15 @@ public class UserService implements UserDetailsService {
         return null;
       }
       //Collection<? extends GrantedAuthority> a = customUserDetails.getAuthorities();
-      Authentication authentication =
-          authenticationManager.authenticate(
-              new UsernamePasswordAuthenticationToken(
-                  email, null, customUserDetails.getAuthorities()));
-      //        Set in security context
-      SecurityContextHolder.getContext().setAuthentication(authentication);
+//      Authentication authentication =
+//          authenticationManager.authenticate(
+//              new UsernamePasswordAuthenticationToken(
+//                  email, null, customUserDetails.getAuthorities()));
+//      //        Set in security context
+//      SecurityContextHolder.getContext().setAuthentication(authentication);
 //      Authentication authentication1 = authenticationManager.authenticate( createNewAccountAfterOAuthLoginSuccess()
 //              authenticationManager.authenticate(
-      Long JWT_EXPIRATION = (long) (60 * 60 * 24 * 1000); // 1 day
+      Long JWT_EXPIRATION = (long) (60 * 60 * 1000); // 1 h vi token google 1 h se het han
 
       // get jwt token
       String jwt =

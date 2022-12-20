@@ -47,9 +47,13 @@ public class UserDTO {
 
   private boolean isActive = true;
 
-  private String provider;
+  private Provider provider;
 
   private String fullName;
+
+  private boolean emailVerified;
+
+  private String locale;
 
   private Set<String> roleCodes = new HashSet<>();
 }

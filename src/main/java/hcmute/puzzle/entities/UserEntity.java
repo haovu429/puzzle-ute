@@ -35,7 +35,7 @@ public class UserEntity implements Serializable {
   @Column(name = "password", columnDefinition = "VARCHAR(100)")
   private String password;
 
-  @Column(name = "email", unique = true, columnDefinition = "VARCHAR(100)")
+  @Column(name = "email", unique = true, nullable = false, columnDefinition = "VARCHAR(100)")
   private String email;
 
   @Column(name = "phone", unique = true, columnDefinition = "VARCHAR(20)")
@@ -64,6 +64,12 @@ public class UserEntity implements Serializable {
 
   @Column(name = "full_name", columnDefinition = "VARCHAR(100)")
   private String fullName;
+
+  @Column(name = "email_verified")
+  private boolean emailVerified;
+
+  @Column(name = "locale", columnDefinition = "VARCHAR(10)")
+  private String locale;
 
   // https://shareprogramming.net/phan-biet-fetchmode-va-fetchtype-trong-jpa-hibernate/
   // https://viblo.asia/p/van-de-n1-cau-truy-van-trong-hibernate-bWrZn00b5xw
