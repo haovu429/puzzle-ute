@@ -66,7 +66,7 @@ public class UserEntity implements Serializable {
   private String fullName;
 
   @Column(name = "email_verified")
-  private boolean emailVerified;
+  private boolean emailVerified = false;
 
   @Column(name = "locale", columnDefinition = "VARCHAR(10)")
   private String locale;
