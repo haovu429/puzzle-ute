@@ -62,7 +62,7 @@ public class CandidateController {
   @Autowired JobPostService jobPostService;
 
   @PostMapping("/candidate/add")
-  ResponseObject save(
+  ResponseObject saveCandidate(
       @RequestBody @Validated CandidateDTO candidate,
       BindingResult bindingResult,
       Authentication authentication) {
@@ -90,14 +90,14 @@ public class CandidateController {
 
   // Gửi Authentication xác thực tài khoản thì xoá.
   @DeleteMapping("/candidate")
-  ResponseObject delete(Authentication authentication) {
+  ResponseObject deleteCandidate(Authentication authentication) {
 
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return candidateService.delete(userDetails.getUser().getId());
   }
 
   @PutMapping("/candidate/update")
-  ResponseObject update(
+  ResponseObject updateCandidate(
       @RequestBody @Validated CandidateDTO candidate,
       BindingResult bindingResult,
       Authentication authentication) {

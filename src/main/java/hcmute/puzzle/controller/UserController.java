@@ -66,7 +66,7 @@ public class UserController {
   }
 
   @GetMapping("/user/profile")
-  public ResponseObject getOne(@RequestHeader(value = "Authorization") String token) {
+  public ResponseObject getProfileAccount(@RequestHeader(value = "Authorization") String token) {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
     if (linkUser.isEmpty()) {
@@ -96,12 +96,12 @@ public class UserController {
   }
 
   @DeleteMapping("/user/{id}")
-  public ResponseObject delete(@PathVariable Long id) {
+  public ResponseObject deleteAccount(@PathVariable Long id) {
     return userService.delete(id);
   }
 
   @PutMapping("/user/{id}")
-  public ResponseObject update(@RequestHeader(value = "Authorization") String token, @RequestBody UserDTO user) {
+  public ResponseObject updateAccount(@RequestHeader(value = "Authorization") String token, @RequestBody UserDTO user) {
 
     //Optional<UserEntity>
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
@@ -112,13 +112,13 @@ public class UserController {
     return userService.update(linkUser.get().getId(), user);
   }
 
-  @GetMapping("/test")
-  public String update() {
-    return "OK";
-  }
+//  @GetMapping("/test")
+//  public String update() {
+//    return "OK";
+//  }
 
   @PostMapping("/upload-avatar")
-  public ResponseObject uploadFile(
+  public ResponseObject uploadAvatar(
           @RequestParam("file") MultipartFile file,
           @RequestHeader(value = "Authorization") String token) {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
@@ -157,7 +157,7 @@ public class UserController {
   }
 
   @GetMapping("/delete-avatar")
-  public ResponseObject deleteFile(
+  public ResponseObject deleteAvatar(
           @RequestHeader(value = "Authorization") String token) {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 

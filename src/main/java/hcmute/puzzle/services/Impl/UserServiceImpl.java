@@ -13,7 +13,9 @@ import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.UserService;
 import hcmute.puzzle.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +31,7 @@ public class UserServiceImpl implements UserService {
 
   @Autowired private PasswordEncoder passwordEncoder;
 
-  @Autowired private RoleRepository roleRepository;
+
 
   public boolean checkEmailExists(String email) {
     UserEntity user = userRepository.getUserByEmail(email);
@@ -179,30 +181,4 @@ public class UserServiceImpl implements UserService {
   }
 
 
-
-
-  //  @Override
-  //  public ResponseObject getOne() {
-  //    // Lay Tat Ca UserEntity
-  //    List<UserEntity> userEntitys = userRepository.findAll();
-  //    // Tao UserDTO de tra ve Json
-  //    List<UserDTO> userDTOs = new ArrayList<>();
-  //
-  //    // Cast UserEntity --> UserDTO
-  //    for (UserEntity i : userEntitys) {
-  //      UserDTO user = converter.toDTO(i);
-  //      userDTOs.add(user);
-  //    }
-  //    return new ResponseObject(HttpStatus.OK.value(), "Get all user success", userDTOs);
-  //  }
-
-  //  @Override
-  //  public UserDetails loadUserByUsername(String email) {
-  //    // Kiểm tra xem user có tồn tại trong database không?
-  //    UserEntity user = userRepository.findByEmail(email);
-  //    if (user == null) {
-  //      throw new UsernameNotFoundException(email);
-  //    }
-  //    return new CustomUserDetails(user);
-  //  }
 }

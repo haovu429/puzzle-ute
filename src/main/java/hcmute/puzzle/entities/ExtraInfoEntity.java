@@ -20,7 +20,7 @@ public class ExtraInfoEntity implements Serializable {
   @Column(name = "name", columnDefinition = "VARCHAR(200)")
   private String name;
 
-  @Column(name = "type")
+  @Column(name = "type", columnDefinition = "VARCHAR(100)")
   private String type;
 
   @Column(name = "is_active")

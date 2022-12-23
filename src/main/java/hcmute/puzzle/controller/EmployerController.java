@@ -56,13 +56,13 @@ public class EmployerController {
   @Autowired ApplicationService applicationService;
 
   @DeleteMapping("/employer")
-  ResponseObject delete(Authentication authentication) {
+  ResponseObject deleteEmployer(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return employerService.delete(userDetails.getUser().getId());
   }
 
   @PutMapping("/employer/update")
-  ResponseObject update(
+  ResponseObject updateEmployer(
       @RequestBody @Validated EmployerDTO employer,
       BindingResult bindingResult,
       Authentication authentication) {

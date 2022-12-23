@@ -10,6 +10,7 @@ import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.security.JwtTokenProvider;
 import hcmute.puzzle.security.UserService;
+import hcmute.puzzle.services.SecurityService;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.RedisUtils;
 import org.apache.http.client.ClientProtocolException;
@@ -45,6 +46,8 @@ public class AuthenticationController {
   @Autowired private GoogleUtils googleUtils;
 
   @Autowired private UserService userService;
+
+  @Autowired private SecurityService securityService;
 
   @PostMapping("/login")
   public ResponseObject authenticateUser(
@@ -128,5 +131,16 @@ public class AuthenticationController {
       return new ResponseObject(200, "Logout success", "");
     }
     return new ResponseObject("401", 200, "Logout fail");
+  }
+
+  @GetMapping("/forgot-password")
+  public DataResponse forgotPassword(@RequestParam(value = "email") String email) {
+    return securityService.sendTokenForgotPwd(email);
+  }
+
+  @GetMapping("/reset-password")
+  public DataResponse resetPassword(
+      @RequestParam(value = "token") String token, @RequestParam(value = "email") String email) {
+    return securityService.resetPassword(token, email);
   }
 }

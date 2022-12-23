@@ -2,10 +2,11 @@ package hcmute.puzzle.services;
 
 import hcmute.puzzle.dto.ResetPassword;
 import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.response.DataResponse;
 
 public interface SecurityService {
 
-  ResponseObject sendTokenForgotPwd(String email);
+  DataResponse sendTokenForgotPwd(String email);
 
-  ResponseObject resetPassword(String token, ResetPassword resetPassword);
+  DataResponse resetPassword(String token, String newPassword);
 }

@@ -7,8 +7,6 @@ import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.JobPostEntity;
-import hcmute.puzzle.entities.UserEntity;
-import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.model.CandidateFilter;
 import hcmute.puzzle.model.JobPostFilter;
@@ -25,7 +23,6 @@ import hcmute.puzzle.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -379,12 +376,12 @@ public class CommonController {
   }
 
   @GetMapping("/common/employer/get-employer-by-id/{id}")
-  ResponseObject getById(@PathVariable long id) {
+  ResponseObject getEmployerById(@PathVariable long id) {
     return employerService.getOne(id);
   }
 
   @PostMapping("/common/register")
-  public ResponseObject save(@RequestBody UserDTO user) {
+  public ResponseObject registerAccount(@RequestBody UserDTO user) {
     Set<String> roleCodes = new HashSet<>();
     roleCodes.add("user");
 

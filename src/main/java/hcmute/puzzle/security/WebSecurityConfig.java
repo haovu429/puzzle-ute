@@ -115,7 +115,7 @@ public class WebSecurityConfig {
         .permitAll()
         .antMatchers("/api/user/**")
         .hasAuthority(Roles.USER.value)
-        .antMatchers("/api/login/**", "/api/login-google/**")
+        .antMatchers("/api/login/**", "/api/login-google/**", "/api/forgot-password", "/api/reset-password")
         .permitAll()
         .antMatchers("/api/role/admin")
         .hasAnyAuthority(Roles.ADMIN.value)
