@@ -10,17 +10,21 @@ import hcmute.puzzle.repository.TokenRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.SecurityService;
+import hcmute.puzzle.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static hcmute.puzzle.controller.AuthenticationController.RESET_PASSWORD_URL;
 
 @Service
 public class SecurityServiceImpl implements SecurityService {
@@ -35,7 +39,7 @@ public class SecurityServiceImpl implements SecurityService {
   public static final String RESET_PASSWORD_TOKEN = "RESET_PASSWORD_TOKEN";
 
   @Override
-  public DataResponse sendTokenForgotPwd(String email) {
+  public DataResponse sendTokenForgotPwd(HttpServletRequest request, String email) {
     UserEntity foundUser = userRepository.getUserByEmail(email);
     if (foundUser == null) {
       throw new RuntimeException("Can not found User Account with email " + email);
@@ -71,8 +75,8 @@ public class SecurityServiceImpl implements SecurityService {
         new MailObject(
             foundUser.getEmail(),
             "Reset Password",
-            "token: "
-                + tokenValue
+            "Link reset password: " + Util.getBaseURL(request) + "/api" + RESET_PASSWORD_URL + "?token=" +
+                tokenValue
                 + "\nSupport email: "
                 + environment.getProperty("support.email"));
     SendMail.sendMail(mail);
@@ -105,24 +109,5 @@ public class SecurityServiceImpl implements SecurityService {
     return new DataResponse("change password successful");
   }
 
-  private SimpleMailMessage constructResetTokenEmail(
-      String contextPath, Locale locale, String token, UserEntity user) {
-    String url = contextPath + "/user/changePassword?token=" + token;
 
-    return constructEmail("Reset Password Puzzle", " \r\n" + url, user);
-  }
-
-  private SimpleMailMessage constructEmail(String subject, String body, UserEntity user) {
-    SimpleMailMessage email = new SimpleMailMessage();
-    email.setSubject(subject);
-    email.setText(body);
-    email.setTo(user.getEmail());
-    email.setFrom(environment.getProperty("support.email"));
-    return email;
-  }
-
-  public void changeUserPassword(UserEntity user, String password) {
-    user.setPassword(passwordEncoder.encode(password));
-    userRepository.save(user);
-  }
 }

@@ -49,6 +49,9 @@ public class AuthenticationController {
 
   @Autowired private SecurityService securityService;
 
+  public static final String FORGOT_PASSWORD_URL = "/forgot-password";
+  public static final String RESET_PASSWORD_URL = "/reset-password";
+
   @PostMapping("/login")
   public ResponseObject authenticateUser(
       @Validated @RequestBody ObjectNode objectNode,
@@ -133,14 +136,15 @@ public class AuthenticationController {
     return new ResponseObject("401", 200, "Logout fail");
   }
 
-  @GetMapping("/forgot-password")
-  public DataResponse forgotPassword(@RequestParam(value = "email") String email) {
-    return securityService.sendTokenForgotPwd(email);
+  @GetMapping(FORGOT_PASSWORD_URL)
+  public DataResponse forgotPassword(HttpServletRequest request, @RequestParam(value = "email") String email) {
+    System.out.println(request.getServletPath());
+    return securityService.sendTokenForgotPwd(request, email);
   }
 
-  @GetMapping("/reset-password")
+  @GetMapping(RESET_PASSWORD_URL)
   public DataResponse resetPassword(
-      @RequestParam(value = "token") String token, @RequestParam(value = "email") String email) {
-    return securityService.resetPassword(token, email);
+      @RequestParam(value = "token") String token, @RequestParam(value = "newPassword") String newPassword) {
+    return securityService.resetPassword(token, newPassword);
   }
 }
