@@ -103,7 +103,7 @@ public class SetUpDB {
     user5.setEmail("admin1@gmail.com");
     user5.setPassword(passwordEncoder.encode("123456"));
     user5.getRoles().add(userRole1);
-    user4.getRoles().add(userRole2);
+    user5.getRoles().add(userRole2);
 
     userList.add(user1);
     userList.add(user2);

@@ -7,6 +7,7 @@ import hcmute.puzzle.entities.RoleEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.model.DataStaticJoinAccount;
+import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
 import hcmute.puzzle.repository.RoleRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.response.DataResponse;
@@ -59,8 +60,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public ResponseObject update(long id, UserDTO userDTO) {
-    userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+  public DataResponse update(long id, UpdateUserPayload userPayload) {
 
     Optional<UserEntity> oldUser = userRepository.findById(id);
 
@@ -68,32 +68,14 @@ public class UserServiceImpl implements UserService {
       throw new CustomException("This account isn't exists");
     }
 
-    UserEntity userEntity = converter.toEntity(userDTO);
+    oldUser.get().setUsername(userPayload.getUsername());
+    oldUser.get().setPhone(userPayload.getPhone());
+    oldUser.get().setFullName(userPayload.getFullName());
 
-    UserEntity newUser =
-        userRepository
-            .findById(id)
-            .map(
-                user -> {
-                  user.setUsername(oldUser.get().getUsername());
-                  user.setEmail(oldUser.get().getEmail());
-                  user.setAvatar(userEntity.getAvatar());
-                  user.setPhone(userEntity.getPhone());
-                  // user.setOnline(userEntity.isOnline());
-                  // user.setLastOnline(userEntity.getLastOnline());
-                  user.setActive(oldUser.get().isActive());
-                  user.setPassword(oldUser.get().getPassword());
-                  user.setRoles(oldUser.get().getRoles());
-                  return userRepository.save(user);
-                })
-            .orElse(null);
+    UserDTO userDTO = converter.toDTO(userRepository.save(oldUser.get()));
+    userDTO.setPassword(null);
 
-    if (newUser == null) {
-      throw new CustomException("User not found");
-    } else {
-      return new ResponseObject(
-          HttpStatus.OK.value(), "Update user success", converter.toDTO(newUser));
-    }
+    return new DataResponse(userDTO);
   }
 
   @Override

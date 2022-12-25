@@ -1,12 +1,18 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.entities.RoleEntity;
+import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.repository.RoleRepository;
+import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.test.SetUpDB;
 import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api")
@@ -15,18 +21,28 @@ public class TestController {
 
   @Autowired SetUpDB setUpDB;
 
+  @Autowired UserRepository userRepository;
+
+  @Autowired RoleRepository roleRepository;
+
   @GetMapping("/init-db")
   public String getAll() {
-    setUpDB.preStart();
+    //setUpDB.preStart();
+    Optional<UserEntity> userEntity = userRepository.findById(3L);
+    Optional<RoleEntity> role = roleRepository.findById("user");
+    System.out.println(role.get().getName());
+    System.out.println(userEntity.get().getEmail());
+    userEntity.get().getRoles().add(role.get());
+    userRepository.save(userEntity.get());
     return "Done!";
   }
 
   @GetMapping("/test-get-input-method-post")
   ResponseObject followEmployer(
-          @PathVariable(value = "id") Long employerId,
-          // @RequestBody Map<String, Object> input,
-          // @RequestParam(name = "employerId") long employerId,
-          Authentication authentication) {
+      @PathVariable(value = "id") Long employerId,
+      // @RequestBody Map<String, Object> input,
+      // @RequestParam(name = "employerId") long employerId,
+      Authentication authentication) {
     // Map<String, Object> retMap = new HashMap<String, Object>();
 
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();

@@ -80,10 +80,10 @@ public class AdminController {
     return userService.delete(id);
   }
 
-  @PutMapping("/admin/update-account/{id}")
-  public ResponseObject updateAccount(@PathVariable Long id, @RequestBody UserDTO user) {
-    return userService.update(id, user);
-  }
+  //  @PutMapping("/admin/update-account/{id}")
+  //  public ResponseObject updateAccount(@PathVariable Long id, @RequestBody UserDTO user) {
+  //    return userService.update(id, user);
+  //  }
 
   @GetMapping("/admin/get-all-account")
   public ResponseObject getAllAccount() {
@@ -116,7 +116,6 @@ public class AdminController {
     return extraInfoService.getAll();
   }
 
-
   @GetMapping("/admin/update-status-job-post/{jobPostId}")
   public ResponseObject getOneExtraInfo(
       @PathVariable(value = "jobPostId") Long id, @RequestParam boolean active) {
@@ -129,7 +128,8 @@ public class AdminController {
 
   @GetMapping("/admin/get-all-job-by-page")
   public ResponseObject getJobPostByPage(
-          @RequestParam(value = "page", required = false) Integer page, @RequestParam(required = false) Integer numOfRecord) {
+      @RequestParam(value = "page", required = false) Integer page,
+      @RequestParam(required = false) Integer numOfRecord) {
     if (page == null) {
       page = 0;
     }
@@ -149,8 +149,9 @@ public class AdminController {
   public ResponseObject updateCompany(@PathVariable Long id, @RequestBody CompanyDTO companyDTO) {
     companyDTO.setId(id);
     return companyService.update(companyDTO);
-    //return null;
+    // return null;
   }
+
   @GetMapping("/admin/get-account-amount")
   public ResponseObject getAccountAmount() {
     return userService.getAccountAmount();
@@ -167,13 +168,12 @@ public class AdminController {
   }
 
   @GetMapping("/admin/get-extra-info/{id}")
-  public ResponseObject getExtraInfoById(@PathVariable(value = "id")long id) {
+  public ResponseObject getExtraInfoById(@PathVariable(value = "id") long id) {
     return extraInfoService.getOneById(id);
   }
 
   @GetMapping("/admin/get-data-join-account-in-last-num-week/{numWeek}")
-  public ResponseObject getDataJoinAccountByNumWeek(@PathVariable(value = "numWeek")long numWeek) {
+  public ResponseObject getDataJoinAccountByNumWeek(@PathVariable(value = "numWeek") long numWeek) {
     return userService.getListDataUserJoinLastNumWeeks(numWeek);
   }
-
 }

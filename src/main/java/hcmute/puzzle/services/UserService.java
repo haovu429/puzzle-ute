@@ -2,11 +2,13 @@ package hcmute.puzzle.services;
 
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
+import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
+import hcmute.puzzle.response.DataResponse;
 
 public interface UserService {
   ResponseObject save(UserDTO userDTO);
 
-  ResponseObject update(long id, UserDTO userDTO);
+  DataResponse update(long id, UpdateUserPayload userPayload);
 
   ResponseObject delete(long id);
 
