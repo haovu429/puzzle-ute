@@ -8,13 +8,13 @@ import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
+import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.TimeUtil;
-import hcmute.puzzle.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -24,7 +24,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/api")
@@ -33,32 +36,23 @@ public class UserController {
 
   @Autowired public UserService userService;
 
-  @Autowired
-  JwtAuthenticationFilter jwtAuthenticationFilter;
+  @Autowired JwtAuthenticationFilter jwtAuthenticationFilter;
 
-  @Autowired
-  Converter converter;
+  @Autowired Converter converter;
 
-  @Autowired
-  FilesStorageService storageService;
+  @Autowired FilesStorageService storageService;
 
-  @Autowired
-  UserRepository userRepository;
+  @Autowired UserRepository userRepository;
 
-  @Autowired
-  EmployerService employerService;
+  @Autowired EmployerService employerService;
 
-  @Autowired
-  CandidateService candidateService;
+  @Autowired CandidateService candidateService;
 
-  @Autowired
-  JobPostService jobPostService;
+  @Autowired JobPostService jobPostService;
 
-  @Autowired
-  InvoiceService invoiceService;
+  @Autowired InvoiceService invoiceService;
 
-  @Autowired
-  SubscribeService subscribeService;
+  @Autowired SubscribeService subscribeService;
 
   @GetMapping("/user")
   public ResponseObject getAll() {
@@ -100,27 +94,24 @@ public class UserController {
     return userService.delete(id);
   }
 
-  @PutMapping("/user/{id}")
-  public ResponseObject updateAccount(@RequestHeader(value = "Authorization") String token, @RequestBody UserDTO user) {
+  @PutMapping("/user")
+  public DataResponse updateAccount(
+      Authentication authentication, @RequestBody UpdateUserPayload user) {
 
-    //Optional<UserEntity>
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
-    return userService.update(linkUser.get().getId(), user);
+    // Optional<UserEntity>
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    return userService.update(userDetails.getUser().getId(), user);
   }
 
-//  @GetMapping("/test")
-//  public String update() {
-//    return "OK";
-//  }
+  //  @GetMapping("/test")
+  //  public String update() {
+  //    return "OK";
+  //  }
 
   @PostMapping("/upload-avatar")
   public ResponseObject uploadAvatar(
-          @RequestParam("file") MultipartFile file,
-          @RequestHeader(value = "Authorization") String token) {
+      @RequestParam("file") MultipartFile file,
+      @RequestHeader(value = "Authorization") String token) {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
     if (linkUser.isEmpty()) {
@@ -157,8 +148,7 @@ public class UserController {
   }
 
   @GetMapping("/delete-avatar")
-  public ResponseObject deleteAvatar(
-          @RequestHeader(value = "Authorization") String token) {
+  public ResponseObject deleteAvatar(@RequestHeader(value = "Authorization") String token) {
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
 
     if (linkUser.isEmpty()) {
@@ -183,7 +173,7 @@ public class UserController {
 
     if (!result.equals("ok")) {
       return new ResponseObject(200, "Delete image failure, response isn't ok", response);
-      //throw new CustomException("Delete image failure, response isn't ok");
+      // throw new CustomException("Delete image failure, response isn't ok");
     }
 
     linkUser.get().setAvatar(null);
@@ -195,9 +185,9 @@ public class UserController {
 
   @PostMapping("/user/register-employer")
   ResponseObject registerEmployer(
-          @RequestBody @Validated EmployerDTO employer,
-          BindingResult bindingResult,
-          @RequestHeader(value = "Authorization", required = true) String token) {
+      @RequestBody @Validated EmployerDTO employer,
+      BindingResult bindingResult,
+      @RequestHeader(value = "Authorization", required = true) String token) {
     if (bindingResult.hasErrors()) {
       throw new CustomException(bindingResult.getFieldError().toString());
     }
@@ -217,7 +207,7 @@ public class UserController {
     Optional<EmployerDTO> employerDTO = employerService.save(employer);
     if (employerDTO.isPresent()) {
       return new ResponseObject(
-              HttpStatus.OK.value(), "Create employer successfully", employerDTO.get());
+          HttpStatus.OK.value(), "Create employer successfully", employerDTO.get());
     } else {
       throw new CustomException("Add employer failed");
     }
@@ -228,9 +218,9 @@ public class UserController {
 
   @PostMapping("/user/register-candidate")
   ResponseObject registerCandidate(
-          @RequestBody @Validated CandidateDTO candidate,
-          BindingResult bindingResult,
-          @RequestHeader(value = "Authorization") String token) {
+      @RequestBody @Validated CandidateDTO candidate,
+      BindingResult bindingResult,
+      @RequestHeader(value = "Authorization") String token) {
     if (bindingResult.hasErrors()) {
       throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
@@ -253,7 +243,7 @@ public class UserController {
     Optional<CandidateDTO> candidateDTO = candidateService.save(candidate);
     if (candidateDTO.isPresent()) {
       return new ResponseObject(
-              HttpStatus.OK.value(), "Create candidate successfully", candidateDTO.get());
+          HttpStatus.OK.value(), "Create candidate successfully", candidateDTO.get());
     } else {
       throw new RuntimeException("Add candidate failed");
     }
@@ -275,7 +265,8 @@ public class UserController {
   }
 
   @GetMapping("/user/view-job-post/{jobPostId}")
-  DataResponse getViewJobPost(HttpServletRequest request, @PathVariable(value = "jobPostId") long jobPostId) {
+  DataResponse getViewJobPost(
+      HttpServletRequest request, @PathVariable(value = "jobPostId") long jobPostId) {
 
     Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
 
@@ -298,5 +289,4 @@ public class UserController {
 
     return subscribeService.getAllSubscriptionsByUserId(userDetails.getUser().getId());
   }
-
 }

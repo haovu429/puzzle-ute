@@ -74,7 +74,7 @@ public class UserEntity implements Serializable {
   // https://shareprogramming.net/phan-biet-fetchmode-va-fetchtype-trong-jpa-hibernate/
   // https://viblo.asia/p/van-de-n1-cau-truy-van-trong-hibernate-bWrZn00b5xw
   // @Fetch(FetchMode.JOIN)
-  @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
   @Fetch(FetchMode.SUBSELECT)
   @JoinTable(
       name = "user_role",
