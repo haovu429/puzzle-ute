@@ -28,7 +28,7 @@ public class TestController {
   @GetMapping("/init-db")
   public String getAll() {
     //setUpDB.preStart();
-    Optional<UserEntity> userEntity = userRepository.findById(3L);
+    Optional<UserEntity> userEntity = userRepository.findByEmail("admin1@gmail.com");
     Optional<RoleEntity> role = roleRepository.findById("user");
     System.out.println(role.get().getName());
     System.out.println(userEntity.get().getEmail());
