@@ -163,7 +163,7 @@ public class SearchServiceImpl implements SearchService {
               + objectAlias
               + "."
               + fieldName
-              + " >= "
+              + " <= "
               + String.valueOf(min.getCompareValue())
               + " ";
     }
@@ -178,7 +178,7 @@ public class SearchServiceImpl implements SearchService {
                 + objectAlias
                 + "."
                 + fieldName
-                + " <= "
+                + " >= "
                 + String.valueOf(max.getCompareValue())
                 + " ";
       }

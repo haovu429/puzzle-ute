@@ -1,5 +1,9 @@
 package hcmute.puzzle.security;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
 import hcmute.puzzle.accessHandler.CustomAccessDeniedHandler;
 import hcmute.puzzle.accessHandler.CustomAuthenticationHandler;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
@@ -9,6 +13,7 @@ import hcmute.puzzle.utils.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -22,6 +27,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
+
+import java.io.IOException;
 
 // @EnableJpaRepositories(basePackages="java")
 @Configuration
@@ -50,6 +57,18 @@ public class WebSecurityConfig {
   //        .password(passwordEncoder().encode("guest_pass"))
   //        .authorities("GUEST");
   //  }
+
+  @Bean
+  FirebaseMessaging firebaseMessaging() throws IOException {
+    GoogleCredentials googleCredentials = GoogleCredentials
+            .fromStream(new ClassPathResource("firebase-service-account.json").getInputStream());
+    FirebaseOptions firebaseOptions = FirebaseOptions
+            .builder()
+            .setCredentials(googleCredentials)
+            .build();
+    FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "puzzle-ute");
+    return FirebaseMessaging.getInstance(app);
+  }
 
   @Bean
   public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -109,7 +128,7 @@ public class WebSecurityConfig {
         .authorizeRequests()
         .antMatchers("/api/common/**")
         .permitAll()
-        .antMatchers("/api/role/code/**")
+        .antMatchers("/api/test/**")
         .permitAll()
         .antMatchers(AUTH_WHITE_LIST)
         .permitAll()

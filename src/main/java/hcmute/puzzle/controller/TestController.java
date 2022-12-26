@@ -1,8 +1,11 @@
 package hcmute.puzzle.controller;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.RoleEntity;
 import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.firebase.FirebaseMessagingService;
+import hcmute.puzzle.firebase.Note;
 import hcmute.puzzle.repository.RoleRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.security.CustomUserDetails;
@@ -15,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/test")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class TestController {
 
@@ -54,5 +57,18 @@ public class TestController {
     // long employerId = ((Number) input.get("employerId")).longValue();
 
     return null;
+  }
+
+  private final FirebaseMessagingService firebaseService;
+
+  public TestController(FirebaseMessagingService firebaseService) {
+    this.firebaseService = firebaseService;
+  }
+
+  @PostMapping("/send-notification")
+  @ResponseBody
+  public String sendNotification(@RequestBody Note note,
+                                 @RequestParam String topic) throws FirebaseMessagingException {
+    return firebaseService.sendNotificationWithTopic(note, topic);
   }
 }

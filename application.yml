@@ -1,3 +1,5 @@
+firebase:
+  googleCredentials: firebase-service-account.json
 spring:
   security:
     oauth2:
