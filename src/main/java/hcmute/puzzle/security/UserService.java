@@ -17,7 +17,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -47,7 +51,7 @@ public class UserService implements UserDetailsService {
     return new CustomUserDetails(userEntity);
   }
 
-  public String processOAuthPostLogin(GooglePojo googlePojo) {
+  public  Map<String, Object> processOAuthPostLogin(GooglePojo googlePojo) {
     UserEntity existUser = userRepository.getUserByEmail(googlePojo.getEmail());
 
     if (existUser == null) {
@@ -58,8 +62,15 @@ public class UserService implements UserDetailsService {
     if (existUser == null) {
       throw new CustomException("Error create account from OAuth2");
     }
+    Set<String> roles =
+            existUser.getRoles().stream().map(role -> role.getName()).collect(Collectors.toSet());
 
-    return generateTokenOAuth2(existUser.getEmail());
+
+    Map<String, Object> result = new HashMap<>();
+    result.put("jwt", generateTokenOAuth2(existUser.getEmail()));
+    result.put("roles", roles);
+
+    return result;
   }
 
   public UserEntity createNewAccountAfterOAuthGoogleLoginSuccess(GooglePojo googlePojo) {
