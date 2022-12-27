@@ -6,6 +6,7 @@ import hcmute.puzzle.dto.EmployerDTO;
 import hcmute.puzzle.dto.JobPostDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.ApplicationEntity;
+import hcmute.puzzle.entities.CompanyEntity;
 import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
@@ -13,14 +14,12 @@ import hcmute.puzzle.mail.MailObject;
 import hcmute.puzzle.mail.SendMail;
 import hcmute.puzzle.model.ResponseApplication;
 import hcmute.puzzle.repository.ApplicationRepository;
+import hcmute.puzzle.repository.CompanyRepository;
 import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.security.CustomUserDetails;
-import hcmute.puzzle.services.ApplicationService;
-import hcmute.puzzle.services.CompanyService;
-import hcmute.puzzle.services.EmployerService;
-import hcmute.puzzle.services.JobPostService;
+import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +28,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Log4j2
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/employer")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class EmployerController {
   @Autowired EmployerService employerService;
@@ -55,13 +56,19 @@ public class EmployerController {
 
   @Autowired ApplicationService applicationService;
 
+  @Autowired
+  FilesStorageService storageService;
+
+  @Autowired
+  CompanyRepository companyRepository;
+
   @DeleteMapping("/employer")
   ResponseObject deleteEmployer(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return employerService.delete(userDetails.getUser().getId());
   }
 
-  @PutMapping("/employer/update")
+  @PutMapping("/update")
   ResponseObject updateEmployer(
       @RequestBody @Validated EmployerDTO employer,
       BindingResult bindingResult,
@@ -77,13 +84,13 @@ public class EmployerController {
     return employerService.update(employer);
   }
 
-  @GetMapping("/employer/profile")
+  @GetMapping("/profile")
   ResponseObject getById(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return employerService.getOne(userDetails.getUser().getId());
   }
 
-  @PostMapping("/employer/post-job")
+  @PostMapping("/post-job")
   ResponseObject createJobPost(
       @RequestBody @Validated JobPostDTO jobPostDTO, Authentication authentication) {
 
@@ -99,7 +106,7 @@ public class EmployerController {
         HttpStatus.OK.value(), "Post job success.", jobPostService.add(jobPostDTO));
   }
 
-  @DeleteMapping("/employer/delete-job-post/{id}")
+  @DeleteMapping("/delete-job-post/{id}")
   DataResponse deleteJobPost(@PathVariable Long id, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     // employer can not change active status
@@ -114,7 +121,7 @@ public class EmployerController {
     return jobPostService.markJobPostWasDelete(id);
   }
 
-  @PutMapping("/employer/update-job-post")
+  @PutMapping("/update-job-post")
   ResponseObject updateJobPost(
       @RequestBody @Validated JobPostDTO jobPostDTO, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -166,7 +173,7 @@ public class EmployerController {
   }
 
   // Lấy danh sách ứng viên đã apply vào một jobPost
-  @GetMapping("/employer/candidate-apply-jobpost/{jobPostId}")
+  @GetMapping("/candidate-apply-jobpost/{jobPostId}")
   ResponseObject getCandidateApplyJobPost(
       @PathVariable Long jobPostId, Authentication authentication) {
 
@@ -185,7 +192,7 @@ public class EmployerController {
     return jobPostService.getCandidatesApplyJobPost(jobPostId);
   }
 
-  @GetMapping("/employer/response-application")
+  @GetMapping("/response-application")
   ResponseObject responseApplication(
       @RequestParam long applicationId,
       @RequestParam boolean result,
@@ -208,7 +215,7 @@ public class EmployerController {
     return applicationService.responseApplication(applicationId, result, note);
   }
 
-  @PostMapping("/employer/response-application-by-candidate-and-job-post")
+  @PostMapping("/response-application-by-candidate-and-job-post")
   ResponseObject responseApplicationByCandidateIdAndJobPostId(
       @RequestBody ResponseApplication responseApplication, Authentication authentication) {
 
@@ -267,25 +274,25 @@ public class EmployerController {
         responseApplication.getNote());
   }
 
-  @GetMapping("/employer/get-all-job-post-created")
+  @GetMapping("/get-all-job-post-created")
   ResponseObject getJobPostCreated(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return jobPostService.getJobPostCreatedByEmployerId(userDetails.getUser().getId());
   }
 
-  @GetMapping("/employer/get-all-job-post-created-active")
+  @GetMapping("/get-all-job-post-created-active")
   ResponseObject getJobPostCreatedActive(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return jobPostService.getActiveJobPostByCreateEmployerId(userDetails.getUser().getId());
   }
 
-  @GetMapping("/employer/get-all-job-post-created-inactive")
+  @GetMapping("/get-all-job-post-created-inactive")
   ResponseObject getJobPostCreatedInactive(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return jobPostService.getInactiveJobPostByCreateEmployerId(userDetails.getUser().getId());
   }
 
-  @GetMapping("/employer/get-application-by-job-post/{jobPostId}")
+  @GetMapping("/get-application-by-job-post/{jobPostId}")
   ResponseObject getApplicationByJobPost(
       Authentication authentication, @PathVariable long jobPostId) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -301,7 +308,7 @@ public class EmployerController {
     return applicationService.getApplicationByJobPostId(jobPostId);
   }
 
-  @GetMapping("/employer/get-candidate-and-result-by-job-post/{jobPostId}")
+  @GetMapping("/get-candidate-and-result-by-job-post/{jobPostId}")
   DataResponse getCandidateAndApplicationResultByJobPost(
       Authentication authentication, @PathVariable long jobPostId) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -317,7 +324,7 @@ public class EmployerController {
     return applicationService.getCandidateAppliedToJobPostIdAndResult(jobPostId);
   }
 
-  @GetMapping("/employer/get-all-candidate-and-result-to-employer")
+  @GetMapping("/get-all-candidate-and-result-to-employer")
   DataResponse getCandidateAndApplicationResultByEmployerId(
           Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -327,13 +334,13 @@ public class EmployerController {
 
   // This API get amount application to one Employer by employer id
   // , from all job post which this employer created
-  @GetMapping("/employer/get-amount-application-to-employer")
+  @GetMapping("/get-amount-application-to-employer")
   DataResponse getAmountApplicationToEmployer(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return applicationService.getAmountApplicationToEmployer(userDetails.getUser().getId());
   }
 
-  @GetMapping("/employer/get-application-rate-of-job-post/{jobPostId}")
+  @GetMapping("/get-application-rate-of-job-post/{jobPostId}")
   DataResponse getApplicationRateOfJobPost(
       Authentication authentication, @PathVariable(value = "jobPostId") long jobPostId) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -350,17 +357,63 @@ public class EmployerController {
     return jobPostService.getApplicationRateByJobPostId(jobPostId);
   } // getApplicationRateEmployerId
 
-  @GetMapping("/employer/get-application-rate-of-employer")
+  @GetMapping("/get-application-rate-of-employer")
   DataResponse getApplicationRateOfEmployer(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return employerService.getApplicationRateEmployerId(userDetails.getUser().getId());
   }
 
-  @GetMapping("/employer/get-limit-num-of-job-post-created")
+  @GetMapping("/get-limit-num-of-job-post-created")
   DataResponse getLimitNumOfJobPostCreated(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     long limit = jobPostService.getLimitNumberOfJobPostsCreatedForEmployer(userDetails.getUser().getId());
     return new DataResponse(limit);
+  }
+
+  @PostMapping("/upload-image-company/{companyId}")
+  public ResponseObject uploadAvatar(
+          @PathVariable(value = "companyId") long companyId,
+          @RequestParam("file") MultipartFile file,
+          Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+    Optional<CompanyEntity> company = companyRepository.findById(companyId);
+
+    if (company.isEmpty()) {
+      throw new CustomException("Company isn't exists");
+    }
+
+    if (company.get().getCreatedEmployer().getId() != userDetails.getUser().getId()) {
+      throw new CustomException("You don't have rights for this company");
+    }
+
+    String fileName = "company_image_" + company.get().getId();
+
+    Map response = null;
+
+    try {
+      // push to storage cloud
+      response = storageService.uploadAvatarImage(fileName, file, Constant.STORAGE_COMPANY_IMAGE_LOCATION);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    if (response == null) {
+      throw new CustomException("Upload image failure");
+    }
+
+    if (response.get("secure_url") == null) {
+      throw new CustomException("Can't get url from response of storage cloud");
+    }
+
+    String url = response.get("secure_url").toString();
+
+    company.get().setImage(url);
+
+    companyRepository.save(company.get());
+
+    return new ResponseObject(200, "Upload image success", response);
   }
 
 }

@@ -60,14 +60,10 @@ public class UserController {
   }
 
   @GetMapping("/user/profile")
-  public ResponseObject getProfileAccount(@RequestHeader(value = "Authorization") String token) {
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+  public ResponseObject getProfileAccount(Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
-
-    UserDTO userDTO = converter.toDTO(linkUser.get());
+    UserDTO userDTO = converter.toDTO(userDetails.getUser());
 
     Map<String, Object> data = new HashMap<>();
     data.put("username", userDTO.getUsername());
@@ -111,20 +107,16 @@ public class UserController {
   @PostMapping("/upload-avatar")
   public ResponseObject uploadAvatar(
       @RequestParam("file") MultipartFile file,
-      @RequestHeader(value = "Authorization") String token) {
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+      Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
-
-    String fileName = linkUser.get().getEmail() + "_avatar";
+    String fileName = userDetails.getUser().getEmail() + "_avatar";
 
     Map response = null;
 
     try {
       // push to storage cloud
-      response = storageService.uploadAvatarImage(fileName, file);
+      response = storageService.uploadAvatarImage(fileName, file, Constant.STORAGE_IMAGE_LOCATION);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -140,22 +132,18 @@ public class UserController {
 
     String url = response.get("secure_url").toString();
 
-    linkUser.get().setAvatar(url);
+    userDetails.getUser().setAvatar(url);
 
-    userRepository.save(linkUser.get());
+    userRepository.save(userDetails.getUser());
 
     return new ResponseObject(200, "Upload image success", response);
   }
 
   @GetMapping("/delete-avatar")
-  public ResponseObject deleteAvatar(@RequestHeader(value = "Authorization") String token) {
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+  public ResponseObject deleteAvatar(Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
-
-    String fileName = linkUser.get().getEmail() + "_avatar";
+    String fileName = userDetails.getUser().getEmail() + "_avatar";
 
     Map response;
 
@@ -176,9 +164,9 @@ public class UserController {
       // throw new CustomException("Delete image failure, response isn't ok");
     }
 
-    linkUser.get().setAvatar(null);
+    userDetails.getUser().setAvatar(null);
 
-    userRepository.save(linkUser.get());
+    userRepository.save(userDetails.getUser());
 
     return new ResponseObject(200, "Delete image success", response);
   }
@@ -187,22 +175,22 @@ public class UserController {
   ResponseObject registerEmployer(
       @RequestBody @Validated EmployerDTO employer,
       BindingResult bindingResult,
-      @RequestHeader(value = "Authorization", required = true) String token) {
+      Authentication authentication) {
     if (bindingResult.hasErrors()) {
       throw new CustomException(bindingResult.getFieldError().toString());
     }
 
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    if (linkUser.get().getCandidateEntity() != null) {
+    if (userDetails.getUser().getCandidateEntity() != null) {
       throw new CustomException("This account is Candidate!");
     }
 
-    if (linkUser.get().getEmployerEntity() != null) {
+    if (userDetails.getUser().getEmployerEntity() != null) {
       throw new CustomException("Info employer for this account was created!");
     }
 
-    employer.setUserId(linkUser.get().getId());
+    employer.setUserId(userDetails.getUser().getId());
 
     Optional<EmployerDTO> employerDTO = employerService.save(employer);
     if (employerDTO.isPresent()) {
@@ -220,25 +208,21 @@ public class UserController {
   ResponseObject registerCandidate(
       @RequestBody @Validated CandidateDTO candidate,
       BindingResult bindingResult,
-      @RequestHeader(value = "Authorization") String token) {
+      Authentication authentication) {
     if (bindingResult.hasErrors()) {
       throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
 
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
-
-    if (linkUser.get().getEmployerEntity() != null) {
+    if (userDetails.getUser().getEmployerEntity() != null) {
       throw new CustomException("This account is Employer!");
     }
 
-    if (linkUser.get().getCandidateEntity() != null) {
+    if (userDetails.getUser().getCandidateEntity() != null) {
       throw new CustomException("Info candidate for this account was created!");
     }
-    candidate.setUserId(linkUser.get().getId());
+    candidate.setUserId(userDetails.getUser().getId());
 
     Optional<CandidateDTO> candidateDTO = candidateService.save(candidate);
     if (candidateDTO.isPresent()) {

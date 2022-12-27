@@ -215,6 +215,7 @@ public class Converter {
     CompanyDTO dto = new CompanyDTO();
     dto.setId(entity.getId());
     dto.setName(entity.getName());
+    dto.setImage(entity.getImage());
     dto.setDescription(entity.getDescription());
     dto.setWebsite(entity.getWebsite());
     dto.setActive(entity.isActive());
@@ -230,6 +231,7 @@ public class Converter {
     CompanyEntity entity = new CompanyEntity();
     entity.setId(dto.getId());
     entity.setName(dto.getName());
+    entity.setImage(dto.getImage());
     entity.setDescription(dto.getDescription());
     entity.setWebsite(dto.getWebsite());
     entity.setActive(dto.isActive());

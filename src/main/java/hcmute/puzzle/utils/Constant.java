@@ -31,6 +31,7 @@ public class Constant {
   public static final String SERVICE = "SERVICE";
 
   public static final String STORAGE_IMAGE_LOCATION = "puzzle_ute/user/avatar";
+  public static final String STORAGE_COMPANY_IMAGE_LOCATION = "puzzle_ute/company/image";
 
   public static String validateTypeExtraInfo(String type) {
     if (type.equals(POSITION)) return POSITION;

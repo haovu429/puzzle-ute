@@ -15,7 +15,7 @@ import java.util.Map;
 public class FilesStorageServiceImpl implements FilesStorageService {
 
   @Override
-  public Map uploadAvatarImage(String imageName, MultipartFile file) {
+  public Map uploadAvatarImage(String imageName, MultipartFile file, String locationStorage) {
     Cloudinary cloudinary = CloudinaryUtil.getCloudinary();
 
     try {
@@ -26,7 +26,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
       Map params1 =
           ObjectUtils.asMap(
               "folder",
-                  Constant.STORAGE_IMAGE_LOCATION,
+                  locationStorage,
               "public_id",
               imageName,
               "use_filename",

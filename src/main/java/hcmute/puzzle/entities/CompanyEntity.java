@@ -26,6 +26,9 @@ public class CompanyEntity implements Serializable {
   @Column(name = "description", columnDefinition = "TEXT")
   private String description;
 
+  @Column(name = "image", columnDefinition = "TEXT")
+  private String image;
+
   @Column(name = "website", columnDefinition = "TEXT")
   private String website;
 

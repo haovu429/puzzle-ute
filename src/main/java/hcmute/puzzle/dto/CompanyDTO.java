@@ -14,6 +14,7 @@ public class CompanyDTO {
   private long id;
   private String name;
   private String description;
+  private String image;
   private String website;
   private boolean isActive = false;
 
