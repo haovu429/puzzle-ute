@@ -14,6 +14,7 @@ import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.services.UserService;
 import hcmute.puzzle.utils.Constant;
+import hcmute.puzzle.utils.RedisUtils;
 import hcmute.puzzle.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -39,6 +40,7 @@ public class UserServiceImpl implements UserService {
 
   @Autowired private RoleRepository roleRepository;
 
+  @Autowired private RedisUtils redisUtils;
 
   public boolean checkEmailExists(String email) {
     UserEntity user = userRepository.getUserByEmail(email);
@@ -93,22 +95,32 @@ public class UserServiceImpl implements UserService {
       throw new CustomException("This account isn't exists");
     }
 
-    oldUser.get().setUsername(userPayload.getUsername());
-    oldUser.get().setPhone(userPayload.getPhone());
-    oldUser.get().setFullName(userPayload.getFullName());
+    if (userPayload.getUsername() != null) {
+      oldUser.get().setUsername(userPayload.getUsername());
+    }
+    if (userPayload.getPhone() != null) {
+      oldUser.get().setPhone(userPayload.getPhone());
+    }
+    if (userPayload.getFullName() != null) {
+      oldUser.get().setFullName(userPayload.getFullName());
+    }
 
     //oldUser.get().setAvatar(userPayload.getAvatar());
     //oldUser.get().setAvatar(updateAvatarReturnUrl(oldUser.get().getEmail(), file));
     oldUser.get().setActive(userPayload.isActive());
 
-    Set<RoleEntity> roleEntities = new HashSet<>();
-    for (String code : userPayload.getRoleCodes()) {
-       RoleEntity role = roleRepository.findOneByCode(code);
-       if (role != null) {
-         roleEntities.add(role);
-       }
+    if (userPayload.getRoleCodes() != null && !userPayload.getRoleCodes().isEmpty()) {
+      Set<RoleEntity> roleEntities = new HashSet<>();
+      for (String code : userPayload.getRoleCodes()) {
+        RoleEntity role = roleRepository.findOneByCode(code);
+        if (role != null) {
+          roleEntities.add(role);
+        }
+      }
+      oldUser.get().setRoles(roleEntities);
+      // xoá token hiện tại --> bắt người dùng dăng nhập lại
+      redisUtils.delete(oldUser.get().getEmail());
     }
-    oldUser.get().setRoles(roleEntities);
 
     UserDTO userDTO = converter.toDTO(userRepository.save(oldUser.get()));
     userDTO.setPassword(null);
