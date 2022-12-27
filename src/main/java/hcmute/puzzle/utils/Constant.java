@@ -33,6 +33,10 @@ public class Constant {
   public static final String STORAGE_IMAGE_LOCATION = "puzzle_ute/user/avatar";
   public static final String STORAGE_COMPANY_IMAGE_LOCATION = "puzzle_ute/company/image";
 
+  public static final String PREFIX_AVATAR_FILE_NAME = "_avatar"; //email_avatar
+
+  public static final String PREFIX_COMPANY_IMAGE_FILE_NAME = "_company_image"; // id_company_image
+
   public static String validateTypeExtraInfo(String type) {
     if (type.equals(POSITION)) return POSITION;
     if (type.equals(SKILL)) return SKILL;

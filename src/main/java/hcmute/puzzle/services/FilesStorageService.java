@@ -10,4 +10,6 @@ public interface FilesStorageService {
     Map uploadAvatarImage(String imageName, MultipartFile file, String locationStorage);
 
     Map deleteAvatarImage(String imageName);
+
+    String updateAvatarReturnUrl(Object id, MultipartFile file, String prefix);
 }

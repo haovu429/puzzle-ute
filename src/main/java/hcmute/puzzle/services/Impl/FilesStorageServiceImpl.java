@@ -69,4 +69,22 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     }
     return null;
   }
+
+  public String updateAvatarReturnUrl(Object id, MultipartFile file, String prefix) {
+    String fileName = String.valueOf(id) + prefix;
+
+    Map response = null;
+
+    try {
+      // push to storage cloud
+      response = uploadAvatarImage(fileName, file, Constant.STORAGE_IMAGE_LOCATION);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    String url = response.get("secure_url").toString();
+
+    return url;
+  }
 }

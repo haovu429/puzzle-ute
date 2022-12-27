@@ -96,6 +96,7 @@ public class UserServiceImpl implements UserService {
     oldUser.get().setUsername(userPayload.getUsername());
     oldUser.get().setPhone(userPayload.getPhone());
     oldUser.get().setFullName(userPayload.getFullName());
+
     //oldUser.get().setAvatar(userPayload.getAvatar());
     //oldUser.get().setAvatar(updateAvatarReturnUrl(oldUser.get().getEmail(), file));
     oldUser.get().setActive(userPayload.isActive());
@@ -116,7 +117,7 @@ public class UserServiceImpl implements UserService {
   }
 
   public String updateAvatarReturnUrl(String email, MultipartFile file) {
-    String fileName = email + "_avatar";
+    String fileName = email + Constant.PREFIX_AVATAR_FILE_NAME;
 
     Map response = null;
 

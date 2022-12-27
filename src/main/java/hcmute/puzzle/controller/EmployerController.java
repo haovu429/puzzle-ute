@@ -1,6 +1,7 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.converter.Converter;
+import hcmute.puzzle.dto.CompanyDTO;
 import hcmute.puzzle.dto.EmployerDTO;
 import hcmute.puzzle.dto.JobPostDTO;
 import hcmute.puzzle.dto.ResponseObject;
@@ -162,10 +163,13 @@ public class EmployerController {
 
   @PostMapping("/create-info-company")
   public ResponseObject saveCompany(
-      @RequestBody CreateCompanyPayload companyPayload, Authentication authentication) {
+      @ModelAttribute CreateCompanyPayload companyPayload, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
-    return companyService.save(companyPayload, userDetails.getUser().getEmployerEntity());
+    CompanyDTO companyDTO = new CompanyDTO();
+    companyDTO.setName(companyPayload.getName());
+    companyDTO.setDescription(companyPayload.getDescription());
+    companyDTO.setWebsite(companyPayload.getWebsite());
+    return companyService.save(companyDTO, companyPayload.getImage(), userDetails.getUser().getEmployerEntity());
   }
 
   // Lấy danh sách ứng viên đã apply vào một jobPost

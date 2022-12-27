@@ -7,13 +7,16 @@ import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.model.payload.request.company.CreateCompanyPayload;
+import hcmute.puzzle.model.payload.request.company.CreateCompanyPayloadForAdmin;
 import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
 import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -42,9 +45,16 @@ public class AdminController {
   @Autowired ApplicationService applicationService;
 
   // Company, add new company
-  @PostMapping("/add-company")
-  public ResponseObject createCompany(@RequestBody CreateCompanyPayload companyPayload) {
-    return companyService.save(companyPayload, null);
+  @PostMapping("/create-info-company")
+  public ResponseObject createCompany(
+          @ModelAttribute CreateCompanyPayloadForAdmin companyPayload, Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    CompanyDTO companyDTO = new CompanyDTO();
+    companyDTO.setName(companyPayload.getName());
+    companyDTO.setDescription(companyPayload.getDescription());
+    companyDTO.setWebsite(companyPayload.getWebsite());
+    companyDTO.setActive(companyPayload.isActive());
+    return companyService.save(companyDTO,companyPayload.getImage(), userDetails.getUser().getEmployerEntity());
   }
 
   @PutMapping("/update-info-company")
@@ -181,9 +191,10 @@ public class AdminController {
   }
 
   @PutMapping("/update-account-by-id/{userId}")
-  public DataResponse updateAccount(
+  public DataResponse updateAccountById(
       @PathVariable(value = "userId") long userId, @RequestBody UserDTO user) {
 
     return userService.updateForAdmin(userId, user);
   }
+
 }

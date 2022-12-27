@@ -12,8 +12,11 @@ import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.CompanyRepository;
 import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.CompanyService;
+import hcmute.puzzle.services.FilesStorageService;
+import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
 import java.util.List;
@@ -27,19 +30,27 @@ public class CompanyServiceImpl implements CompanyService {
 
   @Autowired Converter converter;
 
+  @Autowired FilesStorageService storageService;
   @Autowired CandidateRepository candidateRepository;
 
   @Override
-  public ResponseObject save(CreateCompanyPayload companyPayload, EmployerEntity createEmployer) {
+  public ResponseObject save(CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer) {
 
     CompanyEntity company = new CompanyEntity();
     company.setName(companyPayload.getName());
     company.setDescription(companyPayload.getDescription());
-    company.setImage(companyPayload.getImage());
     company.setWebsite(companyPayload.getWebsite());
     company.setCreatedEmployer(createEmployer);
-
+    company.setActive(companyPayload.isActive());
     company = companyRepository.save(company);
+
+    if (imageFile != null) {
+      String urlImage =
+              storageService.updateAvatarReturnUrl(
+                      company.getId(), imageFile, Constant.PREFIX_COMPANY_IMAGE_FILE_NAME);
+      company.setImage(urlImage);
+      company = companyRepository.save(company);
+    }
 
     return new ResponseObject(
         200,

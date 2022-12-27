@@ -3,6 +3,7 @@ package hcmute.puzzle.model.payload.request.company;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -10,6 +11,6 @@ import lombok.Setter;
 public class CreateCompanyPayload {
     private String name;
     private String description;
-    private String image;
+    private MultipartFile image;
     private String website;
 }

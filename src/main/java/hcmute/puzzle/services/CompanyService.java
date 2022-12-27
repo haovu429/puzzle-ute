@@ -5,10 +5,11 @@ import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.EmployerEntity;
 import hcmute.puzzle.model.payload.request.company.CreateCompanyPayload;
 import hcmute.puzzle.response.DataResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface CompanyService {
 
-  ResponseObject save(CreateCompanyPayload companyPayload, EmployerEntity createEmployer);
+  ResponseObject save(CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer);
 
   ResponseObject update(CompanyDTO companyDTO);
 
