@@ -11,7 +11,9 @@ import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
 import hcmute.puzzle.repository.RoleRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.services.UserService;
+import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -20,6 +22,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,6 +35,9 @@ public class UserServiceImpl implements UserService {
 
   @Autowired private PasswordEncoder passwordEncoder;
 
+  @Autowired FilesStorageService storageService;
+
+  @Autowired private RoleRepository roleRepository;
 
 
   public boolean checkEmailExists(String email) {
@@ -76,6 +82,64 @@ public class UserServiceImpl implements UserService {
     userDTO.setPassword(null);
 
     return new DataResponse(userDTO);
+  }
+
+  @Override
+  public DataResponse updateForAdmin(long id, UserDTO userPayload) {
+
+    Optional<UserEntity> oldUser = userRepository.findById(id);
+
+    if (oldUser.isEmpty()) {
+      throw new CustomException("This account isn't exists");
+    }
+
+    oldUser.get().setUsername(userPayload.getUsername());
+    oldUser.get().setPhone(userPayload.getPhone());
+    oldUser.get().setFullName(userPayload.getFullName());
+    //oldUser.get().setAvatar(userPayload.getAvatar());
+    //oldUser.get().setAvatar(updateAvatarReturnUrl(oldUser.get().getEmail(), file));
+    oldUser.get().setActive(userPayload.isActive());
+
+    Set<RoleEntity> roleEntities = new HashSet<>();
+    for (String code : userPayload.getRoleCodes()) {
+       RoleEntity role = roleRepository.findOneByCode(code);
+       if (role != null) {
+         roleEntities.add(role);
+       }
+    }
+    oldUser.get().setRoles(roleEntities);
+
+    UserDTO userDTO = converter.toDTO(userRepository.save(oldUser.get()));
+    userDTO.setPassword(null);
+
+    return new DataResponse(userDTO);
+  }
+
+  public String updateAvatarReturnUrl(String email, MultipartFile file) {
+    String fileName = email + "_avatar";
+
+    Map response = null;
+
+    try {
+      // push to storage cloud
+      response = storageService.uploadAvatarImage(fileName, file, Constant.STORAGE_IMAGE_LOCATION);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    String url = response.get("secure_url").toString();
+
+    return url;
+  }
+
+  public DataResponse updateAvatarForUser(UserEntity userEntity, MultipartFile file) {
+    String urlAvatar = updateAvatarReturnUrl(userEntity.getEmail(), file);
+    userEntity.setAvatar(urlAvatar);
+    UserDTO userDTO = converter.toDTO(userEntity);
+    userDTO.setPassword(null);
+    return new DataResponse(userDTO);
+
   }
 
   @Override

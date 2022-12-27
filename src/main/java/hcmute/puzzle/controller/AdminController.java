@@ -6,15 +6,18 @@ import hcmute.puzzle.dto.ExtraInfoDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
+import hcmute.puzzle.model.payload.request.company.CreateCompanyPayload;
+import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
 import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/admin")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class AdminController {
 
@@ -39,84 +42,84 @@ public class AdminController {
   @Autowired ApplicationService applicationService;
 
   // Company, add new company
-  @PostMapping("/admin/add-company")
-  public ResponseObject createCompany(@RequestBody CompanyDTO companyDTO) {
-    return companyService.save(companyDTO);
+  @PostMapping("/add-company")
+  public ResponseObject createCompany(@RequestBody CreateCompanyPayload companyPayload) {
+    return companyService.save(companyPayload, null);
   }
 
-  @PutMapping("/admin/update-info-company")
+  @PutMapping("/update-info-company")
   public ResponseObject updateCompany(@RequestBody CompanyDTO companyDTO) {
     return companyService.update(companyDTO);
   }
 
-  @GetMapping("/admin/delete-info-company/{id}")
+  @GetMapping("/delete-info-company/{id}")
   public ResponseObject deleteCompany(@PathVariable Long id) {
     return companyService.delete(id);
   }
 
-  @GetMapping("/admin/get-all-company")
+  @GetMapping("/get-all-company")
   public ResponseObject getAllCompany() {
     return companyService.getAll();
   }
 
-  @GetMapping("/admin/get-all-company-inactive")
+  @GetMapping("/get-all-company-inactive")
   public ResponseObject getAllCompanyInactive() {
     return companyService.getAllCompanyInActive();
   }
 
-  @GetMapping("/admin/get-one-company/{id}")
+  @GetMapping("/get-one-company/{id}")
   public ResponseObject getOneCompany(@PathVariable Long id) {
     return companyService.getOneById(id);
   }
 
   // Account
-  @PostMapping("/admin/add-account")
+  @PostMapping("/add-account")
   public ResponseObject saveAccount(@RequestBody UserDTO user) {
     return userService.save(user);
   }
 
-  @DeleteMapping("/admin/delete-account/{id}")
+  @DeleteMapping("/delete-account/{id}")
   public ResponseObject deleteAccount(@PathVariable Long id) {
     return userService.delete(id);
   }
 
-  //  @PutMapping("/admin/update-account/{id}")
+  //  @PutMapping("/update-account/{id}")
   //  public ResponseObject updateAccount(@PathVariable Long id, @RequestBody UserDTO user) {
   //    return userService.update(id, user);
   //  }
 
-  @GetMapping("/admin/get-all-account")
+  @GetMapping("/get-all-account")
   public ResponseObject getAllAccount() {
     return userService.getAll();
   }
 
-  @GetMapping("/admin/get-account-by-id/{id}")
+  @GetMapping("/get-account-by-id/{id}")
   public ResponseObject getAllAccountById(@PathVariable(value = "id") long id) {
     return userService.getOne(id);
   }
 
   // Company
-  @PostMapping("/admin/add-extra-info")
+  @PostMapping("/add-extra-info")
   public ResponseObject createExtraInfo(@RequestBody ExtraInfoDTO extraInfoDTO) {
     return extraInfoService.save(extraInfoDTO);
   }
 
-  @PutMapping("/admin/update-extra-info")
+  @PutMapping("/update-extra-info")
   public ResponseObject updateExtraInfo(@RequestBody ExtraInfoDTO extraInfoDTO) {
     return extraInfoService.update(extraInfoDTO);
   }
 
-  @GetMapping("/admin/delete-extra-info/{id}")
+  @GetMapping("/delete-extra-info/{id}")
   public ResponseObject deleteExtraInfo(@PathVariable Long id) {
     return extraInfoService.delete(id);
   }
 
-  @GetMapping("/admin/get-all-extra-info")
+  @GetMapping("/get-all-extra-info")
   public ResponseObject getAllExtraInfo() {
     return extraInfoService.getAll();
   }
 
-  @GetMapping("/admin/update-status-job-post/{jobPostId}")
+  @GetMapping("/update-status-job-post/{jobPostId}")
   public ResponseObject getOneExtraInfo(
       @PathVariable(value = "jobPostId") Long id, @RequestParam boolean active) {
 
@@ -126,7 +129,7 @@ public class AdminController {
     return jobPostService.deactivateJobPost(id);
   }
 
-  @GetMapping("/admin/get-all-job-by-page")
+  @GetMapping("/get-all-job-by-page")
   public ResponseObject getJobPostByPage(
       @RequestParam(value = "page", required = false) Integer page,
       @RequestParam(required = false) Integer numOfRecord) {
@@ -140,40 +143,47 @@ public class AdminController {
     return jobPostService.getJobPostWithPage(page, numOfRecord);
   }
 
-  @GetMapping("/admin/get-all-job-post")
+  @GetMapping("/get-all-job-post")
   public ResponseObject getAllJobPost() {
     return jobPostService.getAll();
   }
 
-  @PutMapping("/admin/company/{id}")
+  @PutMapping("/company/{id}")
   public ResponseObject updateCompany(@PathVariable Long id, @RequestBody CompanyDTO companyDTO) {
     companyDTO.setId(id);
     return companyService.update(companyDTO);
     // return null;
   }
 
-  @GetMapping("/admin/get-account-amount")
+  @GetMapping("/get-account-amount")
   public ResponseObject getAccountAmount() {
     return userService.getAccountAmount();
   }
 
-  @GetMapping("/admin/get-job-post-amount")
+  @GetMapping("/get-job-post-amount")
   public ResponseObject getJobPostAmount() {
     return jobPostService.getJobPostAmount();
   }
 
-  @GetMapping("/admin/get-application-amount")
+  @GetMapping("/get-application-amount")
   public ResponseObject getApplicationAmount() {
     return applicationService.getApplicationAmount();
   }
 
-  @GetMapping("/admin/get-extra-info/{id}")
+  @GetMapping("/get-extra-info/{id}")
   public ResponseObject getExtraInfoById(@PathVariable(value = "id") long id) {
     return extraInfoService.getOneById(id);
   }
 
-  @GetMapping("/admin/get-data-join-account-in-last-num-week/{numWeek}")
+  @GetMapping("/get-data-join-account-in-last-num-week/{numWeek}")
   public ResponseObject getDataJoinAccountByNumWeek(@PathVariable(value = "numWeek") long numWeek) {
     return userService.getListDataUserJoinLastNumWeeks(numWeek);
+  }
+
+  @PutMapping("/update-account-by-id/{userId}")
+  public DataResponse updateAccount(
+      @PathVariable(value = "userId") long userId, @RequestBody UserDTO user) {
+
+    return userService.updateForAdmin(userId, user);
   }
 }

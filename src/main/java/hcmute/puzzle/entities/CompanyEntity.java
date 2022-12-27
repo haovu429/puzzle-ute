@@ -20,7 +20,7 @@ public class CompanyEntity implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @Column(name = "name", columnDefinition = "VARCHAR(100)")
+  @Column(name = "name", unique = true, columnDefinition = "VARCHAR(100)")
   private String name;
 
   @Column(name = "description", columnDefinition = "TEXT")

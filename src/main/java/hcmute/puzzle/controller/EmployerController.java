@@ -1,7 +1,6 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.CompanyDTO;
 import hcmute.puzzle.dto.EmployerDTO;
 import hcmute.puzzle.dto.JobPostDTO;
 import hcmute.puzzle.dto.ResponseObject;
@@ -13,6 +12,7 @@ import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.mail.MailObject;
 import hcmute.puzzle.mail.SendMail;
 import hcmute.puzzle.model.ResponseApplication;
+import hcmute.puzzle.model.payload.request.company.CreateCompanyPayload;
 import hcmute.puzzle.repository.ApplicationRepository;
 import hcmute.puzzle.repository.CompanyRepository;
 import hcmute.puzzle.repository.JobPostRepository;
@@ -56,11 +56,9 @@ public class EmployerController {
 
   @Autowired ApplicationService applicationService;
 
-  @Autowired
-  FilesStorageService storageService;
+  @Autowired FilesStorageService storageService;
 
-  @Autowired
-  CompanyRepository companyRepository;
+  @Autowired CompanyRepository companyRepository;
 
   @DeleteMapping("/employer")
   ResponseObject deleteEmployer(Authentication authentication) {
@@ -164,12 +162,10 @@ public class EmployerController {
 
   @PostMapping("/create-info-company")
   public ResponseObject saveCompany(
-      @RequestBody CompanyDTO companyDTO, Authentication authentication) {
+      @RequestBody CreateCompanyPayload companyPayload, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    companyDTO.setActive(false);
-    companyDTO.setCreatedEmployerId(userDetails.getUser().getId());
-    return companyService.save(companyDTO);
+    return companyService.save(companyPayload, userDetails.getUser().getEmployerEntity());
   }
 
   // Lấy danh sách ứng viên đã apply vào một jobPost
@@ -325,12 +321,10 @@ public class EmployerController {
   }
 
   @GetMapping("/get-all-candidate-and-result-to-employer")
-  DataResponse getCandidateAndApplicationResultByEmployerId(
-          Authentication authentication) {
+  DataResponse getCandidateAndApplicationResultByEmployerId(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return applicationService.getCandidateAppliedToEmployerAndResult(userDetails.getUser().getId());
   }
-
 
   // This API get amount application to one Employer by employer id
   // , from all job post which this employer created
@@ -366,15 +360,22 @@ public class EmployerController {
   @GetMapping("/get-limit-num-of-job-post-created")
   DataResponse getLimitNumOfJobPostCreated(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    long limit = jobPostService.getLimitNumberOfJobPostsCreatedForEmployer(userDetails.getUser().getId());
+    long limit =
+        jobPostService.getLimitNumberOfJobPostsCreatedForEmployer(userDetails.getUser().getId());
     return new DataResponse(limit);
+  }
+
+  @GetMapping("/get-created-company")
+  DataResponse getCreatedCompany(Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    return companyService.getCreatedCompanyByEmployerId(userDetails.getUser().getId());
   }
 
   @PostMapping("/upload-image-company/{companyId}")
   public ResponseObject uploadAvatar(
-          @PathVariable(value = "companyId") long companyId,
-          @RequestParam("file") MultipartFile file,
-          Authentication authentication) {
+      @PathVariable(value = "companyId") long companyId,
+      @RequestParam("file") MultipartFile file,
+      Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
     Optional<CompanyEntity> company = companyRepository.findById(companyId);
@@ -393,7 +394,8 @@ public class EmployerController {
 
     try {
       // push to storage cloud
-      response = storageService.uploadAvatarImage(fileName, file, Constant.STORAGE_COMPANY_IMAGE_LOCATION);
+      response =
+          storageService.uploadAvatarImage(fileName, file, Constant.STORAGE_COMPANY_IMAGE_LOCATION);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -415,5 +417,4 @@ public class EmployerController {
 
     return new ResponseObject(200, "Upload image success", response);
   }
-
 }

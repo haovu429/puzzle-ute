@@ -2,18 +2,21 @@ package hcmute.puzzle.services.Impl;
 
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.CompanyDTO;
-import hcmute.puzzle.dto.JobPostDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.CompanyEntity;
+import hcmute.puzzle.entities.EmployerEntity;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.model.payload.request.company.CreateCompanyPayload;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.CompanyRepository;
+import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,21 +27,24 @@ public class CompanyServiceImpl implements CompanyService {
 
   @Autowired Converter converter;
 
-  @Autowired
-  CandidateRepository candidateRepository;
+  @Autowired CandidateRepository candidateRepository;
 
   @Override
-  public ResponseObject save(CompanyDTO companyDTO) {
+  public ResponseObject save(CreateCompanyPayload companyPayload, EmployerEntity createEmployer) {
 
-    companyDTO.setId(0);
+    CompanyEntity company = new CompanyEntity();
+    company.setName(companyPayload.getName());
+    company.setDescription(companyPayload.getDescription());
+    company.setImage(companyPayload.getImage());
+    company.setWebsite(companyPayload.getWebsite());
+    company.setCreatedEmployer(createEmployer);
 
-    CompanyEntity companyEntity = converter.toEntity(companyDTO);
-    companyEntity = companyRepository.save(companyEntity);
+    company = companyRepository.save(company);
 
     return new ResponseObject(
         200,
         "Sent request create info company to admin, please wait notify from admin",
-        converter.toDTO(companyEntity));
+        converter.toDTO(company));
   }
 
   @Override
@@ -107,10 +113,18 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     Set<CompanyDTO> companyDTOS =
-            candidate.get().getFollowingCompany().stream()
-                    .map(company -> converter.toDTO(company))
-                    .collect(Collectors.toSet());
+        candidate.get().getFollowingCompany().stream()
+            .map(company -> converter.toDTO(company))
+            .collect(Collectors.toSet());
 
     return new ResponseObject(200, "Company saved", companyDTOS);
+  }
+
+  public DataResponse getCreatedCompanyByEmployerId(long employerId) {
+    List<CompanyDTO> companyDTOS =
+        companyRepository.findByCreatedEmployer_Id(employerId).stream()
+            .map(company -> converter.toDTO(company))
+            .collect(Collectors.toList());
+    return new DataResponse(companyDTOS);
   }
 }

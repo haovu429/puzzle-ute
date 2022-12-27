@@ -2,8 +2,10 @@ package hcmute.puzzle.services;
 
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
+import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
 import hcmute.puzzle.response.DataResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
   ResponseObject save(UserDTO userDTO);
@@ -21,6 +23,10 @@ public interface UserService {
   ResponseObject getAccountAmount();
 
   ResponseObject getListDataUserJoinLastNumWeeks(long numWeek);
+
+  DataResponse updateForAdmin(long id, UserDTO userPayload);
+
+  DataResponse updateAvatarForUser(UserEntity userEntity, MultipartFile file);
 
   // void processOAuthPostLogin(String username);
 

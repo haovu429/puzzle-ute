@@ -2,6 +2,7 @@ package hcmute.puzzle.services.Impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.utils.CloudinaryUtil;
 import hcmute.puzzle.utils.Constant;
@@ -37,6 +38,15 @@ public class FilesStorageServiceImpl implements FilesStorageService {
               true);
 
       Map result = cloudinary.uploader().upload("data:image/png;base64," + encodedString, params1);
+
+      if (result == null) {
+        throw new CustomException("Upload image failure");
+      }
+
+      if (result.get("secure_url") == null) {
+        throw new CustomException("Can't get url from response of storage cloud");
+      }
+
       return result;
     } catch (Exception e) {
       e.printStackTrace();

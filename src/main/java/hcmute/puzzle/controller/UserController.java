@@ -105,40 +105,11 @@ public class UserController {
   //  }
 
   @PostMapping("/upload-avatar")
-  public ResponseObject uploadAvatar(
-      @RequestParam("file") MultipartFile file,
-      Authentication authentication) {
+  public DataResponse uploadAvatar(
+      @RequestParam("file") MultipartFile file, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
-    String fileName = userDetails.getUser().getEmail() + "_avatar";
-
-    Map response = null;
-
-    try {
-      // push to storage cloud
-      response = storageService.uploadAvatarImage(fileName, file, Constant.STORAGE_IMAGE_LOCATION);
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    if (response == null) {
-      throw new CustomException("Upload image failure");
-    }
-
-    if (response.get("secure_url") == null) {
-      throw new CustomException("Can't get url from response of storage cloud");
-    }
-
-    String url = response.get("secure_url").toString();
-
-    userDetails.getUser().setAvatar(url);
-
-    userRepository.save(userDetails.getUser());
-
-    return new ResponseObject(200, "Upload image success", response);
+    return userService.updateAvatarForUser(userDetails.getUser(), file);
   }
-
   @GetMapping("/delete-avatar")
   public ResponseObject deleteAvatar(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
