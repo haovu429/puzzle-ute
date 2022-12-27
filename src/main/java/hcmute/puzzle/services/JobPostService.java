@@ -48,11 +48,15 @@ public interface JobPostService {
 
   DataResponse getViewedJobPostAmountByUserId(long userId);
 
+  DataResponse countJobPostView(long jobPostId);
+
   DataResponse viewJobPost(long userId, long jobPostId);
 
   DataResponse getApplicationRateByJobPostId(long jobPostId);
 
   long getLimitNumberOfJobPostsCreatedForEmployer(long employerId);
+
+  long getTotalJobPostViewOfEmployer(long employerId);
 
   void checkCreatedJobPostLimit(long employerId);
 }

@@ -302,6 +302,17 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   @Override
+  public DataResponse countJobPostView(long jobPostId) {
+    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+    if (jobPost.isEmpty()) {
+      throw new CustomException("Cannot find job post with id = " + jobPostId);
+    }
+    jobPost.get().setViews(jobPost.get().getViews() + 1);
+    jobPostRepository.save(jobPost.get());
+    return new DataResponse("Current view: " + jobPost.get().getViews());
+  }
+
+  @Override
   public DataResponse viewJobPost(long userId, long jobPostId) {
     Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
     if (jobPost.isEmpty()) {
@@ -354,6 +365,11 @@ public class JobPostServiceImpl implements JobPostService {
                 .getSingleResult();
 
     return LIMITED_NUMBER_OF_JOB_POSTS_CREATED_DEFAULT + limitNum;
+  }
+
+  @Override
+  public long getTotalJobPostViewOfEmployer(long employerId) {
+    return jobPostRepository.getTotalJobPostViewOfEmployer(employerId);
   }
 
   public long getCurrentNumberOfJobPostsCreatedByEmployer(long employerId) {

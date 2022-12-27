@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,6 +40,8 @@ public class JobPostDTO implements Serializable {
   private boolean handDis;
   private boolean labor;
   private String skills;
+  private String positions;
+  private long views = 0;
   private boolean isActive;
   private boolean isDeleted;
   // private List<Long> applicationIds = new ArrayList<>();

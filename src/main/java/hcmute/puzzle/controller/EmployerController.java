@@ -361,6 +361,13 @@ public class EmployerController {
     return employerService.getApplicationRateEmployerId(userDetails.getUser().getId());
   }
 
+  @GetMapping("/get-total-job-post-view-of-employer")
+  DataResponse getTotalJobPostViewOfEmployer(Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    long total = jobPostService.getTotalJobPostViewOfEmployer(userDetails.getUser().getId());
+    return new DataResponse(total);
+  }
+
   @GetMapping("/get-limit-num-of-job-post-created")
   DataResponse getLimitNumOfJobPostCreated(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();

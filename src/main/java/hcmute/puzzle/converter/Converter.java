@@ -452,6 +452,8 @@ public class Converter {
     dto.setHandDis(entity.isHandDis());
     dto.setLabor(entity.isLabor());
     dto.setSkills(entity.getSkills());
+    dto.setPositions(entity.getPositions());
+    dto.setViews(entity.getViews());
     dto.setActive(entity.isActive());
     dto.setDeleted(entity.isDeleted());
 
@@ -486,6 +488,8 @@ public class Converter {
     entity.setHandDis(dto.isHandDis());
     entity.setLabor(dto.isLabor());
     entity.setSkills(dto.getSkills());
+    entity.setViews(dto.getViews());
+    entity.setPositions(dto.getPositions());
     entity.setActive(dto.isActive());
 
     Optional<EmployerEntity> createEmployer =

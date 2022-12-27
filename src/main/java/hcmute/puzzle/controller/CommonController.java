@@ -430,6 +430,11 @@ public class CommonController {
     return jobPostService.getJobPostAmount();
   }
 
+  @GetMapping("/common/view-job-post/{jobPostId}")
+  public DataResponse viewJobPost(@PathVariable(value = "jobPostId") long jobPostId) {
+    return jobPostService.countJobPostView(jobPostId);
+  }
+
   @GetMapping("/common/get-application-amount")
   public ResponseObject getApplicationAmount() {
     return applicationService.getApplicationAmount();

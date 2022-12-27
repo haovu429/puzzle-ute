@@ -70,6 +70,9 @@ public interface JobPostRepository extends JpaRepository<JobPostEntity, Long> {
   List<Long> getJobPostIdByActiveAndLessThenCreatedTime(
       @Param("isActive") boolean isActive, @Param("createTime") Date createTime);
 
+  @Query("SELECT SUM(jp.views) FROM JobPostEntity jp WHERE jp.createdEmployer.id =:employerId AND jp.isDeleted=FALSE")
+  long getTotalJobPostViewOfEmployer(@Param("employerId") long employerId);
+
   //  @Query(
   //          "SELECT jp FROM JobPostEntity jp, CandidateEntity can WHERE can.id = :candidateId AND
   // jp.id in can.savedJobPost")
