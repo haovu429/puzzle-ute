@@ -139,6 +139,7 @@ public class AuthenticationController {
   @GetMapping(FORGOT_PASSWORD_URL)
   public DataResponse forgotPassword(HttpServletRequest request, @RequestParam(value = "email") String email) {
     System.out.println(request.getServletPath());
+
     return securityService.sendTokenForgotPwd(request, email);
   }
 
