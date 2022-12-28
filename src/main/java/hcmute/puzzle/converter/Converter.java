@@ -459,6 +459,7 @@ public class Converter {
 
     if (entity.getCompanyEntity()!= null) {
       dto.setLogo(entity.getCompanyEntity().getImage());
+      dto.setCompanyId(entity.getCompanyEntity().getId());
     }
 
     if (entity.getCreatedEmployer() == null) {
