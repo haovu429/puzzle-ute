@@ -3,6 +3,8 @@ package hcmute.puzzle.services.Impl;
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
+import hcmute.puzzle.entities.CandidateEntity;
+import hcmute.puzzle.entities.EmployerEntity;
 import hcmute.puzzle.entities.RoleEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
@@ -15,6 +17,7 @@ import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.services.UserService;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.RedisUtils;
+import hcmute.puzzle.utils.Roles;
 import hcmute.puzzle.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -113,7 +116,16 @@ public class UserServiceImpl implements UserService {
       Set<RoleEntity> roleEntities = new HashSet<>();
       for (String code : userPayload.getRoleCodes()) {
         RoleEntity role = roleRepository.findOneByCode(code);
-        if (role != null) {
+        if (role.getName().equals(Roles.CANDIDATE.value)) {
+          CandidateEntity candidate = new CandidateEntity();
+          oldUser.get().setCandidateEntity(candidate);
+        }
+
+        if (role.getName().equals(Roles.EMPLOYER.value)) {
+          EmployerEntity employer = new EmployerEntity();
+          oldUser.get().setEmployerEntity(employer);
+        }
+          if (role != null) {
           roleEntities.add(role);
         }
       }
