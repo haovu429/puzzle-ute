@@ -44,7 +44,7 @@ public class CompanyServiceImpl implements CompanyService {
     company.setActive(companyPayload.isActive());
     company = companyRepository.save(company);
 
-    if (imageFile != null) {
+    if (imageFile != null || imageFile.getSize()>0) {
       String urlImage =
               storageService.updateAvatarReturnUrl(
                       company.getId(), imageFile, Constant.PREFIX_COMPANY_IMAGE_FILE_NAME);
