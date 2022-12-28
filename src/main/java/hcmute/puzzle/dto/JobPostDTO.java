@@ -50,4 +50,6 @@ public class JobPostDTO implements Serializable {
   // private List<Long> companyIds = new ArrayList<>();
 
   private long createdEmployerId;
+  private String logo;
+  private long companyId =-1;
 }

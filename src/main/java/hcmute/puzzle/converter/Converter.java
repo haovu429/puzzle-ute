@@ -457,6 +457,10 @@ public class Converter {
     dto.setActive(entity.isActive());
     dto.setDeleted(entity.isDeleted());
 
+    if (entity.getCompanyEntity()!= null) {
+      dto.setLogo(entity.getCompanyEntity().getImage());
+    }
+
     if (entity.getCreatedEmployer() == null) {
       throw new CustomException("Can't convert createEntity because it is null");
     }
@@ -498,6 +502,14 @@ public class Converter {
       throw new NoSuchElementException("Can't convert createEmployerId");
     }
     entity.setCreatedEmployer(createEmployer.get());
+
+    if (dto.getCompanyId() != -1) {
+      Optional<CompanyEntity> company =
+              companyRepository.findById(dto.getCompanyId());
+      if (company.isPresent()) {
+        entity.setCompanyEntity(company.get());
+      }
+    }
 
     return entity;
   }

@@ -149,6 +149,7 @@ public class UserServiceImpl implements UserService {
   public DataResponse updateAvatarForUser(UserEntity userEntity, MultipartFile file) {
     String urlAvatar = updateAvatarReturnUrl(userEntity.getEmail(), file);
     userEntity.setAvatar(urlAvatar);
+    userRepository.save(userEntity);
     UserDTO userDTO = converter.toDTO(userEntity);
     userDTO.setPassword(null);
     return new DataResponse(userDTO);
