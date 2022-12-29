@@ -29,7 +29,7 @@ public class CandidateEntity implements Serializable {
   @Column(name = "last_name", columnDefinition = "VARCHAR(50)")
   private String lastName;
 
-  @Column(name = "email_contact", columnDefinition = "VARCHAR(100)")
+  @Column(name = "email_contact", nullable = false, columnDefinition = "VARCHAR(100)")
   private String emailContact;
 
   @Column(name = "phone_num", columnDefinition = "VARCHAR(20)")

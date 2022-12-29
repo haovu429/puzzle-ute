@@ -44,7 +44,7 @@ public class JobPostServiceImpl implements JobPostService {
   @Autowired UserRepository userRepository;
 
   public ResponseObject add(JobPostDTO jobPostDTO) {
-
+    validateJobPost(jobPostDTO);
     JobPostEntity jobPostEntity = converter.toEntity(jobPostDTO);
 
     // set id
@@ -55,6 +55,8 @@ public class JobPostServiceImpl implements JobPostService {
 
     return new ResponseObject(200, "Save job post Successfully", converter.toDTO(jobPostEntity));
   }
+
+
 
   @Override
   public ResponseObject delete(long id) {
@@ -255,6 +257,10 @@ public class JobPostServiceImpl implements JobPostService {
     // check budget
     if (jobPostDTO.getMinBudget() > jobPostDTO.getMaxBudget()) {
       throw new CustomException("Min budget can't be greater than max budget");
+    }
+
+    if (jobPostDTO.getDueTime().before(new Date())) {
+      throw new CustomException("Due time invalid");
     }
   }
 

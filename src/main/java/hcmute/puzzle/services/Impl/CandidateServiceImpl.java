@@ -81,6 +81,9 @@ public class CandidateServiceImpl implements CandidateService {
     boolean exists = candidateRepository.existsById(candidateDTO.getId());
 
     if (exists) {
+      if (!(candidateDTO.getEmailContact() != null && !candidateDTO.getEmailContact().isEmpty() && !candidateDTO.getEmailContact().isBlank()) ) {
+        throw new CustomException("Email contact invalid");
+      }
       CandidateEntity candidate = converter.toEntity(candidateDTO);
       // candidate.setId(candidate.getUserEntity().getId());
 

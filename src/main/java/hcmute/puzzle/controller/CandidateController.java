@@ -177,6 +177,15 @@ public class CandidateController {
           DataResponse.STATUS_CUSTOM_EXCEPTION);
     }
 
+    if (!jobPost.get().getDueTime().before(new Date())) {
+      // throw new CustomException("You can't apply this jobPost. It isn't active");
+      return new DataResponse(
+              DataResponse.ERROR_INACTIVE,
+              "You can't apply this jobPost. job post has expired",
+              DataResponse.STATUS_CUSTOM_EXCEPTION);
+    }
+
+
     Optional<ApplicationEntity> application =
         applicationRepository.findApplicationByCanIdAndJobPostId(
             userDetails.getUser().getId(), postId);

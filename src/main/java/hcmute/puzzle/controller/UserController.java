@@ -196,6 +196,10 @@ public class UserController {
     }
     candidate.setUserId(userDetails.getUser().getId());
 
+    if (!(candidate.getEmailContact() != null && !candidate.getEmailContact().isEmpty() && !candidate.getEmailContact().isBlank()) ) {
+      throw new CustomException("Email contact invalid");
+    }
+
     Optional<CandidateDTO> candidateDTO = candidateService.save(candidate);
     if (candidateDTO.isPresent()) {
       return new ResponseObject(
