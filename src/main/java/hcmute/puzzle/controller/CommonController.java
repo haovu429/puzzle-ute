@@ -70,10 +70,15 @@ public class CommonController {
   @GetMapping("/common/job-post/get-one/{jobPostId}")
   ResponseObject getJobPostById(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable(value = "jobPostId") long jobPostId) {
     jobPostService.countJobPostView(jobPostId);
-    if (token != null && !token.isEmpty() && !token.isBlank()) {
-      Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-      jobPostService.viewJobPost(linkUser.get().getId(), jobPostId);
+    try {
+      if (token != null && !token.isEmpty() && !token.isBlank()) {
+        Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+        jobPostService.viewJobPost(linkUser.get().getId(), jobPostId);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
     }
+
     return jobPostService.getOne(jobPostId);
   }
 
