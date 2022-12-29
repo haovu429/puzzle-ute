@@ -384,11 +384,17 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   public long getCurrentNumberOfJobPostsCreatedByEmployer(long employerId) {
+    long count = 0;
     // check subscribes of employer
     String sql =
         "SELECT COUNT(jp) FROM JobPostEntity jp WHERE jp.createdEmployer.id = :employerId AND jp.isDeleted = FALSE";
-    long count =
-        (long) em.createQuery(sql).setParameter("employerId", employerId).getSingleResult();
+    try {
+      count =
+              (long) em.createQuery(sql).setParameter("employerId", employerId).getSingleResult();
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     return count;
   }
