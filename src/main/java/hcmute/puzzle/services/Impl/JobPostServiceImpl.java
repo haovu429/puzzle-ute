@@ -364,16 +364,21 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   public long getLimitNumberOfJobPostsCreatedForEmployer(long employerId) {
+    long limitNum = 0;
     // check subscribes of employer
     String sql =
         "SELECT SUM(pack.numOfJobPost) FROM SubscribeEntity sub, PackageEntity pack, UserEntity u WHERE sub.packageEntity.id = pack.id "
             + "AND sub.regUser.id = u.id AND u.id=:userId AND sub.expirationTime > :nowTime ";
-    long limitNum =
-        (long)
-            em.createQuery(sql)
-                .setParameter("userId", employerId)
-                .setParameter("nowTime", new Date())
-                .getSingleResult();
+    try {
+      limitNum =
+              (long)
+                      em.createQuery(sql)
+                              .setParameter("userId", employerId)
+                              .setParameter("nowTime", new Date())
+                              .getSingleResult();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     return LIMITED_NUMBER_OF_JOB_POSTS_CREATED_DEFAULT + limitNum;
   }
