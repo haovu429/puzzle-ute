@@ -48,7 +48,9 @@ public interface JobPostService {
 
   DataResponse getViewedJobPostAmountByUserId(long userId);
 
-  DataResponse countJobPostView(long jobPostId);
+  DataResponse countJobPostViewReturnDataResponse(long jobPostId);
+
+  long countJobPostView(long jobPostId);
 
   DataResponse viewJobPost(long userId, long jobPostId);
 

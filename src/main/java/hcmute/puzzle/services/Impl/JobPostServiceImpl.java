@@ -302,14 +302,18 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   @Override
-  public DataResponse countJobPostView(long jobPostId) {
+  public DataResponse countJobPostViewReturnDataResponse(long jobPostId) {
+    return new DataResponse("Current view: " + countJobPostView(jobPostId));
+  }
+
+  public long countJobPostView(long jobPostId) {
     Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
     if (jobPost.isEmpty()) {
       throw new CustomException("Cannot find job post with id = " + jobPostId);
     }
     jobPost.get().setViews(jobPost.get().getViews() + 1);
     jobPostRepository.save(jobPost.get());
-    return new DataResponse("Current view: " + jobPost.get().getViews());
+    return jobPost.get().getViews();
   }
 
   @Override

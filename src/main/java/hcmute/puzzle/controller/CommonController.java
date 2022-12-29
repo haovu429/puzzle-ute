@@ -7,6 +7,7 @@ import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.JobPostEntity;
+import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.model.CandidateFilter;
 import hcmute.puzzle.model.JobPostFilter;
@@ -67,7 +68,12 @@ public class CommonController {
   }
 
   @GetMapping("/common/job-post/get-one/{jobPostId}")
-  ResponseObject getJobPostById(@PathVariable(value = "jobPostId") long jobPostId) {
+  ResponseObject getJobPostById(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable(value = "jobPostId") long jobPostId) {
+    jobPostService.countJobPostView(jobPostId);
+    if (token != null || token.isEmpty() || token.isBlank()) {
+      Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+      jobPostService.viewJobPost(linkUser.get().getId(), jobPostId);
+    }
     return jobPostService.getOne(jobPostId);
   }
 
@@ -432,7 +438,7 @@ public class CommonController {
 
   @GetMapping("/common/view-job-post/{jobPostId}")
   public DataResponse viewJobPost(@PathVariable(value = "jobPostId") long jobPostId) {
-    return jobPostService.countJobPostView(jobPostId);
+    return jobPostService.countJobPostViewReturnDataResponse(jobPostId);
   }
 
   @GetMapping("/common/get-application-amount")

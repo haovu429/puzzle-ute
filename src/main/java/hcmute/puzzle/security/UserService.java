@@ -96,8 +96,16 @@ public class UserService implements UserDetailsService {
       userEntity.setFullName(googlePojo.getName());
     }
 
-    if (userEntity.getAvatar() == null)
-    userEntity.setProvider(Provider.GOOGLE);
+    if (userEntity.getAvatar() == null){
+      userEntity.setAvatar(googlePojo.getPicture());
+    }
+    if (userEntity.getProvider() != Provider.GOOGLE) {
+      userEntity.setProvider(Provider.GOOGLE);
+    }
+
+    if (userEntity.isEmailVerified() != true ) {
+      userEntity.setEmailVerified(true);
+    }
     userRepository.save(userEntity);
   }
 
