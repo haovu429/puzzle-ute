@@ -177,7 +177,7 @@ public class CandidateController {
           DataResponse.STATUS_CUSTOM_EXCEPTION);
     }
 
-    if (!jobPost.get().getDueTime().before(new Date())) {
+    if (jobPost.get().getDueTime().before(new Date())) {
       // throw new CustomException("You can't apply this jobPost. It isn't active");
       return new DataResponse(
               DataResponse.ERROR_INACTIVE,
