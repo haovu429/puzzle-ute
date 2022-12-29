@@ -5,6 +5,7 @@ import hcmute.puzzle.dto.CompanyDTO;
 import hcmute.puzzle.dto.ExtraInfoDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
+import hcmute.puzzle.entities.InvoiceEntity;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.model.payload.request.company.CreateCompanyPayload;
 import hcmute.puzzle.model.payload.request.company.CreateCompanyPayloadForAdmin;
@@ -43,6 +44,8 @@ public class AdminController {
   @Autowired UserService userService;
 
   @Autowired ApplicationService applicationService;
+
+  @Autowired InvoiceService invoiceService;
 
   // Company, add new company
   @PostMapping("/create-info-company")
@@ -197,4 +200,20 @@ public class AdminController {
     return userService.updateForAdmin(userId, user);
   }
 
+  @GetMapping("/get-all-invoice")
+  public DataResponse getAllInvoice() {
+    return invoiceService.getAllInvoice();
+  }
+
+  @GetMapping("/get-one-invoice/{invoiceId}")
+  public DataResponse getOneInvoice(@PathVariable(value = "invoiceId") long invoiceId) {
+    InvoiceEntity invoice = invoiceService.getOneInvoice(invoiceId);
+    return new DataResponse(converter.toDTO(invoice));
+  }
+
+  @GetMapping("/get-total-revenue")
+  public DataResponse getTotalRevenue() {
+    long totalRevenue = invoiceService.getTotalRevenue();
+    return new DataResponse(totalRevenue);
+  }
 }

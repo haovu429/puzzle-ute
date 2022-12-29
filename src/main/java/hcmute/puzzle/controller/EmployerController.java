@@ -7,6 +7,7 @@ import hcmute.puzzle.dto.JobPostDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.ApplicationEntity;
 import hcmute.puzzle.entities.CompanyEntity;
+import hcmute.puzzle.entities.InvoiceEntity;
 import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
@@ -60,6 +61,8 @@ public class EmployerController {
   @Autowired FilesStorageService storageService;
 
   @Autowired CompanyRepository companyRepository;
+
+  @Autowired InvoiceService invoiceService;
 
   @DeleteMapping("/employer")
   ResponseObject deleteEmployer(Authentication authentication) {
@@ -428,4 +431,5 @@ public class EmployerController {
 
     return new ResponseObject(200, "Upload image success", response);
   }
+
 }

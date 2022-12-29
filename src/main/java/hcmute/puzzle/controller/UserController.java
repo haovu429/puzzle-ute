@@ -5,6 +5,7 @@ import hcmute.puzzle.dto.CandidateDTO;
 import hcmute.puzzle.dto.EmployerDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
+import hcmute.puzzle.entities.InvoiceEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
@@ -236,6 +237,16 @@ public class UserController {
   public DataResponse getInvoiceForUser(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return invoiceService.getInvoiceByEmailUser(userDetails.getUser().getEmail());
+  }
+
+  @GetMapping("/user/get-one-invoice/{invoiceId}")
+  public DataResponse getAllInvoice(Authentication authentication, @PathVariable(value = "invoiceId") long invoiceId) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    InvoiceEntity invoice = invoiceService.getOneInvoice(invoiceId);
+    if (!userDetails.getUser().getEmail().equals(invoice.getEmail())) {
+      throw new CustomException("You don't have rights for this invoice");
+    }
+    return new DataResponse(converter.toDTO(invoice));
   }
 
   @GetMapping("/user/get-subscribed-package")

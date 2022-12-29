@@ -8,4 +8,10 @@ public interface InvoiceService {
     InvoiceEntity saveInvoice(InvoiceEntity invoice);
 
     DataResponse getInvoiceByEmailUser(String email);
+
+    DataResponse getAllInvoice();
+
+    InvoiceEntity getOneInvoice(long invoiceId);
+
+    long getTotalRevenue();
 }
