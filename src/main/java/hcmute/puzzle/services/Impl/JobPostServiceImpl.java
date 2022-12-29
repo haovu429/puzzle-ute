@@ -49,6 +49,7 @@ public class JobPostServiceImpl implements JobPostService {
 
     // set id
     jobPostEntity.setId(0);
+    jobPostEntity.setCreateTime(new Date());
 
     jobPostEntity = jobPostRepository.save(jobPostEntity);
 
