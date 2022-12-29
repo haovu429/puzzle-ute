@@ -56,8 +56,6 @@ public class JobPostServiceImpl implements JobPostService {
     return new ResponseObject(200, "Save job post Successfully", converter.toDTO(jobPostEntity));
   }
 
-
-
   @Override
   public ResponseObject delete(long id) {
     boolean exists = jobPostRepository.existsById(id);
@@ -371,17 +369,19 @@ public class JobPostServiceImpl implements JobPostService {
             + "AND sub.regUser.id = u.id AND u.id=:userId AND sub.expirationTime > :nowTime ";
     try {
       limitNum =
-              (long)
-                      em.createQuery(sql)
-                              .setParameter("userId", employerId)
-                              .setParameter("nowTime", new Date())
-                              .getSingleResult();
+          (long)
+              em.createQuery(sql)
+                  .setParameter("userId", employerId)
+                  .setParameter("nowTime", new Date())
+                  .getSingleResult();
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     return LIMITED_NUMBER_OF_JOB_POSTS_CREATED_DEFAULT + limitNum;
   }
+
+
 
   @Override
   public long getTotalJobPostViewOfEmployer(long employerId) {
@@ -394,8 +394,7 @@ public class JobPostServiceImpl implements JobPostService {
     String sql =
         "SELECT COUNT(jp) FROM JobPostEntity jp WHERE jp.createdEmployer.id = :employerId AND jp.isDeleted = FALSE";
     try {
-      count =
-              (long) em.createQuery(sql).setParameter("employerId", employerId).getSingleResult();
+      count = (long) em.createQuery(sql).setParameter("employerId", employerId).getSingleResult();
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -409,7 +408,11 @@ public class JobPostServiceImpl implements JobPostService {
     long current = getCurrentNumberOfJobPostsCreatedByEmployer(employerId);
 
     if (current > limit) {
-      throw new CustomException("Your current number of created jobs is" + current  + ", which has exceeded the limit of " + limit);
+      throw new CustomException(
+          "Your current number of created jobs is"
+              + current
+              + ", which has exceeded the limit of "
+              + limit);
     }
   }
 }
