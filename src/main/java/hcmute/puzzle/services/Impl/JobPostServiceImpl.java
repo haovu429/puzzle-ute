@@ -186,7 +186,11 @@ public class JobPostServiceImpl implements JobPostService {
   public ResponseObject getActiveJobPost() {
     Set<JobPostDTO> jobPostDTOS =
         jobPostRepository.findAllByActiveIsTrue().stream()
-            .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+            .map(jobPostEntity -> {
+              JobPostDTO jobPostDTO = converter.toDTO(jobPostEntity);
+              jobPostDTO.setDescription(null);
+              return jobPostDTO;
+            })
             .collect(Collectors.toSet());
 
     return new ResponseObject(200, "Job Post active", jobPostDTOS);
