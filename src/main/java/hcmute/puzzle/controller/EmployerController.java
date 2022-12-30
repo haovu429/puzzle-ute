@@ -7,7 +7,6 @@ import hcmute.puzzle.dto.JobPostDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.ApplicationEntity;
 import hcmute.puzzle.entities.CompanyEntity;
-import hcmute.puzzle.entities.InvoiceEntity;
 import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
@@ -172,7 +171,8 @@ public class EmployerController {
     companyDTO.setName(companyPayload.getName());
     companyDTO.setDescription(companyPayload.getDescription());
     companyDTO.setWebsite(companyPayload.getWebsite());
-    return companyService.save(companyDTO, companyPayload.getImage(), userDetails.getUser().getEmployerEntity());
+    return companyService.save(
+        companyDTO, companyPayload.getImage(), userDetails.getUser().getEmployerEntity());
   }
 
   // Lấy danh sách ứng viên đã apply vào một jobPost
@@ -256,7 +256,8 @@ public class EmployerController {
         new MailObject(
             application.get().getCandidateEntity().getEmailContact(),
             responseApplication.getSubject(),
-            contentMail);
+            contentMail,
+            null);
 
     Runnable myRunnable =
         new Runnable() {
@@ -431,5 +432,4 @@ public class EmployerController {
 
     return new ResponseObject(200, "Upload image success", response);
   }
-
 }

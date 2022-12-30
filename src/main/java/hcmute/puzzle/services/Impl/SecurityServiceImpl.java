@@ -79,7 +79,7 @@ public class SecurityServiceImpl implements SecurityService {
             "Link reset password: " + urlFrontEnd + "?token=" +
                 tokenValue
                 + "\nSupport email: "
-                + environment.getProperty("support.email"));
+                + environment.getProperty("support.email"), null);
     SendMail.sendMail(mail);
 
     return new DataResponse("send email reset password successful");

@@ -286,7 +286,11 @@ public class CommonController {
 
     List<JobPostDTO> jobPostDTOS =
         jobPostEntities.stream()
-            .map(jobPost -> converter.toDTO(jobPost))
+            .map(jobPost -> {
+              JobPostDTO jobPostDTO = converter.toDTO(jobPost);
+              jobPostDTO.setDescription(null);
+              return jobPostDTO;
+            })
             .collect(Collectors.toList());
 
     // JobPostFilter jobPostFilter1 = new JobPostFilter();

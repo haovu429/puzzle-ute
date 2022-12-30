@@ -11,6 +11,10 @@ import java.util.Properties;
 
 public class SendMail {
 
+    public static final String CONTENT_UTF8 = "utf-8";
+    public static final String CONTENT_TYPE_TEXT_HTML = "html";
+    public static final String CONTENT_TYPE_TEXT_PLAIN= "plain";
+
     public static void sendMail(MailObject mailObject) {
 
         // Recipient's email ID needs to be mentioned.
@@ -64,8 +68,12 @@ public class SendMail {
             // Set Subject: header field
             message.setSubject(mailObject.getSubject());
 
+            String contentType = CONTENT_TYPE_TEXT_PLAIN;
+            if (mailObject.getContentType() != null && mailObject.getContentType().equals(CONTENT_TYPE_TEXT_HTML)){
+                contentType = CONTENT_TYPE_TEXT_HTML;
+            }
             // Now set the actual message
-            message.setText(mailObject.getContent());
+            message.setText(mailObject.getContent(), CONTENT_UTF8, contentType);
             System.out.println("sending...");
             // Send message
             Transport.send(message);
@@ -76,7 +84,7 @@ public class SendMail {
 
     }
     public static void main(String[] args) {
-        MailObject mailObject = new MailObject("haovu961@gmail.com", "hey", "I am Hao dep try");
+        MailObject mailObject = new MailObject("haovu961@gmail.com", "hey", "I am Hao dep try", null);
         sendMail(mailObject);
     }
 
