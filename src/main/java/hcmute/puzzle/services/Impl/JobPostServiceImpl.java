@@ -160,6 +160,7 @@ public class JobPostServiceImpl implements JobPostService {
         jobPostRepository.findAllByAppliedCandidateId(candidateId).stream()
             .map(jobPostEntity -> converter.toDTO(jobPostEntity))
             .collect(Collectors.toSet());
+    processListJobPost(jobPostDTOS);
 
     return new ResponseObject(200, "Job Post applied", jobPostDTOS);
   }
@@ -237,8 +238,9 @@ public class JobPostServiceImpl implements JobPostService {
         candidate.get().getSavedJobPost().stream()
             .map(jobPost -> converter.toDTO(jobPost))
             .collect(Collectors.toSet());
+    processListJobPost(jobPostDTOS);
 
-    return new ResponseObject(200, "Job Posts is saved", jobPostDTOS);
+    return new ResponseObject(200, "Job Posts is saved",jobPostDTOS);
   }
 
   public ResponseObject activateJobPost(long jobPostId) {
@@ -420,7 +422,7 @@ public class JobPostServiceImpl implements JobPostService {
     }
   }
 
-  public static void processListJobPost(List<JobPostDTO> jobPostDTOS){
+  public static void processListJobPost(Collection<JobPostDTO> jobPostDTOS){
     jobPostDTOS.forEach(jobPostDTO -> {
       jobPostDTO.setDescription(null);
     });
