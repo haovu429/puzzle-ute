@@ -108,6 +108,10 @@ public class UserServiceImpl implements UserService {
       oldUser.get().setFullName(userPayload.getFullName());
     }
 
+    if (userPayload.isEmailVerified()!=oldUser.get().isEmailVerified()){
+      oldUser.get().setEmailVerified(userPayload.isEmailVerified());
+    }
+
     //oldUser.get().setAvatar(userPayload.getAvatar());
     //oldUser.get().setAvatar(updateAvatarReturnUrl(oldUser.get().getEmail(), file));
     oldUser.get().setActive(userPayload.isActive());

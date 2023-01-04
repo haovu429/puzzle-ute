@@ -240,16 +240,15 @@ public class TimeUtil {
             if (date_num >= day_now){
                 c1.roll(Calendar.MONTH, -1);
                 month_now = Integer.parseInt(monthFormat.format(c1.getTime()));
+                if (month_now == 12) {
+                    c1.roll(Calendar.YEAR, -1);
+                }
                 c1.roll(Calendar.DATE, -date_num);
             } else {
                 c1.roll(Calendar.DATE, -date_num);
             }
             day_now = Integer.parseInt(dayFormat.format(c1.getTime()));
         }
-
-
-
-
 
 
         System.out.println("Ngày được tăng thêm day (Sử dụng Roll) : "+ dayFormat.format(c1.getTime()));
@@ -371,19 +370,21 @@ public class TimeUtil {
     // Driver Code
     public static void main(String[] args) throws ParseException {
         // Given start_date
-        String start_date
-                = "3-01-2018 01:10:20";
-
-        // Given end_date
-        String end_date
-                = "10-06-2020 06:30:50";
+//        String start_date
+//                = "3-01-2018 01:10:20";
+//
+//        // Given end_date
+//        String end_date
+//                = "10-06-2020 06:30:50";
+//        TimeUtil timeUtil = new TimeUtil();
+//
+//        Date time = TimeUtil.stringToDate(start_date, TimeUtil.FORMAT_TIME);
+//
+//        String monthName = TimeUtil.getMonthTypeString(time);
+//
+//        System.out.println(monthName);
         TimeUtil timeUtil = new TimeUtil();
-
-        Date time = TimeUtil.stringToDate(start_date, TimeUtil.FORMAT_TIME);
-
-        String monthName = TimeUtil.getMonthTypeString(time);
-
-        System.out.println(monthName);
+        timeUtil.upDownTime_TimeUtil(stringToDate("04-01-2023", FORMAT_DATE), 7, 0, 0);
 
         /*Date timeOutput = TimeUtil.stringToDate(timeUtil.up_downTime(start_date,7, 0, 0), FORMAT_TIME);
         String strDate = TimeUtil.dateToString(timeOutput, FORMAT_TIME);

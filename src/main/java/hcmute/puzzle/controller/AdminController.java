@@ -9,6 +9,7 @@ import hcmute.puzzle.entities.InvoiceEntity;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.model.payload.request.company.CreateCompanyPayload;
 import hcmute.puzzle.model.payload.request.company.CreateCompanyPayloadForAdmin;
+import hcmute.puzzle.model.payload.request.other.TimeFramePayLoad;
 import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
 import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
@@ -205,6 +206,11 @@ public class AdminController {
     return invoiceService.getAllInvoice();
   }
 
+  @GetMapping("/get-all-invoice-by-time-frame")
+  public DataResponse getAllInvoiceByTimeFrame(@RequestBody TimeFramePayLoad timeFrame) {
+    return invoiceService.getAllInvoiceByTimeFrame(timeFrame.getStartTime(), timeFrame.getEndTime());
+  }
+
   @GetMapping("/get-one-invoice/{invoiceId}")
   public DataResponse getOneInvoice(@PathVariable(value = "invoiceId") long invoiceId) {
     InvoiceEntity invoice = invoiceService.getOneInvoice(invoiceId);
@@ -214,6 +220,12 @@ public class AdminController {
   @GetMapping("/get-total-revenue")
   public DataResponse getTotalRevenue() {
     long totalRevenue = invoiceService.getTotalRevenue();
+    return new DataResponse(totalRevenue);
+  }
+
+  @PostMapping("/get-total-revenue-by-time-frame")
+  public DataResponse getTotalRevenueByTimeFrame(@RequestBody TimeFramePayLoad timeFrame) {
+    long totalRevenue = invoiceService.getTotalRevenue(timeFrame.getStartTime(), timeFrame.getEndTime());
     return new DataResponse(totalRevenue);
   }
 }
