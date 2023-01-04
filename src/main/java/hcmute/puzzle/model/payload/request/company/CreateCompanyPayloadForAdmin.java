@@ -14,4 +14,5 @@ public class CreateCompanyPayloadForAdmin {
     private MultipartFile image;
     private String website;
     private boolean isActive = false;
+    private Long createdEmployerId = null;
 }

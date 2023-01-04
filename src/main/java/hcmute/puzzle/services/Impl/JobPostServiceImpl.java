@@ -419,4 +419,10 @@ public class JobPostServiceImpl implements JobPostService {
               + limit);
     }
   }
+
+  public static void processListJobPost(List<JobPostDTO> jobPostDTOS){
+    jobPostDTOS.forEach(jobPostDTO -> {
+      jobPostDTO.setDescription(null);
+    });
+  }
 }

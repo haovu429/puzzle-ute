@@ -34,7 +34,7 @@ public class CompanyServiceImpl implements CompanyService {
   @Autowired CandidateRepository candidateRepository;
 
   @Override
-  public ResponseObject save(CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer) {
+  public DataResponse save(CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer) {
 
     CompanyEntity company = new CompanyEntity();
     company.setName(companyPayload.getName());
@@ -53,24 +53,35 @@ public class CompanyServiceImpl implements CompanyService {
       company = companyRepository.save(company);
     }
 
-    return new ResponseObject(
-        200,
-        "Sent request create info company to admin, please wait notify from admin",
-        converter.toDTO(company));
+    return new DataResponse(converter.toDTO(company));
   }
 
   @Override
-  public ResponseObject update(CompanyDTO companyDTO) {
+  public DataResponse update(long companyId, CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer) {
+    Optional<CompanyEntity> companyEntityOptional = companyRepository.findById(companyId);
 
-    boolean exists = companyRepository.existsById(companyDTO.getId());
-
-    if (!exists) {
-      throw new CustomException("Company isn't exists");
+    if (companyEntityOptional.isEmpty()) {
+      throw new CustomException("Company not found");
     }
 
-    CompanyEntity companyEntity = converter.toEntity(companyDTO);
-    companyEntity = companyRepository.save(companyEntity);
-    return new ResponseObject(200, "Update successfully", converter.toDTO(companyEntity));
+    CompanyEntity company = companyEntityOptional.get();
+    company.setName(companyPayload.getName());
+    company.setDescription(companyPayload.getDescription());
+    company.setWebsite(companyPayload.getWebsite());
+    company.setCreatedEmployer(createEmployer);
+    company.setActive(companyPayload.isActive());
+    company = companyRepository.save(company);
+
+    if (imageFile != null && imageFile.getSize()>0) {
+      // lay id sau khi luu vao db de dat ten cho anh
+      String urlImage =
+              storageService.updateAvatarReturnUrl(
+                      company.getId(), imageFile, Constant.PREFIX_COMPANY_IMAGE_FILE_NAME);
+      company.setImage(urlImage);
+      company = companyRepository.save(company);
+    }
+
+    return new DataResponse(converter.toDTO(company));
   }
 
   @Override

@@ -9,9 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface CompanyService {
 
-  ResponseObject save(CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer);
+  DataResponse save(CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer);
 
-  ResponseObject update(CompanyDTO companyDTO);
+  DataResponse update(long companyId, CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer);
 
   ResponseObject delete(long id);
 

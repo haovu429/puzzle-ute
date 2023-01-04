@@ -164,7 +164,7 @@ public class EmployerController {
   //  }
 
   @PostMapping("/create-info-company")
-  public ResponseObject saveCompany(
+  public DataResponse saveCompany(
       @ModelAttribute CreateCompanyPayload companyPayload, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     CompanyDTO companyDTO = new CompanyDTO();
