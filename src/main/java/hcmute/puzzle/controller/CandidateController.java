@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/api/candidate")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 @SecurityRequirement(name = "bearerAuth")
 public class CandidateController {
@@ -61,7 +61,7 @@ public class CandidateController {
 
   @Autowired JobPostService jobPostService;
 
-  @PostMapping("/candidate/add")
+  @PostMapping("/add")
   ResponseObject saveCandidate(
       @RequestBody @Validated CandidateDTO candidate,
       BindingResult bindingResult,
@@ -96,7 +96,7 @@ public class CandidateController {
     return candidateService.delete(userDetails.getUser().getId());
   }
 
-  @PutMapping("/candidate/update")
+  @PutMapping("/update")
   ResponseObject updateCandidate(
       @RequestBody @Validated CandidateDTO candidate,
       BindingResult bindingResult,
@@ -112,13 +112,13 @@ public class CandidateController {
   }
 
   // public
-  @GetMapping("/candidate/profile")
+  @GetMapping("/profile")
   ResponseObject getById(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return candidateService.getOne(userDetails.getUser().getId());
   }
 
-  @GetMapping("/candidate/follow-employer/{id}")
+  @GetMapping("/follow-employer/{id}")
   ResponseObject followEmployer(
       @PathVariable(value = "id") Long employerId,
       // @RequestBody Map<String, Object> input,
@@ -137,28 +137,28 @@ public class CandidateController {
     return candidateService.followEmployer(userDetails.getUser().getId(), employerId);
   }
 
-  @GetMapping("/candidate/cancel-followed-employer/{id}")
+  @GetMapping("/cancel-followed-employer/{id}")
   ResponseObject cancelFollowEmployer(
       @PathVariable(value = "id") Long employerId, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return candidateService.cancelFollowedEmployer(userDetails.getUser().getId(), employerId);
   }
 
-  @GetMapping("/candidate/follow-company/{id}")
+  @GetMapping("/follow-company/{id}")
   ResponseObject followCompany(
       @PathVariable(value = "id") Long companyId, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return candidateService.followCompany(userDetails.getUser().getId(), companyId);
   }
 
-  @GetMapping("/candidate/cancel-followed-company/{id}")
+  @GetMapping("/cancel-followed-company/{id}")
   ResponseObject cancelFollowCompany(
       @PathVariable(value = "id") Long companyId, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return candidateService.cancelFollowedCompany(userDetails.getUser().getId(), companyId);
   }
 
-  @GetMapping("/candidate/apply-job-post/{postId}")
+  @GetMapping("/apply-job-post/{postId}")
   DataResponse applyJobPost(@PathVariable Long postId, Authentication authentication) {
 
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -171,20 +171,13 @@ public class CandidateController {
 
     if (!jobPost.get().isActive()) {
       // throw new CustomException("You can't apply this jobPost. It isn't active");
-      return new DataResponse(
-          DataResponse.ERROR_INACTIVE,
-          "You can't apply this jobPost. It isn't active",
-          DataResponse.STATUS_CUSTOM_EXCEPTION);
+      throw new CustomException("You can't apply this jobPost. It isn't active");
     }
 
     if (jobPost.get().getDueTime().before(new Date())) {
       // throw new CustomException("You can't apply this jobPost. It isn't active");
-      return new DataResponse(
-              DataResponse.ERROR_INACTIVE,
-              "You can't apply this jobPost. job post has expired",
-              DataResponse.STATUS_CUSTOM_EXCEPTION);
+      throw new CustomException("You can't apply this jobPost. job post has expired");
     }
-
 
     Optional<ApplicationEntity> application =
         applicationRepository.findApplicationByCanIdAndJobPostId(
@@ -207,7 +200,7 @@ public class CandidateController {
     return new DataResponse("Apply success");
   }
 
-  @GetMapping("/candidate/cancel-apply-job-post/{postId}")
+  @GetMapping("/cancel-apply-job-post/{postId}")
   ResponseObject cancelApplyJobPost(
       @PathVariable Long postId,
       Authentication authentication /*@RequestHeader(value = "Authorization") String token*/) {
@@ -234,14 +227,14 @@ public class CandidateController {
     return new ResponseObject(200, "Cancel apply success", null);
   }
 
-  @GetMapping("/candidate/save-job-post/{jobPostId}")
+  @GetMapping("/save-job-post/{jobPostId}")
   ResponseObject saveJobPost(
       @PathVariable(value = "jobPostId") Long jobPostId, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return candidateService.saveJobPost(userDetails.getUser().getId(), jobPostId);
   }
 
-  @GetMapping("/candidate/cancel-saved-job-post/{jobPostId}")
+  @GetMapping("/cancel-saved-job-post/{jobPostId}")
   ResponseObject cancelSaveJobPost(
       @PathVariable(value = "jobPostId") Long jobPostId,
       /*@RequestHeader(value = "Authorization") String token*/ Authentication authentication) {
@@ -255,7 +248,7 @@ public class CandidateController {
     return candidateService.cancelSavedJobPost(userDetails.getUser().getId(), jobPostId);
   }
 
-  @PostMapping("/candidate/add-job-alert")
+  @PostMapping("/add-job-alert")
   ResponseObject addJobAlert(
       @RequestBody @Validated JobAlertDTO jobAlertDTO,
       BindingResult bindingResult,
@@ -267,7 +260,7 @@ public class CandidateController {
     return jobAlertService.save(userDetails.getUser().getId(), jobAlertDTO);
   }
 
-  @PutMapping("/candidate/update-job-alert")
+  @PutMapping("/update-job-alert")
   ResponseObject updateJobAlert(
       @RequestBody @Validated JobAlertDTO jobAlertDTO,
       BindingResult bindingResult,
@@ -292,7 +285,7 @@ public class CandidateController {
     return jobAlertService.update(jobAlertDTO);
   }
 
-  @GetMapping("/candidate/delete-job-alert/{jobAlertId}")
+  @GetMapping("/delete-job-alert/{jobAlertId}")
   ResponseObject deleteJobAlert(
       @PathVariable(value = "jobAlertId") long id, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -310,14 +303,14 @@ public class CandidateController {
     return jobAlertService.delete(id);
   }
 
-  @GetMapping("/candidate/get-job-alert")
+  @GetMapping("/get-job-alert")
   ResponseObject getAllJobAlertByCandidateId(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
     return jobAlertService.getAllJobAlertByCandidateId(userDetails.getUser().getId());
   }
 
-  @GetMapping("/candidate/get-job-alert-by-id/{jobAlertId}")
+  @GetMapping("/get-job-alert-by-id/{jobAlertId}")
   ResponseObject getAllJobAlertById(
       @PathVariable(value = "jobAlertId") long jobAlertId, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -335,7 +328,7 @@ public class CandidateController {
     return jobAlertService.getOneById(jobAlertId);
   }
 
-  @PostMapping("/candidate/add-experience")
+  @PostMapping("/add-experience")
   ResponseObject addExperience(
       @RequestBody @Validated ExperienceDTO experienceDTO,
       BindingResult bindingResult,
@@ -349,7 +342,7 @@ public class CandidateController {
     return experienceService.save(userDetails.getUser().getId(), experienceDTO);
   }
 
-  @PutMapping("/candidate/update-experience")
+  @PutMapping("/update-experience")
   ResponseObject updateExperience(
       @RequestBody @Validated ExperienceDTO experienceDTO,
       BindingResult bindingResult,
@@ -375,7 +368,7 @@ public class CandidateController {
     return experienceService.update(experienceDTO);
   }
 
-  @GetMapping("/candidate/delete-experience/{experienceId}")
+  @GetMapping("/delete-experience/{experienceId}")
   ResponseObject deleteExperience(
       @PathVariable(value = "experienceId") long id, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -393,13 +386,13 @@ public class CandidateController {
     return experienceService.delete(id);
   }
 
-  @GetMapping("/candidate/get-experience")
+  @GetMapping("/get-experience")
   ResponseObject getAllExperienceByCandidateId(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return experienceService.getAllExperienceByCandidateId(userDetails.getUser().getId());
   }
 
-  @GetMapping("/candidate/get-experience-by-id/{experienceId}")
+  @GetMapping("/get-experience-by-id/{experienceId}")
   ResponseObject getExperienceById(
       @PathVariable(value = "experienceId") long experienceId, Authentication authentication) {
 
@@ -418,7 +411,7 @@ public class CandidateController {
     return experienceService.getOneById(experienceId);
   }
 
-  @GetMapping("/candidate/get-job-post-applied")
+  @GetMapping("/get-job-post-applied")
   ResponseObject getJobPostAppliedByCandidate(Authentication authentication) {
 
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -426,13 +419,13 @@ public class CandidateController {
     return jobPostService.getJobPostAppliedByCandidateId(userDetails.getUser().getId());
   }
 
-  @GetMapping("/candidate/get-job-post-saved")
+  @GetMapping("/get-job-post-saved")
   ResponseObject getJobPostSavedByCandidate(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return jobPostService.getJobPostSavedByCandidateId(userDetails.getUser().getId());
   }
 
-  @GetMapping("/candidate/get-application-by-job-post-id-applied/{jobPostId}")
+  @GetMapping("/get-application-by-job-post-id-applied/{jobPostId}")
   ResponseObject getApplicationByJobPost(
       Authentication authentication, @PathVariable long jobPostId) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -440,13 +433,13 @@ public class CandidateController {
         jobPostId, userDetails.getUser().getId());
   }
 
-  @GetMapping("/candidate/get-company-followed")
+  @GetMapping("/get-company-followed")
   ResponseObject getCompanyFollowedByCandidate(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     return companyService.getCompanyFollowedByCandidateId(userDetails.getUser().getId());
   }
 
-  @GetMapping("/candidate/get-employer-followed")
+  @GetMapping("/get-employer-followed")
   ResponseObject getEmployerFollowedByCandidate(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
