@@ -60,12 +60,11 @@ public class WebSecurityConfig {
 
   @Bean
   FirebaseMessaging firebaseMessaging() throws IOException {
-    GoogleCredentials googleCredentials = GoogleCredentials
-            .fromStream(new ClassPathResource("firebase-service-account.json").getInputStream());
-    FirebaseOptions firebaseOptions = FirebaseOptions
-            .builder()
-            .setCredentials(googleCredentials)
-            .build();
+    GoogleCredentials googleCredentials =
+        GoogleCredentials.fromStream(
+            new ClassPathResource("firebase-service-account.json").getInputStream());
+    FirebaseOptions firebaseOptions =
+        FirebaseOptions.builder().setCredentials(googleCredentials).build();
     FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "puzzle-ute");
     return FirebaseMessaging.getInstance(app);
   }
@@ -134,7 +133,8 @@ public class WebSecurityConfig {
         .permitAll()
         .antMatchers("/api/user/**")
         .hasAuthority(Roles.USER.value)
-        .antMatchers("/api/login/**", "/api/login-google/**", "/api/forgot-password", "/api/reset-password")
+        .antMatchers(
+            "/api/login/**", "/api/login-google/**", "/api/forgot-password", "/api/reset-password")
         .permitAll()
         .antMatchers("/api/role/admin")
         .hasAnyAuthority(Roles.ADMIN.value)
@@ -174,13 +174,13 @@ public class WebSecurityConfig {
         .logout()
         .permitAll()
         .and()
-        .oauth2Login()
-        .loginPage("/login")
-        .userInfoEndpoint()
-        .userService(oauthUserService)
-        .and()
-        .successHandler(oAuth2LoginSuccessHandler)
-        .and()
+        //        .oauth2Login()
+        //        .loginPage("/login")
+        //        .userInfoEndpoint()
+        //        .userService(oauthUserService)
+        //        .and()
+        //        .successHandler(oAuth2LoginSuccessHandler)
+        //        .and()
         .httpBasic();
 
     http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
