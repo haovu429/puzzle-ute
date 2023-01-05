@@ -65,11 +65,26 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     CompanyEntity company = companyEntityOptional.get();
-    company.setName(companyPayload.getName());
-    company.setDescription(companyPayload.getDescription());
-    company.setWebsite(companyPayload.getWebsite());
-    company.setCreatedEmployer(createEmployer);
-    company.setActive(companyPayload.isActive());
+    if (companyPayload.getName() != null) {
+      company.setName(companyPayload.getName());
+    }
+
+    if (companyPayload.getDescription() != null) {
+      company.setDescription(companyPayload.getDescription());
+    }
+
+    if (companyPayload.getWebsite() != null) {
+      company.setWebsite(companyPayload.getWebsite());
+    }
+
+    if (createEmployer != null) {
+      company.setCreatedEmployer(createEmployer);
+    }
+
+    if (companyPayload.isActive() != company.isActive()) {
+      company.setActive(companyPayload.isActive());
+    }
+
     company = companyRepository.save(company);
 
     if (imageFile != null && imageFile.getSize()>0) {
