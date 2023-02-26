@@ -640,4 +640,21 @@ public class Converter {
     return entity;
   }
 
+  public CategoryDTO toDTO(CategoryEntity entity) {
+    CategoryDTO dto = new CategoryDTO();
+    dto.setId(entity.getId());
+    dto.setName(entity.getName());
+    dto.setInsActive(entity.isActive());
+    return dto;
+  }
+
+  public CategoryEntity toEntity(CategoryDTO dto) {
+    CategoryEntity entity = new CategoryEntity();
+    entity.setId(dto.getId());
+    entity.setName(dto.getName());
+    entity.setActive(dto.isInsActive());
+    return entity;
+
+  }
+
 }

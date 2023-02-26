@@ -68,7 +68,9 @@ public class CommonController {
   }
 
   @GetMapping("/common/job-post/get-one/{jobPostId}")
-  ResponseObject getJobPostById(@RequestHeader(value = "Authorization", required = false) String token, @PathVariable(value = "jobPostId") long jobPostId) {
+  ResponseObject getJobPostById(
+      @RequestHeader(value = "Authorization", required = false) String token,
+      @PathVariable(value = "jobPostId") long jobPostId) {
     jobPostService.countJobPostView(jobPostId);
     try {
       if (token != null && !token.isEmpty() && !token.isBlank()) {
@@ -257,6 +259,17 @@ public class CommonController {
                         ModelQuery.TYPE_QUERY_EQUAL, ModelQuery.TYPE_ATTRIBUTE_BOOLEAN, boo))
             .collect(Collectors.toList()));
 
+    if (jobPostFilter.getCategoryIds() != null && !jobPostFilter.getCategoryIds().isEmpty()) {
+      fieldSearchValue.put(
+          "categoryEntity",
+          jobPostFilter.getCategoryIds().stream()
+              .map(
+                  id ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_EQUAL, ModelQuery.TYPE_ATTRIBUTE_NUMBER, id))
+              .collect(Collectors.toList()));
+    }
+
     List<String> commonFieldSearch = new ArrayList<>();
     List<ModelQuery> valueCommonFieldSearch = null;
     if (jobPostFilter.getOthers() != null && !jobPostFilter.getOthers().isEmpty()) {
@@ -286,11 +299,12 @@ public class CommonController {
 
     List<JobPostDTO> jobPostDTOS =
         jobPostEntities.stream()
-            .map(jobPost -> {
-              JobPostDTO jobPostDTO = converter.toDTO(jobPost);
-              jobPostDTO.setDescription(null);
-              return jobPostDTO;
-            })
+            .map(
+                jobPost -> {
+                  JobPostDTO jobPostDTO = converter.toDTO(jobPost);
+                  jobPostDTO.setDescription(null);
+                  return jobPostDTO;
+                })
             .collect(Collectors.toList());
 
     // JobPostFilter jobPostFilter1 = new JobPostFilter();
@@ -436,7 +450,7 @@ public class CommonController {
   }
 
   @GetMapping("/common/get-amount-application-to-job-post/{jobPostId}")
-  DataResponse getAmountApplicationToEmployer(@PathVariable(value = "jobPostId")long jobPostId) {
+  DataResponse getAmountApplicationToEmployer(@PathVariable(value = "jobPostId") long jobPostId) {
     return applicationService.getAmountApplicationByJobPostId(jobPostId);
   }
 
@@ -454,5 +468,4 @@ public class CommonController {
   public ResponseObject getApplicationAmount() {
     return applicationService.getApplicationAmount();
   }
-
 }

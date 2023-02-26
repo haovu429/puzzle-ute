@@ -10,8 +10,6 @@ import java.util.List;
 
 public interface InvoiceRepository extends JpaRepository<InvoiceEntity, Long> {
 
-    List<InvoiceEntity> findAllBySo(String email);
-
     List<InvoiceEntity> findByEmail(String email);
 
     @Query("SELECT SUM(inv.price) FROM InvoiceEntity inv WHERE inv.status=:status")

@@ -126,4 +126,8 @@ public class JobPostEntity implements Serializable {
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
   @JoinColumn(name = "company_id")
   private CompanyEntity companyEntity;
+
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @JoinColumn(name = "category_id")
+  private CategoryEntity categoryEntity;
 }
