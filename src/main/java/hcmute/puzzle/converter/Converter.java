@@ -4,7 +4,6 @@ import hcmute.puzzle.dto.*;
 import hcmute.puzzle.entities.*;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.*;
-import hcmute.puzzle.utils.Provider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -644,7 +643,7 @@ public class Converter {
     CategoryDTO dto = new CategoryDTO();
     dto.setId(entity.getId());
     dto.setName(entity.getName());
-    dto.setInsActive(entity.isActive());
+    dto.setActive(entity.isActive());
     return dto;
   }
 
@@ -652,7 +651,7 @@ public class Converter {
     CategoryEntity entity = new CategoryEntity();
     entity.setId(dto.getId());
     entity.setName(dto.getName());
-    entity.setActive(dto.isInsActive());
+    entity.setActive(dto.isActive());
     return entity;
 
   }

@@ -1,10 +1,7 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.CompanyDTO;
-import hcmute.puzzle.dto.ExtraInfoDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.dto.UserDTO;
+import hcmute.puzzle.dto.*;
 import hcmute.puzzle.entities.CompanyEntity;
 import hcmute.puzzle.entities.EmployerEntity;
 import hcmute.puzzle.entities.InvoiceEntity;
@@ -58,6 +55,8 @@ public class AdminController {
   @Autowired
   EmployerRepository employerRepository;
 
+  @Autowired CategoryService categoryService;
+
   // Company, add new company
   @PostMapping("/create-info-company")
   public DataResponse createCompany(
@@ -97,7 +96,7 @@ public class AdminController {
     return companyService.update(companyId, companyDTO, companyPayload.getImage(), employer);
   }
 
-  @GetMapping("/delete-info-company/{id}")
+  @DeleteMapping ("/delete-info-company/{id}")
   public ResponseObject deleteCompany(@PathVariable Long id) {
     return companyService.delete(id);
   }
@@ -258,5 +257,25 @@ public class AdminController {
   public DataResponse getTotalRevenueByTimeFrame(@RequestBody TimeFramePayLoad timeFrame) {
     long totalRevenue = invoiceService.getTotalRevenue(timeFrame.getStartTime(), timeFrame.getEndTime());
     return new DataResponse(totalRevenue);
+  }
+
+  @GetMapping("/get-all-category")
+  public DataResponse getAllCategory() {
+    return categoryService.getAll();
+  }
+
+  @PostMapping("/add-category")
+  public DataResponse addCategory(@RequestBody CategoryDTO categoryDTO) {
+    return categoryService.save(categoryDTO);
+  }
+
+  @PutMapping("/update-category/{categoryId}")
+  public DataResponse updateCategory(@PathVariable long categoryId, @RequestBody CategoryDTO categoryDTO) {
+    return categoryService.update(categoryDTO, categoryId);
+  }
+
+  @DeleteMapping("/delete-category/{categoryId}")
+  public DataResponse updateCategory(@PathVariable long categoryId) {
+    return categoryService.delete(categoryId);
   }
 }

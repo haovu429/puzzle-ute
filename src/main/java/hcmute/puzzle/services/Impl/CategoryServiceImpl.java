@@ -8,11 +8,13 @@ import hcmute.puzzle.repository.CategoryRepository;
 import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Service
 public class CategoryServiceImpl implements CategoryService {
 
   @Autowired Converter converter;
@@ -29,7 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
 
   @Override
   public DataResponse update(CategoryDTO dto, long id) {
-    if (categoryRepository.existsById(id)) {
+    if (!categoryRepository.existsById(id)) {
       throw new CustomException("Category not found!");
     }
     CategoryEntity newCategory = converter.toEntity(dto);
@@ -41,11 +43,11 @@ public class CategoryServiceImpl implements CategoryService {
 
   @Override
   public DataResponse delete(long id) {
-    if (categoryRepository.existsById(id)) {
+    if (!categoryRepository.existsById(id)) {
       throw new CustomException("Category not found!");
     }
     categoryRepository.deleteById(id);
-    return new DataResponse("Save successfully");
+    return new DataResponse("Delete successfully");
   }
 
   @Override
