@@ -52,4 +52,5 @@ public class JobPostDTO implements Serializable {
   private long createdEmployerId;
   private String logo;
   private long companyId =-1;
+  private long categoryId;
 }

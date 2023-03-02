@@ -31,6 +31,7 @@ public class Converter {
   @Autowired private JobPostRepository jobPostRepository;
   @Autowired private NotificationRepository notificationRepository;
   @Autowired private UserRepository userRepository;
+  @Autowired private CategoryRepository categoryRepository;
 
   // User
   public UserDTO toDTO(UserEntity entity) {
@@ -502,6 +503,15 @@ public class Converter {
       throw new NoSuchElementException("Can't convert createEmployerId");
     }
     entity.setCreatedEmployer(createEmployer.get());
+    System.out.println("category Id = "+dto.getCategoryId());
+    Optional<CategoryEntity> categoryEntity =
+            categoryRepository.findById(dto.getCategoryId());
+
+    if (categoryEntity.isEmpty()) {
+      throw new NoSuchElementException("Can't convert categoryId");
+    }
+    System.out.println("category  = "+categoryEntity.get().getName());
+    entity.setCategoryEntity(categoryEntity.get());
 
     if (dto.getCompanyId() != -1) {
       Optional<CompanyEntity> company =

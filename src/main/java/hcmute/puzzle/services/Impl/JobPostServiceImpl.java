@@ -82,11 +82,11 @@ public class JobPostServiceImpl implements JobPostService {
     boolean exists = jobPostRepository.existsById(JobPostDTO.getId());
 
     if (exists) {
-      JobPostEntity candidate = converter.toEntity(JobPostDTO);
+      JobPostEntity jobPost = converter.toEntity(JobPostDTO);
       // candidate.setId(candidate.getUserEntity().getId());
 
-      jobPostRepository.save(candidate);
-      return new ResponseObject(converter.toDTO(candidate));
+      jobPostRepository.save(jobPost);
+      return new ResponseObject(converter.toDTO(jobPost));
     }
 
     throw new CustomException("Cannot find job post with id = " + JobPostDTO.getId());
@@ -263,7 +263,7 @@ public class JobPostServiceImpl implements JobPostService {
       throw new CustomException("Min budget can't be greater than max budget");
     }
 
-    if (jobPostDTO.getDueTime().before(new Date())) {
+    if ( jobPostDTO.getDueTime()!=null && jobPostDTO.getDueTime().before(new Date())) {
       throw new CustomException("Due time invalid");
     }
   }
