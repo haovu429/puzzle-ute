@@ -4,6 +4,9 @@ import hcmute.puzzle.dto.*;
 import hcmute.puzzle.entities.*;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.*;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +17,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class Converter {
 
   @Autowired private ApplicationRepository applicationRepository;
@@ -30,8 +34,14 @@ public class Converter {
   @Autowired private JobAlertRepository jobAlertRepository;
   @Autowired private JobPostRepository jobPostRepository;
   @Autowired private NotificationRepository notificationRepository;
+  @Autowired private ModelMapper modelMapper;
   @Autowired private UserRepository userRepository;
   @Autowired private CategoryRepository categoryRepository;
+  @Autowired private BlogPostRepository blogPostRepository;
+  @Autowired private CommentRepository commentRepository;
+
+  public Converter() {
+  }
 
   // User
   public UserDTO toDTO(UserEntity entity) {
@@ -663,7 +673,67 @@ public class Converter {
     entity.setName(dto.getName());
     entity.setActive(dto.isActive());
     return entity;
-
   }
 
+  public BlogPostDTO toDTO(BlogPostEntity entity) {
+//    // setup
+//    TypeMap<BlogPostEntity, BlogPostDTO> propertyMapper = modelMapper.createTypeMap(BlogPostEntity.class, BlogPostDTO.class);
+//    // add deep mapping to flatten source's Player object into a single field in destination
+//    propertyMapper.addMappings(
+//            mapper -> mapper.map(src -> src.getUserEntity().getId(), BlogPostDTO::setUserId)
+//    );
+    BlogPostDTO blogPostDTO = modelMapper.map(entity, BlogPostDTO.class);
+    return blogPostDTO;
+  }
+
+  public BlogPostEntity toEntity(BlogPostDTO dto) {
+    BlogPostEntity entity = modelMapper.map(dto, BlogPostEntity.class);
+
+    try {
+      Optional<UserEntity> userEntity = userRepository.findById(dto.getUserId());
+      if (userEntity.isPresent()) {
+        entity.setUserEntity(userEntity.get());
+      }
+    } catch (Exception e) {
+      log.error(e.getMessage());
+    }
+
+    return entity;
+  }
+
+  public CommentDTO toDTO(CommentEntity entity) {
+    CommentDTO dto = modelMapper.map(entity, CommentDTO.class);
+    return dto;
+  }
+
+  public CommentEntity toEntity(CommentDTO dto) {
+    CommentEntity entity = modelMapper.map(dto, CommentEntity.class);
+    try {
+      Optional<BlogPostEntity> blogPostEntity = blogPostRepository.findById(dto.getBlogPostId());
+      if (blogPostEntity.isPresent()) {
+        entity.setBlogPostEntity(blogPostEntity.get());
+      }
+    } catch (Exception e) {
+      log.error(e.getMessage());
+    }
+    return entity;
+  }
+
+  public  SubCommentDTO toDTO(SubCommentEntity entity) {
+    SubCommentDTO dto = modelMapper.map(entity, SubCommentDTO.class);
+    return dto;
+  }
+
+  public SubCommentEntity toEntity(SubCommentDTO dto) {
+    SubCommentEntity entity = modelMapper.map(dto, SubCommentEntity.class);
+    try {
+      Optional<CommentEntity> commentEntity = commentRepository.findById(dto.getCommentId());
+      if (commentEntity.isPresent()) {
+        entity.setCommentEntity(commentEntity.get());
+      }
+    } catch (Exception e) {
+      log.error(e.getMessage());
+    }
+    return entity;
+  }
 }

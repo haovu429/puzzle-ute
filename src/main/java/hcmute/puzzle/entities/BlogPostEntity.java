@@ -9,6 +9,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -36,5 +38,15 @@ public class BlogPostEntity {
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdate;
+
+    @Column(name = "category_blog", columnDefinition = "VARCHAR(200)")
+    private String categoryBlog;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "created_user")
+    private UserEntity userEntity;
+
+    @OneToMany(mappedBy = "blogPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<CommentEntity> commentEntities = new HashSet<>();
 
 }

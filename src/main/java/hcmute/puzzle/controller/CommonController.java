@@ -1,10 +1,7 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.CandidateDTO;
-import hcmute.puzzle.dto.JobPostDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.dto.UserDTO;
+import hcmute.puzzle.dto.*;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.entities.UserEntity;
@@ -13,6 +10,7 @@ import hcmute.puzzle.model.CandidateFilter;
 import hcmute.puzzle.model.JobPostFilter;
 import hcmute.puzzle.model.ModelQuery;
 import hcmute.puzzle.model.SearchBetween;
+import hcmute.puzzle.model.payload.request.comment.CreateCommentPayload;
 import hcmute.puzzle.repository.ApplicationRepository;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.JobPostRepository;
@@ -21,6 +19,7 @@ import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.TimeUtil;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,6 +60,13 @@ public class CommonController {
   @Autowired ApplicationService applicationService;
 
   @Autowired ExperienceService experienceService;
+
+  @Autowired BlogPostService blogPostService;
+
+  @Autowired CommentService commentService;
+
+  @Autowired
+  ModelMapper modelMapper;
 
   @GetMapping("/common/job-post/get-all")
   ResponseObject getAllJobPost() {
@@ -467,5 +473,27 @@ public class CommonController {
   @GetMapping("/common/get-application-amount")
   public ResponseObject getApplicationAmount() {
     return applicationService.getApplicationAmount();
+  }
+
+  @GetMapping("/common/view-blog-post/{blogPostId}")
+  public DataResponse viewBlogPost(@PathVariable long blogPostId) {
+    return blogPostService.getOneById(blogPostId);
+  }
+
+  @PostMapping("/common/comment/{blogPostId}")
+  public DataResponse createComment(@RequestBody CreateCommentPayload createCommentPayload, @PathVariable long blogPostId) {
+    CommentDTO commentDTO = modelMapper.map(createCommentPayload, CommentDTO.class);
+    commentDTO.setBlogPostId(blogPostId);
+    return commentService.save(commentDTO);
+  }
+
+  @GetMapping("/common/like-comment/{commentId}")
+  public DataResponse likeComment(@PathVariable long commentId) {
+    return commentService.likeComment(commentId);
+  }
+
+  @GetMapping("/common/dis-like-comment/{commentId}")
+  public DataResponse disLikeComment(@PathVariable long commentId) {
+    return commentService.disLikeComment(commentId);
   }
 }

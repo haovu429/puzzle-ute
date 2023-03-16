@@ -57,6 +57,8 @@ public class AdminController {
 
   @Autowired CategoryService categoryService;
 
+  @Autowired BlogPostService blogPostService;
+
   // Company, add new company
   @PostMapping("/create-info-company")
   public DataResponse createCompany(
@@ -275,7 +277,18 @@ public class AdminController {
   }
 
   @DeleteMapping("/delete-category/{categoryId}")
-  public DataResponse updateCategory(@PathVariable long categoryId) {
+  public DataResponse deleteCategory(@PathVariable long categoryId) {
     return categoryService.delete(categoryId);
   }
+
+  @GetMapping("/blog-post")
+  public DataResponse getAllBlogPost() {
+    return blogPostService.getAll();
+  }
+
+  @DeleteMapping("/delete-blog-post/{blogPostId}")
+  public DataResponse deleteBlogPost(@PathVariable long blogPostId) {
+    return blogPostService.delete(blogPostId);
+  }
+
 }

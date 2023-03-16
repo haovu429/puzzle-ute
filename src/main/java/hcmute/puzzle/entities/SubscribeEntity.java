@@ -26,6 +26,12 @@ public class SubscribeEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date expirationTime;
 
+    @Column(name = "payment_transaction_code", columnDefinition = "VARCHAR(30)")
+    private String paymentTransactionCode;
+
+    @Column(name = "remaining_slot")
+    private int remainingSlot;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinColumn(name = "reg_user_email", referencedColumnName = "email")
     private UserEntity regUser; // Có thể tạo đăng ký gói trước
@@ -36,9 +42,6 @@ public class SubscribeEntity implements Serializable {
 
 //    @OneToOne(mappedBy = "subscribeEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
 //    private InvoiceEntity invoiceEntity;
-
-    @Column(name = "payment_transaction_code", columnDefinition = "VARCHAR(30)")
-    private String paymentTransactionCode;
 
     @Override
     public String toString() {
