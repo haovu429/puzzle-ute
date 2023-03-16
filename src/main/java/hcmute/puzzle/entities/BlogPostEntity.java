@@ -1,5 +1,6 @@
 package hcmute.puzzle.entities;
 
+import hcmute.puzzle.dto.BlogPostDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -49,4 +50,10 @@ public class BlogPostEntity {
     @OneToMany(mappedBy = "blogPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<CommentEntity> commentEntities = new HashSet<>();
 
+    public void updateFromDTO(BlogPostDTO dto) {
+        this.title = dto.getTitle();
+        this.body = dto.getBody();
+        this.categoryBlog = dto.getCategoryBlog();
+        this.lastUpdate = new Date();
+    }
 }

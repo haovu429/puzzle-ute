@@ -286,7 +286,6 @@ public class UserController {
       @PathVariable long blogPostId) {
     ModelMapper mapper = new ModelMapper();
     BlogPostDTO blogPostDTO = mapper.map(createBlogPostPayload, BlogPostDTO.class);
-    blogPostDTO.setCreateTime(new Date());
     blogPostDTO.setUserId(((CustomUserDetails) authentication.getPrincipal()).getUser().getId());
     return blogPostService.update(blogPostDTO, blogPostId);
   }

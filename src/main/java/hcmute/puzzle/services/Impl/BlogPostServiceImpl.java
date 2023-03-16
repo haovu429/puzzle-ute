@@ -10,6 +10,7 @@ import hcmute.puzzle.services.BlogPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,8 +35,7 @@ public class BlogPostServiceImpl implements BlogPostService {
       if (dto.getUserId() != entity.getUserEntity().getId()) {
         throw new CustomException("You don't have rights for this blog post");
       }
-      entity = converter.toEntity(dto);
-      entity.setId(id);
+      entity.updateFromDTO(dto);
       blogPostRepository.save(entity);
       return new DataResponse(converter.toDTO(entity));
     }
