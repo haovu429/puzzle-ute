@@ -99,8 +99,8 @@ public class JobPostEntity implements Serializable {
   @Column(name = "is_deleted")
   private boolean isDeleted = false;
 
-  @Column(name = "subscribe_id")
-  private long subscribeId;
+//  @Column(name = "subscribe_id")
+//  private long subscribeId;
 
   @OneToMany(mappedBy = "jobPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<ApplicationEntity> applicationEntities = new HashSet<>();
