@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/api/candidate")
+@RequestMapping(path = "/candidate")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 @SecurityRequirement(name = "bearerAuth")
 public class CandidateController {

@@ -36,7 +36,7 @@ import java.util.Optional;
 
 @Log4j2
 @RestController
-@RequestMapping(path = "/api/employer")
+@RequestMapping(path = "/employer")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class EmployerController {
   @Autowired EmployerService employerService;
