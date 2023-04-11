@@ -383,7 +383,10 @@ public class Converter {
     dto.setType(entity.getType());
     dto.setName(entity.getName());
     dto.setUrl(entity.getUrl());
-    dto.setCodeId(entity.getCodeId());
+    dto.setObjectId(entity.getObjectId());
+    dto.setAuthor(entity.getAuthor());
+    dto.setCloudinaryPublicId(entity.getCloudinaryPublicId());
+    dto.setCreateAt(entity.getCreateAt());
 
     return dto;
   }
@@ -394,7 +397,10 @@ public class Converter {
     entity.setType(dto.getType());
     entity.setName(dto.getName());
     entity.setUrl(dto.getUrl());
-    entity.setCodeId(dto.getCodeId());
+    entity.setObjectId(dto.getObjectId());
+    entity.setAuthor(dto.getAuthor());
+    entity.setCloudinaryPublicId(dto.getCloudinaryPublicId());
+    entity.setCreateAt(dto.getCreateAt());
 
     return entity;
   }

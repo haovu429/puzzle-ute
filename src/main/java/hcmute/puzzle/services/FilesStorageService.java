@@ -1,6 +1,7 @@
 package hcmute.puzzle.services;
 
 import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.model.CloudinaryUploadFileResponse;
 import hcmute.puzzle.model.enums.FileType;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,5 +18,5 @@ public interface FilesStorageService {
 
     String processFileName(String keyValue, FileType fileType);
 
-    String uploadFileReturnUrl(String fileName, MultipartFile file);
+    CloudinaryUploadFileResponse uploadFileReturnUrl(String fileName, MultipartFile file);
 }

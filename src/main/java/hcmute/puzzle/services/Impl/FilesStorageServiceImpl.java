@@ -2,10 +2,12 @@ package hcmute.puzzle.services.Impl;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Files;
 import hcmute.puzzle.entities.FileEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.model.CloudinaryUploadFileResponse;
 import hcmute.puzzle.model.enums.FileType;
 import hcmute.puzzle.repository.FileRepository;
 import hcmute.puzzle.services.FilesStorageService;
@@ -113,16 +115,20 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   public String uploadFileWithFileTypeReturnUrl(
       UserEntity author, String keyName, MultipartFile file, FileType fileType) {
     String fileName = processFileName(keyName, fileType);
-    String fileUrl = uploadFileReturnUrl(fileName, file);
+    CloudinaryUploadFileResponse response = uploadFileReturnUrl(fileName, file);
+    String fileUrl = response.getSecure_url();
+    Date currentTime = new Date();
 
     // Save file info to db.
     FileEntity fileEntity =
         FileEntity.builder()
-            .name(file.getOriginalFilename())
+            .name(fileName.replace(" ", ""))
             .type(fileType.getValue())
             .extension(Files.getFileExtension(file.getOriginalFilename()))
             .url(fileUrl)
             .author(author.getEmail())
+            .cloudinaryPublicId(response.getPublic_id())
+            .createAt(currentTime)
             .build();
 
     fileRepository.save(fileEntity);
@@ -134,9 +140,8 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     String pattern = "yyyy-MM-dd'T'HH:mm:ss";
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
     String date = simpleDateFormat.format(new Date());
-    //System.out.println(date);
-    keyValue.concat(date);
-    return keyValue.concat(getSuffixByFileType(fileType));
+    // System.out.println(date);
+    return keyValue.concat(date).concat(getSuffixByFileType(fileType));
   }
 
   public String getSuffixByFileType(FileType fileType) {
@@ -152,20 +157,27 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     }
   }
 
-  public String uploadFileReturnUrl(String fileName, MultipartFile file) {
+  public CloudinaryUploadFileResponse uploadFileReturnUrl(String fileName, MultipartFile file) {
 
     Map response = null;
-
+    CloudinaryUploadFileResponse respObject = new CloudinaryUploadFileResponse();
     try {
       // push to storage cloud
       response = uploadAvatarImage(fileName, file, Constant.STORAGE_IMAGE_LOCATION);
 
+      final ObjectMapper mapper = new ObjectMapper(); // jackson's objectmapper
+      respObject = mapper.convertValue(response, CloudinaryUploadFileResponse.class);
+
     } catch (Exception e) {
+      if (response != null) {
+        respObject.setSecure_url(response.get("secure_url").toString());
+      }
+      //        throw new CustomException("Cast Error");
       e.printStackTrace();
     }
 
-    String url = response.get("secure_url").toString();
+    // String url = response.get("secure_url").toString();
 
-    return url;
+    return respObject;
   }
 }

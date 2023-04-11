@@ -1,9 +1,12 @@
 package hcmute.puzzle.entities;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -29,10 +32,18 @@ public class FileEntity implements Serializable {
   @Column(name = "url", columnDefinition = "TEXT")
   private String url;
 
-  @Column(name = "codeId")
-  private long codeId = -1;
+  @Column(name = "object_id")
+  private long objectId;
+
+  @Column(name = "cloudinary_public_id")
+  private String cloudinaryPublicId;
 
   @Column(name = "author", columnDefinition = "VARCHAR(100)")
   private String author;
+
+  @Column(name = "create_at")
+  @Temporal(TemporalType.TIMESTAMP)
+  @CreationTimestamp
+  private Date createAt;
 
 }

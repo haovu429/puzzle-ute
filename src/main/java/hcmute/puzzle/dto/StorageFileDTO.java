@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,5 +14,8 @@ public class StorageFileDTO {
   private String type;
   private String name;
   private String url;
-  private long codeId;
+  private String cloudinaryPublicId;
+  private long objectId;
+  private String author;
+  private Date createAt;
 }
