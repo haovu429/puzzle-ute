@@ -65,8 +65,7 @@ public class CommonController {
 
   @Autowired CommentService commentService;
 
-  @Autowired
-  ModelMapper modelMapper;
+  @Autowired ModelMapper modelMapper;
 
   @GetMapping("/common/job-post/get-all")
   ResponseObject getAllJobPost() {
@@ -288,7 +287,7 @@ public class CommonController {
               .collect(Collectors.toList());
 
       commonFieldSearch.add("description");
-      commonFieldSearch.add("title");
+      commonFieldSearch.add("name");
     }
 
     List<JobPostEntity> jobPostEntities =
@@ -416,12 +415,14 @@ public class CommonController {
   }
 
   @PostMapping("/common/register")
-  public ResponseObject registerAccount(@RequestBody UserDTO user) {
+  public DataResponse registerAccount(@RequestBody UserDTO user) {
     Set<String> roleCodes = new HashSet<>();
     roleCodes.add("user");
 
     user.setRoleCodes(roleCodes);
-    return userService.save(user);
+    userService.save(user);
+
+    return new DataResponse("Create user " + user.getEmail() + " success");
   }
 
   @GetMapping("/common/get-hot-job-post")
@@ -481,7 +482,8 @@ public class CommonController {
   }
 
   @PostMapping("/common/comment/{blogPostId}")
-  public DataResponse createComment(@RequestBody CreateCommentPayload createCommentPayload, @PathVariable long blogPostId) {
+  public DataResponse createComment(
+      @RequestBody CreateCommentPayload createCommentPayload, @PathVariable long blogPostId) {
     CommentDTO commentDTO = modelMapper.map(createCommentPayload, CommentDTO.class);
     commentDTO.setBlogPostId(blogPostId);
     return commentService.save(commentDTO);

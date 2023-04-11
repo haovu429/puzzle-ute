@@ -7,10 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ImageDTO {
+public class StorageFileDTO {
   private long id;
   private String type;
-  private String title;
+  private String name;
   private String url;
   private long codeId;
 }

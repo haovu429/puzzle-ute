@@ -148,7 +148,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
   public DataResponse getCandidateAppliedToJobPostIdAndResult(long jobPostId) {
 //    String sql =
-//        "SELECT ap, can, jp.title FROM ApplicationEntity ap, CandidateEntity can, JobPostEntity jp  WHERE ap.candidateEntity.id=can.id AND ap.jobPostEntity.id=jp.id AND ap.jobPostEntity.id=:jobPostId";
+//        "SELECT ap, can, jp.name FROM ApplicationEntity ap, CandidateEntity can, JobPostEntity jp  WHERE ap.candidateEntity.id=can.id AND ap.jobPostEntity.id=jp.id AND ap.jobPostEntity.id=:jobPostId";
 //    // Join example with addEntity and addJoin
 //    List<Object[]> rows = em.createQuery(sql).setParameter("jobPostId", jobPostId).getResultList();
 //    //    for (Object[] row : rows) {

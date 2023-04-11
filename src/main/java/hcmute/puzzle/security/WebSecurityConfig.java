@@ -44,11 +44,13 @@ public class WebSecurityConfig {
 
   @Autowired CustomOAuth2UserService oauthUserService;
 
-  @Autowired OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+//  @Autowired OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
   @Autowired UserRepository userRepository;
 
   @Autowired UserService userService;
+
+
 
   //  @Autowired
   //  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -133,8 +135,7 @@ public class WebSecurityConfig {
         .permitAll()
         .antMatchers("/user/**")
         .hasAuthority(Roles.USER.value)
-        .antMatchers(
-            "/login/**", "/login-google/**", "/forgot-password", "/reset-password")
+        .antMatchers("/login/**", "/auth/**" , "/login-google/**", "/forgot-password", "/reset-password")
         .permitAll()
         .antMatchers("/role/admin")
         .hasAnyAuthority(Roles.ADMIN.value)
@@ -160,7 +161,7 @@ public class WebSecurityConfig {
         //        .permitAll()
         .antMatchers("/swagger-ui/**", "/puzzle-api/**")
         .permitAll()
-        .antMatchers("/", "/login", "/login-google", "/oauth/**")
+        .antMatchers("/", "/login-google", "/oauth/**")
         .permitAll()
         .anyRequest()
         .authenticated()
@@ -174,13 +175,6 @@ public class WebSecurityConfig {
         .logout()
         .permitAll()
         .and()
-        //        .oauth2Login()
-        //        .loginPage("/login")
-        //        .userInfoEndpoint()
-        //        .userService(oauthUserService)
-        //        .and()
-        //        .successHandler(oAuth2LoginSuccessHandler)
-        //        .and()
         .httpBasic();
 
     http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

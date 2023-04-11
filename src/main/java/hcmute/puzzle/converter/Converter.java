@@ -6,7 +6,6 @@ import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +29,7 @@ public class Converter {
   @Autowired private EmployerRepository employerRepository;
   @Autowired private EvaluateRepository evaluateRepository;
   @Autowired private ExperienceRepository experienceRepository;
-  @Autowired private ImageRepository imageRepository;
+  @Autowired private FileRepository fileRepository;
   @Autowired private JobAlertRepository jobAlertRepository;
   @Autowired private JobPostRepository jobPostRepository;
   @Autowired private NotificationRepository notificationRepository;
@@ -378,22 +377,22 @@ public class Converter {
   }
 
   // Image
-  public ImageDTO toDTO(ImageEntity entity) {
-    ImageDTO dto = new ImageDTO();
+  public StorageFileDTO toDTO(FileEntity entity) {
+    StorageFileDTO dto = new StorageFileDTO();
     dto.setId(entity.getId());
     dto.setType(entity.getType());
-    dto.setTitle(entity.getTitle());
+    dto.setName(entity.getName());
     dto.setUrl(entity.getUrl());
     dto.setCodeId(entity.getCodeId());
 
     return dto;
   }
 
-  public ImageEntity toEntity(ImageDTO dto) {
-    ImageEntity entity = new ImageEntity();
+  public FileEntity toEntity(StorageFileDTO dto) {
+    FileEntity entity = new FileEntity();
     entity.setId(dto.getId());
     entity.setType(dto.getType());
-    entity.setTitle(dto.getTitle());
+    entity.setName(dto.getName());
     entity.setUrl(dto.getUrl());
     entity.setCodeId(dto.getCodeId());
 

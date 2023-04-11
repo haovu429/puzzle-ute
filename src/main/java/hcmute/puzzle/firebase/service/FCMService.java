@@ -58,6 +58,6 @@
 //        Notification notification = new Notification();
 //        return Message.builder()
 //                .setApnsConfig(apnsConfig).setAndroidConfig(androidConfig).setNotification(
-//                        new Notification(request.getTitle(), request.getMessage()));
+//                        new Notification(request.getName(), request.getMessage()));
 //    }
 //}

@@ -32,7 +32,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(path = "")
+@RequestMapping("/auth")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class AuthenticationController {
   @Autowired AuthenticationManager authenticationManager;
@@ -49,13 +49,18 @@ public class AuthenticationController {
 
   @Autowired private SecurityService securityService;
 
+  public static final String LOGIN_URL = "/login";
+
+  public static final String LOGOUT_URL = "/logout";
+
+  public static final String LOGIN_GOOGLE_URL = "/login-google";
+
   public static final String FORGOT_PASSWORD_URL = "/forgot-password";
   public static final String RESET_PASSWORD_URL = "/reset-password";
 
-  @PostMapping("/login")
+  @PostMapping(LOGIN_URL)
   public ResponseObject authenticateUser(
       @Validated @RequestBody ObjectNode objectNode,
-      HttpServletRequest req,
       @RequestParam(value = "rememberMe", required = false) Boolean rememberMe) {
     try {
       // String a = objectNode.get("email").toString();
@@ -101,7 +106,7 @@ public class AuthenticationController {
     }
   }
 
-  @PostMapping("/login-google")
+  @PostMapping(LOGIN_GOOGLE_URL)
   public DataResponse loginGoogle(@RequestBody Map<String, Object> input)
       throws ClientProtocolException, IOException, GeneralSecurityException, NoSuchFieldException,
           IllegalAccessException {
@@ -124,7 +129,7 @@ public class AuthenticationController {
 
   }
 
-  @GetMapping("/logout")
+  @GetMapping(LOGOUT_URL)
   public ResponseObject logout() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     Object user = authentication.getPrincipal();

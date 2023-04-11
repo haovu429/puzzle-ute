@@ -172,7 +172,7 @@ public class CandidateController {
     if (!jobPost.get().isActive()) {
       // throw new CustomException("You can't apply this jobPost. It isn't active");
       return new DataResponse(
-          DataResponse.ERROR_INACTIVE,
+          DataResponse.CODE_ERROR_INACTIVE,
           "You can't apply this jobPost. It isn't active",
           DataResponse.STATUS_CUSTOM_EXCEPTION);
     }
@@ -180,7 +180,7 @@ public class CandidateController {
     if (jobPost.get().getDueTime().before(new Date())) {
       // throw new CustomException("You can't apply this jobPost. It isn't active");
       return new DataResponse(
-              DataResponse.ERROR_INACTIVE,
+              DataResponse.CODE_ERROR_INACTIVE,
               "You can't apply this jobPost. job post has expired",
               DataResponse.STATUS_CUSTOM_EXCEPTION);
     }
@@ -191,7 +191,7 @@ public class CandidateController {
     if (application.isPresent()) {
       // throw new CustomException("You applied for this job");
       return new DataResponse(
-          DataResponse.ERROR_NOT_AGAIN, "You applied for this job", DataResponse.STATUS_NOT_AGAIN);
+          DataResponse.CODE_ERROR_NOT_AGAIN, "You applied for this job", DataResponse.STATUS_NOT_AGAIN);
     }
 
     ApplicationEntity applicationEntity = new ApplicationEntity();

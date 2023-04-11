@@ -6,10 +6,13 @@ import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.CompanyEntity;
 import hcmute.puzzle.entities.EmployerEntity;
+import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.model.payload.request.company.CreateCompanyPayload;
+import hcmute.puzzle.exception.NotFoundException;
+import hcmute.puzzle.model.enums.FileType;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.CompanyRepository;
+import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.CompanyService;
 import hcmute.puzzle.services.FilesStorageService;
@@ -33,8 +36,12 @@ public class CompanyServiceImpl implements CompanyService {
   @Autowired FilesStorageService storageService;
   @Autowired CandidateRepository candidateRepository;
 
+  @Autowired UserRepository userRepository;
+
   @Override
-  public DataResponse save(CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer) {
+  public DataResponse save(
+      CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer)
+      throws NotFoundException {
 
     CompanyEntity company = new CompanyEntity();
     company.setName(companyPayload.getName());
@@ -44,11 +51,17 @@ public class CompanyServiceImpl implements CompanyService {
     company.setActive(companyPayload.isActive());
     company = companyRepository.save(company);
 
-    if (imageFile != null && imageFile.getSize()>0) {
+    if (imageFile != null && imageFile.getSize() > 0) {
+      Optional<UserEntity> user = userRepository.findById(createEmployer.getId());
+
+      if (user.isEmpty()) {
+        throw new NotFoundException("Not found author");
+      }
+
       // lay id sau khi luu vao db de dat ten cho anh
       String urlImage =
-              storageService.updateAvatarReturnUrl(
-                      company.getId(), imageFile, Constant.PREFIX_COMPANY_IMAGE_FILE_NAME);
+          storageService.uploadFileWithFileTypeReturnUrl(
+              user.get(), String.valueOf(company.getId()), imageFile, FileType.IMAGE_COMPANY);
       company.setImage(urlImage);
       company = companyRepository.save(company);
     }
@@ -57,7 +70,11 @@ public class CompanyServiceImpl implements CompanyService {
   }
 
   @Override
-  public DataResponse update(long companyId, CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer) {
+  public DataResponse update(
+      long companyId,
+      CompanyDTO companyPayload,
+      MultipartFile imageFile,
+      EmployerEntity createEmployer) {
     Optional<CompanyEntity> companyEntityOptional = companyRepository.findById(companyId);
 
     if (companyEntityOptional.isEmpty()) {
@@ -87,11 +104,14 @@ public class CompanyServiceImpl implements CompanyService {
 
     company = companyRepository.save(company);
 
-    if (imageFile != null && imageFile.getSize()>0) {
+    if (imageFile != null && imageFile.getSize() > 0) {
+
+      Optional<UserEntity> userEntity = userRepository.findById(createEmployer.getId());
+
       // lay id sau khi luu vao db de dat ten cho anh
       String urlImage =
-              storageService.updateAvatarReturnUrl(
-                      company.getId(), imageFile, Constant.PREFIX_COMPANY_IMAGE_FILE_NAME);
+          storageService.uploadFileWithFileTypeReturnUrl(userEntity.get(),
+              String.valueOf(company.getId()), imageFile, FileType.IMAGE_COMPANY);
       company.setImage(urlImage);
       company = companyRepository.save(company);
     }

@@ -9,6 +9,7 @@ import hcmute.puzzle.entities.ApplicationEntity;
 import hcmute.puzzle.entities.CompanyEntity;
 import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.mail.MailObject;
 import hcmute.puzzle.mail.SendMail;
@@ -165,7 +166,7 @@ public class EmployerController {
 
   @PostMapping("/create-info-company")
   public DataResponse saveCompany(
-      @ModelAttribute CreateCompanyPayload companyPayload, Authentication authentication) {
+      @ModelAttribute CreateCompanyPayload companyPayload, Authentication authentication) throws NotFoundException {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     CompanyDTO companyDTO = new CompanyDTO();
     companyDTO.setName(companyPayload.getName());

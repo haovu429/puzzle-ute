@@ -6,6 +6,7 @@ import hcmute.puzzle.entities.CompanyEntity;
 import hcmute.puzzle.entities.EmployerEntity;
 import hcmute.puzzle.entities.InvoiceEntity;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.model.payload.request.company.CreateCompanyPayload;
 import hcmute.puzzle.model.payload.request.company.CreateCompanyPayloadForAdmin;
@@ -62,7 +63,7 @@ public class AdminController {
   // Company, add new company
   @PostMapping("/create-info-company")
   public DataResponse createCompany(
-          @ModelAttribute CreateCompanyPayloadForAdmin companyPayload, Authentication authentication) {
+          @ModelAttribute CreateCompanyPayloadForAdmin companyPayload, Authentication authentication) throws NotFoundException {
     //CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     CompanyDTO companyDTO = new CompanyDTO();
     companyDTO.setName(companyPayload.getName());
@@ -120,8 +121,9 @@ public class AdminController {
 
   // Account
   @PostMapping("/add-account")
-  public ResponseObject saveAccount(@RequestBody UserDTO user) {
-    return userService.save(user);
+  public DataResponse saveAccount(@RequestBody UserDTO user) {
+    userService.save(user);
+    return new DataResponse("Add user " + user.getUsername() +" success.");
   }
 
   @DeleteMapping("/delete-account/{id}")

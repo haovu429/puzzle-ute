@@ -7,6 +7,7 @@ import hcmute.puzzle.entities.InvoiceEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
+import hcmute.puzzle.model.enums.FileType;
 import hcmute.puzzle.model.payload.request.blog_post.CreateBlogPostPayload;
 import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
 import hcmute.puzzle.repository.BlogPostRepository;
@@ -16,7 +17,6 @@ import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.TimeUtil;
-import org.checkerframework.dataflow.qual.Deterministic;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+
+import static hcmute.puzzle.utils.Constant.SUFFIX_AVATAR_FILE_NAME;
 
 @RestController
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
@@ -55,8 +57,7 @@ public class UserController {
 
   @Autowired BlogPostService blogPostService;
 
-  @Autowired
-  BlogPostRepository blogPostRepository;
+  @Autowired BlogPostRepository blogPostRepository;
 
   @GetMapping("/user")
   public ResponseObject getAll() {
@@ -112,14 +113,14 @@ public class UserController {
   public DataResponse uploadAvatar(
       @RequestParam("file") MultipartFile file, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return userService.updateAvatarForUser(userDetails.getUser(), file);
+    return userService.updateAvatarForUser(userDetails.getUser(), file, FileType.IMAGE_AVATAR);
   }
 
   @GetMapping("/delete-avatar")
   public ResponseObject deleteAvatar(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    String fileName = userDetails.getUser().getEmail() + "_avatar";
+    String fileName = userDetails.getUser().getEmail() + SUFFIX_AVATAR_FILE_NAME;
 
     Map response;
 
@@ -230,7 +231,7 @@ public class UserController {
     return jobPostService.getViewedJobPostAmountByUserId(linkUser.get().getId());
   }
 
-  //log history viewed Job Post
+  // log history viewed Job Post
   @GetMapping("/user/view-job-post/{jobPostId}")
   DataResponse getViewJobPost(
       HttpServletRequest request, @PathVariable(value = "jobPostId") long jobPostId) {
@@ -290,8 +291,7 @@ public class UserController {
   }
 
   @DeleteMapping("/user/delete-blog-post/{blogPostId}")
-  public DataResponse deleteBlogPost(Authentication authentication,
-                                     @PathVariable long blogPostId) {
+  public DataResponse deleteBlogPost(Authentication authentication, @PathVariable long blogPostId) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     Optional<BlogPostEntity> blogPost = blogPostRepository.findById(blogPostId);
     if (blogPost.get().getUserEntity().getId() != userDetails.getUser().getId()) {
@@ -300,5 +300,13 @@ public class UserController {
     return blogPostService.delete(blogPostId);
   }
 
-
+  @PostMapping("/user/upload-blog-image")
+  public DataResponse uploadBlogImage(
+      @RequestParam("file") MultipartFile file, Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    String fileName =
+        storageService.uploadFileWithFileTypeReturnUrl(
+            userDetails.getUser(), file.getOriginalFilename(), file, FileType.IMAGE_BLOG);
+    return new DataResponse(fileName);
+  }
 }

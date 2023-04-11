@@ -9,7 +9,9 @@ import hcmute.puzzle.security.UserService;
 import hcmute.puzzle.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,6 +35,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   @Autowired private RedisUtils redisUtils;
 
   private static final  String PREFIX ="Bearer ";
+
+/*
+  @Autowired
+  @Qualifier("authenticationManager")
+  private AuthenticationManager authenticationManager;
+*/
 
   @Override
   protected void doFilterInternal(
@@ -64,7 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // get token from redis
         String token = redisUtils.get(email) == null ? "" : redisUtils.get(email).toString();
         // System.out.println("Dung? :" + token.equals(jwt));
-        if (userDetails != null ) {//&& token.equals(jwt)
+        if (userDetails != null  && token.equals(jwt) ) {
           // set authentication to context
           UsernamePasswordAuthenticationToken authentication =
               new UsernamePasswordAuthenticationToken(
@@ -73,7 +81,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
           SecurityContextHolder.getContext().setAuthentication(authentication);
         } else {
-          System.out.println("UserDetail is none!");
+         log.info("UserDetail is none!");
         }
       }
     } catch (AccessDeniedException ex) {

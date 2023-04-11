@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 
-@Service
+//@Service
 public class FCMInitializer {
   @Value("${app.firebase-configuration-file}")
   private String firebaseConfigPath;

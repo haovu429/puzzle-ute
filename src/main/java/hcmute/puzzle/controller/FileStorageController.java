@@ -1,26 +1,24 @@
 package hcmute.puzzle.controller;
 
-import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.UserEntity;
-import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
+import hcmute.puzzle.model.enums.FileType;
 import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.utils.Constant;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.Map;
-import java.util.Optional;
-
 @RestController
-
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
-public class FilesController {
+public class FileStorageController {
 
   @Autowired FilesStorageService storageService;
 
@@ -28,13 +26,26 @@ public class FilesController {
 
   @Autowired UserRepository userRepository;
 
+//  @PostMapping("/upload-blog-image")
+//  public DataResponse uploadBlogImage(@RequestParam("file") MultipartFile file)
+//      throws NotFoundException {
+//    UserEntity user =
+//        (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//    if (user == null) {
+//      throw new NotFoundException();
+//    }
+//    String fileUrl =
+//        storageService.uploadFileWithFileTypeReturnUrl(
+//            user, user.getEmail(), file, FileType.IMAGE_AVATAR);
+//    return new DataResponse(fileUrl);
+//  }
 
   //    @GetMapping("/files")
   //    public ResponseEntity<List<FileInfo>> getListFiles() {
   //        List<FileInfo> fileInfos = storageService.loadAll().map(path -> {
   //            String filename = path.getFileName().toString();
   //            String url = MvcUriComponentsBuilder
-  //                    .fromMethodName(FilesController.class, "getFile",
+  //                    .fromMethodName(FileStorageController.class, "getFile",
   // path.getFileName().toString()).build().toString();
   //
   //            return new FileInfo(filename, url);
