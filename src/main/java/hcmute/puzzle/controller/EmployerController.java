@@ -9,6 +9,7 @@ import hcmute.puzzle.entities.ApplicationEntity;
 import hcmute.puzzle.entities.CompanyEntity;
 import hcmute.puzzle.entities.JobPostEntity;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.mail.MailObject;
 import hcmute.puzzle.mail.SendMail;
@@ -36,7 +37,7 @@ import java.util.Optional;
 
 @Log4j2
 @RestController
-@RequestMapping(path = "/api/employer")
+@RequestMapping(path = "/employer")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class EmployerController {
   @Autowired EmployerService employerService;
@@ -60,6 +61,8 @@ public class EmployerController {
   @Autowired FilesStorageService storageService;
 
   @Autowired CompanyRepository companyRepository;
+
+  @Autowired InvoiceService invoiceService;
 
   @DeleteMapping("/employer")
   ResponseObject deleteEmployer(Authentication authentication) {
@@ -162,14 +165,15 @@ public class EmployerController {
   //  }
 
   @PostMapping("/create-info-company")
-  public ResponseObject saveCompany(
-      @ModelAttribute CreateCompanyPayload companyPayload, Authentication authentication) {
+  public DataResponse saveCompany(
+      @ModelAttribute CreateCompanyPayload companyPayload, Authentication authentication) throws NotFoundException {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     CompanyDTO companyDTO = new CompanyDTO();
     companyDTO.setName(companyPayload.getName());
     companyDTO.setDescription(companyPayload.getDescription());
     companyDTO.setWebsite(companyPayload.getWebsite());
-    return companyService.save(companyDTO, companyPayload.getImage(), userDetails.getUser().getEmployerEntity());
+    return companyService.save(
+        companyDTO, companyPayload.getImage(), userDetails.getUser().getEmployerEntity());
   }
 
   // Lấy danh sách ứng viên đã apply vào một jobPost
@@ -253,7 +257,8 @@ public class EmployerController {
         new MailObject(
             application.get().getCandidateEntity().getEmailContact(),
             responseApplication.getSubject(),
-            contentMail);
+            contentMail,
+            null);
 
     Runnable myRunnable =
         new Runnable() {

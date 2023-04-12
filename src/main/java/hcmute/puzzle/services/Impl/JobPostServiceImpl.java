@@ -44,11 +44,12 @@ public class JobPostServiceImpl implements JobPostService {
   @Autowired UserRepository userRepository;
 
   public ResponseObject add(JobPostDTO jobPostDTO) {
-
+    validateJobPost(jobPostDTO);
     JobPostEntity jobPostEntity = converter.toEntity(jobPostDTO);
 
     // set id
     jobPostEntity.setId(0);
+    jobPostEntity.setCreateTime(new Date());
 
     jobPostEntity = jobPostRepository.save(jobPostEntity);
 
@@ -81,11 +82,11 @@ public class JobPostServiceImpl implements JobPostService {
     boolean exists = jobPostRepository.existsById(JobPostDTO.getId());
 
     if (exists) {
-      JobPostEntity candidate = converter.toEntity(JobPostDTO);
+      JobPostEntity jobPost = converter.toEntity(JobPostDTO);
       // candidate.setId(candidate.getUserEntity().getId());
 
-      jobPostRepository.save(candidate);
-      return new ResponseObject(converter.toDTO(candidate));
+      jobPostRepository.save(jobPost);
+      return new ResponseObject(converter.toDTO(jobPost));
     }
 
     throw new CustomException("Cannot find job post with id = " + JobPostDTO.getId());
@@ -159,6 +160,7 @@ public class JobPostServiceImpl implements JobPostService {
         jobPostRepository.findAllByAppliedCandidateId(candidateId).stream()
             .map(jobPostEntity -> converter.toDTO(jobPostEntity))
             .collect(Collectors.toSet());
+    processListJobPost(jobPostDTOS);
 
     return new ResponseObject(200, "Job Post applied", jobPostDTOS);
   }
@@ -185,7 +187,11 @@ public class JobPostServiceImpl implements JobPostService {
   public ResponseObject getActiveJobPost() {
     Set<JobPostDTO> jobPostDTOS =
         jobPostRepository.findAllByActiveIsTrue().stream()
-            .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+            .map(jobPostEntity -> {
+              JobPostDTO jobPostDTO = converter.toDTO(jobPostEntity);
+              jobPostDTO.setDescription(null);
+              return jobPostDTO;
+            })
             .collect(Collectors.toSet());
 
     return new ResponseObject(200, "Job Post active", jobPostDTOS);
@@ -232,8 +238,9 @@ public class JobPostServiceImpl implements JobPostService {
         candidate.get().getSavedJobPost().stream()
             .map(jobPost -> converter.toDTO(jobPost))
             .collect(Collectors.toSet());
+    processListJobPost(jobPostDTOS);
 
-    return new ResponseObject(200, "Job Posts is saved", jobPostDTOS);
+    return new ResponseObject(200, "Job Posts is saved",jobPostDTOS);
   }
 
   public ResponseObject activateJobPost(long jobPostId) {
@@ -254,6 +261,10 @@ public class JobPostServiceImpl implements JobPostService {
     // check budget
     if (jobPostDTO.getMinBudget() > jobPostDTO.getMaxBudget()) {
       throw new CustomException("Min budget can't be greater than max budget");
+    }
+
+    if ( jobPostDTO.getDueTime()!=null && jobPostDTO.getDueTime().before(new Date())) {
+      throw new CustomException("Due time invalid");
     }
   }
 
@@ -302,14 +313,18 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   @Override
-  public DataResponse countJobPostView(long jobPostId) {
+  public DataResponse countJobPostViewReturnDataResponse(long jobPostId) {
+    return new DataResponse("Current view: " + countJobPostView(jobPostId));
+  }
+
+  public long countJobPostView(long jobPostId) {
     Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
     if (jobPost.isEmpty()) {
       throw new CustomException("Cannot find job post with id = " + jobPostId);
     }
     jobPost.get().setViews(jobPost.get().getViews() + 1);
     jobPostRepository.save(jobPost.get());
-    return new DataResponse("Current view: " + jobPost.get().getViews());
+    return jobPost.get().getViews();
   }
 
   @Override
@@ -353,19 +368,26 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   public long getLimitNumberOfJobPostsCreatedForEmployer(long employerId) {
+    long limitNum = 0;
     // check subscribes of employer
     String sql =
         "SELECT SUM(pack.numOfJobPost) FROM SubscribeEntity sub, PackageEntity pack, UserEntity u WHERE sub.packageEntity.id = pack.id "
             + "AND sub.regUser.id = u.id AND u.id=:userId AND sub.expirationTime > :nowTime ";
-    long limitNum =
-        (long)
-            em.createQuery(sql)
-                .setParameter("userId", employerId)
-                .setParameter("nowTime", new Date())
-                .getSingleResult();
+    try {
+      limitNum =
+          (long)
+              em.createQuery(sql)
+                  .setParameter("userId", employerId)
+                  .setParameter("nowTime", new Date())
+                  .getSingleResult();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     return LIMITED_NUMBER_OF_JOB_POSTS_CREATED_DEFAULT + limitNum;
   }
+
+
 
   @Override
   public long getTotalJobPostViewOfEmployer(long employerId) {
@@ -373,11 +395,16 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   public long getCurrentNumberOfJobPostsCreatedByEmployer(long employerId) {
+    long count = 0;
     // check subscribes of employer
     String sql =
         "SELECT COUNT(jp) FROM JobPostEntity jp WHERE jp.createdEmployer.id = :employerId AND jp.isDeleted = FALSE";
-    long count =
-        (long) em.createQuery(sql).setParameter("employerId", employerId).getSingleResult();
+    try {
+      count = (long) em.createQuery(sql).setParameter("employerId", employerId).getSingleResult();
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
 
     return count;
   }
@@ -387,7 +414,17 @@ public class JobPostServiceImpl implements JobPostService {
     long current = getCurrentNumberOfJobPostsCreatedByEmployer(employerId);
 
     if (current > limit) {
-      throw new CustomException("Your current number of created jobs is" + current  + ", which has exceeded the limit of " + limit);
+      throw new CustomException(
+          "Your current number of created jobs is"
+              + current
+              + ", which has exceeded the limit of "
+              + limit);
     }
+  }
+
+  public static void processListJobPost(Collection<JobPostDTO> jobPostDTOS){
+    jobPostDTOS.forEach(jobPostDTO -> {
+      jobPostDTO.setDescription(null);
+    });
   }
 }

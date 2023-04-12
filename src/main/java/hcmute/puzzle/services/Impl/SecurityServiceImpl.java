@@ -71,14 +71,15 @@ public class SecurityServiceImpl implements SecurityService {
     createToken.setType(RESET_PASSWORD_TOKEN);
 
     tokenRepository.save(createToken);
+    String urlFrontEnd = "https://keen-semifreddo-66d931.netlify.app/reset-password";
     MailObject mail =
         new MailObject(
             foundUser.getEmail(),
             "Reset Password",
-            "Link reset password: " + Util.getBaseURL(request) + "/api" + RESET_PASSWORD_URL + "?token=" +
+            "Link reset password: " + urlFrontEnd + "?token=" +
                 tokenValue
                 + "\nSupport email: "
-                + environment.getProperty("support.email"));
+                + environment.getProperty("support.email"), null);
     SendMail.sendMail(mail);
 
     return new DataResponse("send email reset password successful");

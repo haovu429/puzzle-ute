@@ -99,6 +99,9 @@ public class JobPostEntity implements Serializable {
   @Column(name = "is_deleted")
   private boolean isDeleted = false;
 
+//  @Column(name = "subscribe_id")
+//  private long subscribeId;
+
   @OneToMany(mappedBy = "jobPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<ApplicationEntity> applicationEntities = new HashSet<>();
 
@@ -126,4 +129,8 @@ public class JobPostEntity implements Serializable {
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
   @JoinColumn(name = "company_id")
   private CompanyEntity companyEntity;
+
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @JoinColumn(name = "category_id")
+  private CategoryEntity categoryEntity;
 }

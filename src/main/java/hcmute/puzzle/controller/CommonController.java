@@ -1,17 +1,16 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.CandidateDTO;
-import hcmute.puzzle.dto.JobPostDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.dto.UserDTO;
+import hcmute.puzzle.dto.*;
 import hcmute.puzzle.entities.CandidateEntity;
 import hcmute.puzzle.entities.JobPostEntity;
+import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.model.CandidateFilter;
 import hcmute.puzzle.model.JobPostFilter;
 import hcmute.puzzle.model.ModelQuery;
 import hcmute.puzzle.model.SearchBetween;
+import hcmute.puzzle.model.payload.request.comment.CreateCommentPayload;
 import hcmute.puzzle.repository.ApplicationRepository;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.JobPostRepository;
@@ -20,6 +19,7 @@ import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.TimeUtil;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +27,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/common")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class CommonController {
 
@@ -61,32 +61,50 @@ public class CommonController {
 
   @Autowired ExperienceService experienceService;
 
-  @GetMapping("/common/job-post/get-all")
+  @Autowired BlogPostService blogPostService;
+
+  @Autowired CommentService commentService;
+
+  @Autowired ModelMapper modelMapper;
+
+  @GetMapping("/job-post/get-all")
   ResponseObject getAllJobPost() {
     return jobPostService.getAll();
   }
 
-  @GetMapping("/common/job-post/get-one/{jobPostId}")
-  ResponseObject getJobPostById(@PathVariable(value = "jobPostId") long jobPostId) {
+  @GetMapping("/job-post/get-one/{jobPostId}")
+  ResponseObject getJobPostById(
+      @RequestHeader(value = "Authorization", required = false) String token,
+      @PathVariable(value = "jobPostId") long jobPostId) {
+    jobPostService.countJobPostView(jobPostId);
+    try {
+      if (token != null && !token.isEmpty() && !token.isBlank()) {
+        Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+        jobPostService.viewJobPost(linkUser.get().getId(), jobPostId);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
     return jobPostService.getOne(jobPostId);
   }
 
-  @GetMapping("/common/company")
+  @GetMapping("/company")
   public ResponseObject getAllCompany() {
     return companyService.getAll();
   }
 
-  @GetMapping("/common/company/get-one-company/{id}")
+  @GetMapping("/company/get-one-company/{id}")
   public ResponseObject getOneCompany(@PathVariable Long id) {
     return companyService.getOneById(id);
   }
 
-  @GetMapping("/common/get-all-extra-info-by-type")
+  @GetMapping("/get-all-extra-info-by-type")
   public ResponseObject getAllExtraInfoByType(@RequestParam String type) {
     return extraInfoService.getByType(type);
   }
 
-  @PostMapping("/common/job-post-filter")
+  @PostMapping("/job-post-filter")
   public ResponseObject filterJobPost(@RequestBody(required = false) JobPostFilter jobPostFilter) {
     Map<String, List<ModelQuery>> fieldSearchValue = new HashMap<>();
     Map<String, List<ModelQuery>> fieldSearchValueSpecial = new HashMap<>();
@@ -246,6 +264,17 @@ public class CommonController {
                         ModelQuery.TYPE_QUERY_EQUAL, ModelQuery.TYPE_ATTRIBUTE_BOOLEAN, boo))
             .collect(Collectors.toList()));
 
+    if (jobPostFilter.getCategoryIds() != null && !jobPostFilter.getCategoryIds().isEmpty()) {
+      fieldSearchValue.put(
+          "categoryEntity",
+          jobPostFilter.getCategoryIds().stream()
+              .map(
+                  id ->
+                      new ModelQuery(
+                          ModelQuery.TYPE_QUERY_EQUAL, ModelQuery.TYPE_ATTRIBUTE_NUMBER, id))
+              .collect(Collectors.toList()));
+    }
+
     List<String> commonFieldSearch = new ArrayList<>();
     List<ModelQuery> valueCommonFieldSearch = null;
     if (jobPostFilter.getOthers() != null && !jobPostFilter.getOthers().isEmpty()) {
@@ -258,7 +287,7 @@ public class CommonController {
               .collect(Collectors.toList());
 
       commonFieldSearch.add("description");
-      commonFieldSearch.add("title");
+      commonFieldSearch.add("name");
     }
 
     List<JobPostEntity> jobPostEntities =
@@ -275,7 +304,12 @@ public class CommonController {
 
     List<JobPostDTO> jobPostDTOS =
         jobPostEntities.stream()
-            .map(jobPost -> converter.toDTO(jobPost))
+            .map(
+                jobPost -> {
+                  JobPostDTO jobPostDTO = converter.toDTO(jobPost);
+                  jobPostDTO.setDescription(null);
+                  return jobPostDTO;
+                })
             .collect(Collectors.toList());
 
     // JobPostFilter jobPostFilter1 = new JobPostFilter();
@@ -283,7 +317,7 @@ public class CommonController {
     return new ResponseObject(200, "Result for filter job post", jobPostDTOS);
   }
 
-  @PostMapping("/common/candidate-filter")
+  @PostMapping("/candidate-filter")
   public ResponseObject filterCandidate(@RequestBody CandidateFilter candidateFilter) {
 
     Map<String, List<ModelQuery>> fieldSearchValue = new HashMap<>();
@@ -370,74 +404,103 @@ public class CommonController {
     return new ResponseObject(200, "Result for filter candidate", candidateDTOS);
   }
 
-  @GetMapping("/common/get-all-extra-info")
+  @GetMapping("/get-all-extra-info")
   public ResponseObject getAllExtraInfo() {
     return extraInfoService.getAll();
   }
 
-  @GetMapping("/common/employer/get-employer-by-id/{id}")
+  @GetMapping("/employer/get-employer-by-id/{id}")
   ResponseObject getEmployerById(@PathVariable long id) {
     return employerService.getOne(id);
   }
 
-  @PostMapping("/common/register")
-  public ResponseObject registerAccount(@RequestBody UserDTO user) {
+  @PostMapping("/register")
+  public DataResponse registerAccount(@RequestBody UserDTO user) {
     Set<String> roleCodes = new HashSet<>();
     roleCodes.add("user");
 
     user.setRoleCodes(roleCodes);
-    return userService.save(user);
+    userService.save(user);
+
+    return new DataResponse("Create user " + user.getEmail() + " success");
   }
 
-  @GetMapping("/common/get-hot-job-post")
+  @GetMapping("/get-hot-job-post")
   public ResponseObject getHotJobPost() {
     return jobPostService.getHotJobPost();
   }
 
-  @GetMapping("/common/get-job-post-due-soon")
+  @GetMapping("/get-job-post-due-soon")
   public ResponseObject getJobPostDueSoon() {
     return jobPostService.getJobPostDueSoon();
   }
 
-  @GetMapping("/common/get-profile-candidate/{candidateId}")
+  @GetMapping("/get-profile-candidate/{candidateId}")
   ResponseObject getProfileCandidate(@PathVariable long candidateId) {
     return candidateService.getOne(candidateId);
   }
 
-  @GetMapping("/common/get-active-job-post")
+  @GetMapping("/get-active-job-post")
   public ResponseObject getActiveJobPost() {
     return jobPostService.getActiveJobPost();
   }
 
-  @GetMapping("/common/get-experience-by-candidate-id/{id}")
+  @GetMapping("/get-experience-by-candidate-id/{id}")
   ResponseObject getAllExperienceByCandidateId(@PathVariable(value = "id") long id) {
 
     return experienceService.getAllExperienceByCandidateId(id);
   }
 
-  @GetMapping("/common/candidate-profile/{candidateId}")
+  @GetMapping("/candidate-profile/{candidateId}")
   ResponseObject getCandidateProfile(@PathVariable(value = "candidateId") long candidateId) {
     return candidateService.getOne(candidateId);
   }
 
-  @GetMapping("/common/get-amount-application-to-job-post/{jobPostId}")
-  DataResponse getAmountApplicationToEmployer(@PathVariable(value = "jobPostId")long jobPostId) {
+  @GetMapping("/get-amount-application-to-job-post/{jobPostId}")
+  DataResponse getAmountApplicationToEmployer(@PathVariable(value = "jobPostId") long jobPostId) {
     return applicationService.getAmountApplicationByJobPostId(jobPostId);
   }
 
-  @GetMapping("/common/get-job-post-amount")
+  @GetMapping("/get-job-post-amount")
   public ResponseObject getJobPostAmount() {
     return jobPostService.getJobPostAmount();
   }
 
-  @GetMapping("/common/view-job-post/{jobPostId}")
+  @GetMapping("/view-job-post/{jobPostId}")
   public DataResponse viewJobPost(@PathVariable(value = "jobPostId") long jobPostId) {
-    return jobPostService.countJobPostView(jobPostId);
+    return jobPostService.countJobPostViewReturnDataResponse(jobPostId);
   }
 
-  @GetMapping("/common/get-application-amount")
+  @GetMapping("/get-application-amount")
   public ResponseObject getApplicationAmount() {
     return applicationService.getApplicationAmount();
   }
 
+  @GetMapping("/view-blog-post/{blogPostId}")
+  public DataResponse viewBlogPost(@PathVariable long blogPostId) {
+    return blogPostService.getOneById(blogPostId);
+  }
+
+  @PostMapping("/comment/{blogPostId}")
+  public DataResponse createComment(
+      @RequestBody CreateCommentPayload createCommentPayload, @PathVariable long blogPostId) {
+    CommentDTO commentDTO = modelMapper.map(createCommentPayload, CommentDTO.class);
+    commentDTO.setBlogPostId(blogPostId);
+    return commentService.save(commentDTO);
+  }
+
+  @GetMapping("/like-comment/{commentId}")
+  public DataResponse likeComment(@PathVariable long commentId) {
+    return commentService.likeComment(commentId);
+  }
+
+  @GetMapping("/dis-like-comment/{commentId}")
+  public DataResponse disLikeComment(@PathVariable long commentId) {
+    return commentService.disLikeComment(commentId);
+  }
+
+  @GetMapping("/blog-post")
+  public DataResponse getAllBlogPost() {
+    return blogPostService.getAll();
+  }
 }

@@ -1,20 +1,23 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.CandidateDTO;
-import hcmute.puzzle.dto.EmployerDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.dto.UserDTO;
+import hcmute.puzzle.dto.*;
+import hcmute.puzzle.entities.BlogPostEntity;
+import hcmute.puzzle.entities.InvoiceEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
+import hcmute.puzzle.model.enums.FileType;
+import hcmute.puzzle.model.payload.request.blog_post.CreateBlogPostPayload;
 import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
+import hcmute.puzzle.repository.BlogPostRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.TimeUtil;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -24,17 +27,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+
+import static hcmute.puzzle.utils.Constant.SUFFIX_AVATAR_FILE_NAME;
 
 @RestController
-@RequestMapping(path = "/api")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class UserController {
 
-  @Autowired public UserService userService;
+  @Autowired UserService userService;
 
   @Autowired JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -53,6 +54,10 @@ public class UserController {
   @Autowired InvoiceService invoiceService;
 
   @Autowired SubscribeService subscribeService;
+
+  @Autowired BlogPostService blogPostService;
+
+  @Autowired BlogPostRepository blogPostRepository;
 
   @GetMapping("/user")
   public ResponseObject getAll() {
@@ -108,13 +113,14 @@ public class UserController {
   public DataResponse uploadAvatar(
       @RequestParam("file") MultipartFile file, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return userService.updateAvatarForUser(userDetails.getUser(), file);
+    return userService.updateAvatarForUser(userDetails.getUser(), file, FileType.IMAGE_AVATAR);
   }
+
   @GetMapping("/delete-avatar")
   public ResponseObject deleteAvatar(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    String fileName = userDetails.getUser().getEmail() + "_avatar";
+    String fileName = userDetails.getUser().getEmail() + SUFFIX_AVATAR_FILE_NAME;
 
     Map response;
 
@@ -195,6 +201,12 @@ public class UserController {
     }
     candidate.setUserId(userDetails.getUser().getId());
 
+    if (!(candidate.getEmailContact() != null
+        && !candidate.getEmailContact().isEmpty()
+        && !candidate.getEmailContact().isBlank())) {
+      throw new CustomException("Email contact invalid");
+    }
+
     Optional<CandidateDTO> candidateDTO = candidateService.save(candidate);
     if (candidateDTO.isPresent()) {
       return new ResponseObject(
@@ -219,6 +231,7 @@ public class UserController {
     return jobPostService.getViewedJobPostAmountByUserId(linkUser.get().getId());
   }
 
+  // log history viewed Job Post
   @GetMapping("/user/view-job-post/{jobPostId}")
   DataResponse getViewJobPost(
       HttpServletRequest request, @PathVariable(value = "jobPostId") long jobPostId) {
@@ -238,10 +251,62 @@ public class UserController {
     return invoiceService.getInvoiceByEmailUser(userDetails.getUser().getEmail());
   }
 
+  @GetMapping("/user/get-one-invoice/{invoiceId}")
+  public DataResponse getAllInvoice(
+      Authentication authentication, @PathVariable(value = "invoiceId") long invoiceId) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    InvoiceEntity invoice = invoiceService.getOneInvoice(invoiceId);
+    if (!userDetails.getUser().getEmail().equals(invoice.getEmail())) {
+      throw new CustomException("You don't have rights for this invoice");
+    }
+    return new DataResponse(converter.toDTO(invoice));
+  }
+
   @GetMapping("/user/get-subscribed-package")
   public DataResponse getPackageSubscribe(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
     return subscribeService.getAllSubscriptionsByUserId(userDetails.getUser().getId());
+  }
+
+  @PostMapping("/user/create-blog-post")
+  public DataResponse createBlogPost(
+      Authentication authentication, @RequestBody CreateBlogPostPayload createBlogPostPayload) {
+    ModelMapper mapper = new ModelMapper();
+    BlogPostDTO blogPostDTO = mapper.map(createBlogPostPayload, BlogPostDTO.class);
+    blogPostDTO.setCreateTime(new Date());
+    blogPostDTO.setUserId(((CustomUserDetails) authentication.getPrincipal()).getUser().getId());
+    return blogPostService.save(blogPostDTO);
+  }
+
+  @PutMapping("/user/update-blog-post/{blogPostId}")
+  public DataResponse updateBlogPost(
+      Authentication authentication,
+      @RequestBody CreateBlogPostPayload createBlogPostPayload,
+      @PathVariable long blogPostId) {
+    ModelMapper mapper = new ModelMapper();
+    BlogPostDTO blogPostDTO = mapper.map(createBlogPostPayload, BlogPostDTO.class);
+    blogPostDTO.setUserId(((CustomUserDetails) authentication.getPrincipal()).getUser().getId());
+    return blogPostService.update(blogPostDTO, blogPostId);
+  }
+
+  @DeleteMapping("/user/delete-blog-post/{blogPostId}")
+  public DataResponse deleteBlogPost(Authentication authentication, @PathVariable long blogPostId) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    Optional<BlogPostEntity> blogPost = blogPostRepository.findById(blogPostId);
+    if (blogPost.get().getUserEntity().getId() != userDetails.getUser().getId()) {
+      throw new CustomException("You don't have rights for this blog post");
+    }
+    return blogPostService.delete(blogPostId);
+  }
+
+  @PostMapping("/user/upload-blog-image")
+  public DataResponse uploadBlogImage(
+      @RequestParam("file") MultipartFile file, Authentication authentication) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    String fileName =
+        storageService.uploadFileWithFileTypeReturnUrl(
+            userDetails.getUser(), file.getOriginalFilename(), file, FileType.IMAGE_BLOG);
+    return new DataResponse(fileName);
   }
 }

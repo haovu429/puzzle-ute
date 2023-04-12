@@ -1,14 +1,19 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.CompanyDTO;
-import hcmute.puzzle.dto.ExtraInfoDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.dto.UserDTO;
+import hcmute.puzzle.dto.*;
+import hcmute.puzzle.entities.CompanyEntity;
+import hcmute.puzzle.entities.EmployerEntity;
+import hcmute.puzzle.entities.InvoiceEntity;
+import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.model.payload.request.company.CreateCompanyPayload;
 import hcmute.puzzle.model.payload.request.company.CreateCompanyPayloadForAdmin;
+import hcmute.puzzle.model.payload.request.other.TimeFramePayLoad;
 import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
+import hcmute.puzzle.repository.CompanyRepository;
+import hcmute.puzzle.repository.EmployerRepository;
 import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.response.DataResponse;
@@ -19,8 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
-@RequestMapping(path = "/api/admin")
+@RequestMapping(path = "/admin")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class AdminController {
 
@@ -44,25 +51,55 @@ public class AdminController {
 
   @Autowired ApplicationService applicationService;
 
+  @Autowired InvoiceService invoiceService;
+
+  @Autowired
+  EmployerRepository employerRepository;
+
+  @Autowired CategoryService categoryService;
+
+  @Autowired BlogPostService blogPostService;
+
   // Company, add new company
   @PostMapping("/create-info-company")
-  public ResponseObject createCompany(
-          @ModelAttribute CreateCompanyPayloadForAdmin companyPayload, Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+  public DataResponse createCompany(
+          @ModelAttribute CreateCompanyPayloadForAdmin companyPayload, Authentication authentication) throws NotFoundException {
+    //CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     CompanyDTO companyDTO = new CompanyDTO();
     companyDTO.setName(companyPayload.getName());
     companyDTO.setDescription(companyPayload.getDescription());
     companyDTO.setWebsite(companyPayload.getWebsite());
     companyDTO.setActive(companyPayload.isActive());
-    return companyService.save(companyDTO,companyPayload.getImage(), userDetails.getUser().getEmployerEntity());
+    EmployerEntity employer = null;
+    if (companyPayload.getCreatedEmployerId() != null) {
+      Optional<EmployerEntity> employerEntityOptional = employerRepository.findById(companyPayload.getCreatedEmployerId());
+      if (employerEntityOptional.isEmpty()) {
+        throw new CustomException("Employer not found");
+      }
+      employer = employerEntityOptional.get();
+    }
+    return companyService.save(companyDTO,companyPayload.getImage(), employer);
   }
 
-  @PutMapping("/update-info-company")
-  public ResponseObject updateCompany(@RequestBody CompanyDTO companyDTO) {
-    return companyService.update(companyDTO);
+  @PutMapping("/update-info-company/{companyId}")
+  public DataResponse updateCompany(@PathVariable(value = "companyId") long companyId, @ModelAttribute CreateCompanyPayloadForAdmin companyPayload) {
+    CompanyDTO companyDTO = new CompanyDTO();
+    companyDTO.setName(companyPayload.getName());
+    companyDTO.setDescription(companyPayload.getDescription());
+    companyDTO.setWebsite(companyPayload.getWebsite());
+    companyDTO.setActive(companyPayload.isActive());
+    EmployerEntity employer = null;
+    if (companyPayload.getCreatedEmployerId() != null) {
+      Optional<EmployerEntity> employerEntityOptional = employerRepository.findById(companyPayload.getCreatedEmployerId());
+      if (employerEntityOptional.isEmpty()) {
+        throw new CustomException("Employer not found");
+      }
+      employer = employerEntityOptional.get();
+    }
+    return companyService.update(companyId, companyDTO, companyPayload.getImage(), employer);
   }
 
-  @GetMapping("/delete-info-company/{id}")
+  @DeleteMapping ("/delete-info-company/{id}")
   public ResponseObject deleteCompany(@PathVariable Long id) {
     return companyService.delete(id);
   }
@@ -84,8 +121,9 @@ public class AdminController {
 
   // Account
   @PostMapping("/add-account")
-  public ResponseObject saveAccount(@RequestBody UserDTO user) {
-    return userService.save(user);
+  public DataResponse saveAccount(@RequestBody UserDTO user) {
+    userService.save(user);
+    return new DataResponse("Add user " + user.getUsername() +" success.");
   }
 
   @DeleteMapping("/delete-account/{id}")
@@ -158,12 +196,12 @@ public class AdminController {
     return jobPostService.getAll();
   }
 
-  @PutMapping("/company/{id}")
-  public ResponseObject updateCompany(@PathVariable Long id, @RequestBody CompanyDTO companyDTO) {
-    companyDTO.setId(id);
-    return companyService.update(companyDTO);
-    // return null;
-  }
+//  @PutMapping("/company/{id}")
+//  public ResponseObject updateCompany(@PathVariable Long id, @RequestBody CompanyDTO companyDTO) {
+//    companyDTO.setId(id);
+//    return companyService.update(companyDTO);
+//    // return null;
+//  }
 
   @GetMapping("/get-account-amount")
   public ResponseObject getAccountAmount() {
@@ -195,6 +233,64 @@ public class AdminController {
       @PathVariable(value = "userId") long userId, @RequestBody UserDTO user) {
 
     return userService.updateForAdmin(userId, user);
+  }
+
+  @GetMapping("/get-all-invoice")
+  public DataResponse getAllInvoice() {
+    return invoiceService.getAllInvoice();
+  }
+
+  @GetMapping("/get-all-invoice-by-time-frame")
+  public DataResponse getAllInvoiceByTimeFrame(@RequestBody TimeFramePayLoad timeFrame) {
+    return invoiceService.getAllInvoiceByTimeFrame(timeFrame.getStartTime(), timeFrame.getEndTime());
+  }
+
+  @GetMapping("/get-one-invoice/{invoiceId}")
+  public DataResponse getOneInvoice(@PathVariable(value = "invoiceId") long invoiceId) {
+    InvoiceEntity invoice = invoiceService.getOneInvoice(invoiceId);
+    return new DataResponse(converter.toDTO(invoice));
+  }
+
+  @GetMapping("/get-total-revenue")
+  public DataResponse getTotalRevenue() {
+    long totalRevenue = invoiceService.getTotalRevenue();
+    return new DataResponse(totalRevenue);
+  }
+
+  @PostMapping("/get-total-revenue-by-time-frame")
+  public DataResponse getTotalRevenueByTimeFrame(@RequestBody TimeFramePayLoad timeFrame) {
+    long totalRevenue = invoiceService.getTotalRevenue(timeFrame.getStartTime(), timeFrame.getEndTime());
+    return new DataResponse(totalRevenue);
+  }
+
+  @GetMapping("/get-all-category")
+  public DataResponse getAllCategory() {
+    return categoryService.getAll();
+  }
+
+  @PostMapping("/add-category")
+  public DataResponse addCategory(@RequestBody CategoryDTO categoryDTO) {
+    return categoryService.save(categoryDTO);
+  }
+
+  @PutMapping("/update-category/{categoryId}")
+  public DataResponse updateCategory(@PathVariable long categoryId, @RequestBody CategoryDTO categoryDTO) {
+    return categoryService.update(categoryDTO, categoryId);
+  }
+
+  @DeleteMapping("/delete-category/{categoryId}")
+  public DataResponse deleteCategory(@PathVariable long categoryId) {
+    return categoryService.delete(categoryId);
+  }
+
+  @GetMapping("/blog-post")
+  public DataResponse getAllBlogPost() {
+    return blogPostService.getAll();
+  }
+
+  @DeleteMapping("/delete-blog-post/{blogPostId}")
+  public DataResponse deleteBlogPost(@PathVariable long blogPostId) {
+    return blogPostService.delete(blogPostId);
   }
 
 }

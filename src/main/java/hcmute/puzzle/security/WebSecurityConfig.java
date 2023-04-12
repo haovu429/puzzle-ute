@@ -36,7 +36,7 @@ import java.io.IOException;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class WebSecurityConfig {
   private static final String[] AUTH_WHITE_LIST = {
-    "/v3/api-docs/**", "/swagger-ui/**", "/v2/api-docs/**", "/swagger-resources/**"
+    "/v3-docs/**", "/swagger-ui/**", "/v2-docs/**", "/swagger-resources/**"
   };
 
   //    @Autowired
@@ -44,11 +44,13 @@ public class WebSecurityConfig {
 
   @Autowired CustomOAuth2UserService oauthUserService;
 
-  @Autowired OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+//  @Autowired OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
   @Autowired UserRepository userRepository;
 
   @Autowired UserService userService;
+
+
 
   //  @Autowired
   //  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -60,12 +62,11 @@ public class WebSecurityConfig {
 
   @Bean
   FirebaseMessaging firebaseMessaging() throws IOException {
-    GoogleCredentials googleCredentials = GoogleCredentials
-            .fromStream(new ClassPathResource("firebase-service-account.json").getInputStream());
-    FirebaseOptions firebaseOptions = FirebaseOptions
-            .builder()
-            .setCredentials(googleCredentials)
-            .build();
+    GoogleCredentials googleCredentials =
+        GoogleCredentials.fromStream(
+            new ClassPathResource("firebase-service-account.json").getInputStream());
+    FirebaseOptions firebaseOptions =
+        FirebaseOptions.builder().setCredentials(googleCredentials).build();
     FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "puzzle-ute");
     return FirebaseMessaging.getInstance(app);
   }
@@ -126,41 +127,41 @@ public class WebSecurityConfig {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeRequests()
-        .antMatchers("/api/common/**")
+        .antMatchers("/common/**")
         .permitAll()
-        .antMatchers("/api/test/**")
+        .antMatchers("/test/**")
         .permitAll()
         .antMatchers(AUTH_WHITE_LIST)
         .permitAll()
-        .antMatchers("/api/user/**")
+        .antMatchers("/user/**")
         .hasAuthority(Roles.USER.value)
-        .antMatchers("/api/login/**", "/api/login-google/**", "/api/forgot-password", "/api/reset-password")
+        .antMatchers("/login/**", "/auth/**" , "/login-google/**", "/forgot-password", "/reset-password")
         .permitAll()
-        .antMatchers("/api/role/admin")
+        .antMatchers("/role/admin")
         .hasAnyAuthority(Roles.ADMIN.value)
-        .antMatchers("/api/candidate/**")
+        .antMatchers("/candidate/**")
         .hasAuthority(Roles.CANDIDATE.value)
-        .antMatchers("/api/employer/**")
+        .antMatchers("/employer/**")
         .hasAuthority(Roles.EMPLOYER.value)
-        .antMatchers("/api/admin/**")
+        .antMatchers("/admin/**")
         .hasAuthority(Roles.ADMIN.value)
-        .antMatchers("/api/init-db")
+        .antMatchers("/init-db")
         .permitAll()
         .antMatchers("/oauth2/**")
         .permitAll()
-        .antMatchers("/api/pay/**")
+        .antMatchers("/pay/**")
         .hasAuthority(Roles.EMPLOYER.value)
-        .antMatchers("/api/pay-result/**")
+        .antMatchers("/pay-result/**")
         .permitAll()
-        //        .antMatchers("/api/auth/**")
+        //        .antMatchers("/auth/**")
         //        .permitAll()
-        //        .antMatchers("/api/test/**")
+        //        .antMatchers("/test/**")
         //        .permitAll()
-        //        .antMatchers("/api/v1/**")
+        //        .antMatchers("/v1/**")
         //        .permitAll()
         .antMatchers("/swagger-ui/**", "/puzzle-api/**")
         .permitAll()
-        .antMatchers("/", "/login", "/login-google", "/oauth/**")
+        .antMatchers("/", "/login-google", "/oauth/**")
         .permitAll()
         .anyRequest()
         .authenticated()
@@ -173,13 +174,6 @@ public class WebSecurityConfig {
         .and()
         .logout()
         .permitAll()
-        .and()
-        .oauth2Login()
-        .loginPage("/login")
-        .userInfoEndpoint()
-        .userService(oauthUserService)
-        .and()
-        .successHandler(oAuth2LoginSuccessHandler)
         .and()
         .httpBasic();
 

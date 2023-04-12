@@ -11,6 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class CreateCompanyPayload {
     private String name;
     private String description;
-    private MultipartFile image;
+    private MultipartFile image = null;
     private String website;
 }

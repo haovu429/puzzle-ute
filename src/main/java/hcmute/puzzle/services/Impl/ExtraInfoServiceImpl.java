@@ -75,7 +75,7 @@ public class ExtraInfoServiceImpl implements ExtraInfoService<ExtraInfoDTO> {
   @Override
   public ResponseObject getByType(String type) {
     Set<ExtraInfoEntity> extraInfoEntities = new HashSet<>();
-    extraInfoRepository.getExtraInfoEntitiesByType(type).stream()
+    extraInfoRepository.getExtraInfoEntitiesByType(type.toUpperCase()).stream()
         .forEach(
             extraInfo -> {
               extraInfoEntities.add(extraInfo);

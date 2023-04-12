@@ -76,6 +76,7 @@ public class PaymentController {
             }
         } catch (PayPalRESTException e) {
             log.error(e.getMessage());
+            return new DataResponse(e.getMessage());
         }
         //return "redirect:/";
         throw new  CustomException("Error pay");

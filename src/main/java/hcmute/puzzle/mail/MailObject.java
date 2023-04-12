@@ -13,4 +13,5 @@ public class MailObject {
     String receiver;
     String subject;
     String content;
+    String contentType;
 }

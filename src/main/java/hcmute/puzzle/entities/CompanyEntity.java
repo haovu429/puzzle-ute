@@ -47,4 +47,11 @@ public class CompanyEntity implements Serializable {
 
   //  @OneToMany(mappedBy = "companyEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   //  private List<NotificationEntity> notificationEntities = new ArrayList<>();
+
+  @PreRemove
+  private void preRemove() {
+    for (JobPostEntity jobPost : jobPostEntities) {
+      jobPost.setCompanyEntity(null);
+    }
+  }
 }

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Component
+//@Component
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
   @Autowired UserService userService;
@@ -41,6 +41,6 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 //    ObjectMapper objectMapper = new ObjectMapper();
 //    response.getWriter().write(objectMapper.writeValueAsString(responseObject));
 
-    super.onAuthenticationSuccess(request, response, authentication);
+    //super.onAuthenticationSuccess(request, response, authentication);
   }
 }

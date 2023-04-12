@@ -44,6 +44,7 @@ public class JobPostDTO implements Serializable {
   private long views = 0;
   private boolean isActive;
   private boolean isDeleted;
+  private long subscribeId;
   // private List<Long> applicationIds = new ArrayList<>();
   // private List<Long> savedCandidateIds = new ArrayList<>();
   // private List<Long> skillIds = new ArrayList<>();
@@ -52,4 +53,5 @@ public class JobPostDTO implements Serializable {
   private long createdEmployerId;
   private String logo;
   private long companyId =-1;
+  private long categoryId;
 }

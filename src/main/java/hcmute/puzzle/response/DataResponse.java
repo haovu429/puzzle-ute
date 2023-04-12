@@ -1,10 +1,8 @@
 package hcmute.puzzle.response;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
 public class DataResponse {
 
   public static final int STATUS_OK = 200;
@@ -16,12 +14,23 @@ public class DataResponse {
   public static final int STATUS_NOT_AGAIN = 405;
   public static final int STATUS_RUNTIME_EXCEPTION = 500;
   public static final int STATUS_CUSTOM_EXCEPTION = 501;
+  public static final String MSG_CUSTOM_EXCEPTION = "CUSTOM_EXCEPTION";
   //public static final int STATUS_
 
-  public static final String ERROR_NOT_FOUND = "404";
-  public static final String ERROR_FORBIDDEN = "403";
-  public static final String ERROR_NOT_AGAIN = "405";
-  public static final String ERROR_INACTIVE = "406";
+  public static final String CODE_ERROR_NOT_FOUND = "404";
+  public static final String MSG_ERROR_NOT_FOUND = "ERROR_NOT_FOUND";
+  public static final String CODE_ERROR_FORBIDDEN = "403";
+  public static final String MSG_ERROR_FORBIDDEN = "ERROR_FORBIDDEN";
+  public static final String CODE_ERROR_NOT_AGAIN = "405";
+  public static final String MSG_ERROR_NOT_AGAIN = "ERROR_NOT_AGAIN";
+  public static final String CODE_ERROR_INACTIVE = "406";
+  public static final String MSG_ERROR_INACTIVE = "ERROR_INACTIVE";
+
+  public static final String MSG_ERROR_SERVER = "ERROR_SERVER";
+  public static final String MSG_ERROR_CLIENT = "ERROR_CLIENT";
+
+  public static final String MSG_ERROR_MISSING_PARAMS = "ERROR_MISSING_PARAMS";
+
 
   private String errCode;
   private String errMsg;
@@ -35,7 +44,7 @@ public class DataResponse {
   }
 
   public DataResponse(Object data) {
-    this.errCode = "200";
+    this.errCode = "";
     this.status = STATUS_OK;
     this.data = data;
   }

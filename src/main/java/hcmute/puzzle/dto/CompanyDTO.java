@@ -1,19 +1,21 @@
 package hcmute.puzzle.dto;
 
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class CompanyDTO {
   private long id;
-  private String name;
-  private String description;
+
+  @NotNull @NotEmpty private String name;
+
+  @NotNull @NotEmpty private String description;
   private String image;
   private String website;
   private boolean isActive = false;

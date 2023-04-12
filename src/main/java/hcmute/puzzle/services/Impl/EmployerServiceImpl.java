@@ -12,6 +12,8 @@ import hcmute.puzzle.services.EmployerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -34,6 +36,9 @@ public class EmployerServiceImpl implements EmployerService {
   RoleRepository roleRepository;
 
   @Autowired Converter converter;
+
+  @PersistenceContext
+  public EntityManager em;
 
   @Override
   public Optional<EmployerDTO> save(EmployerDTO employerDTO) {
@@ -130,7 +135,7 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     double rate = 0; // mac dinh, hoi sai neu view = 0 và application > 0
-    long viewOfCandidateAmount = jobPostRepository.getViewedCandidateAmountToJobPostCreatedByEmployer(employerId);
+    long viewOfCandidateAmount = getViewedCandidateAmountToJobPostCreatedByEmployer(employerId);
     long applicationOfCandidateAmount = applicationRepository.getAmountApplicationToEmployer(employerId);
 
     if (viewOfCandidateAmount != 0 && viewOfCandidateAmount >= applicationOfCandidateAmount) {
@@ -141,5 +146,20 @@ public class EmployerServiceImpl implements EmployerService {
     }
 
     return new DataResponse(rate);
+  }
+
+  public long getViewedCandidateAmountToJobPostCreatedByEmployer(long employerId) {
+    long amount = 0;
+    // check subscribes of employer
+    String sql =
+            "SELECT COUNT(u.id) FROM JobPostEntity jp INNER JOIN jp.viewedUsers u WHERE jp.createdEmployer.id =:employerId AND u.candidateEntity.id IS NOT NULL AND jp.isDeleted=FALSE";
+    try {
+      amount =
+              (long) em.createQuery(sql).setParameter("employerId", employerId).getSingleResult();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    return amount;
   }
 }

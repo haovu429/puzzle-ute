@@ -5,6 +5,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
 import hcmute.puzzle.utils.Constant;
+import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -64,13 +65,13 @@ public class PuzzleUteApplication {
 //    return FirebaseMessaging.getInstance(app);
 //  }
 
-  @Bean
-  CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList("https://example.com"));
-    configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE"));
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", configuration);
-    return source;
-  }
+//  @Bean
+//  CorsConfigurationSource corsConfigurationSource() {
+//    CorsConfiguration configuration = new CorsConfiguration();
+//    configuration.setAllowedOrigins(Arrays.asList("https://example.com"));
+//    configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE"));
+//    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//    source.registerCorsConfiguration("/**", configuration);
+//    return source;
+//  }
 }

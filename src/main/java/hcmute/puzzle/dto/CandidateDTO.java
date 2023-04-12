@@ -4,6 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -11,6 +15,9 @@ public class CandidateDTO {
   private long id;
   private String firstName;
   private String lastName;
+  @NotNull
+  @NotBlank
+  @NotEmpty
   private String emailContact;
   private String phoneNum;
   private String introduction;

@@ -3,26 +3,26 @@ package hcmute.puzzle.services.Impl;
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
+import hcmute.puzzle.entities.CandidateEntity;
+import hcmute.puzzle.entities.EmployerEntity;
 import hcmute.puzzle.entities.RoleEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.model.DataStaticJoinAccount;
+import hcmute.puzzle.model.enums.FileType;
 import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
 import hcmute.puzzle.repository.RoleRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.services.UserService;
-import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.RedisUtils;
+import hcmute.puzzle.utils.Roles;
 import hcmute.puzzle.utils.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -42,13 +42,14 @@ public class UserServiceImpl implements UserService {
 
   @Autowired private RedisUtils redisUtils;
 
+
   public boolean checkEmailExists(String email) {
     UserEntity user = userRepository.getUserByEmail(email);
     return user == null;
   }
 
   @Override
-  public ResponseObject save(UserDTO userDTO) {
+  public UserEntity save(UserDTO userDTO) {
 
     // Cast DTO --> Entity
     UserEntity userEntity = converter.toEntity(userDTO);
@@ -64,7 +65,7 @@ public class UserServiceImpl implements UserService {
     responseDTO.setPassword(null);
     // Luu vao dataabase
     userEntity = userRepository.save(userEntity);
-    return new ResponseObject(HttpStatus.OK.value(), "Create user success", responseDTO);
+    return userEntity;
   }
 
   @Override
@@ -105,6 +106,10 @@ public class UserServiceImpl implements UserService {
       oldUser.get().setFullName(userPayload.getFullName());
     }
 
+    if (userPayload.isEmailVerified()!=oldUser.get().isEmailVerified()){
+      oldUser.get().setEmailVerified(userPayload.isEmailVerified());
+    }
+
     //oldUser.get().setAvatar(userPayload.getAvatar());
     //oldUser.get().setAvatar(updateAvatarReturnUrl(oldUser.get().getEmail(), file));
     oldUser.get().setActive(userPayload.isActive());
@@ -113,7 +118,16 @@ public class UserServiceImpl implements UserService {
       Set<RoleEntity> roleEntities = new HashSet<>();
       for (String code : userPayload.getRoleCodes()) {
         RoleEntity role = roleRepository.findOneByCode(code);
-        if (role != null) {
+        if (role.getName().equals(Roles.CANDIDATE.value)) {
+          CandidateEntity candidate = new CandidateEntity();
+          oldUser.get().setCandidateEntity(candidate);
+        }
+
+        if (role.getName().equals(Roles.EMPLOYER.value)) {
+          EmployerEntity employer = new EmployerEntity();
+          oldUser.get().setEmployerEntity(employer);
+        }
+          if (role != null) {
           roleEntities.add(role);
         }
       }
@@ -128,26 +142,10 @@ public class UserServiceImpl implements UserService {
     return new DataResponse(userDTO);
   }
 
-  public String updateAvatarReturnUrl(String email, MultipartFile file) {
-    String fileName = email + Constant.PREFIX_AVATAR_FILE_NAME;
 
-    Map response = null;
 
-    try {
-      // push to storage cloud
-      response = storageService.uploadAvatarImage(fileName, file, Constant.STORAGE_IMAGE_LOCATION);
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    String url = response.get("secure_url").toString();
-
-    return url;
-  }
-
-  public DataResponse updateAvatarForUser(UserEntity userEntity, MultipartFile file) {
-    String urlAvatar = updateAvatarReturnUrl(userEntity.getEmail(), file);
+  public DataResponse updateAvatarForUser(UserEntity userEntity, MultipartFile file, FileType fileType) {
+    String urlAvatar = storageService.uploadFileWithFileTypeReturnUrl(userEntity, userEntity.getEmail(), file, fileType);
     userEntity.setAvatar(urlAvatar);
     userRepository.save(userEntity);
     UserDTO userDTO = converter.toDTO(userEntity);

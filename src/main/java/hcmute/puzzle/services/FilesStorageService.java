@@ -1,9 +1,10 @@
 package hcmute.puzzle.services;
 
+import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.model.CloudinaryUploadFileResponse;
+import hcmute.puzzle.model.enums.FileType;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
 public interface FilesStorageService {
@@ -11,5 +12,11 @@ public interface FilesStorageService {
 
     Map deleteAvatarImage(String imageName);
 
-    String updateAvatarReturnUrl(Object id, MultipartFile file, String prefix);
+//    String updateAvatarReturnUrl(Object id, MultipartFile file, String prefix);
+
+    String uploadFileWithFileTypeReturnUrl(UserEntity author, String keyName, MultipartFile file, FileType fileType);
+
+    String processFileName(String keyValue, FileType fileType);
+
+    CloudinaryUploadFileResponse uploadFileReturnUrl(String fileName, MultipartFile file);
 }

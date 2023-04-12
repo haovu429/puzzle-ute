@@ -4,7 +4,8 @@ import hcmute.puzzle.dto.*;
 import hcmute.puzzle.entities.*;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.*;
-import hcmute.puzzle.utils.Provider;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class Converter {
 
   @Autowired private ApplicationRepository applicationRepository;
@@ -27,11 +29,18 @@ public class Converter {
   @Autowired private EmployerRepository employerRepository;
   @Autowired private EvaluateRepository evaluateRepository;
   @Autowired private ExperienceRepository experienceRepository;
-  @Autowired private ImageRepository imageRepository;
+  @Autowired private FileRepository fileRepository;
   @Autowired private JobAlertRepository jobAlertRepository;
   @Autowired private JobPostRepository jobPostRepository;
   @Autowired private NotificationRepository notificationRepository;
+  @Autowired private ModelMapper modelMapper;
   @Autowired private UserRepository userRepository;
+  @Autowired private CategoryRepository categoryRepository;
+  @Autowired private BlogPostRepository blogPostRepository;
+  @Autowired private CommentRepository commentRepository;
+
+  public Converter() {
+  }
 
   // User
   public UserDTO toDTO(UserEntity entity) {
@@ -368,24 +377,30 @@ public class Converter {
   }
 
   // Image
-  public ImageDTO toDTO(ImageEntity entity) {
-    ImageDTO dto = new ImageDTO();
+  public StorageFileDTO toDTO(FileEntity entity) {
+    StorageFileDTO dto = new StorageFileDTO();
     dto.setId(entity.getId());
     dto.setType(entity.getType());
-    dto.setTitle(entity.getTitle());
+    dto.setName(entity.getName());
     dto.setUrl(entity.getUrl());
-    dto.setCodeId(entity.getCodeId());
+    dto.setObjectId(entity.getObjectId());
+    dto.setAuthor(entity.getAuthor());
+    dto.setCloudinaryPublicId(entity.getCloudinaryPublicId());
+    dto.setCreateAt(entity.getCreateAt());
 
     return dto;
   }
 
-  public ImageEntity toEntity(ImageDTO dto) {
-    ImageEntity entity = new ImageEntity();
+  public FileEntity toEntity(StorageFileDTO dto) {
+    FileEntity entity = new FileEntity();
     entity.setId(dto.getId());
     entity.setType(dto.getType());
-    entity.setTitle(dto.getTitle());
+    entity.setName(dto.getName());
     entity.setUrl(dto.getUrl());
-    entity.setCodeId(dto.getCodeId());
+    entity.setObjectId(dto.getObjectId());
+    entity.setAuthor(dto.getAuthor());
+    entity.setCloudinaryPublicId(dto.getCloudinaryPublicId());
+    entity.setCreateAt(dto.getCreateAt());
 
     return entity;
   }
@@ -503,6 +518,15 @@ public class Converter {
       throw new NoSuchElementException("Can't convert createEmployerId");
     }
     entity.setCreatedEmployer(createEmployer.get());
+    System.out.println("category Id = "+dto.getCategoryId());
+    Optional<CategoryEntity> categoryEntity =
+            categoryRepository.findById(dto.getCategoryId());
+
+    if (categoryEntity.isEmpty()) {
+      throw new NoSuchElementException("Can't convert categoryId");
+    }
+    System.out.println("category  = "+categoryEntity.get().getName());
+    entity.setCategoryEntity(categoryEntity.get());
 
     if (dto.getCompanyId() != -1) {
       Optional<CompanyEntity> company =
@@ -640,4 +664,81 @@ public class Converter {
     return entity;
   }
 
+  public CategoryDTO toDTO(CategoryEntity entity) {
+    CategoryDTO dto = new CategoryDTO();
+    dto.setId(entity.getId());
+    dto.setName(entity.getName());
+    dto.setActive(entity.isActive());
+    return dto;
+  }
+
+  public CategoryEntity toEntity(CategoryDTO dto) {
+    CategoryEntity entity = new CategoryEntity();
+    entity.setId(dto.getId());
+    entity.setName(dto.getName());
+    entity.setActive(dto.isActive());
+    return entity;
+  }
+
+  public BlogPostDTO toDTO(BlogPostEntity entity) {
+//    // setup
+//    TypeMap<BlogPostEntity, BlogPostDTO> propertyMapper = modelMapper.createTypeMap(BlogPostEntity.class, BlogPostDTO.class);
+//    // add deep mapping to flatten source's Player object into a single field in destination
+//    propertyMapper.addMappings(
+//            mapper -> mapper.map(src -> src.getUserEntity().getId(), BlogPostDTO::setUserId)
+//    );
+    BlogPostDTO blogPostDTO = modelMapper.map(entity, BlogPostDTO.class);
+    return blogPostDTO;
+  }
+
+  public BlogPostEntity toEntity(BlogPostDTO dto) {
+    BlogPostEntity entity = modelMapper.map(dto, BlogPostEntity.class);
+
+    try {
+      Optional<UserEntity> userEntity = userRepository.findById(dto.getUserId());
+      if (userEntity.isPresent()) {
+        entity.setUserEntity(userEntity.get());
+      }
+    } catch (Exception e) {
+      log.error(e.getMessage());
+    }
+
+    return entity;
+  }
+
+  public CommentDTO toDTO(CommentEntity entity) {
+    CommentDTO dto = modelMapper.map(entity, CommentDTO.class);
+    return dto;
+  }
+
+  public CommentEntity toEntity(CommentDTO dto) {
+    CommentEntity entity = modelMapper.map(dto, CommentEntity.class);
+    try {
+      Optional<BlogPostEntity> blogPostEntity = blogPostRepository.findById(dto.getBlogPostId());
+      if (blogPostEntity.isPresent()) {
+        entity.setBlogPostEntity(blogPostEntity.get());
+      }
+    } catch (Exception e) {
+      log.error(e.getMessage());
+    }
+    return entity;
+  }
+
+  public  SubCommentDTO toDTO(SubCommentEntity entity) {
+    SubCommentDTO dto = modelMapper.map(entity, SubCommentDTO.class);
+    return dto;
+  }
+
+  public SubCommentEntity toEntity(SubCommentDTO dto) {
+    SubCommentEntity entity = modelMapper.map(dto, SubCommentEntity.class);
+    try {
+      Optional<CommentEntity> commentEntity = commentRepository.findById(dto.getCommentId());
+      if (commentEntity.isPresent()) {
+        entity.setCommentEntity(commentEntity.get());
+      }
+    } catch (Exception e) {
+      log.error(e.getMessage());
+    }
+    return entity;
+  }
 }
