@@ -27,7 +27,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(path = "")
+@RequestMapping(path = "/common")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class CommonController {
 
@@ -67,12 +67,12 @@ public class CommonController {
 
   @Autowired ModelMapper modelMapper;
 
-  @GetMapping("/common/job-post/get-all")
+  @GetMapping("/job-post/get-all")
   ResponseObject getAllJobPost() {
     return jobPostService.getAll();
   }
 
-  @GetMapping("/common/job-post/get-one/{jobPostId}")
+  @GetMapping("/job-post/get-one/{jobPostId}")
   ResponseObject getJobPostById(
       @RequestHeader(value = "Authorization", required = false) String token,
       @PathVariable(value = "jobPostId") long jobPostId) {
@@ -89,22 +89,22 @@ public class CommonController {
     return jobPostService.getOne(jobPostId);
   }
 
-  @GetMapping("/common/company")
+  @GetMapping("/company")
   public ResponseObject getAllCompany() {
     return companyService.getAll();
   }
 
-  @GetMapping("/common/company/get-one-company/{id}")
+  @GetMapping("/company/get-one-company/{id}")
   public ResponseObject getOneCompany(@PathVariable Long id) {
     return companyService.getOneById(id);
   }
 
-  @GetMapping("/common/get-all-extra-info-by-type")
+  @GetMapping("/get-all-extra-info-by-type")
   public ResponseObject getAllExtraInfoByType(@RequestParam String type) {
     return extraInfoService.getByType(type);
   }
 
-  @PostMapping("/common/job-post-filter")
+  @PostMapping("/job-post-filter")
   public ResponseObject filterJobPost(@RequestBody(required = false) JobPostFilter jobPostFilter) {
     Map<String, List<ModelQuery>> fieldSearchValue = new HashMap<>();
     Map<String, List<ModelQuery>> fieldSearchValueSpecial = new HashMap<>();
@@ -317,7 +317,7 @@ public class CommonController {
     return new ResponseObject(200, "Result for filter job post", jobPostDTOS);
   }
 
-  @PostMapping("/common/candidate-filter")
+  @PostMapping("/candidate-filter")
   public ResponseObject filterCandidate(@RequestBody CandidateFilter candidateFilter) {
 
     Map<String, List<ModelQuery>> fieldSearchValue = new HashMap<>();
@@ -404,17 +404,17 @@ public class CommonController {
     return new ResponseObject(200, "Result for filter candidate", candidateDTOS);
   }
 
-  @GetMapping("/common/get-all-extra-info")
+  @GetMapping("/get-all-extra-info")
   public ResponseObject getAllExtraInfo() {
     return extraInfoService.getAll();
   }
 
-  @GetMapping("/common/employer/get-employer-by-id/{id}")
+  @GetMapping("/employer/get-employer-by-id/{id}")
   ResponseObject getEmployerById(@PathVariable long id) {
     return employerService.getOne(id);
   }
 
-  @PostMapping("/common/register")
+  @PostMapping("/register")
   public DataResponse registerAccount(@RequestBody UserDTO user) {
     Set<String> roleCodes = new HashSet<>();
     roleCodes.add("user");
@@ -425,63 +425,63 @@ public class CommonController {
     return new DataResponse("Create user " + user.getEmail() + " success");
   }
 
-  @GetMapping("/common/get-hot-job-post")
+  @GetMapping("/get-hot-job-post")
   public ResponseObject getHotJobPost() {
     return jobPostService.getHotJobPost();
   }
 
-  @GetMapping("/common/get-job-post-due-soon")
+  @GetMapping("/get-job-post-due-soon")
   public ResponseObject getJobPostDueSoon() {
     return jobPostService.getJobPostDueSoon();
   }
 
-  @GetMapping("/common/get-profile-candidate/{candidateId}")
+  @GetMapping("/get-profile-candidate/{candidateId}")
   ResponseObject getProfileCandidate(@PathVariable long candidateId) {
     return candidateService.getOne(candidateId);
   }
 
-  @GetMapping("/common/get-active-job-post")
+  @GetMapping("/get-active-job-post")
   public ResponseObject getActiveJobPost() {
     return jobPostService.getActiveJobPost();
   }
 
-  @GetMapping("/common/get-experience-by-candidate-id/{id}")
+  @GetMapping("/get-experience-by-candidate-id/{id}")
   ResponseObject getAllExperienceByCandidateId(@PathVariable(value = "id") long id) {
 
     return experienceService.getAllExperienceByCandidateId(id);
   }
 
-  @GetMapping("/common/candidate-profile/{candidateId}")
+  @GetMapping("/candidate-profile/{candidateId}")
   ResponseObject getCandidateProfile(@PathVariable(value = "candidateId") long candidateId) {
     return candidateService.getOne(candidateId);
   }
 
-  @GetMapping("/common/get-amount-application-to-job-post/{jobPostId}")
+  @GetMapping("/get-amount-application-to-job-post/{jobPostId}")
   DataResponse getAmountApplicationToEmployer(@PathVariable(value = "jobPostId") long jobPostId) {
     return applicationService.getAmountApplicationByJobPostId(jobPostId);
   }
 
-  @GetMapping("/common/get-job-post-amount")
+  @GetMapping("/get-job-post-amount")
   public ResponseObject getJobPostAmount() {
     return jobPostService.getJobPostAmount();
   }
 
-  @GetMapping("/common/view-job-post/{jobPostId}")
+  @GetMapping("/view-job-post/{jobPostId}")
   public DataResponse viewJobPost(@PathVariable(value = "jobPostId") long jobPostId) {
     return jobPostService.countJobPostViewReturnDataResponse(jobPostId);
   }
 
-  @GetMapping("/common/get-application-amount")
+  @GetMapping("/get-application-amount")
   public ResponseObject getApplicationAmount() {
     return applicationService.getApplicationAmount();
   }
 
-  @GetMapping("/common/view-blog-post/{blogPostId}")
+  @GetMapping("/view-blog-post/{blogPostId}")
   public DataResponse viewBlogPost(@PathVariable long blogPostId) {
     return blogPostService.getOneById(blogPostId);
   }
 
-  @PostMapping("/common/comment/{blogPostId}")
+  @PostMapping("/comment/{blogPostId}")
   public DataResponse createComment(
       @RequestBody CreateCommentPayload createCommentPayload, @PathVariable long blogPostId) {
     CommentDTO commentDTO = modelMapper.map(createCommentPayload, CommentDTO.class);
@@ -489,13 +489,18 @@ public class CommonController {
     return commentService.save(commentDTO);
   }
 
-  @GetMapping("/common/like-comment/{commentId}")
+  @GetMapping("/like-comment/{commentId}")
   public DataResponse likeComment(@PathVariable long commentId) {
     return commentService.likeComment(commentId);
   }
 
-  @GetMapping("/common/dis-like-comment/{commentId}")
+  @GetMapping("/dis-like-comment/{commentId}")
   public DataResponse disLikeComment(@PathVariable long commentId) {
     return commentService.disLikeComment(commentId);
+  }
+
+  @GetMapping("/blog-post")
+  public DataResponse getAllBlogPost() {
+    return blogPostService.getAll();
   }
 }
