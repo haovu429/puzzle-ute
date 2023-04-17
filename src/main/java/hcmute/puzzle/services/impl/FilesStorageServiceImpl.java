@@ -1,36 +1,40 @@
-package hcmute.puzzle.services.Impl;
+package hcmute.puzzle.services.impl;
+
+import static hcmute.puzzle.utils.Constant.*;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Files;
 import hcmute.puzzle.entities.FileEntity;
+import hcmute.puzzle.entities.FileTypeEntity;
 import hcmute.puzzle.entities.UserEntity;
-import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.*;
 import hcmute.puzzle.model.CloudinaryUploadFileResponse;
-import hcmute.puzzle.model.enums.FileType;
+import hcmute.puzzle.model.enums.FileCategory;
 import hcmute.puzzle.repository.FileRepository;
+import hcmute.puzzle.repository.FileTypeRepository;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.utils.CloudinaryUtil;
-import hcmute.puzzle.utils.Constant;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-
-import static hcmute.puzzle.utils.Constant.*;
 
 @Service
 public class FilesStorageServiceImpl implements FilesStorageService {
 
   @Autowired private FileRepository fileRepository;
 
+  @Autowired private FileTypeRepository fileTypeRepository;
+
   @Override
-  public Map uploadAvatarImage(String imageName, MultipartFile file, String locationStorage) {
+  public Map uploadFile(String publicId, MultipartFile file, String locationStorage) {
     Cloudinary cloudinary = CloudinaryUtil.getCloudinary();
 
     try {
@@ -38,12 +42,12 @@ public class FilesStorageServiceImpl implements FilesStorageService {
       String encodedString = new String(image);
 
       // Upload the image
-      Map params1 =
+      Map<String, Object> params1 =
           ObjectUtils.asMap(
               "folder",
               locationStorage,
               "public_id",
-              imageName,
+              publicId,
               "use_filename",
               true,
               "unique_filename",
@@ -51,10 +55,11 @@ public class FilesStorageServiceImpl implements FilesStorageService {
               "overwrite",
               true);
 
-      Map result = cloudinary.uploader().upload("data:image/png;base64," + encodedString, params1);
+      Map<String, Object> result =
+          cloudinary.uploader().upload("data:image/png;base64," + encodedString, params1);
 
       if (result == null) {
-        throw new CustomException("Upload image failure");
+        throw new UploadFailureException();
       }
 
       if (result.get("secure_url") == null) {
@@ -65,33 +70,106 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    return null;
+    return new HashMap<String, Object>();
   }
 
   @Override
-  public Map deleteAvatarImage(String imageName) {
+  public boolean deleteFile(String publicId, FileCategory category, UserEntity deleter)
+      throws NotFoundException {
+    // "puzzle_ute/user/avatar"
     Cloudinary cloudinary = CloudinaryUtil.getCloudinary();
+
+    FileEntity fileEntity =
+        fileRepository
+            .findByCloudinaryPublicId(publicId)
+            .orElseThrow(() -> new NotFoundException());
+
+    FileTypeEntity fileType =
+        fileTypeRepository.findByCategory(category).orElseThrow(NotFoundException::new);
 
     try {
       // Destroy the image
       Map params1 =
           ObjectUtils.asMap(
               "resource_type",
-              "image",
+              fileType.getType().getValue(),
               "folder",
-              "puzzle_ute/user/avatar",
+              fileType.getLocation(),
               "type",
               "upload",
               "invalidate",
               true);
 
-      Map result =
-          cloudinary.uploader().destroy(Constant.STORAGE_IMAGE_LOCATION + "/" + imageName, params1);
-      return result;
+      Map<String, Object> result =
+          cloudinary.uploader().destroy(fileType.getLocation() + "/" + publicId, params1);
+
+      if (result == null) {
+        throw new CustomException("Upload image failure");
+      }
+
+      fileEntity.setDeleted(true);
+      fileEntity.setUpdateAt(new Date());
+      fileEntity.setUpdateBy(deleter.getEmail());
+      fileRepository.save(fileEntity);
+      return true;
     } catch (Exception e) {
       e.printStackTrace();
     }
-    return null;
+    return false;
+  }
+
+  // @Override
+  public boolean deleteMultiFile(List<String> publicIds, UserEntity deleter)
+      throws PartialFailureException {
+    // "puzzle_ute/user/avatar"
+    Cloudinary cloudinary = CloudinaryUtil.getCloudinary();
+    System.out.println(fileRepository);
+    // Check public_id exists in db
+    List<FileEntity> fileInfoFromDB =
+        fileRepository.findAllByCloudinaryPublicIdInAndDeletedIs(publicIds, false);
+
+    List<String> publicIdsFromDB =
+        fileInfoFromDB.stream().map(FileEntity::getCloudinaryPublicId).toList();
+
+    //    if (publicIds.size() != fileInfoFromDB.size()) {
+    //      throw new BadRequestException();
+    //    }
+
+    List<String> notExistIds =
+        publicIds.stream()
+            .filter(
+                publicId ->
+                    publicIdsFromDB.stream().noneMatch(idFromDb -> idFromDb.equals(publicId)))
+            .toList();
+
+    if (!notExistIds.isEmpty()) {
+      String msg = PartialFailureException.processingMsg(notExistIds);
+      throw new PartialFailureException(msg);
+    }
+
+    try {
+      // Destroy the image
+
+      Map<String, Object> result =
+          cloudinary.api().deleteResources(publicIds, ObjectUtils.emptyMap());
+
+      if (result == null) {
+        throw new CustomException("Delete image failure");
+      }
+
+      fileInfoFromDB.forEach(
+          fileEntity -> {
+            fileEntity.setDeleted(true);
+            fileEntity.setUpdateAt(new Date());
+            fileEntity.setUpdateBy(deleter.getEmail());
+          });
+
+      fileRepository.saveAll(fileInfoFromDB);
+      return true;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return false;
   }
 
   //  public String updateAvatarReturnUrl(Object id, MultipartFile file, String prefix) {
@@ -113,9 +191,16 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   //  }
 
   public String uploadFileWithFileTypeReturnUrl(
-      UserEntity author, String keyName, MultipartFile file, FileType fileType) {
-    String fileName = processFileName(keyName, fileType);
-    CloudinaryUploadFileResponse response = uploadFileReturnUrl(fileName, file);
+      UserEntity author, String keyName, MultipartFile file, FileCategory fileCategory)
+      throws NotFoundException {
+
+    FileTypeEntity fileType =
+        fileTypeRepository.findByCategory(fileCategory).orElseThrow(NotFoundException::new);
+
+    String fileName = processFileName(keyName, fileCategory);
+    CloudinaryUploadFileResponse response =
+        uploadFileReturnResponseObject(fileName, file, fileType.getLocation(), author);
+    // System.out.println(response.get);
     String fileUrl = response.getSecure_url();
     Date currentTime = new Date();
 
@@ -123,8 +208,10 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     FileEntity fileEntity =
         FileEntity.builder()
             .name(fileName.replace(" ", ""))
-            .type(fileType.getValue())
-            .extension(Files.getFileExtension(file.getOriginalFilename()))
+            .category(fileCategory.getValue())
+            .type(fileType.getType().getValue())
+            .location(fileType.getLocation())
+            .extension(Files.getFileExtension(Objects.requireNonNull(file.getOriginalFilename())))
             .url(fileUrl)
             .author(author.getEmail())
             .cloudinaryPublicId(response.getPublic_id())
@@ -136,16 +223,16 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     return fileUrl;
   }
 
-  public String processFileName(String keyValue, FileType fileType) {
+  public String processFileName(String keyValue, FileCategory fileCategory) {
     String pattern = "yyyy-MM-dd'T'HH:mm:ss";
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
     String date = simpleDateFormat.format(new Date());
     // System.out.println(date);
-    return keyValue.concat(date).concat(getSuffixByFileType(fileType));
+    return keyValue.concat(date).concat(getSuffixByFileType(fileCategory));
   }
 
-  public String getSuffixByFileType(FileType fileType) {
-    switch (fileType) {
+  public String getSuffixByFileType(FileCategory fileCategory) {
+    switch (fileCategory) {
       case IMAGE_AVATAR:
         return SUFFIX_AVATAR_FILE_NAME;
       case IMAGE_BLOG:
@@ -157,27 +244,49 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     }
   }
 
-  public CloudinaryUploadFileResponse uploadFileReturnUrl(String fileName, MultipartFile file) {
+  public CloudinaryUploadFileResponse uploadFileReturnResponseObject(
+      String fileName, MultipartFile file, String fileLocation, UserEntity uploader) {
 
-    Map response = null;
+    Map<String, Object> response = null;
     CloudinaryUploadFileResponse respObject = new CloudinaryUploadFileResponse();
     try {
       // push to storage cloud
-      response = uploadAvatarImage(fileName, file, Constant.STORAGE_IMAGE_LOCATION);
+      response = uploadFile(fileName, file, fileLocation);
 
       final ObjectMapper mapper = new ObjectMapper(); // jackson's objectmapper
       respObject = mapper.convertValue(response, CloudinaryUploadFileResponse.class);
 
     } catch (Exception e) {
+      e.printStackTrace();
       if (response != null) {
         respObject.setSecure_url(response.get("secure_url").toString());
       }
-      //        throw new CustomException("Cast Error");
       e.printStackTrace();
     }
 
-    // String url = response.get("secure_url").toString();
-
     return respObject;
+  }
+
+  public List<String> detectedImageSrcList(String html) {
+    List<String> imageSrcList = new ArrayList<>();
+    final String regex = "<img.*?src=[\"|'](.*?)[\"|']";
+    final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+    final Matcher matcher = pattern.matcher(html);
+    while (matcher.find()) {
+      // System.out.println("Full match: " + matcher.group(0));
+
+      for (int i = 1; i <= matcher.groupCount(); i++) {
+        imageSrcList.add(matcher.group(i));
+        // System.out.println("Group " + i + ": " + matcher.group(i));
+      }
+    }
+
+    return imageSrcList;
+  }
+
+  public List<String> getDeletedImageSrcs(List<String> oldList, List<String> newList) {
+    List<String> deletedImageSrcs =
+            oldList.stream().filter(item -> !newList.contains(item)).toList();
+    return deletedImageSrcs;
   }
 }

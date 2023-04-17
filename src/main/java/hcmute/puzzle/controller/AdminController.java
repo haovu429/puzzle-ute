@@ -82,7 +82,7 @@ public class AdminController {
   }
 
   @PutMapping("/update-info-company/{companyId}")
-  public DataResponse updateCompany(@PathVariable(value = "companyId") long companyId, @ModelAttribute CreateCompanyPayloadForAdmin companyPayload) {
+  public DataResponse updateCompany(@PathVariable(value = "companyId") long companyId, @ModelAttribute CreateCompanyPayloadForAdmin companyPayload) throws NotFoundException {
     CompanyDTO companyDTO = new CompanyDTO();
     companyDTO.setName(companyPayload.getName());
     companyDTO.setDescription(companyPayload.getDescription());

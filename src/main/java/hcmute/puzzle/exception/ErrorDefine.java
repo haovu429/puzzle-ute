@@ -1,24 +1,31 @@
 package hcmute.puzzle.exception;
 
-public class Error {
+public class ErrorDefine {
 
-    public class StorageError {
-        public static final String STORAGE_ERROR = "storage_error";
-        public static final String UPLOAD_FAILURE = "storage_error.upload_failure";
-    }
+//    public class StorageError {
+//
+//    }
 
     public class ServerError {
-        public static final String SERVER_ERROR= "client_error.validate_error";
-        public static final String CUSTOMER_ERROR = "client_error.not_found_error";
+        public static final String SERVER_ERROR= "SERVER_ERROR";
+        public static final String NOT_FOUND_ERROR = "NOT_FOUND_ERROR";
+
+        public static final String STORAGE_ERROR = "STORAGE_ERROR";
+        public static final String UPLOAD_FAILURE = "UPLOAD_FAILURE ";
+
+        public static final String VALIDATE_ERROR= "VALIDATE_ERROR";
+
+        public static final String PARTIAL_FAILURE = "PARTIAL_FAILURE";
     }
 
     public class ClientError {
-        public static final String VALIDATE_ERROR= "client_error.validate_error";
-        public static final String NOT_FOUND_ERROR = "client_error.not_found_error";
-        public static final String ALREADY_EXISTS_ERROR = "client_error.already_exist";
+
+        public static final String BAD_REQUEST_ERROR= "BAD_REQUEST_ERROR";
+        public static final String INVALID_ERROR= "INVALID_ERROR";
+        public static final String ALREADY_EXISTS_ERROR = "ALREADY_EXISTS_ERROR";
     }
 
-    public class BatchExecuteError {
-        public static final String PARTIAL_FAILURE = "batch_execute_error.partial_failure";
-    }
+//    public class BatchExecuteError {
+//
+//    }
 }

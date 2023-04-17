@@ -79,7 +79,7 @@ public class PaymentController {
             return new DataResponse(e.getMessage());
         }
         //return "redirect:/";
-        throw new  CustomException("Error pay");
+        throw new  CustomException("ErrorDefine pay");
     }
 
 

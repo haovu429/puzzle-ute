@@ -1,7 +1,6 @@
-package hcmute.puzzle.services.Impl;
+package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.BlogPostDTO;
 import hcmute.puzzle.dto.CommentDTO;
 import hcmute.puzzle.entities.BlogPostEntity;
 import hcmute.puzzle.entities.CommentEntity;

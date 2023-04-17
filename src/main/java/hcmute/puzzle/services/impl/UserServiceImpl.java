@@ -1,4 +1,4 @@
-package hcmute.puzzle.services.Impl;
+package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.ResponseObject;
@@ -8,8 +8,10 @@ import hcmute.puzzle.entities.EmployerEntity;
 import hcmute.puzzle.entities.RoleEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.model.DataStaticJoinAccount;
-import hcmute.puzzle.model.enums.FileType;
+import hcmute.puzzle.model.enums.FileCategory;
+import hcmute.puzzle.model.enums.Roles;
 import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
 import hcmute.puzzle.repository.RoleRepository;
 import hcmute.puzzle.repository.UserRepository;
@@ -17,16 +19,14 @@ import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.services.UserService;
 import hcmute.puzzle.utils.RedisUtils;
-import hcmute.puzzle.utils.Roles;
 import hcmute.puzzle.utils.TimeUtil;
+import java.util.*;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -41,7 +41,6 @@ public class UserServiceImpl implements UserService {
   @Autowired private RoleRepository roleRepository;
 
   @Autowired private RedisUtils redisUtils;
-
 
   public boolean checkEmailExists(String email) {
     UserEntity user = userRepository.getUserByEmail(email);
@@ -106,12 +105,12 @@ public class UserServiceImpl implements UserService {
       oldUser.get().setFullName(userPayload.getFullName());
     }
 
-    if (userPayload.isEmailVerified()!=oldUser.get().isEmailVerified()){
+    if (userPayload.isEmailVerified() != oldUser.get().isEmailVerified()) {
       oldUser.get().setEmailVerified(userPayload.isEmailVerified());
     }
 
-    //oldUser.get().setAvatar(userPayload.getAvatar());
-    //oldUser.get().setAvatar(updateAvatarReturnUrl(oldUser.get().getEmail(), file));
+    // oldUser.get().setAvatar(userPayload.getAvatar());
+    // oldUser.get().setAvatar(updateAvatarReturnUrl(oldUser.get().getEmail(), file));
     oldUser.get().setActive(userPayload.isActive());
 
     if (userPayload.getRoleCodes() != null && !userPayload.getRoleCodes().isEmpty()) {
@@ -127,7 +126,7 @@ public class UserServiceImpl implements UserService {
           EmployerEntity employer = new EmployerEntity();
           oldUser.get().setEmployerEntity(employer);
         }
-          if (role != null) {
+        if (role != null) {
           roleEntities.add(role);
         }
       }
@@ -142,16 +141,17 @@ public class UserServiceImpl implements UserService {
     return new DataResponse(userDTO);
   }
 
-
-
-  public DataResponse updateAvatarForUser(UserEntity userEntity, MultipartFile file, FileType fileType) {
-    String urlAvatar = storageService.uploadFileWithFileTypeReturnUrl(userEntity, userEntity.getEmail(), file, fileType);
+  public DataResponse updateAvatarForUser(
+      UserEntity userEntity, MultipartFile file, FileCategory fileCategory)
+      throws NotFoundException {
+    String urlAvatar =
+        storageService.uploadFileWithFileTypeReturnUrl(
+            userEntity, userEntity.getEmail(), file, fileCategory);
     userEntity.setAvatar(urlAvatar);
     userRepository.save(userEntity);
     UserDTO userDTO = converter.toDTO(userEntity);
     userDTO.setPassword(null);
     return new DataResponse(userDTO);
-
   }
 
   @Override
@@ -223,8 +223,9 @@ public class UserServiceImpl implements UserService {
     for (int i = 0; i < numWeek; i++) {
       Date backwardTime = timeUtil.upDownTime_TimeUtil(timeline, 7, 0, 0);
       long count = userRepository.getCountUserJoinInTime(backwardTime, timeline);
-      //data.add(count);
-      DataStaticJoinAccount dataStaticJoinAccount = new DataStaticJoinAccount("Tuan " + (numWeek-i), count);
+      // data.add(count);
+      DataStaticJoinAccount dataStaticJoinAccount =
+          new DataStaticJoinAccount("Tuan " + (numWeek - i), count);
       data.add(dataStaticJoinAccount);
       System.out.println("Tuan " + (numWeek - i) + ": " + count);
       timeline = backwardTime;
@@ -237,6 +238,4 @@ public class UserServiceImpl implements UserService {
         "Data static for amount of join account in " + numWeek + " weeks",
         data);
   }
-
-
 }

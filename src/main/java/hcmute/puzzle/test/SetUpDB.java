@@ -1,15 +1,16 @@
 package hcmute.puzzle.test;
 
+import static hcmute.puzzle.utils.Constant.SYSTEM_MAIL;
+
 import hcmute.puzzle.entities.*;
+import hcmute.puzzle.model.enums.FileCategory;
+import hcmute.puzzle.model.enums.FileType;
 import hcmute.puzzle.repository.*;
+import hcmute.puzzle.utils.Constant;
+import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Service
 public class SetUpDB {
@@ -30,6 +31,8 @@ public class SetUpDB {
   @Autowired CandidateRepository candidateRepository;
 
   @Autowired EmployerRepository employerRepository;
+
+  @Autowired FileTypeRepository fileTypeRepository;
 
   public void preStart() {
 
@@ -165,7 +168,6 @@ public class SetUpDB {
     CompanyEntity company3 = new CompanyEntity();
     company3.setName("Zalo");
     company3.setCreatedEmployer(employer1);
-
 
     companyList.add(company1);
     companyList.add(company2);
@@ -303,22 +305,57 @@ public class SetUpDB {
 
     extraInfoRepository.saveAll(extraInfos);
 
+    //    Set<ExtraInfoEntity> extraInfoList = new HashSet<>();
+    //    ExtraInfoEntity extraInfo1 = new ExtraInfoEntity();
+    //    extraInfo1.setActive(true);
+    //    extraInfo1.setName("Java Develop");
+    //    extraInfo1.setType("skill");
+    //
+    //    extraInfoList.add(extraInfo1);
+    //
+    //    ExtraInfoEntity extraInfo2 = new ExtraInfoEntity();
+    //    extraInfo1.setActive(true);
+    //    extraInfo1.setName("Java Develop");
+    //    extraInfo1.setType("position");
+    //
+    //    extraInfoList.add(extraInfo2);
+    //
+    //    extraInfoRepository.saveAll(extraInfoList);
+  }
 
-//    Set<ExtraInfoEntity> extraInfoList = new HashSet<>();
-//    ExtraInfoEntity extraInfo1 = new ExtraInfoEntity();
-//    extraInfo1.setActive(true);
-//    extraInfo1.setName("Java Develop");
-//    extraInfo1.setType("skill");
-//
-//    extraInfoList.add(extraInfo1);
-//
-//    ExtraInfoEntity extraInfo2 = new ExtraInfoEntity();
-//    extraInfo1.setActive(true);
-//    extraInfo1.setName("Java Develop");
-//    extraInfo1.setType("position");
-//
-//    extraInfoList.add(extraInfo2);
-//
-//    extraInfoRepository.saveAll(extraInfoList);
+  public void createMdFileType() {
+    FileTypeEntity avatarType =
+        FileTypeEntity.builder()
+            .category(FileCategory.IMAGE_AVATAR)
+            .type(FileType.IMAGE)
+            .location(Constant.FileLocation.STORAGE_IMAGE_LOCATION)
+            .storageName(Constant.StorageName.CLOUDINARY)
+            .author(SYSTEM_MAIL)
+            .createAt(new Date())
+            .build();
+
+
+  FileTypeEntity companyType =
+          FileTypeEntity.builder()
+                  .category(FileCategory.IMAGE_COMPANY)
+                  .type(FileType.IMAGE)
+                  .location(Constant.FileLocation.STORAGE_COMPANY_IMAGE_LOCATION)
+                  .storageName(Constant.StorageName.CLOUDINARY)
+                  .author(SYSTEM_MAIL)
+                  .createAt(new Date())
+                  .build();
+
+  FileTypeEntity blogImageType =
+          FileTypeEntity.builder()
+                  .category(FileCategory.IMAGE_BLOG)
+                  .type(FileType.IMAGE)
+                  .location(Constant.FileLocation.STORAGE_BLOG_IMAGE_LOCATION)
+                  .storageName(Constant.StorageName.CLOUDINARY)
+                  .author(SYSTEM_MAIL)
+                  .createAt(new Date())
+                  .build();
+
+  List<FileTypeEntity> fileTypeList = new ArrayList<>(Arrays.asList(avatarType, companyType, blogImageType));
+  fileTypeRepository.saveAll(fileTypeList);
   }
 }

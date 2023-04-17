@@ -23,6 +23,8 @@ import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
+import java.util.Map;
+import java.util.Optional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,9 +33,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Map;
-import java.util.Optional;
 
 @Log4j2
 @RestController
@@ -166,7 +165,8 @@ public class EmployerController {
 
   @PostMapping("/create-info-company")
   public DataResponse saveCompany(
-      @ModelAttribute CreateCompanyPayload companyPayload, Authentication authentication) throws NotFoundException {
+      @ModelAttribute CreateCompanyPayload companyPayload, Authentication authentication)
+      throws NotFoundException {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     CompanyDTO companyDTO = new CompanyDTO();
     companyDTO.setName(companyPayload.getName());
@@ -411,7 +411,10 @@ public class EmployerController {
     try {
       // push to storage cloud
       response =
-          storageService.uploadAvatarImage(fileName, file, Constant.STORAGE_COMPANY_IMAGE_LOCATION);
+          storageService.uploadFile(
+              fileName,
+              file,
+              Constant.FileLocation.STORAGE_COMPANY_IMAGE_LOCATION);
 
     } catch (Exception e) {
       e.printStackTrace();

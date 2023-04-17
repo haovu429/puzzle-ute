@@ -2,10 +2,10 @@ package hcmute.puzzle.entities;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Date;
 
 @Data
@@ -20,6 +20,9 @@ public class FileEntity implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
+  @Column(name = "category", columnDefinition = "VARCHAR(50)")
+  private String category;
+
   @Column(name = "type", columnDefinition = "VARCHAR(50)")
   private String type;
 
@@ -31,6 +34,10 @@ public class FileEntity implements Serializable {
 
   @Column(name = "url", columnDefinition = "TEXT")
   private String url;
+
+  @Column(name = "location", columnDefinition = "TEXT")
+  @Builder.Default
+  private String location = "";
 
   @Column(name = "object_id")
   private long objectId;
@@ -45,5 +52,19 @@ public class FileEntity implements Serializable {
   @Temporal(TemporalType.TIMESTAMP)
   @CreationTimestamp
   private Date createAt;
+
+  @Column(name = "update_at")
+  @Temporal(TemporalType.TIMESTAMP)
+  @UpdateTimestamp
+  private Date updateAt;
+
+  @Column(name = "create_by")
+  private String createBy;
+
+  @Column(name = "update_by")
+  private String updateBy;
+
+  @Column(name = "is_deleted")
+  private boolean isDeleted = false;
 
 }

@@ -2,12 +2,12 @@ package hcmute.puzzle.exception;
 
 import hcmute.puzzle.response.DataResponse;
 
-public class NotFoundException extends Exception {
+public class NotFoundException extends CustomException {
   public NotFoundException(String message) {
-    super(message);
+    super(404, message);
   }
 
   public NotFoundException() {
-    super(DataResponse.MSG_ERROR_NOT_FOUND);
+    super(404, ErrorDefine.ServerError.NOT_FOUND_ERROR);
   }
 }

@@ -30,22 +30,22 @@ public class BlogPostEntity {
     @Column(name = "body", columnDefinition = "Text")
     private String body;
 
-    @Column(name = "create_time")
+    @Column(name = "create_at")
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
-    private Date createTime;
+    private Date createAt;
 
-    @Column(name = "last_update")
+    @Column(name = "update_at")
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
-    private Date lastUpdate;
+    private Date updateAt;
 
     @Column(name = "category_blog", columnDefinition = "VARCHAR(200)")
     private String categoryBlog;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "created_user")
-    private UserEntity userEntity;
+    @JoinColumn(name = "created_by")
+    private UserEntity createdBy;
 
     @OneToMany(mappedBy = "blogPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<CommentEntity> commentEntities = new HashSet<>();
@@ -54,6 +54,6 @@ public class BlogPostEntity {
         this.title = dto.getTitle();
         this.body = dto.getBody();
         this.categoryBlog = dto.getCategoryBlog();
-        this.lastUpdate = new Date();
+        this.updateAt = new Date();
     }
 }

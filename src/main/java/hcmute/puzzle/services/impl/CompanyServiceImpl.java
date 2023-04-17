@@ -1,4 +1,4 @@
-package hcmute.puzzle.services.Impl;
+package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.CompanyDTO;
@@ -9,23 +9,21 @@ import hcmute.puzzle.entities.EmployerEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.exception.NotFoundException;
-import hcmute.puzzle.model.enums.FileType;
+import hcmute.puzzle.model.enums.FileCategory;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.CompanyRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.CompanyService;
 import hcmute.puzzle.services.FilesStorageService;
-import hcmute.puzzle.utils.Constant;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -61,7 +59,10 @@ public class CompanyServiceImpl implements CompanyService {
       // lay id sau khi luu vao db de dat ten cho anh
       String urlImage =
           storageService.uploadFileWithFileTypeReturnUrl(
-              user.get(), String.valueOf(company.getId()), imageFile, FileType.IMAGE_COMPANY);
+              user.get(),
+              String.valueOf(company.getId()),
+              imageFile,
+              FileCategory.IMAGE_COMPANY);
       company.setImage(urlImage);
       company = companyRepository.save(company);
     }
@@ -74,7 +75,8 @@ public class CompanyServiceImpl implements CompanyService {
       long companyId,
       CompanyDTO companyPayload,
       MultipartFile imageFile,
-      EmployerEntity createEmployer) {
+      EmployerEntity createEmployer)
+      throws NotFoundException {
     Optional<CompanyEntity> companyEntityOptional = companyRepository.findById(companyId);
 
     if (companyEntityOptional.isEmpty()) {
@@ -110,8 +112,11 @@ public class CompanyServiceImpl implements CompanyService {
 
       // lay id sau khi luu vao db de dat ten cho anh
       String urlImage =
-          storageService.uploadFileWithFileTypeReturnUrl(userEntity.get(),
-              String.valueOf(company.getId()), imageFile, FileType.IMAGE_COMPANY);
+          storageService.uploadFileWithFileTypeReturnUrl(
+              userEntity.get(),
+              String.valueOf(company.getId()),
+              imageFile,
+              FileCategory.IMAGE_COMPANY);
       company.setImage(urlImage);
       company = companyRepository.save(company);
     }

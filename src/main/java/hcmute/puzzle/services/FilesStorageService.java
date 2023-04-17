@@ -1,22 +1,32 @@
 package hcmute.puzzle.services;
 
 import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.exception.NotFoundException;
+import hcmute.puzzle.exception.PartialFailureException;
 import hcmute.puzzle.model.CloudinaryUploadFileResponse;
-import hcmute.puzzle.model.enums.FileType;
+import hcmute.puzzle.model.enums.FileCategory;
+
+import java.util.List;
+import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
-
 public interface FilesStorageService {
-    Map uploadAvatarImage(String imageName, MultipartFile file, String locationStorage);
+  Map uploadFile(String imageName, MultipartFile file, String locationStorage);
 
-    Map deleteAvatarImage(String imageName);
+  boolean deleteFile(String imageName, FileCategory category,  UserEntity deleter) throws NotFoundException;
 
-//    String updateAvatarReturnUrl(Object id, MultipartFile file, String prefix);
+  boolean deleteMultiFile(List<String> publicIds, UserEntity deleter) throws PartialFailureException;
 
-    String uploadFileWithFileTypeReturnUrl(UserEntity author, String keyName, MultipartFile file, FileType fileType);
+  String uploadFileWithFileTypeReturnUrl(
+      UserEntity author, String keyName, MultipartFile file, FileCategory fileCategory)
+      throws NotFoundException;
 
-    String processFileName(String keyValue, FileType fileType);
+  String processFileName(String keyValue, FileCategory fileCategory);
 
-    CloudinaryUploadFileResponse uploadFileReturnUrl(String fileName, MultipartFile file);
+  CloudinaryUploadFileResponse uploadFileReturnResponseObject(String fileName, MultipartFile file, String fileLocation, UserEntity uploader);
+
+  public List<String> detectedImageSrcList(String html);
+
+  List<String> getDeletedImageSrcs(List<String> oldList, List<String> newList);
 }
+

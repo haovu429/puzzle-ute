@@ -1,4 +1,4 @@
-package hcmute.puzzle.services.Impl;
+package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.entities.TokenEntity;
 import hcmute.puzzle.entities.UserEntity;

@@ -1,11 +1,24 @@
 package hcmute.puzzle.exception;
 
-public class PartialFailure extends Exception {
-  public PartialFailure(String message) {
-    super(message);
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
+public class PartialFailureException extends CustomException {
+
+  public PartialFailureException(String message) {
+    super(413, message);
   }
 
-  public PartialFailure() {
-    super(Error.BatchExecuteError.PARTIAL_FAILURE);
+  public PartialFailureException() {
+    super(413, ErrorDefine.ServerError.PARTIAL_FAILURE);
+  }
+
+
+  public static String processingMsg(List<String> failureObject) {
+    AtomicReference<String> msg = new AtomicReference<>("partial item failure, detail: ");
+    failureObject.forEach(item -> {
+      msg.set(msg + item + ", ");
+    });
+    return msg.get();
   }
 }

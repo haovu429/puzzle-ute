@@ -1,4 +1,4 @@
-package hcmute.puzzle.utils;
+package hcmute.puzzle.model.enums;
 
 public enum Roles {
   ADMIN("ADMIN"),

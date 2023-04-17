@@ -1,19 +1,15 @@
-package hcmute.puzzle.services.Impl;
+package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.CandidateDTO;
 import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.entities.*;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.*;
 import hcmute.puzzle.services.CandidateService;
-import hcmute.puzzle.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 

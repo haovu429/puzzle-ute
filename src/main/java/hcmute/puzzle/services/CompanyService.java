@@ -12,7 +12,7 @@ public interface CompanyService {
 
   DataResponse save(CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer) throws NotFoundException;
 
-  DataResponse update(long companyId, CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer);
+  DataResponse update(long companyId, CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer) throws NotFoundException;
 
   ResponseObject delete(long id);
 

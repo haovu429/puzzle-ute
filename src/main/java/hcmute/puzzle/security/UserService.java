@@ -39,7 +39,7 @@ public class UserService implements UserDetailsService {
 
   @Override
   public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    // Avoid Error: failed to lazily initialize a collection of role:
+    // Avoid ErrorDefine: failed to lazily initialize a collection of role:
     // hcmute.puzzle.entities.UserEntity.roles, could not initialize proxy - no Session
     // https://www.baeldung.com/hibernate-initialize-proxy-exception
     UserEntity userEntity = userRepository.getUserByEmailJoinFetch(email);
@@ -60,7 +60,7 @@ public class UserService implements UserDetailsService {
       updateCustomerAfterOAuthLoginSuccess(existUser, googlePojo);
     }
     if (existUser == null) {
-      throw new CustomException("Error create account from OAuth2");
+      throw new CustomException("ErrorDefine create account from OAuth2");
     }
     Set<String> roles =
             existUser.getRoles().stream().map(role -> role.getName()).collect(Collectors.toSet());

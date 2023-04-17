@@ -1,20 +1,12 @@
 package hcmute.puzzle.controller;
 
-import hcmute.puzzle.entities.UserEntity;
-import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
-import hcmute.puzzle.model.enums.FileType;
 import hcmute.puzzle.repository.UserRepository;
-import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
@@ -36,7 +28,7 @@ public class FileStorageController {
 //    }
 //    String fileUrl =
 //        storageService.uploadFileWithFileTypeReturnUrl(
-//            user, user.getEmail(), file, FileType.IMAGE_AVATAR);
+//            user, user.getEmail(), file, FileCategory.IMAGE_AVATAR);
 //    return new DataResponse(fileUrl);
 //  }
 

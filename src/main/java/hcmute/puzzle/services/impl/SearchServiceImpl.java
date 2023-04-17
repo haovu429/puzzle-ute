@@ -1,4 +1,4 @@
-package hcmute.puzzle.services.Impl;
+package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.model.ModelQuery;
@@ -55,7 +55,7 @@ public class SearchServiceImpl implements SearchService {
         return equalCondition(tableName, fieldName, modelQuery.getCompareValue());
       }
     }
-    throw new CustomException("Error filter job post");
+    throw new CustomException("ErrorDefine filter job post");
   }
 
   private String filterContain(String tableName, String fieldName, List<ModelQuery> modelQueries) {

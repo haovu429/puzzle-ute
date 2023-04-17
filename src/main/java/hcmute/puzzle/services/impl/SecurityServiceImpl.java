@@ -1,4 +1,4 @@
-package hcmute.puzzle.services.Impl;
+package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.configuration.SystemInfo;
 import hcmute.puzzle.entities.TokenEntity;
@@ -10,21 +10,16 @@ import hcmute.puzzle.repository.TokenRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.SecurityService;
-import hcmute.puzzle.utils.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static hcmute.puzzle.controller.AuthenticationController.RESET_PASSWORD_URL;
 
 @Service
 public class SecurityServiceImpl implements SecurityService {

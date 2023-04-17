@@ -2,9 +2,7 @@ package hcmute.puzzle.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import hcmute.puzzle.utils.Provider;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -19,9 +17,11 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-// Avoid Error table name is "user" in database
+// Avoid ErrorDefine table name is "user" in database
 @Table(name = "users")
 public class UserEntity implements Serializable {
 

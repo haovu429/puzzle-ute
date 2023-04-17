@@ -9,7 +9,7 @@ import hcmute.puzzle.accessHandler.CustomAuthenticationHandler;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.services.CustomOAuth2UserService;
-import hcmute.puzzle.utils.Roles;
+import hcmute.puzzle.model.enums.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

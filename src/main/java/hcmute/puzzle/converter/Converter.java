@@ -697,7 +697,7 @@ public class Converter {
     try {
       Optional<UserEntity> userEntity = userRepository.findById(dto.getUserId());
       if (userEntity.isPresent()) {
-        entity.setUserEntity(userEntity.get());
+        entity.setCreatedBy(userEntity.get());
       }
     } catch (Exception e) {
       log.error(e.getMessage());

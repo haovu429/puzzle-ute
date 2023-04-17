@@ -1,10 +1,8 @@
 package hcmute.puzzle.utils;
 
 import hcmute.puzzle.exception.CustomException;
-
-import org.springframework.beans.factory.annotation.Value;
-
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Value;
 
 public class Constant {
   //  regex for email address
@@ -28,16 +26,13 @@ public class Constant {
   public static final String SKILL = "SKILL";
   public static final String SERVICE = "SERVICE";
 
-  public static final String STORAGE_BLOG_IMAGE_LOCATION = "puzzle_ute/user/blog";
+  public static final String SUFFIX_BLOG_IMAGE_FILE_NAME = "_blog_image"; // email_avatar
 
-  public static final String STORAGE_IMAGE_LOCATION = "puzzle_ute/user/avatar";
-  public static final String STORAGE_COMPANY_IMAGE_LOCATION = "puzzle_ute/company/image";
-
-  public static final String SUFFIX_BLOG_IMAGE_FILE_NAME = "_blog_image"; //email_avatar
-
-  public static final String SUFFIX_AVATAR_FILE_NAME = "_avatar"; //email_avatar
+  public static final String SUFFIX_AVATAR_FILE_NAME = "_avatar"; // email_avatar
 
   public static final String SUFFIX_COMPANY_IMAGE_FILE_NAME = "_company_image"; // id_company_image
+
+  public static final String SYSTEM_MAIL = "puzzle429@gmail.com";
 
   public static String validateTypeExtraInfo(String type) {
     if (type.equals(POSITION)) return POSITION;
@@ -46,6 +41,17 @@ public class Constant {
     throw new CustomException("Type isn't exist");
   }
 
-  public static final String[] LIST_HOST_FRONT_END = new String[] {LOCAL_URL, ONLINE_URL, ONLINE1_URL};
+  public static final String[] LIST_HOST_FRONT_END =
+      new String[] {LOCAL_URL, ONLINE_URL, ONLINE1_URL};
 
+  public class StorageName {
+    public static final String CLOUDINARY = "CLOUDINARY";
+  }
+
+  public class FileLocation {
+    public static final String STORAGE_BLOG_IMAGE_LOCATION = "puzzle_ute/user/blog";
+
+    public static final String STORAGE_IMAGE_LOCATION = "puzzle_ute/user/avatar";
+    public static final String STORAGE_COMPANY_IMAGE_LOCATION = "puzzle_ute/company/image";
+  }
 }

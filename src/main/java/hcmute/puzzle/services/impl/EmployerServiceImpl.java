@@ -1,7 +1,6 @@
-package hcmute.puzzle.services.Impl;
+package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.CompanyDTO;
 import hcmute.puzzle.dto.EmployerDTO;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.*;

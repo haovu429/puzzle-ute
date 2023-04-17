@@ -1,13 +1,18 @@
 package hcmute.puzzle.controller;
 
+import static hcmute.puzzle.utils.Constant.SUFFIX_AVATAR_FILE_NAME;
+
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.*;
 import hcmute.puzzle.entities.BlogPostEntity;
 import hcmute.puzzle.entities.InvoiceEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.ErrorDefine;
+import hcmute.puzzle.exception.NotFoundException;
+import hcmute.puzzle.exception.ServerException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
-import hcmute.puzzle.model.enums.FileType;
+import hcmute.puzzle.model.enums.FileCategory;
 import hcmute.puzzle.model.payload.request.blog_post.CreateBlogPostPayload;
 import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
 import hcmute.puzzle.repository.BlogPostRepository;
@@ -17,19 +22,17 @@ import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.TimeUtil;
+import java.util.*;
+import javax.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-
-import static hcmute.puzzle.utils.Constant.SUFFIX_AVATAR_FILE_NAME;
 
 @RestController
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
@@ -111,33 +114,24 @@ public class UserController {
 
   @PostMapping("/upload-avatar")
   public DataResponse uploadAvatar(
-      @RequestParam("file") MultipartFile file, Authentication authentication) {
+      @RequestParam("file") MultipartFile file, Authentication authentication)
+      throws NotFoundException {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return userService.updateAvatarForUser(userDetails.getUser(), file, FileType.IMAGE_AVATAR);
+    return userService.updateAvatarForUser(userDetails.getUser(), file, FileCategory.IMAGE_AVATAR);
   }
 
   @GetMapping("/delete-avatar")
-  public ResponseObject deleteAvatar(Authentication authentication) {
+  public ResponseObject deleteAvatar(Authentication authentication)
+      throws ServerException, NotFoundException {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
     String fileName = userDetails.getUser().getEmail() + SUFFIX_AVATAR_FILE_NAME;
 
-    Map response;
+    boolean result =
+        storageService.deleteFile(fileName, FileCategory.IMAGE_AVATAR, userDetails.getUser());
 
-    response = storageService.deleteAvatarImage(fileName);
-
-    if (response == null) {
-      throw new CustomException("Delete image failure, not response");
-    }
-
-    if (response.get("result") == null) {
-      throw new CustomException("Can't get url from response of storage cloud");
-    }
-
-    String result = response.get("result").toString();
-
-    if (!result.equals("ok")) {
-      return new ResponseObject(200, "Delete image failure, response isn't ok", response);
+    if (!result) {
+      throw new ServerException(ErrorDefine.ServerError.STORAGE_ERROR);
       // throw new CustomException("Delete image failure, response isn't ok");
     }
 
@@ -145,7 +139,7 @@ public class UserController {
 
     userRepository.save(userDetails.getUser());
 
-    return new ResponseObject(200, "Delete image success", response);
+    return new ResponseObject("Delete image success");
   }
 
   @PostMapping("/user/register-employer")
@@ -287,14 +281,18 @@ public class UserController {
     ModelMapper mapper = new ModelMapper();
     BlogPostDTO blogPostDTO = mapper.map(createBlogPostPayload, BlogPostDTO.class);
     blogPostDTO.setUserId(((CustomUserDetails) authentication.getPrincipal()).getUser().getId());
-    return blogPostService.update(blogPostDTO, blogPostId);
+
+    UserEntity currentUser =
+        ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+            .getUser();
+    return blogPostService.update(blogPostDTO, blogPostId, currentUser);
   }
 
   @DeleteMapping("/user/delete-blog-post/{blogPostId}")
   public DataResponse deleteBlogPost(Authentication authentication, @PathVariable long blogPostId) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     Optional<BlogPostEntity> blogPost = blogPostRepository.findById(blogPostId);
-    if (blogPost.get().getUserEntity().getId() != userDetails.getUser().getId()) {
+    if (blogPost.get().getCreatedBy().getId() != userDetails.getUser().getId()) {
       throw new CustomException("You don't have rights for this blog post");
     }
     return blogPostService.delete(blogPostId);
@@ -302,11 +300,12 @@ public class UserController {
 
   @PostMapping("/user/upload-blog-image")
   public DataResponse uploadBlogImage(
-      @RequestParam("file") MultipartFile file, Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+      @RequestParam("file") MultipartFile file, Authentication authentication)
+      throws NotFoundException {
+    UserEntity userDetails = ((CustomUserDetails) authentication.getPrincipal()).getUser();
     String fileName =
         storageService.uploadFileWithFileTypeReturnUrl(
-            userDetails.getUser(), file.getOriginalFilename(), file, FileType.IMAGE_BLOG);
+            userDetails, file.getOriginalFilename(), file, FileCategory.IMAGE_BLOG);
     return new DataResponse(fileName);
   }
 }

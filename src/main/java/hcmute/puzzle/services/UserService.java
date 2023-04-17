@@ -3,7 +3,8 @@ package hcmute.puzzle.services;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
 import hcmute.puzzle.entities.UserEntity;
-import hcmute.puzzle.model.enums.FileType;
+import hcmute.puzzle.exception.NotFoundException;
+import hcmute.puzzle.model.enums.FileCategory;
 import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
 import hcmute.puzzle.response.DataResponse;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,7 +28,9 @@ public interface UserService {
 
   DataResponse updateForAdmin(long id, UserDTO userPayload);
 
-  DataResponse updateAvatarForUser(UserEntity userEntity, MultipartFile file, FileType fileType);
+  DataResponse updateAvatarForUser(
+      UserEntity userEntity, MultipartFile file, FileCategory fileCategory)
+      throws NotFoundException;
 
   // void processOAuthPostLogin(String username);
 

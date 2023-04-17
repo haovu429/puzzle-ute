@@ -16,7 +16,7 @@ public class CloudinaryUploadFileResponse {
     String format;
     String resource_type;
     String secure_url;
-    String create_at;
+    String created_at;
     String asset_id;
     String version_id;
     String type;

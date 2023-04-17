@@ -21,9 +21,17 @@ public class MyExceptionHandler {
   @ExceptionHandler(CustomException.class)
   @ResponseBody
   public DataResponse handleCustomerException(CustomException e) {
-    error = DataResponse.STATUS_CUSTOM_EXCEPTION;
+    return new DataResponse(
+            ErrorDefine.ServerError.SERVER_ERROR, e.getDetail(), 500);
+  }
+
+  @ExceptionHandler(PartialFailureException.class)
+  @ResponseBody
+  public DataResponse handlePartialFailureException(PartialFailureException e) {
+    error = e.getStatus();
     return new DataResponse(String.valueOf(error), e.getMessage(), error);
   }
+
 
   @ExceptionHandler(MissingServletRequestParameterException.class)
   @ResponseBody
@@ -34,4 +42,12 @@ public class MyExceptionHandler {
     error = DataResponse.STATUS_CUSTOM_EXCEPTION;
     return new DataResponse(String.valueOf(error), name + " parameter is missing", error);
   }
+
+  @ExceptionHandler(BadRequestException.class)
+  @ResponseBody
+  public DataResponse handleBadRequestException(BadRequestException e) {
+    return new DataResponse(
+            ErrorDefine.ClientError.BAD_REQUEST_ERROR, e.getDetail(), 400);
+  }
+
 }

@@ -2,30 +2,50 @@ package hcmute.puzzle.test;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-
+import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.services.FilesStorageService;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TestCloudinary {
+
+  @Autowired FilesStorageService filesStorageService;
 
   public static void main(String[] args) {
     // testDetectImageTagHtml();
-    //lib();
+    // lib();
+    // testDeleteManyFileCloudinary();
+
+  }
+
+  public void testDeleteManyFileCloudinary() {
+    List<String> deteleFilePublicIds = new ArrayList<>();
+    deteleFilePublicIds.add("puzzle_ute/user/blog/KhiDenTrang.jpg2023-04-16T23:53:51_blog_image");
+    deteleFilePublicIds.add("puzzle_ute/user/blog/KhiDenTrang.jpg2023-04-16T23:53:55_blog_image");
+    deteleFilePublicIds.add("puzzle_ute/user/blog/KhiDenTrang.jpg2023-04-16T23:53:57_blog_image");
+    filesStorageService.deleteMultiFile(
+        deteleFilePublicIds, UserEntity.builder().email("haodeptry@gmail.com").build());
+  }
+
+  static void testDetectDeletedSrc() {
     String string =
-            "<img src='path/to/image/name.jpg' />\n"
-                    + "<img src='path/to/image/3name.jpg'  alt=\"name here\"/><p>test card 22</p>\n"
-                    + "<img  src=\"path/to/image/name.jpg\"/><p>test card 22</p>\n"
-                    + "<img   src=\"http://media.cheggcdn.com/media%2Fd08%2Fd087a4d3-8e4e-4e42-8cf0-2b03238a33ef%2Fimage\"/><p>test card 22</p>\n"
-                    + "<img   src='http://media.cheggcdn.com/media%2Fd08%2Fd087a4d3-8e4e-4e42-8cf0-2b03238a33ef%2Fimage'/><p>test card 22</p>";
+        "<img src='path/to/image/name.jpg' />\n"
+            + "<img src='path/to/image/3name.jpg'  alt=\"name here\"/><p>test card 22</p>\n"
+            + "<img  src=\"path/to/image/name.jpg\"/><p>test card 22</p>\n"
+            + "<img   src=\"http://media.cheggcdn.com/media%2Fd08%2Fd087a4d3-8e4e-4e42-8cf0-2b03238a33ef%2Fimage\"/><p>test card 22</p>\n"
+            + "<img   src='http://media.cheggcdn.com/media%2Fd08%2Fd087a4d3-8e4e-4e42-8cf0-2b03238a33ef%2Fimage'/><p>test card 22</p>";
 
     String string2 =
-            "<img src='path/to/image/name.jpg' />\n"
-                    + "<img src='path/to/image/name2.jpg'  alt=\"name here\"/><p>test card 22</p>\n"
-                    + "<img  src=\"path/to/image/name.jpg\"/><p>test card 22</p>\n"
-                    + "<img   src=\"http://media.cheggcdn.com/media%2Fd08%2Fd087a4d3-8e4e-4e42-8cf0-2b03238a33ef%2Fimage\"/><p>test card 22</p>\n"
-                    + "<img   src='http://media.cheggcdn.com/media%2Fd08%2Fd087a4d3-8e4e-4e42-8cf0-2b03238a33ef%2Fimage'/><p>test card 22</p>";
+        "<img src='path/to/image/name.jpg' />\n"
+            + "<img src='path/to/image/name2.jpg'  alt=\"name here\"/><p>test card 22</p>\n"
+            + "<img  src=\"path/to/image/name.jpg\"/><p>test card 22</p>\n"
+            + "<img   src=\"http://media.cheggcdn.com/media%2Fd08%2Fd087a4d3-8e4e-4e42-8cf0-2b03238a33ef%2Fimage\"/><p>test card 22</p>\n"
+            + "<img   src='http://media.cheggcdn.com/media%2Fd08%2Fd087a4d3-8e4e-4e42-8cf0-2b03238a33ef%2Fimage'/><p>test card 22</p>";
     List<String> oldSrcs = detectedImageSrcList(string);
     List<String> newSrcs = detectedImageSrcList(string2);
     newSrcs.add("Hao dep try");
@@ -46,14 +66,11 @@ public class TestCloudinary {
     for (String src : deletedImageSrcs) {
       System.out.println(src);
     }
-
-
   }
 
   static List<String> getDeletedImageSrcs(List<String> oldList, List<String> newList) {
-    List<String> deletedImageSrcs = oldList.stream()
-            .filter(item -> !newList.contains(item))
-            .toList();
+    List<String> deletedImageSrcs =
+        oldList.stream().filter(item -> !newList.contains(item)).toList();
     return deletedImageSrcs;
   }
 
@@ -141,11 +158,11 @@ public class TestCloudinary {
     final Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
     final Matcher matcher = pattern.matcher(html);
     while (matcher.find()) {
-      //System.out.println("Full match: " + matcher.group(0));
+      // System.out.println("Full match: " + matcher.group(0));
 
       for (int i = 1; i <= matcher.groupCount(); i++) {
         imageSrcList.add(matcher.group(i));
-        //System.out.println("Group " + i + ": " + matcher.group(i));
+        // System.out.println("Group " + i + ": " + matcher.group(i));
       }
     }
 
