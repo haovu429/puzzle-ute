@@ -20,7 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -128,25 +127,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     List<FileEntity> fileInfoFromDB =
         fileRepository.findAllByCloudinaryPublicIdInAndDeletedIs(publicIds, false);
 
-    List<String> publicIdsFromDB =
-        fileInfoFromDB.stream().map(FileEntity::getCloudinaryPublicId).toList();
-
-    //    if (publicIds.size() != fileInfoFromDB.size()) {
-    //      throw new BadRequestException();
-    //    }
-
-    List<String> notExistIds =
-        publicIds.stream()
-            .filter(
-                publicId ->
-                    publicIdsFromDB.stream().noneMatch(idFromDb -> idFromDb.equals(publicId)))
-            .toList();
-
-    if (!notExistIds.isEmpty()) {
-      String msg = PartialFailureException.processingMsg(notExistIds);
-      throw new PartialFailureException(msg);
-    }
-
+    // checkNotExistsPublicIdsInDB(publicIds, publicIdsFromDB);
     try {
       // Destroy the image
 
@@ -170,6 +151,26 @@ public class FilesStorageServiceImpl implements FilesStorageService {
       e.printStackTrace();
     }
     return false;
+  }
+
+  private void checkNotExistsPublicIdsInDB(List<String> publicIds) {
+
+    List<FileEntity> fileInfoFromDB =
+        fileRepository.findAllByCloudinaryPublicIdInAndDeletedIs(publicIds, false);
+
+    List<String> publicIdsFromDB =
+        fileInfoFromDB.stream().map(FileEntity::getCloudinaryPublicId).toList();
+    List<String> notExistIds =
+        publicIds.stream()
+            .filter(
+                publicId ->
+                    publicIdsFromDB.stream().noneMatch(idFromDb -> idFromDb.equals(publicId)))
+            .toList();
+
+    if (!notExistIds.isEmpty()) {
+      String msg = PartialFailureException.processingMsg(notExistIds);
+      throw new PartialFailureException(msg);
+    }
   }
 
   //  public String updateAvatarReturnUrl(Object id, MultipartFile file, String prefix) {
@@ -213,7 +214,9 @@ public class FilesStorageServiceImpl implements FilesStorageService {
             .location(fileType.getLocation())
             .extension(Files.getFileExtension(Objects.requireNonNull(file.getOriginalFilename())))
             .url(fileUrl)
-            .author(author.getEmail())
+            .created_by(author.getEmail())
+            .updateBy(author.getEmail())
+            .updateAt(currentTime)
             .cloudinaryPublicId(response.getPublic_id())
             .createAt(currentTime)
             .build();
@@ -286,7 +289,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 
   public List<String> getDeletedImageSrcs(List<String> oldList, List<String> newList) {
     List<String> deletedImageSrcs =
-            oldList.stream().filter(item -> !newList.contains(item)).toList();
+        oldList.stream().filter(item -> !newList.contains(item)).toList();
     return deletedImageSrcs;
   }
 }

@@ -45,8 +45,8 @@ public class FileEntity implements Serializable {
   @Column(name = "cloudinary_public_id")
   private String cloudinaryPublicId;
 
-  @Column(name = "author", columnDefinition = "VARCHAR(100)")
-  private String author;
+  @Column(name = "created_by", columnDefinition = "VARCHAR(100)")
+  private String created_by;
 
   @Column(name = "create_at")
   @Temporal(TemporalType.TIMESTAMP)
@@ -57,9 +57,6 @@ public class FileEntity implements Serializable {
   @Temporal(TemporalType.TIMESTAMP)
   @UpdateTimestamp
   private Date updateAt;
-
-  @Column(name = "create_by")
-  private String createBy;
 
   @Column(name = "update_by")
   private String updateBy;

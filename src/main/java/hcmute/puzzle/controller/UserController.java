@@ -270,7 +270,7 @@ public class UserController {
     BlogPostDTO blogPostDTO = mapper.map(createBlogPostPayload, BlogPostDTO.class);
     blogPostDTO.setCreateTime(new Date());
     blogPostDTO.setUserId(((CustomUserDetails) authentication.getPrincipal()).getUser().getId());
-    return blogPostService.save(blogPostDTO);
+    return blogPostService.createBlogPost(blogPostDTO);
   }
 
   @PutMapping("/user/update-blog-post/{blogPostId}")

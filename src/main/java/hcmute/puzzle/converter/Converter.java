@@ -384,7 +384,7 @@ public class Converter {
     dto.setName(entity.getName());
     dto.setUrl(entity.getUrl());
     dto.setObjectId(entity.getObjectId());
-    dto.setAuthor(entity.getAuthor());
+    dto.setAuthor(entity.getCreated_by());
     dto.setCloudinaryPublicId(entity.getCloudinaryPublicId());
     dto.setCreateAt(entity.getCreateAt());
 
@@ -398,7 +398,7 @@ public class Converter {
     entity.setName(dto.getName());
     entity.setUrl(dto.getUrl());
     entity.setObjectId(dto.getObjectId());
-    entity.setAuthor(dto.getAuthor());
+    entity.setCreated_by(dto.getAuthor());
     entity.setCloudinaryPublicId(dto.getCloudinaryPublicId());
     entity.setCreateAt(dto.getCreateAt());
 

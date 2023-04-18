@@ -6,17 +6,21 @@ import hcmute.puzzle.entities.BlogPostEntity;
 import hcmute.puzzle.entities.FileEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.repository.BlogPostRepository;
 import hcmute.puzzle.repository.FileRepository;
 import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.services.BlogPostService;
 import hcmute.puzzle.services.FilesStorageService;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,40 +35,85 @@ public class BlogPostServiceImpl implements BlogPostService {
   @Autowired private FilesStorageService filesStorageService;
 
   @Override
-  public DataResponse save(BlogPostDTO dto) {
-    BlogPostEntity entity = converter.toEntity(dto);
-    entity = blogPostRepository.save(entity);
-    return new DataResponse(converter.toDTO(entity));
+  public DataResponse createBlogPost(BlogPostDTO dto) {
+    BlogPostEntity blogPost = converter.toEntity(dto);
+    blogPost = blogPostRepository.save(blogPost);
+    // process file (update blog id for file saved image)
+    List<String> imageUrls = null;
+    List<FileEntity> savedImages = null;
+
+    imageUrls = detectedImageSrcList(blogPost.getBody());
+
+    if (imageUrls != null && !imageUrls.isEmpty()) {
+      savedImages = fileRepository.findAllByUrlIdInAndDeletedIs(imageUrls, false);
+    }
+
+    if (savedImages != null && !savedImages.isEmpty()) {
+      BlogPostEntity finalBlogPost = blogPost;
+      savedImages.forEach(image -> image.setObjectId(finalBlogPost.getId()));
+      fileRepository.saveAll(savedImages);
+    }
+
+    return new DataResponse(converter.toDTO(blogPost));
   }
 
   @Override
   public DataResponse update(BlogPostDTO dto, long id, UserEntity updater) {
-    BlogPostEntity entity = blogPostRepository.getById(id);
-    if (entity != null) {
-      if (dto.getUserId() != entity.getCreatedBy().getId()) {
+    BlogPostEntity blogPost = blogPostRepository.getById(id);
+    if (blogPost != null) {
+      if (dto.getUserId() != blogPost.getCreatedBy().getId()) {
         throw new CustomException("You don't have rights for this blog post");
       }
-      entity.updateFromDTO(dto);
-      blogPostRepository.save(entity);
 
       try {
-        // release file don't use
-        List<String> oldSrcs = detectedImageSrcList(entity.getBody());
+        List<String> oldSrcs = detectedImageSrcList(blogPost.getBody());
         List<String> newSrcs = detectedImageSrcList(dto.getBody());
-        List<String> urlToDelete = getDeletedBlogImageUrl(oldSrcs, newSrcs);
+
+        // update blog post id for new saved file in db
+        List<String> addedSrcs = getUrlOfFirstListWhichSecondListNotContain(newSrcs, oldSrcs);
+        updateBlogPostIdForSavedFile(addedSrcs, blogPost.getId());
+
+        // release file don't use
+        List<String> urlToDelete = getUrlOfFirstListWhichSecondListNotContain(oldSrcs, newSrcs);
         List<String> publicIdsToDelete =
             fileRepository.findAllByUrlIdInAndDeletedIs(urlToDelete, false).stream()
                 .map(FileEntity::getCloudinaryPublicId)
                 .toList();
-        if (!publicIdsToDelete.isEmpty() && publicIdsToDelete != null)
+        if (!publicIdsToDelete.isEmpty())
           filesStorageService.deleteMultiFile(publicIdsToDelete, updater);
+
+        blogPost.updateFromDTO(dto);
+        blogPostRepository.save(blogPost);
+
       } catch (Exception e) {
         e.printStackTrace();
       }
 
-      return new DataResponse(converter.toDTO(entity));
+      return new DataResponse(converter.toDTO(blogPost));
     }
     throw new CustomException("Not found blog post");
+  }
+
+  private void updateBlogPostIdForSavedFile(List<String> fileSrcs, long blogPostId) {
+    List<FileEntity> savedImages = null;
+
+    //get current user
+    UserEntity currentUser =
+        ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+            .getUser();
+
+    if (fileSrcs != null && !fileSrcs.isEmpty()) {
+      savedImages = fileRepository.findAllByUrlIdInAndDeletedIs(fileSrcs, false);
+    }
+    if (savedImages != null && !savedImages.isEmpty()) {
+      savedImages.forEach(
+          image -> {
+            image.setObjectId(blogPostId);
+            image.setUpdateBy(currentUser.getEmail());
+            image.setUpdateAt(new Date());
+          });
+      fileRepository.saveAll(savedImages);
+    }
   }
 
   @Override
@@ -89,14 +138,18 @@ public class BlogPostServiceImpl implements BlogPostService {
 
   @Override
   public DataResponse getOneById(long id) {
-    BlogPostDTO dto = converter.toDTO(blogPostRepository.findById(id).get());
+    BlogPostDTO dto =
+        converter.toDTO(
+            blogPostRepository
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException("NOT_FOUND_BLOG_POST")));
     return new DataResponse(dto);
   }
 
-  public List<String> getDeletedBlogImageUrl(List<String> oldList, List<String> newList) {
-    List<String> deletedImageSrcs =
-        oldList.stream().filter(item -> !newList.contains(item)).toList();
-    return deletedImageSrcs;
+  public List<String> getUrlOfFirstListWhichSecondListNotContain(
+      List<String> firstList, List<String> secondList) {
+    // getDeletedBlogImageUrl
+    return firstList.stream().filter(item -> !secondList.contains(item)).toList();
   }
 
   public List<String> detectedImageSrcList(String html) {
