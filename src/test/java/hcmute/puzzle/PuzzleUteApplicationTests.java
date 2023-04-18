@@ -31,7 +31,7 @@ class PuzzleUteApplicationTests {
     userEntity.setId(78L);
     userEntity.setFullName("Hao dep try");
 
-    blogPostEntity.setUserEntity(userEntity);
+    blogPostEntity.setCreatedBy(userEntity);
     blogPostEntity.setTitle("Thanh nien dep try nhat xom");
 
     BlogPostDTO blogPostDTO = converter.toDTO(blogPostEntity);
