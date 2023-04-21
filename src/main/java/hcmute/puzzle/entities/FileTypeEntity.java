@@ -40,13 +40,23 @@ public class FileTypeEntity {
   @Column(name = "author", columnDefinition = "VARCHAR(100)")
   private String author;
 
-  @Column(name = "create_at")
+  @Column(name = "created_at")
   @Temporal(TemporalType.TIMESTAMP)
   @CreationTimestamp
-  private Date createAt;
+  private Date createdAt;
 
-  @Column(name = "update_at")
+  @Column(name = "created_by", columnDefinition = "VARCHAR(100)")
+  private String created_by;
+
+  @Column(name = "updated_at")
   @Temporal(TemporalType.TIMESTAMP)
   @UpdateTimestamp
-  private Date updateAt;
+  private Date updatedAt;
+
+  @Column(name = "updated_by", columnDefinition = "VARCHAR(100)")
+  private String updatedBy;
+
+  @Column(name = "is_deleted")
+  @Builder.Default
+  private boolean isDelete = false;
 }

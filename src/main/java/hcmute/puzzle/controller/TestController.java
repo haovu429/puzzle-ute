@@ -29,15 +29,15 @@ public class TestController {
 
   @GetMapping("/init-db")
   public String initDB() {
-    // setUpDB.preStart();
-    //setUpDB.createMdFileType();
+    setUpDB.preStart();
+    setUpDB.createMdFileType();
     //    Optional<UserEntity> userEntity = userRepository.findByEmail("admin1@gmail.com");
     //    Optional<RoleEntity> role = roleRepository.findById("user");
     //    System.out.println(role.get().getName());
     //    System.out.println(userEntity.get().getEmail());
     //    userEntity.get().getRoles().add(role.get());
     //    userRepository.save(userEntity.get());
-   testCloudinary.testDeleteManyFileCloudinary();
+   //testCloudinary.testDeleteManyFileCloudinary();
     return "Done!";
   }
 

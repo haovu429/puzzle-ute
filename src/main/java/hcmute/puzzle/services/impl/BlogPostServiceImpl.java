@@ -58,7 +58,7 @@ public class BlogPostServiceImpl implements BlogPostService {
   }
 
   @Override
-  public DataResponse update(BlogPostDTO dto, long id, UserEntity updater) {
+  public DataResponse update(BlogPostDTO dto, long id) {
     BlogPostEntity blogPost = blogPostRepository.getById(id);
     if (blogPost != null) {
       if (dto.getUserId() != blogPost.getCreatedBy().getId()) {
@@ -75,12 +75,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 
         // release file don't use
         List<String> urlToDelete = getUrlOfFirstListWhichSecondListNotContain(oldSrcs, newSrcs);
-        List<String> publicIdsToDelete =
-            fileRepository.findAllByUrlIdInAndDeletedIs(urlToDelete, false).stream()
-                .map(FileEntity::getCloudinaryPublicId)
-                .toList();
-        if (!publicIdsToDelete.isEmpty())
-          filesStorageService.deleteMultiFile(publicIdsToDelete, updater);
+        deleteMultiFileByUrlList(urlToDelete);
 
         blogPost.updateFromDTO(dto);
         blogPostRepository.save(blogPost);
@@ -109,16 +104,37 @@ public class BlogPostServiceImpl implements BlogPostService {
       savedImages.forEach(
           image -> {
             image.setObjectId(blogPostId);
-            image.setUpdateBy(currentUser.getEmail());
-            image.setUpdateAt(new Date());
+            image.setUpdatedBy(currentUser.getEmail());
+            image.setUpdatedAt(new Date());
           });
       fileRepository.saveAll(savedImages);
     }
   }
 
+  public void deleteMultiFileByUrlList(List<String> urls) {
+    //get current user
+    UserEntity currentUser =
+            ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                    .getUser();
+
+    List<String> publicIdsToDelete =
+            fileRepository.findAllByUrlIdInAndDeletedIs(urls, false).stream()
+                    .map(FileEntity::getCloudinaryPublicId)
+                    .toList();
+    if (!publicIdsToDelete.isEmpty())
+      filesStorageService.deleteMultiFile(publicIdsToDelete, currentUser);
+  }
+
   @Override
   public DataResponse delete(long id) {
-    blogPostRepository.deleteById(id);
+    BlogPostEntity blogPost = blogPostRepository.findById(id).orElseThrow(() -> new NotFoundException("NOT_FOUND_BLOG_POST"));
+    try {
+      List<String> imageSrcs = detectedImageSrcList(blogPost.getBody());
+
+      deleteMultiFileByUrlList(imageSrcs);
+    } catch (Exception e) {
+      //throw new FileStorageException("DO_NOT_DELETE_FILE_OF_BLOG_POST");
+    }
     return new DataResponse("Success");
   }
 

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
@@ -17,6 +18,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -29,8 +31,9 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.Arrays;
 
+@EnableTransactionManagement
 @SpringBootApplication
-@EnableJpaAuditing
+//@EnableJpaAuditing
 // @EnableAutoConfiguration
 // http://localhost:8080/swagger-ui/index.html
 // http://localhost:8080/oauth2/authorization/google
@@ -40,17 +43,7 @@ public class PuzzleUteApplication {
     System.setProperty("user.timezone", "Asia/Ho_Chi_Minh");
     SpringApplication.run(PuzzleUteApplication.class, args);
   }
-  @Bean
-  public WebMvcConfigurer corsConfigurer() {
-    return new WebMvcConfigurer() {
-      @Override
-      public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedMethods("*")
-                .allowedOrigins(Constant.LOCAL_URL, Constant.ONLINE_URL);
-      }
-    };
-  }
+
 
 
 //  @Bean

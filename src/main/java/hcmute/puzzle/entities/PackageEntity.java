@@ -1,8 +1,6 @@
 package hcmute.puzzle.entities;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,6 +11,8 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "package")
 public class PackageEntity implements Serializable {
@@ -50,6 +50,10 @@ public class PackageEntity implements Serializable {
 
     @Column(name = "for_user_type", columnDefinition = "VARCHAR(50)")
     private String forUserType;
+
+    @Column(name = "is_deleted")
+    @Builder.Default
+    private boolean isDelete = false;
 
     @OneToMany(mappedBy = "packageEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private Set<SubscribeEntity> subscribeEntities = new HashSet<>(); // Khi add, phải add từ 2 phía

@@ -35,7 +35,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
   UserEntity getUserByUsername(@Param("username") String username);
 
   @Query(
-      "SELECT COUNT(u) FROM UserEntity u WHERE u.joinDate > :startTime AND u.joinDate <= :endTime")
+      "SELECT COUNT(u) FROM UserEntity u WHERE u.createdAt > :startTime AND u.createdAt <= :endTime")
   long getCountUserJoinInTime(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
   UserEntity getByEmail(String email);

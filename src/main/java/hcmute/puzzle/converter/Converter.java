@@ -51,8 +51,7 @@ public class Converter {
     userDTO.setPassword(entity.getPassword());
     userDTO.setPhone(entity.getPhone());
     userDTO.setAvatar(entity.getAvatar());
-    userDTO.setOnline(entity.isOnline());
-    userDTO.setJoinDate(entity.getJoinDate());
+   // userDTO.setJoinDate(entity.getCreatedAt());
     userDTO.setLastOnline(entity.getLastOnline());
     userDTO.setActive(entity.isActive());
     userDTO.setProvider(entity.getProvider());
@@ -76,8 +75,7 @@ public class Converter {
     userEntity.setPassword(dto.getPassword());
     userEntity.setPhone(dto.getPhone());
     userEntity.setAvatar(dto.getAvatar());
-    userEntity.setOnline(dto.isOnline());
-    userEntity.setJoinDate(dto.getJoinDate());
+    //userEntity.setCreatedAt(dto.getJoinDate());
     userEntity.setLastOnline(dto.getLastOnline());
     userEntity.setActive(dto.isActive());
     //        Set<RoleEntity> roleEntities = dto.getRoles().stream().map(role -> toEntity(role))
@@ -386,7 +384,7 @@ public class Converter {
     dto.setObjectId(entity.getObjectId());
     dto.setAuthor(entity.getCreated_by());
     dto.setCloudinaryPublicId(entity.getCloudinaryPublicId());
-    dto.setCreateAt(entity.getCreateAt());
+    dto.setCreateAt(entity.getCreatedAt());
 
     return dto;
   }
@@ -400,7 +398,7 @@ public class Converter {
     entity.setObjectId(dto.getObjectId());
     entity.setCreated_by(dto.getAuthor());
     entity.setCloudinaryPublicId(dto.getCloudinaryPublicId());
-    entity.setCreateAt(dto.getCreateAt());
+    entity.setCreatedAt(dto.getCreateAt());
 
     return entity;
   }

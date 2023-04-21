@@ -197,7 +197,6 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public ResponseObject getUserByAccount(String email, String password) {
-    // TODO Auto-generated method stub
     UserEntity userEntity = userRepository.getUserByAccount(email, password);
     if (userEntity != null) {
       return new ResponseObject(

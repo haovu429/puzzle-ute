@@ -1,25 +1,30 @@
 package hcmute.puzzle.services.impl;
 
+import freemarker.template.Configuration;
 import hcmute.puzzle.configuration.SystemInfo;
 import hcmute.puzzle.entities.TokenEntity;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.mail.MailObject;
+import hcmute.puzzle.mail.MailUtil;
 import hcmute.puzzle.mail.SendMail;
 import hcmute.puzzle.repository.TokenRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.SecurityService;
+import hcmute.puzzle.utils.FreeMakerTemplateUtils;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class SecurityServiceImpl implements SecurityService {
@@ -41,10 +46,12 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     if (!foundUser.isEmailVerified()) {
-      throw new CustomException("The account's email is not verified, try other ways or contact the Admin");
+      throw new CustomException(
+          "The account's email is not verified, try other ways or contact the Admin");
     }
 
-    List<TokenEntity> existedTokens = tokenRepository.findTokensByUserAndType(foundUser.getId(), RESET_PASSWORD_TOKEN);
+    List<TokenEntity> existedTokens =
+        tokenRepository.findTokensByUserAndType(foundUser.getId(), RESET_PASSWORD_TOKEN);
 
     if (!existedTokens.isEmpty()) {
       List<TokenEntity> validTokens =
@@ -67,17 +74,45 @@ public class SecurityServiceImpl implements SecurityService {
 
     tokenRepository.save(createToken);
     String urlFrontEnd = "https://keen-semifreddo-66d931.netlify.app/reset-password";
+    String finalUrlFrontEnd = urlFrontEnd + "?token=" + tokenValue;
     MailObject mail =
         new MailObject(
             foundUser.getEmail(),
             "Reset Password",
-            "Link reset password: " + urlFrontEnd + "?token=" +
-                tokenValue
+            "Link reset password: "
+                + finalUrlFrontEnd
                 + "\nSupport email: "
-                + environment.getProperty("support.email"), null);
+                + environment.getProperty("support.email"),
+            null);
     SendMail.sendMail(mail);
 
     return new DataResponse("send email reset password successful");
+  }
+
+  public DataResponse sendTokenForgotPwd(String receiveMail, String urlResetPass)
+      throws MessagingException, IOException {
+    //    Session session = getSe
+    MailUtil mailUtil = new MailUtil();
+    MimeMessage mimeMessage = new MimeMessage(mailUtil.getSessionMail());
+    MimeMessageHelper helper =
+        new MimeMessageHelper(
+            mimeMessage,
+            MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED);
+
+    //    helper.setTo(bo.getToEmails().parallelStream().toArray(String[]::new));
+    //    helper.setBcc(bo.getBccEmails().parallelStream().toArray(String[]::new));
+    //    helper.setCc(bo.getCcEmails().parallelStream().toArray(String[]::new));
+    //    helper.setText(textBody, htmlBody);
+    helper.setSubject("[PUZZLE] reset password");
+    helper.setFrom(MailUtil.SYS_MAIL);
+    helper.setTo(receiveMail);
+    Map<String, Object> model = new HashMap<>();
+    model.put("url", urlResetPass);
+    // Configuration freeMakerConfiguration = FreeMakerTemplateUtils.getFreeMakerConfiguration();
+    // Template temp = freeMakerConfiguration.getTemplate("forgot_password.html");
+    // FreeMakerTemplateUtils
+
+    return null;
   }
 
   @Override
@@ -104,6 +139,4 @@ public class SecurityServiceImpl implements SecurityService {
 
     return new DataResponse("change password successful");
   }
-
-
 }

@@ -8,7 +8,7 @@ public interface BlogPostService {
 
     DataResponse createBlogPost(BlogPostDTO dto);
 
-    DataResponse update(BlogPostDTO dto, long id, UserEntity updater);
+    DataResponse update(BlogPostDTO dto, long id);
 
     DataResponse delete(long id);
 

@@ -1,11 +1,14 @@
 package hcmute.puzzle.entities;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import hcmute.puzzle.utils.Provider;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -20,10 +23,11 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity
-@EntityListeners(AuditingEntityListener.class)
+
+//@EntityListeners(AuditingEntityListener.class)
 // Avoid ErrorDefine table name is "user" in database
 @Table(name = "users")
-public class UserEntity implements Serializable {
+public class UserEntity extends Auditable implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,21 +48,6 @@ public class UserEntity implements Serializable {
   @Column(name = "avatar", columnDefinition = "TEXT")
   private String avatar;
 
-  @Column(name = "is_online")
-  private boolean isOnline = false;
-
-  @Column(name = "join_date")
-  @Temporal(TemporalType.TIMESTAMP)
-  @CreationTimestamp
-  private Date joinDate;
-
-  @Column(name = "last_online")
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date lastOnline;
-
-  @Column(name = "is_active")
-  private boolean isActive = true;
-
   @Enumerated(EnumType.STRING)
   private Provider provider;
 
@@ -66,10 +55,41 @@ public class UserEntity implements Serializable {
   private String fullName;
 
   @Column(name = "email_verified")
+  @Builder.Default
   private boolean emailVerified = false;
 
   @Column(name = "locale", columnDefinition = "VARCHAR(10)")
   private String locale;
+
+  @Column(name = "is_active")
+  @Builder.Default
+  private boolean isActive = true;
+
+  @Column(name = "is_deleted")
+  @Builder.Default
+  private boolean isDelete = false;
+
+//  @Column(name = "created_at")
+//  @Temporal(TemporalType.TIMESTAMP)
+//  @CreationTimestamp
+//  private Date createdAt;
+//
+//  @Column(name = "created_by", columnDefinition = "VARCHAR(100)")
+//  @CreatedBy
+//  private String created_by;
+//
+//  @Column(name = "updated_at")
+//  @Temporal(TemporalType.TIMESTAMP)
+//  @UpdateTimestamp
+//  private Date updatedAt;
+//
+//  @Column(name = "updated_by", columnDefinition = "VARCHAR(100)")
+//  @LastModifiedBy
+//  private String updatedBy;
+
+  @Column(name = "last_online")
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date lastOnline;
 
   // https://shareprogramming.net/phan-biet-fetchmode-va-fetchtype-trong-jpa-hibernate/
   // https://viblo.asia/p/van-de-n1-cau-truy-van-trong-hibernate-bWrZn00b5xw
@@ -80,6 +100,7 @@ public class UserEntity implements Serializable {
       name = "user_role",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "role_id"))
+  @Builder.Default
   private Set<RoleEntity> roles = new HashSet<>();
 
   @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -91,15 +112,19 @@ public class UserEntity implements Serializable {
   private CandidateEntity candidateEntity;
 
   @OneToMany(mappedBy = "userEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  @Builder.Default
   private Set<DocumentEntity> documentEntities = new HashSet<>();
 
   @OneToMany(mappedBy = "userEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  @Builder.Default
   private Set<NotificationEntity> notificationEntities = new HashSet<>();
 
   @ManyToMany(mappedBy = "viewedUsers", cascade = CascadeType.DETACH)
+  @Builder.Default
   private Set<JobPostEntity> viewJobPosts = new HashSet<>();
 
   @OneToMany(mappedBy = "packageEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @Builder.Default
   private Set<SubscribeEntity> subscribeEntities = new HashSet<>();
 
 }

@@ -1,8 +1,6 @@
 package hcmute.puzzle.entities;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -12,6 +10,8 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "invoice")
 public class InvoiceEntity implements Serializable {
@@ -44,6 +44,10 @@ public class InvoiceEntity implements Serializable {
 
     @Column(name = "status", columnDefinition = "VARCHAR(30)")
     private String status;
+
+    @Column(name = "is_deleted")
+    @Builder.Default
+    private boolean isDelete = false;
 
 //    @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
 //    @JoinColumn(name = "subscribe_id")

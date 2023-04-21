@@ -3,6 +3,7 @@ package hcmute.puzzle.services.impl;
 import static hcmute.puzzle.utils.Constant.*;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.api.ApiResponse;
 import com.cloudinary.utils.ObjectUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Files;
@@ -41,7 +42,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
       String encodedString = new String(image);
 
       // Upload the image
-      Map<String, Object> params1 =
+      Map params1 =
           ObjectUtils.asMap(
               "folder",
               locationStorage,
@@ -69,7 +70,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    return new HashMap<String, Object>();
+    return new HashMap<>();
   }
 
   @Override
@@ -79,9 +80,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     Cloudinary cloudinary = CloudinaryUtil.getCloudinary();
 
     FileEntity fileEntity =
-        fileRepository
-            .findByCloudinaryPublicId(publicId)
-            .orElseThrow(() -> new NotFoundException());
+        fileRepository.findByCloudinaryPublicId(publicId).orElseThrow(NotFoundException::new);
 
     FileTypeEntity fileType =
         fileTypeRepository.findByCategory(category).orElseThrow(NotFoundException::new);
@@ -99,16 +98,15 @@ public class FilesStorageServiceImpl implements FilesStorageService {
               "invalidate",
               true);
 
-      Map<String, Object> result =
-          cloudinary.uploader().destroy(fileType.getLocation() + "/" + publicId, params1);
+      Map result = cloudinary.uploader().destroy(fileType.getLocation() + "/" + publicId, params1);
 
       if (result == null) {
         throw new CustomException("Upload image failure");
       }
 
       fileEntity.setDeleted(true);
-      fileEntity.setUpdateAt(new Date());
-      fileEntity.setUpdateBy(deleter.getEmail());
+      fileEntity.setUpdatedAt(new Date());
+      fileEntity.setUpdatedBy(deleter.getEmail());
       fileRepository.save(fileEntity);
       return true;
     } catch (Exception e) {
@@ -122,17 +120,14 @@ public class FilesStorageServiceImpl implements FilesStorageService {
       throws PartialFailureException {
     // "puzzle_ute/user/avatar"
     Cloudinary cloudinary = CloudinaryUtil.getCloudinary();
-    System.out.println(fileRepository);
     // Check public_id exists in db
     List<FileEntity> fileInfoFromDB =
         fileRepository.findAllByCloudinaryPublicIdInAndDeletedIs(publicIds, false);
 
     // checkNotExistsPublicIdsInDB(publicIds, publicIdsFromDB);
     try {
-      // Destroy the image
-
-      Map<String, Object> result =
-          cloudinary.api().deleteResources(publicIds, ObjectUtils.emptyMap());
+      // Delete the image
+      ApiResponse result = cloudinary.api().deleteResources(publicIds, ObjectUtils.emptyMap());
 
       if (result == null) {
         throw new CustomException("Delete image failure");
@@ -141,8 +136,8 @@ public class FilesStorageServiceImpl implements FilesStorageService {
       fileInfoFromDB.forEach(
           fileEntity -> {
             fileEntity.setDeleted(true);
-            fileEntity.setUpdateAt(new Date());
-            fileEntity.setUpdateBy(deleter.getEmail());
+            fileEntity.setUpdatedAt(new Date());
+            fileEntity.setUpdatedBy(deleter.getEmail());
           });
 
       fileRepository.saveAll(fileInfoFromDB);
@@ -153,42 +148,24 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     return false;
   }
 
-  private void checkNotExistsPublicIdsInDB(List<String> publicIds) {
-
-    List<FileEntity> fileInfoFromDB =
-        fileRepository.findAllByCloudinaryPublicIdInAndDeletedIs(publicIds, false);
-
-    List<String> publicIdsFromDB =
-        fileInfoFromDB.stream().map(FileEntity::getCloudinaryPublicId).toList();
-    List<String> notExistIds =
-        publicIds.stream()
-            .filter(
-                publicId ->
-                    publicIdsFromDB.stream().noneMatch(idFromDb -> idFromDb.equals(publicId)))
-            .toList();
-
-    if (!notExistIds.isEmpty()) {
-      String msg = PartialFailureException.processingMsg(notExistIds);
-      throw new PartialFailureException(msg);
-    }
-  }
-
-  //  public String updateAvatarReturnUrl(Object id, MultipartFile file, String prefix) {
-  //    String fileName = String.valueOf(id) + prefix;
+  //  private void checkNotExistsPublicIdsInDB(List<String> publicIds) {
   //
-  //    Map response = null;
+  //    List<FileEntity> fileInfoFromDB =
+  //        fileRepository.findAllByCloudinaryPublicIdInAndDeletedIs(publicIds, false);
   //
-  //    try {
-  //      // push to storage cloud
-  //      response = uploadAvatarImage(fileName, file, Constant.STORAGE_IMAGE_LOCATION);
+  //    List<String> publicIdsFromDB =
+  //        fileInfoFromDB.stream().map(FileEntity::getCloudinaryPublicId).toList();
+  //    List<String> notExistIds =
+  //        publicIds.stream()
+  //            .filter(
+  //                publicId ->
+  //                    publicIdsFromDB.stream().noneMatch(idFromDb -> idFromDb.equals(publicId)))
+  //            .toList();
   //
-  //    } catch (Exception e) {
-  //      e.printStackTrace();
+  //    if (!notExistIds.isEmpty()) {
+  //      String msg = PartialFailureException.processingMsg(notExistIds);
+  //      throw new PartialFailureException(msg);
   //    }
-  //
-  //    String url = response.get("secure_url").toString();
-  //
-  //    return url;
   //  }
 
   public String uploadFileWithFileTypeReturnUrl(
@@ -201,7 +178,6 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     String fileName = processFileName(keyName, fileCategory);
     CloudinaryUploadFileResponse response =
         uploadFileReturnResponseObject(fileName, file, fileType.getLocation(), author);
-    // System.out.println(response.get);
     String fileUrl = response.getSecure_url();
     Date currentTime = new Date();
 
@@ -215,10 +191,10 @@ public class FilesStorageServiceImpl implements FilesStorageService {
             .extension(Files.getFileExtension(Objects.requireNonNull(file.getOriginalFilename())))
             .url(fileUrl)
             .created_by(author.getEmail())
-            .updateBy(author.getEmail())
-            .updateAt(currentTime)
+            .updatedBy(author.getEmail())
+            .updatedAt(currentTime)
             .cloudinaryPublicId(response.getPublic_id())
-            .createAt(currentTime)
+            .createdAt(currentTime)
             .build();
 
     fileRepository.save(fileEntity);
@@ -288,8 +264,6 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   }
 
   public List<String> getDeletedImageSrcs(List<String> oldList, List<String> newList) {
-    List<String> deletedImageSrcs =
-        oldList.stream().filter(item -> !newList.contains(item)).toList();
-    return deletedImageSrcs;
+    return oldList.stream().filter(item -> !newList.contains(item)).toList();
   }
 }

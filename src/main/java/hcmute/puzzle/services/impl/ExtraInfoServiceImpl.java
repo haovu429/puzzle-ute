@@ -8,15 +8,14 @@ import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.repository.ExtraInfoRepository;
 import hcmute.puzzle.services.ExtraInfoService;
 import hcmute.puzzle.utils.Constant;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
-public class ExtraInfoServiceImpl implements ExtraInfoService<ExtraInfoDTO> {
+public class ExtraInfoServiceImpl implements ExtraInfoService {
 
   @Autowired ExtraInfoRepository extraInfoRepository;
 
@@ -63,11 +62,7 @@ public class ExtraInfoServiceImpl implements ExtraInfoService<ExtraInfoDTO> {
   @Override
   public ResponseObject getAll() {
     Set<ExtraInfoEntity> extraInfoEntities = new HashSet<>();
-    extraInfoRepository.findAll().stream()
-        .forEach(
-            extraInfo -> {
-              extraInfoEntities.add(extraInfo);
-            });
+    extraInfoEntities.addAll(extraInfoRepository.findAll());
 
     return new ResponseObject(200, "ExtraInfo", extraInfoEntities);
   }
@@ -75,11 +70,7 @@ public class ExtraInfoServiceImpl implements ExtraInfoService<ExtraInfoDTO> {
   @Override
   public ResponseObject getByType(String type) {
     Set<ExtraInfoEntity> extraInfoEntities = new HashSet<>();
-    extraInfoRepository.getExtraInfoEntitiesByType(type.toUpperCase()).stream()
-        .forEach(
-            extraInfo -> {
-              extraInfoEntities.add(extraInfo);
-            });
+    extraInfoEntities.addAll(extraInfoRepository.getExtraInfoEntitiesByType(type.toUpperCase()));
 
     return new ResponseObject(200, "ExtraInfo by type", extraInfoEntities);
   }

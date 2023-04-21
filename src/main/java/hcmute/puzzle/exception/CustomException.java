@@ -9,6 +9,7 @@ import lombok.Setter;
 @Builder
 public class CustomException extends RuntimeException {
 
+  @Builder.Default
   private int status = 501;
   private String detail;
 

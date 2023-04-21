@@ -2,29 +2,22 @@ package hcmute.puzzle.controller;
 
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.*;
-import hcmute.puzzle.entities.CompanyEntity;
 import hcmute.puzzle.entities.EmployerEntity;
 import hcmute.puzzle.entities.InvoiceEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
-import hcmute.puzzle.model.payload.request.company.CreateCompanyPayload;
 import hcmute.puzzle.model.payload.request.company.CreateCompanyPayloadForAdmin;
 import hcmute.puzzle.model.payload.request.other.TimeFramePayLoad;
-import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
-import hcmute.puzzle.repository.CompanyRepository;
 import hcmute.puzzle.repository.EmployerRepository;
 import hcmute.puzzle.repository.JobPostRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.response.DataResponse;
-import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/admin")
@@ -53,8 +46,7 @@ public class AdminController {
 
   @Autowired InvoiceService invoiceService;
 
-  @Autowired
-  EmployerRepository employerRepository;
+  @Autowired EmployerRepository employerRepository;
 
   @Autowired CategoryService categoryService;
 
@@ -62,9 +54,8 @@ public class AdminController {
 
   // Company, add new company
   @PostMapping("/create-info-company")
-  public DataResponse createCompany(
-          @ModelAttribute CreateCompanyPayloadForAdmin companyPayload, Authentication authentication) throws NotFoundException {
-    //CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+  public DataResponse createCompany(@ModelAttribute CreateCompanyPayloadForAdmin companyPayload)
+      throws NotFoundException {
     CompanyDTO companyDTO = new CompanyDTO();
     companyDTO.setName(companyPayload.getName());
     companyDTO.setDescription(companyPayload.getDescription());
@@ -72,17 +63,21 @@ public class AdminController {
     companyDTO.setActive(companyPayload.isActive());
     EmployerEntity employer = null;
     if (companyPayload.getCreatedEmployerId() != null) {
-      Optional<EmployerEntity> employerEntityOptional = employerRepository.findById(companyPayload.getCreatedEmployerId());
+      Optional<EmployerEntity> employerEntityOptional =
+          employerRepository.findById(companyPayload.getCreatedEmployerId());
       if (employerEntityOptional.isEmpty()) {
         throw new CustomException("Employer not found");
       }
       employer = employerEntityOptional.get();
     }
-    return companyService.save(companyDTO,companyPayload.getImage(), employer);
+    return companyService.save(companyDTO, companyPayload.getImage(), employer);
   }
 
   @PutMapping("/update-info-company/{companyId}")
-  public DataResponse updateCompany(@PathVariable(value = "companyId") long companyId, @ModelAttribute CreateCompanyPayloadForAdmin companyPayload) throws NotFoundException {
+  public DataResponse updateCompany(
+      @PathVariable(value = "companyId") long companyId,
+      @ModelAttribute CreateCompanyPayloadForAdmin companyPayload)
+      throws NotFoundException {
     CompanyDTO companyDTO = new CompanyDTO();
     companyDTO.setName(companyPayload.getName());
     companyDTO.setDescription(companyPayload.getDescription());
@@ -90,16 +85,15 @@ public class AdminController {
     companyDTO.setActive(companyPayload.isActive());
     EmployerEntity employer = null;
     if (companyPayload.getCreatedEmployerId() != null) {
-      Optional<EmployerEntity> employerEntityOptional = employerRepository.findById(companyPayload.getCreatedEmployerId());
-      if (employerEntityOptional.isEmpty()) {
-        throw new CustomException("Employer not found");
-      }
-      employer = employerEntityOptional.get();
+      employer =
+          employerRepository
+              .findById(companyPayload.getCreatedEmployerId())
+              .orElseThrow(() -> new NotFoundException("NOT_FOUND_EMPLOYER"));
     }
     return companyService.update(companyId, companyDTO, companyPayload.getImage(), employer);
   }
 
-  @DeleteMapping ("/delete-info-company/{id}")
+  @DeleteMapping("/delete-info-company/{id}")
   public ResponseObject deleteCompany(@PathVariable Long id) {
     return companyService.delete(id);
   }
@@ -123,18 +117,13 @@ public class AdminController {
   @PostMapping("/add-account")
   public DataResponse saveAccount(@RequestBody UserDTO user) {
     userService.save(user);
-    return new DataResponse("Add user " + user.getUsername() +" success.");
+    return new DataResponse("Add user " + user.getUsername() + " success.");
   }
 
   @DeleteMapping("/delete-account/{id}")
   public ResponseObject deleteAccount(@PathVariable Long id) {
     return userService.delete(id);
   }
-
-  //  @PutMapping("/update-account/{id}")
-  //  public ResponseObject updateAccount(@PathVariable Long id, @RequestBody UserDTO user) {
-  //    return userService.update(id, user);
-  //  }
 
   @GetMapping("/get-all-account")
   public ResponseObject getAllAccount() {
@@ -196,13 +185,6 @@ public class AdminController {
     return jobPostService.getAll();
   }
 
-//  @PutMapping("/company/{id}")
-//  public ResponseObject updateCompany(@PathVariable Long id, @RequestBody CompanyDTO companyDTO) {
-//    companyDTO.setId(id);
-//    return companyService.update(companyDTO);
-//    // return null;
-//  }
-
   @GetMapping("/get-account-amount")
   public ResponseObject getAccountAmount() {
     return userService.getAccountAmount();
@@ -242,7 +224,8 @@ public class AdminController {
 
   @GetMapping("/get-all-invoice-by-time-frame")
   public DataResponse getAllInvoiceByTimeFrame(@RequestBody TimeFramePayLoad timeFrame) {
-    return invoiceService.getAllInvoiceByTimeFrame(timeFrame.getStartTime(), timeFrame.getEndTime());
+    return invoiceService.getAllInvoiceByTimeFrame(
+        timeFrame.getStartTime(), timeFrame.getEndTime());
   }
 
   @GetMapping("/get-one-invoice/{invoiceId}")
@@ -259,7 +242,8 @@ public class AdminController {
 
   @PostMapping("/get-total-revenue-by-time-frame")
   public DataResponse getTotalRevenueByTimeFrame(@RequestBody TimeFramePayLoad timeFrame) {
-    long totalRevenue = invoiceService.getTotalRevenue(timeFrame.getStartTime(), timeFrame.getEndTime());
+    long totalRevenue =
+        invoiceService.getTotalRevenue(timeFrame.getStartTime(), timeFrame.getEndTime());
     return new DataResponse(totalRevenue);
   }
 
@@ -274,7 +258,8 @@ public class AdminController {
   }
 
   @PutMapping("/update-category/{categoryId}")
-  public DataResponse updateCategory(@PathVariable long categoryId, @RequestBody CategoryDTO categoryDTO) {
+  public DataResponse updateCategory(
+      @PathVariable long categoryId, @RequestBody CategoryDTO categoryDTO) {
     return categoryService.update(categoryDTO, categoryId);
   }
 
@@ -292,5 +277,4 @@ public class AdminController {
   public DataResponse deleteBlogPost(@PathVariable long blogPostId) {
     return blogPostService.delete(blogPostId);
   }
-
 }

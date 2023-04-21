@@ -1,14 +1,14 @@
 package hcmute.puzzle.entities;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "sub_comment")
 public class SubCommentEntity {
@@ -31,6 +31,10 @@ public class SubCommentEntity {
 
     @Column(name = "interact", columnDefinition = "VARCHAR(30)")
     private String interact;
+
+    @Column(name = "is_deleted")
+    @Builder.Default
+    private boolean isDelete = false;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinColumn(name = "comment_id")

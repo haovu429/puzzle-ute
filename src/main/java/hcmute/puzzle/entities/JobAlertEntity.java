@@ -1,8 +1,6 @@
 package hcmute.puzzle.entities;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,6 +8,8 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "job_alert")
 public class JobAlertEntity implements Serializable {
@@ -35,6 +35,10 @@ public class JobAlertEntity implements Serializable {
 
   @Column(name = "min_budget")
   private long minBudget = 0;
+
+  @Column(name = "is_deleted")
+  @Builder.Default
+  private boolean isDelete = false;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "candidate_id", nullable = false)

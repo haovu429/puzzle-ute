@@ -285,7 +285,7 @@ public class UserController {
     UserEntity currentUser =
         ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
             .getUser();
-    return blogPostService.update(blogPostDTO, blogPostId, currentUser);
+    return blogPostService.update(blogPostDTO, blogPostId);
   }
 
   @DeleteMapping("/user/delete-blog-post/{blogPostId}")

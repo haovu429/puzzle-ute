@@ -1,12 +1,13 @@
 package hcmute.puzzle.services;
 
+import hcmute.puzzle.dto.ExtraInfoDTO;
 import hcmute.puzzle.dto.ResponseObject;
 
-public interface ExtraInfoService<DTO> {
+public interface ExtraInfoService {
 
-  ResponseObject save(DTO dto);
+  ResponseObject save(ExtraInfoDTO dto);
 
-  ResponseObject update(DTO dto);
+  ResponseObject update(ExtraInfoDTO dto);
 
   ResponseObject delete(long id);
 

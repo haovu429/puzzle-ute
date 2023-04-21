@@ -1,8 +1,6 @@
 package hcmute.puzzle.entities;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,6 +9,8 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "notification")
 public class NotificationEntity implements Serializable {
@@ -30,6 +30,10 @@ public class NotificationEntity implements Serializable {
   @Column(name = "time")
   @Temporal(TemporalType.TIMESTAMP)
   private Date time;
+
+  @Column(name = "is_deleted")
+  @Builder.Default
+  private boolean isDelete = false;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")

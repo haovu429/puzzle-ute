@@ -84,15 +84,21 @@ public class SetUpDB {
     user1.getRoles().add(userRole4);
     user1.getRoles().add(userRole2);
 
-    UserEntity user2 = new UserEntity();
-    user2.setEmail("candidate2@gmail.com");
-    user2.setPassword(passwordEncoder.encode("123456"));
+    UserEntity user2 =
+        UserEntity.builder()
+            .email("candidate2@gmail.com")
+            .password(passwordEncoder.encode("123456"))
+            .build();
+
     user2.getRoles().add(userRole4);
     user2.getRoles().add(userRole2);
 
-    UserEntity user3 = new UserEntity();
-    user3.setEmail("employer1@gmail.com");
-    user3.setPassword(passwordEncoder.encode("123456"));
+    UserEntity user3 =
+        UserEntity.builder()
+            .email("employer1@gmail.com")
+            .password(passwordEncoder.encode("123456"))
+            .build();
+
     user3.getRoles().add(userRole3);
     user3.getRoles().add(userRole2);
 
@@ -118,17 +124,23 @@ public class SetUpDB {
 
     // Candidate
     Set<CandidateEntity> candidateList = new HashSet<>();
-    CandidateEntity candidate1 = new CandidateEntity();
-    candidate1.setFirstName("Minh");
-    candidate1.setLastName("Lê Quang");
-    candidate1.setSkills("flutter#golang");
+    CandidateEntity candidate1 =
+        CandidateEntity.builder()
+            .firstName("Minh")
+            .lastName("Lê Quang")
+            .skills("flutter#golang")
+            .emailContact("haovu961@gmail.com")
+            .build();
     candidate1.setUserEntity(user1);
     // user1.setCandidateEntity(candidate1);
 
-    CandidateEntity candidate2 = new CandidateEntity();
-    candidate2.setFirstName("Phong");
-    candidate2.setLastName("Vũ");
-    candidate2.setSkills("java#android#c#python");
+    CandidateEntity candidate2 =
+        CandidateEntity.builder()
+            .firstName("Phong")
+            .lastName("Vũ")
+            .skills("java#android#c#python")
+            .emailContact("haovu961@gmail.com")
+            .build();
     candidate2.setUserEntity(user2);
     // user2.setCandidateEntity(candidate2);
     candidateList.add(candidate1);
@@ -331,31 +343,31 @@ public class SetUpDB {
             .location(Constant.FileLocation.STORAGE_IMAGE_LOCATION)
             .storageName(Constant.StorageName.CLOUDINARY)
             .author(SYSTEM_MAIL)
-            .createAt(new Date())
+            .createdAt(new Date())
             .build();
 
+    FileTypeEntity companyType =
+        FileTypeEntity.builder()
+            .category(FileCategory.IMAGE_COMPANY)
+            .type(FileType.IMAGE)
+            .location(Constant.FileLocation.STORAGE_COMPANY_IMAGE_LOCATION)
+            .storageName(Constant.StorageName.CLOUDINARY)
+            .author(SYSTEM_MAIL)
+            .createdAt(new Date())
+            .build();
 
-  FileTypeEntity companyType =
-          FileTypeEntity.builder()
-                  .category(FileCategory.IMAGE_COMPANY)
-                  .type(FileType.IMAGE)
-                  .location(Constant.FileLocation.STORAGE_COMPANY_IMAGE_LOCATION)
-                  .storageName(Constant.StorageName.CLOUDINARY)
-                  .author(SYSTEM_MAIL)
-                  .createAt(new Date())
-                  .build();
+    FileTypeEntity blogImageType =
+        FileTypeEntity.builder()
+            .category(FileCategory.IMAGE_BLOG)
+            .type(FileType.IMAGE)
+            .location(Constant.FileLocation.STORAGE_BLOG_IMAGE_LOCATION)
+            .storageName(Constant.StorageName.CLOUDINARY)
+            .author(SYSTEM_MAIL)
+            .createdAt(new Date())
+            .build();
 
-  FileTypeEntity blogImageType =
-          FileTypeEntity.builder()
-                  .category(FileCategory.IMAGE_BLOG)
-                  .type(FileType.IMAGE)
-                  .location(Constant.FileLocation.STORAGE_BLOG_IMAGE_LOCATION)
-                  .storageName(Constant.StorageName.CLOUDINARY)
-                  .author(SYSTEM_MAIL)
-                  .createAt(new Date())
-                  .build();
-
-  List<FileTypeEntity> fileTypeList = new ArrayList<>(Arrays.asList(avatarType, companyType, blogImageType));
-  fileTypeRepository.saveAll(fileTypeList);
+    List<FileTypeEntity> fileTypeList =
+        new ArrayList<>(Arrays.asList(avatarType, companyType, blogImageType));
+    fileTypeRepository.saveAll(fileTypeList);
   }
 }
