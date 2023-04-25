@@ -127,7 +127,7 @@ public class WebSecurityConfig {
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeRequests()
-        .antMatchers("/common/**")
+        .antMatchers("/common/**", "/schedule-config/**")
         .permitAll()
         .antMatchers("/test/**")
         .permitAll()

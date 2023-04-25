@@ -197,7 +197,7 @@ public class CandidateController {
     ApplicationEntity applicationEntity = new ApplicationEntity();
     applicationEntity.setCandidateEntity(userDetails.getUser().getCandidateEntity());
     applicationEntity.setJobPostEntity(jobPost.get());
-    applicationEntity.setCreateTime(new Date());
+    //applicationEntity.setCreateTime(new Date());
     applicationRepository.save(applicationEntity);
 
     jobPost.get().getViewedUsers().add(userDetails.getUser());

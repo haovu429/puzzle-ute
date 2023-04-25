@@ -9,10 +9,14 @@ import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateExceptionHandler;
+import hcmute.puzzle.configuration.FreemarkerConfiguration;
+
+import java.io.File;
+import java.io.IOException;
 
 public class FreeMakerTemplateUtils {
 
-    public static Configuration getFreeMakerConfiguration() {
+    public static Configuration getFreeMakerConfiguration() throws IOException {
 
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_27);
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
@@ -46,6 +50,8 @@ public class FreeMakerTemplateUtils {
                                 tcRTF)
                 ).allowNoMatch(true)
         );
+
+    cfg.setTemplateLoader(new FileTemplateLoader(new File("/templates")));
         return cfg;
     }
 

@@ -29,7 +29,7 @@ public class ModelMapperConfig {
         modelMapper.createTypeMap(BlogPostEntity.class, BlogPostDTO.class);
     // add deep mapping to flatten source's Player object into a single field in destination
     blogEntityToDTO.addMappings(
-        mapper -> mapper.map(src -> src.getCreatedBy().getId(), BlogPostDTO::setUserId));
+        mapper -> mapper.map(src -> src.getAuthor().getId(), BlogPostDTO::setUserId));
 
     //    TypeMap<BlogPostDTO, BlogPostEntity> blogDTOtoEntity =
     //        modelMapper.createTypeMap(BlogPostDTO.class, BlogPostEntity.class);

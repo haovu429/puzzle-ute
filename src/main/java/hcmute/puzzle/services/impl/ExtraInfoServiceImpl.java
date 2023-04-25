@@ -23,7 +23,6 @@ public class ExtraInfoServiceImpl implements ExtraInfoService {
 
   @Override
   public ResponseObject save(ExtraInfoDTO extraInfoDTO) {
-    extraInfoDTO.setId(0);
     extraInfoDTO.setType(Constant.validateTypeExtraInfo(extraInfoDTO.getType().toUpperCase()));
 
     ExtraInfoEntity extraInfoEntity = converter.toEntity(extraInfoDTO);
@@ -33,8 +32,8 @@ public class ExtraInfoServiceImpl implements ExtraInfoService {
   }
 
   @Override
-  public ResponseObject update(ExtraInfoDTO extraInfoDTO) {
-    boolean exists = extraInfoRepository.existsById(extraInfoDTO.getId());
+  public ResponseObject update(ExtraInfoDTO extraInfoDTO, long extraInfoId) {
+    boolean exists = extraInfoRepository.existsById(extraInfoId);
     extraInfoDTO.setType(Constant.validateTypeExtraInfo(extraInfoDTO.getType().toUpperCase()));
 
     if (!exists) {

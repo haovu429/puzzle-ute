@@ -1,13 +1,13 @@
 package hcmute.puzzle.services.impl;
 
+import freemarker.template.TemplateException;
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.dto.UserDTO;
-import hcmute.puzzle.entities.CandidateEntity;
-import hcmute.puzzle.entities.EmployerEntity;
-import hcmute.puzzle.entities.RoleEntity;
-import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.entities.*;
+import hcmute.puzzle.exception.AlreadyExistsException;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.FileStorageException;
 import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.model.DataStaticJoinAccount;
 import hcmute.puzzle.model.enums.FileCategory;
@@ -20,16 +20,26 @@ import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.services.UserService;
 import hcmute.puzzle.utils.RedisUtils;
 import hcmute.puzzle.utils.TimeUtil;
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
+import javax.mail.MessagingException;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
+
+  Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
   @Autowired private Converter converter;
   @Autowired private UserRepository userRepository;
@@ -54,7 +64,7 @@ public class UserServiceImpl implements UserService {
     UserEntity userEntity = converter.toEntity(userDTO);
     // Check Email Exists
     if (!checkEmailExists(userEntity.getEmail())) {
-      throw new CustomException("Email already exists");
+      throw new AlreadyExistsException("Email already exists");
     }
     //  hash password
     userEntity.setPassword(passwordEncoder.encode(userDTO.getPassword()));
@@ -62,10 +72,12 @@ public class UserServiceImpl implements UserService {
     UserDTO responseDTO = converter.toDTO(userEntity);
     // don't return password
     responseDTO.setPassword(null);
-    // Luu vao dataabase
+    // Save to DB
     userEntity = userRepository.save(userEntity);
     return userEntity;
   }
+
+  public void sendMailVerifyAccount(String receiveMail, String urlVerify) {}
 
   @Override
   public DataResponse update(long id, UpdateUserPayload userPayload) {
@@ -144,10 +156,12 @@ public class UserServiceImpl implements UserService {
   public DataResponse updateAvatarForUser(
       UserEntity userEntity, MultipartFile file, FileCategory fileCategory)
       throws NotFoundException {
-    String urlAvatar =
-        storageService.uploadFileWithFileTypeReturnUrl(
-            userEntity, userEntity.getEmail(), file, fileCategory);
-    userEntity.setAvatar(urlAvatar);
+    hcmute.puzzle.entities.FileEntity savedFile =
+        storageService
+            .uploadFileWithFileTypeReturnUrl(userEntity.getEmail(), file, fileCategory)
+            .orElseThrow(() -> new FileStorageException("UPLOAD_FILE_FAILURE"));
+
+    userEntity.setAvatar(savedFile.getUrl());
     userRepository.save(userEntity);
     UserDTO userDTO = converter.toDTO(userEntity);
     userDTO.setPassword(null);
@@ -236,5 +250,18 @@ public class UserServiceImpl implements UserService {
         HttpStatus.OK.value(),
         "Data static for amount of join account in " + numWeek + " weeks",
         data);
+  }
+
+  @Async
+  public void sendMailForgotPwd(String receiveMail, String urlResetPass, TokenEntity token)
+      throws InterruptedException,
+          MessagingException,
+          TemplateException,
+          IOException,
+          ExecutionException {
+    MailService mailService = new MailService();
+    mailService.executeSendMailWithThread(receiveMail, urlResetPass, token);
+    // Thread.sleep(10000);
+    log.info("asdasf");
   }
 }

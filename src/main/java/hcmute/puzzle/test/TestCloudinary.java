@@ -2,12 +2,19 @@ package hcmute.puzzle.test;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import hcmute.puzzle.configuration.FreemarkerConfiguration;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.services.FilesStorageService;
+
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import hcmute.puzzle.utils.FreeMakerTemplateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +23,12 @@ public class TestCloudinary {
 
   @Autowired FilesStorageService filesStorageService;
 
-  public static void main(String[] args) {
+  @Autowired private static FreemarkerConfiguration freeMarkerConfiguration;
+  public static void main(String[] args) throws IOException {
+
+    //Configuration freeMakerConfiguration = FreeMakerTemplateUtils.getFreeMakerConfiguration();
+    Configuration freeMakerConfig= freeMarkerConfiguration.freemarkerConfig().getConfiguration();
+    Template temp = freeMakerConfig.getTemplate("forgot_password.html");
     // testDetectImageTagHtml();
     // lib();
     // testDeleteManyFileCloudinary();

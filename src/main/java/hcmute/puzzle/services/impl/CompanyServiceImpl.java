@@ -3,15 +3,14 @@ package hcmute.puzzle.services.impl;
 import hcmute.puzzle.converter.Converter;
 import hcmute.puzzle.dto.CompanyDTO;
 import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.entities.CandidateEntity;
-import hcmute.puzzle.entities.CompanyEntity;
-import hcmute.puzzle.entities.EmployerEntity;
-import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.entities.*;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.FileStorageException;
 import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.model.enums.FileCategory;
 import hcmute.puzzle.repository.CandidateRepository;
 import hcmute.puzzle.repository.CompanyRepository;
+import hcmute.puzzle.repository.FileRepository;
 import hcmute.puzzle.repository.UserRepository;
 import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.services.CompanyService;
@@ -33,6 +32,8 @@ public class CompanyServiceImpl implements CompanyService {
 
   @Autowired FilesStorageService storageService;
   @Autowired CandidateRepository candidateRepository;
+
+  @Autowired FileRepository fileRepository;
 
   @Autowired UserRepository userRepository;
 
@@ -57,13 +58,13 @@ public class CompanyServiceImpl implements CompanyService {
       }
 
       // lay id sau khi luu vao db de dat ten cho anh
-      String urlImage =
-          storageService.uploadFileWithFileTypeReturnUrl(
-              user.get(),
-              String.valueOf(company.getId()),
-              imageFile,
-              FileCategory.IMAGE_COMPANY);
-      company.setImage(urlImage);
+      FileEntity fileEntity =
+          storageService
+              .uploadFileWithFileTypeReturnUrl(
+                  String.valueOf(company.getId()), imageFile, FileCategory.IMAGE_COMPANY)
+              .orElseThrow(() -> new FileStorageException("UPLOAD_FILE_FAILURE"));
+      ;
+      company.setImage(fileEntity.getUrl());
       company = companyRepository.save(company);
     }
 
@@ -108,17 +109,21 @@ public class CompanyServiceImpl implements CompanyService {
 
     if (imageFile != null && imageFile.getSize() > 0) {
 
-      Optional<UserEntity> userEntity = userRepository.findById(createEmployer.getId());
-
       // lay id sau khi luu vao db de dat ten cho anh
-      String urlImage =
-          storageService.uploadFileWithFileTypeReturnUrl(
-              userEntity.get(),
-              String.valueOf(company.getId()),
-              imageFile,
-              FileCategory.IMAGE_COMPANY);
-      company.setImage(urlImage);
+      FileEntity savedFile =
+          storageService
+              .uploadFileWithFileTypeReturnUrl(
+                  String.valueOf(company.getId()), imageFile, FileCategory.IMAGE_COMPANY)
+              .orElseThrow(() -> new FileStorageException("UPLOAD_FILE_FAILURE"));
+      company.setImage(savedFile.getUrl());
       company = companyRepository.save(company);
+      FileEntity fileEntity =
+          fileRepository.findAllByUrlAndDeletedIs(savedFile.getUrl(), false).orElse(null);
+      // Update object id for image
+      if (fileEntity != null) {
+        fileEntity.setObjectId(company.getId());
+        fileRepository.save(fileEntity);
+      }
     }
 
     return new DataResponse(converter.toDTO(company));

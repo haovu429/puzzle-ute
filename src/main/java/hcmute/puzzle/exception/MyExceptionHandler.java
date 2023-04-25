@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@ControllerAdvice
+//@ControllerAdvice
 public class MyExceptionHandler {
 
   int error;
@@ -22,7 +22,14 @@ public class MyExceptionHandler {
   @ResponseBody
   public DataResponse handleCustomerException(CustomException e) {
     return new DataResponse(
-            ErrorDefine.ServerError.SERVER_ERROR, e.getDetail(), 500);
+            e.getMessage(), e.getDetail(), e.getStatus());
+  }
+
+  @ExceptionHandler(NullPointerException.class)
+  @ResponseBody
+  public DataResponse handleNullPointerException(NullPointerException e) {
+    return new DataResponse(
+             "500", e.getMessage(), 500);
   }
 
   @ExceptionHandler(PartialFailureException.class)

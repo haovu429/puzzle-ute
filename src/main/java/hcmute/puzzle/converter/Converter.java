@@ -121,7 +121,7 @@ public class Converter {
     applicationDTO.setId(entity.getId());
     applicationDTO.setResult(entity.getResult());
     applicationDTO.setNote(entity.getNote());
-    applicationDTO.setCreateTime(entity.getCreateTime());
+    //applicationDTO.setCreateTime(entity.getCreateTime());
 
     if (entity.getCandidateEntity() != null) {
       applicationDTO.setCandidateId(entity.getCandidateEntity().getId());
@@ -139,7 +139,7 @@ public class Converter {
     entity.setId(dto.getId());
     entity.setResult(dto.getResult());
     entity.setNote(dto.getNote());
-    entity.setCreateTime(dto.getCreateTime());
+    //entity.setCreateTime(dto.getCreateTime());
     //      try {
     //        Optional<CandidateEntity> candidate = candidateRepository.findById(dto.getId());
     //        if (candidate.isPresent()) {
@@ -382,7 +382,7 @@ public class Converter {
     dto.setName(entity.getName());
     dto.setUrl(entity.getUrl());
     dto.setObjectId(entity.getObjectId());
-    dto.setAuthor(entity.getCreated_by());
+    //dto.setAuthor(entity.getCreated_by());
     dto.setCloudinaryPublicId(entity.getCloudinaryPublicId());
     dto.setCreateAt(entity.getCreatedAt());
 
@@ -396,7 +396,7 @@ public class Converter {
     entity.setName(dto.getName());
     entity.setUrl(dto.getUrl());
     entity.setObjectId(dto.getObjectId());
-    entity.setCreated_by(dto.getAuthor());
+    //entity.setCreated_by(dto.getAuthor());
     entity.setCloudinaryPublicId(dto.getCloudinaryPublicId());
     entity.setCreatedAt(dto.getCreateAt());
 
@@ -562,7 +562,6 @@ public class Converter {
 
   public ExtraInfoDTO toDTO(ExtraInfoEntity entity) {
     ExtraInfoDTO dto = new ExtraInfoDTO();
-    dto.setId(entity.getId());
     dto.setName(entity.getName());
     dto.setType(entity.getType());
     dto.setActive(entity.isActive());
@@ -572,7 +571,6 @@ public class Converter {
 
   public ExtraInfoEntity toEntity(ExtraInfoDTO dto) {
     ExtraInfoEntity entity = new ExtraInfoEntity();
-    entity.setId(dto.getId());
     entity.setName(dto.getName());
     entity.setType(dto.getType());
     entity.setActive(dto.isActive());
@@ -695,7 +693,7 @@ public class Converter {
     try {
       Optional<UserEntity> userEntity = userRepository.findById(dto.getUserId());
       if (userEntity.isPresent()) {
-        entity.setCreatedBy(userEntity.get());
+        entity.setAuthor(userEntity.get());
       }
     } catch (Exception e) {
       log.error(e.getMessage());

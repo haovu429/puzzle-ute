@@ -418,7 +418,7 @@ public class CommonController {
   public DataResponse registerAccount(@RequestBody UserDTO user) {
     Set<String> roleCodes = new HashSet<>();
     roleCodes.add("user");
-
+    user.setActive(false);
     user.setRoleCodes(roleCodes);
     userService.save(user);
 

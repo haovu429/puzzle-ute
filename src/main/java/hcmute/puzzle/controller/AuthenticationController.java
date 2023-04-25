@@ -1,6 +1,7 @@
 package hcmute.puzzle.controller;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import freemarker.template.TemplateException;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.entities.UserEntity;
 import hcmute.puzzle.login_google.GooglePojo;
@@ -13,6 +14,15 @@ import hcmute.puzzle.security.UserService;
 import hcmute.puzzle.services.SecurityService;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.RedisUtils;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.http.client.ClientProtocolException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,14 +32,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
@@ -108,7 +110,10 @@ public class AuthenticationController {
 
   @PostMapping(LOGIN_GOOGLE_URL)
   public DataResponse loginGoogle(@RequestBody Map<String, Object> input)
-      throws ClientProtocolException, IOException, GeneralSecurityException, NoSuchFieldException,
+      throws ClientProtocolException,
+          IOException,
+          GeneralSecurityException,
+          NoSuchFieldException,
           IllegalAccessException {
     //    String code = request.getParameter("code");
     //
@@ -142,7 +147,9 @@ public class AuthenticationController {
   }
 
   @GetMapping(FORGOT_PASSWORD_URL)
-  public DataResponse forgotPassword(HttpServletRequest request, @RequestParam(value = "email") String email) {
+  public DataResponse forgotPassword(
+      HttpServletRequest request, @RequestParam(value = "email") String email)
+      throws MessagingException, TemplateException, IOException, ExecutionException, InterruptedException {
     System.out.println(request.getServletPath());
 
     return securityService.sendTokenForgotPwd(request, email);
@@ -150,7 +157,8 @@ public class AuthenticationController {
 
   @GetMapping(RESET_PASSWORD_URL)
   public DataResponse resetPassword(
-      @RequestParam(value = "token") String token, @RequestParam(value = "newPassword") String newPassword) {
+      @RequestParam(value = "token") String token,
+      @RequestParam(value = "newPassword") String newPassword) {
     return securityService.resetPassword(token, newPassword);
   }
 }

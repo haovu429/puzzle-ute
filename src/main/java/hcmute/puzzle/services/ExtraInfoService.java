@@ -7,7 +7,7 @@ public interface ExtraInfoService {
 
   ResponseObject save(ExtraInfoDTO dto);
 
-  ResponseObject update(ExtraInfoDTO dto);
+  ResponseObject update(ExtraInfoDTO dto, long id);
 
   ResponseObject delete(long id);
 

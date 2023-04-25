@@ -21,22 +21,23 @@ import java.util.Date;
 public abstract class Auditable {
 
     @CreatedBy
-    @Column(name = "created_by", columnDefinition = "TEXT", updatable = false)
+    @Column(name = "created_by", columnDefinition = "VARCHAR(100)", updatable = false)
     protected String createdBy;
 
-    //@CreatedDate
-    @CreationTimestamp
+    @CreatedDate
+    //@CreationTimestamp
     @Column(name = "created_at", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     protected Date createdAt;
 
     @LastModifiedBy
-    @Column(name = "update_by", columnDefinition = "TEXT")
+    @Column(name = "update_by", columnDefinition = "VARCHAR(100)")
     protected String updatedBy;
 
-    //@LastModifiedDate
-    @UpdateTimestamp
+    @LastModifiedDate
+    //@UpdateTimestamp
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     protected Date updatedAt;
+
 }

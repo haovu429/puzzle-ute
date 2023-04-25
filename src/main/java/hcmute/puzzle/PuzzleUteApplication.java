@@ -14,8 +14,13 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+
+
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -33,7 +38,9 @@ import java.util.Arrays;
 
 @EnableTransactionManagement
 @SpringBootApplication
-//@EnableJpaAuditing
+@EnableScheduling
+@EnableWebMvc
+@EnableAsync(proxyTargetClass=true)
 // @EnableAutoConfiguration
 // http://localhost:8080/swagger-ui/index.html
 // http://localhost:8080/oauth2/authorization/google

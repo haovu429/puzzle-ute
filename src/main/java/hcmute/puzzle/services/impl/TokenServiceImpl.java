@@ -30,7 +30,6 @@ public class TokenServiceImpl implements TokenService {
     TokenEntity tokenEntity = new TokenEntity();
     tokenEntity.setUser(user);
     tokenEntity.setToken(tokenValue);
-    tokenEntity.setCreateTime(new Date());
 
     tokenRepository.save(tokenEntity);
   }

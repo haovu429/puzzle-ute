@@ -4,8 +4,10 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.firebase.FirebaseMessagingService;
 import hcmute.puzzle.firebase.Note;
+import hcmute.puzzle.model.payload.request.TokenObject;
 import hcmute.puzzle.repository.RoleRepository;
 import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.response.DataResponse;
 import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.test.SetUpDB;
 import hcmute.puzzle.test.TestCloudinary;
@@ -71,5 +73,12 @@ public class TestController {
   public String sendNotification(@RequestBody Note note, @RequestParam String topic)
       throws FirebaseMessagingException {
     return firebaseService.sendNotificationWithTopic(note, topic);
+  }
+
+  @PostMapping("/save-token-client")
+  @ResponseBody
+  public DataResponse saveTokenClient(@RequestBody TokenObject token) {
+    System.out.println("Token = " + token);
+    return new DataResponse("OK");
   }
 }

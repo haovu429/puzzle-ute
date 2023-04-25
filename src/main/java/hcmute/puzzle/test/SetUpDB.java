@@ -343,7 +343,6 @@ public class SetUpDB {
             .location(Constant.FileLocation.STORAGE_IMAGE_LOCATION)
             .storageName(Constant.StorageName.CLOUDINARY)
             .author(SYSTEM_MAIL)
-            .createdAt(new Date())
             .build();
 
     FileTypeEntity companyType =
@@ -353,7 +352,6 @@ public class SetUpDB {
             .location(Constant.FileLocation.STORAGE_COMPANY_IMAGE_LOCATION)
             .storageName(Constant.StorageName.CLOUDINARY)
             .author(SYSTEM_MAIL)
-            .createdAt(new Date())
             .build();
 
     FileTypeEntity blogImageType =
@@ -363,7 +361,6 @@ public class SetUpDB {
             .location(Constant.FileLocation.STORAGE_BLOG_IMAGE_LOCATION)
             .storageName(Constant.StorageName.CLOUDINARY)
             .author(SYSTEM_MAIL)
-            .createdAt(new Date())
             .build();
 
     List<FileTypeEntity> fileTypeList =

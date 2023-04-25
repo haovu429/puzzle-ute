@@ -141,9 +141,10 @@ public class AdminController {
     return extraInfoService.save(extraInfoDTO);
   }
 
-  @PutMapping("/update-extra-info")
-  public ResponseObject updateExtraInfo(@RequestBody ExtraInfoDTO extraInfoDTO) {
-    return extraInfoService.update(extraInfoDTO);
+  @PutMapping("/update-extra-info/{id}")
+  public ResponseObject updateExtraInfo(
+      @RequestBody ExtraInfoDTO extraInfoDTO, @PathVariable long extraInfoId) {
+    return extraInfoService.update(extraInfoDTO, extraInfoId);
   }
 
   @GetMapping("/delete-extra-info/{id}")

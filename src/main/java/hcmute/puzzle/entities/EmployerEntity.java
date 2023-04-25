@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "employer")
-public class EmployerEntity implements Serializable {
+public class EmployerEntity extends Auditable implements Serializable {
 
   @Id
   // @GeneratedValue(strategy = GenerationType.IDENTITY)

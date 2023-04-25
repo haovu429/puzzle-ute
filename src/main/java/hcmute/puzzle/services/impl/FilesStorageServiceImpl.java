@@ -15,6 +15,7 @@ import hcmute.puzzle.model.CloudinaryUploadFileResponse;
 import hcmute.puzzle.model.enums.FileCategory;
 import hcmute.puzzle.repository.FileRepository;
 import hcmute.puzzle.repository.FileTypeRepository;
+import hcmute.puzzle.security.CustomUserDetails;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.utils.CloudinaryUtil;
 import java.text.SimpleDateFormat;
@@ -22,13 +23,17 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FilesStorageServiceImpl implements FilesStorageService {
 
+  Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
   @Autowired private FileRepository fileRepository;
 
   @Autowired private FileTypeRepository fileTypeRepository;
@@ -74,13 +79,26 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   }
 
   @Override
-  public boolean deleteFile(String publicId, FileCategory category, UserEntity deleter)
+  public boolean deleteFile(
+      String key, FileCategory category, UserEntity deleter, boolean deleteByUrl)
       throws NotFoundException {
+    // if deleteByUrl = true => key is url else key is public id
+
     // "puzzle_ute/user/avatar"
     Cloudinary cloudinary = CloudinaryUtil.getCloudinary();
 
-    FileEntity fileEntity =
-        fileRepository.findByCloudinaryPublicId(publicId).orElseThrow(NotFoundException::new);
+    FileEntity fileEntity;
+    if (deleteByUrl) {
+      fileEntity =
+          fileRepository.findAllByUrlAndDeletedIs(key, false).orElseThrow(NotFoundException::new);
+    } else {
+      fileEntity = fileRepository.findByCloudinaryPublicId(key).orElseThrow(NotFoundException::new);
+    }
+
+    if (fileEntity == null) {
+      logger.error("Can't delete file with key (deleteByUrl= " + deleteByUrl + ") :" + key);
+      return false;
+    }
 
     FileTypeEntity fileType =
         fileTypeRepository.findByCategory(category).orElseThrow(NotFoundException::new);
@@ -98,7 +116,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
               "invalidate",
               true);
 
-      Map result = cloudinary.uploader().destroy(fileType.getLocation() + "/" + publicId, params1);
+      Map result = cloudinary.uploader().destroy(fileEntity.getCloudinaryPublicId(), params1);
 
       if (result == null) {
         throw new CustomException("Upload image failure");
@@ -168,9 +186,12 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   //    }
   //  }
 
-  public String uploadFileWithFileTypeReturnUrl(
-      UserEntity author, String keyName, MultipartFile file, FileCategory fileCategory)
-      throws NotFoundException {
+  public Optional<FileEntity> uploadFileWithFileTypeReturnUrl(
+      String keyName, MultipartFile file, FileCategory fileCategory) throws NotFoundException {
+
+    UserEntity author =
+        ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+            .getUser();
 
     FileTypeEntity fileType =
         fileTypeRepository.findByCategory(fileCategory).orElseThrow(NotFoundException::new);
@@ -190,16 +211,12 @@ public class FilesStorageServiceImpl implements FilesStorageService {
             .location(fileType.getLocation())
             .extension(Files.getFileExtension(Objects.requireNonNull(file.getOriginalFilename())))
             .url(fileUrl)
-            .created_by(author.getEmail())
-            .updatedBy(author.getEmail())
-            .updatedAt(currentTime)
             .cloudinaryPublicId(response.getPublic_id())
-            .createdAt(currentTime)
             .build();
 
-    fileRepository.save(fileEntity);
+    fileEntity = fileRepository.save(fileEntity);
 
-    return fileUrl;
+    return Optional.of(fileEntity);
   }
 
   public String processFileName(String keyValue, FileCategory fileCategory) {

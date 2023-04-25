@@ -15,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "application")
-public class ApplicationEntity implements Serializable {
+public class ApplicationEntity extends Auditable implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,12 +26,6 @@ public class ApplicationEntity implements Serializable {
 
   @Column(name = "note", columnDefinition = "VARCHAR(200)")
   private String note;
-
-  @Column(name = "create_time")
-  @CreatedDate
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date createTime;
-
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
   @JoinColumn(name = "job_post_id", nullable = false)

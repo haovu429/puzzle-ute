@@ -45,7 +45,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     imageUrls = detectedImageSrcList(blogPost.getBody());
 
     if (imageUrls != null && !imageUrls.isEmpty()) {
-      savedImages = fileRepository.findAllByUrlIdInAndDeletedIs(imageUrls, false);
+      savedImages = fileRepository.findAllByUrlInAndDeletedIs(imageUrls, false);
     }
 
     if (savedImages != null && !savedImages.isEmpty()) {
@@ -61,7 +61,7 @@ public class BlogPostServiceImpl implements BlogPostService {
   public DataResponse update(BlogPostDTO dto, long id) {
     BlogPostEntity blogPost = blogPostRepository.getById(id);
     if (blogPost != null) {
-      if (dto.getUserId() != blogPost.getCreatedBy().getId()) {
+      if (dto.getUserId() != blogPost.getAuthor().getId()) {
         throw new CustomException("You don't have rights for this blog post");
       }
 
@@ -98,7 +98,7 @@ public class BlogPostServiceImpl implements BlogPostService {
             .getUser();
 
     if (fileSrcs != null && !fileSrcs.isEmpty()) {
-      savedImages = fileRepository.findAllByUrlIdInAndDeletedIs(fileSrcs, false);
+      savedImages = fileRepository.findAllByUrlInAndDeletedIs(fileSrcs, false);
     }
     if (savedImages != null && !savedImages.isEmpty()) {
       savedImages.forEach(
@@ -118,7 +118,7 @@ public class BlogPostServiceImpl implements BlogPostService {
                     .getUser();
 
     List<String> publicIdsToDelete =
-            fileRepository.findAllByUrlIdInAndDeletedIs(urls, false).stream()
+            fileRepository.findAllByUrlInAndDeletedIs(urls, false).stream()
                     .map(FileEntity::getCloudinaryPublicId)
                     .toList();
     if (!publicIdsToDelete.isEmpty())

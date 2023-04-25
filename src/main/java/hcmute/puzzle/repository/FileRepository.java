@@ -16,7 +16,10 @@ public interface FileRepository extends JpaRepository<FileEntity, Long> {
     List<FileEntity> findAllByCloudinaryPublicIdInAndDeletedIs(Collection<String> cloudinaryPublicIds, boolean deleted);
 
     @Query("SELECT f FROM FileEntity f WHERE f.url in :urls AND f.isDeleted =:deleted")
-    List<FileEntity> findAllByUrlIdInAndDeletedIs(Collection<String> urls, boolean deleted);
+    List<FileEntity> findAllByUrlInAndDeletedIs(Collection<String> urls, boolean deleted);
+
+    @Query("SELECT f FROM FileEntity f WHERE f.url = :urls AND f.isDeleted =:deleted")
+    Optional<FileEntity> findAllByUrlAndDeletedIs(String url, boolean deleted);
 
     Optional<FileEntity> findByCloudinaryPublicId(String cloudinaryPublicId);
 }

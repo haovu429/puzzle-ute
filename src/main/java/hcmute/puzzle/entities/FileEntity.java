@@ -14,7 +14,7 @@ import java.util.Date;
 @Builder
 @Entity
 @Table(name = "file")
-public class FileEntity implements Serializable {
+public class FileEntity extends Auditable implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,22 +44,6 @@ public class FileEntity implements Serializable {
 
   @Column(name = "cloudinary_public_id")
   private String cloudinaryPublicId;
-
-  @Column(name = "created_by", columnDefinition = "VARCHAR(100)")
-  private String created_by;
-
-  @Column(name = "created_at")
-  @Temporal(TemporalType.TIMESTAMP)
-  @CreationTimestamp
-  private Date createdAt;
-
-  @Column(name = "updated_at")
-  @Temporal(TemporalType.TIMESTAMP)
-  @UpdateTimestamp
-  private Date updatedAt;
-
-  @Column(name = "updated_by", columnDefinition = "VARCHAR(100)")
-  private String updatedBy;
 
   @Column(name = "is_deleted")
   @Builder.Default

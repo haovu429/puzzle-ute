@@ -12,22 +12,15 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table(name = "token")
-public class TokenEntity implements Serializable {
+public class TokenEntity extends Auditable implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "id")
   private long id;
 
-
   @Column(name = "token", nullable = false)
   private String token;
-
-
-  @Temporal(TemporalType.TIMESTAMP)
-  @Column(name = "created_time", nullable = false)
-  private Date createTime;
-
 
   @Temporal(TemporalType.TIMESTAMP)
   @Column(name = "expiry_time", nullable = false)

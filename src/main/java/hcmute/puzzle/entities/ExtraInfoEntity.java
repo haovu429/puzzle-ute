@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Entity
 @Table(name = "extra_info")
-public class ExtraInfoEntity implements Serializable {
+public class ExtraInfoEntity extends Auditable implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;

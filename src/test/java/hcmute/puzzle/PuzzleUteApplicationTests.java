@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -31,7 +30,7 @@ class PuzzleUteApplicationTests {
     userEntity.setId(78L);
     userEntity.setFullName("Hao dep try");
 
-    blogPostEntity.setCreatedBy(userEntity);
+    blogPostEntity.setAuthor(userEntity);
     blogPostEntity.setTitle("Thanh nien dep try nhat xom");
 
     BlogPostDTO blogPostDTO = converter.toDTO(blogPostEntity);

@@ -19,7 +19,7 @@ import java.util.Date;
 @Builder
 @Entity
 @Table(name = "role")
-public class RoleEntity implements Serializable {
+public class RoleEntity extends Auditable implements Serializable {
   @Id
   @Column(name = "code")
   private String code;
@@ -30,24 +30,6 @@ public class RoleEntity implements Serializable {
   @Column(name = "is_deleted")
   @Builder.Default
   private boolean isDelete = false;
-
-  @Column(name = "created_at")
-  @Temporal(TemporalType.TIMESTAMP)
-  @CreatedDate
-  private Date createdAt;
-
-  @Column(name = "created_by", columnDefinition = "VARCHAR(100)")
-  @CreatedBy
-  private String created_by;
-
-  @Column(name = "updated_at")
-  @Temporal(TemporalType.TIMESTAMP)
-  @LastModifiedDate
-  private Date updatedAt;
-
-  @Column(name = "updated_by", columnDefinition = "VARCHAR(100)")
-  @LastModifiedBy
-  private String updatedBy;
 
   public RoleEntity(String code) {
     this.code = code;

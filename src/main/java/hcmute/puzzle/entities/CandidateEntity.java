@@ -15,7 +15,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "candidate")
-public class CandidateEntity implements Serializable {
+public class CandidateEntity extends Auditable implements Serializable {
 
   @Id
   // @GeneratedValue(strategy = GenerationType.IDENTITY)

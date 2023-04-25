@@ -18,7 +18,7 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "job_post")
-public class JobPostEntity implements Serializable {
+public class JobPostEntity extends Auditable implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

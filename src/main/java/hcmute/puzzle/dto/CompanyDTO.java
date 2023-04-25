@@ -15,7 +15,7 @@ public class CompanyDTO {
 
   @NotNull @NotEmpty private String name;
 
-  @NotNull @NotEmpty private String description;
+  private String description;
   private String image;
   private String website;
   private boolean isActive = false;
