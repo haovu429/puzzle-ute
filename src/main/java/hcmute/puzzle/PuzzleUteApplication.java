@@ -4,6 +4,8 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
+import com.ulisesbocchio.jasyptspringboot.annotation.EncryptablePropertySource;
 import hcmute.puzzle.utils.Constant;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +38,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.Arrays;
 
+@EnableEncryptableProperties
 @EnableTransactionManagement
 @SpringBootApplication
 @EnableScheduling
