@@ -34,9 +34,11 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.TimeZone;
 
 @EnableEncryptableProperties
 @EnableTransactionManagement
@@ -49,6 +51,11 @@ import java.util.Arrays;
 // http://localhost:8080/oauth2/authorization/google
 public class PuzzleUteApplication {
 
+  @PostConstruct
+  public void init(){
+    // Setting Spring Boot SetTimeZone
+    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+  }
   public static void main(String[] args) {
     System.setProperty("user.timezone", "Asia/Ho_Chi_Minh");
     SpringApplication.run(PuzzleUteApplication.class, args);
