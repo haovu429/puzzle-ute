@@ -1,18 +1,18 @@
 package hcmute.puzzle.services.impl;
 
-import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.ApplicationDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.entities.ApplicationEntity;
-import hcmute.puzzle.entities.CandidateEntity;
-import hcmute.puzzle.entities.EmployerEntity;
-import hcmute.puzzle.entities.JobPostEntity;
+import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.infrastructure.dtos.olds.ApplicationDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.entities.ApplicationEntity;
+import hcmute.puzzle.infrastructure.entities.CandidateEntity;
+import hcmute.puzzle.infrastructure.entities.EmployerEntity;
+import hcmute.puzzle.infrastructure.entities.JobPostEntity;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.repository.ApplicationRepository;
-import hcmute.puzzle.repository.CandidateRepository;
-import hcmute.puzzle.repository.EmployerRepository;
-import hcmute.puzzle.repository.JobPostRepository;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
+import hcmute.puzzle.infrastructure.repository.CandidateRepository;
+import hcmute.puzzle.infrastructure.repository.EmployerRepository;
+import hcmute.puzzle.infrastructure.repository.JobPostRepository;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.services.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -61,11 +61,11 @@ public class ApplicationServiceImpl implements ApplicationService {
   public ResponseObject findAll(Pageable pageable) {
 
     Page<ApplicationEntity> entities = applicationRepository.findAll(pageable);
-    Page<ApplicationDTO> dtos =
+    Page<ApplicationDto> dtos =
         entities.map(
-            new Function<ApplicationEntity, ApplicationDTO>() {
+            new Function<ApplicationEntity, ApplicationDto>() {
               @Override
-              public ApplicationDTO apply(ApplicationEntity entity) {
+              public ApplicationDto apply(ApplicationEntity entity) {
                 return converter.toDTO(entity);
               }
             });
@@ -127,11 +127,11 @@ public class ApplicationServiceImpl implements ApplicationService {
       throw new CustomException("Job Post isn't exists");
     }
 
-    List<ApplicationDTO> applicationDTOS =
+    List<ApplicationDto> applicationDTOS =
         applicationRepository.findApplicationByJobPostId(jobPostId).stream()
             .map(
                 application -> {
-                  ApplicationDTO applicationDTO = converter.toDTO(application);
+                  ApplicationDto applicationDTO = converter.toDTO(application);
                   Optional<CandidateEntity> candidate =
                       candidateRepository.findById(applicationDTO.getCandidateId());
                   if (candidate.isEmpty()) {

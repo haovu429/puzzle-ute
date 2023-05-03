@@ -1,7 +1,5 @@
 package hcmute.puzzle.exception;
 
-import hcmute.puzzle.response.DataResponse;
-
 public class FileStorageException extends CustomException{
 
     public FileStorageException(String message) {

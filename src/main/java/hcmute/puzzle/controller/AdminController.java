@@ -1,18 +1,24 @@
 package hcmute.puzzle.controller;
 
-import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.*;
-import hcmute.puzzle.entities.EmployerEntity;
-import hcmute.puzzle.entities.InvoiceEntity;
+import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.infrastructure.dtos.news.CreateUserForAdminDto;
+import hcmute.puzzle.infrastructure.dtos.news.RegisterUserDto;
+import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
+import hcmute.puzzle.infrastructure.dtos.olds.CategoryDto;
+import hcmute.puzzle.infrastructure.dtos.olds.CompanyDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ExtraInfoDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.entities.EmployerEntity;
+import hcmute.puzzle.infrastructure.entities.InvoiceEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
-import hcmute.puzzle.model.payload.request.company.CreateCompanyPayloadForAdmin;
-import hcmute.puzzle.model.payload.request.other.TimeFramePayLoad;
-import hcmute.puzzle.repository.EmployerRepository;
-import hcmute.puzzle.repository.JobPostRepository;
-import hcmute.puzzle.repository.UserRepository;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.models.payload.request.company.CreateCompanyAdminDto;
+import hcmute.puzzle.infrastructure.models.payload.request.other.TimeFramePayLoad;
+import hcmute.puzzle.infrastructure.repository.EmployerRepository;
+import hcmute.puzzle.infrastructure.repository.JobPostRepository;
+import hcmute.puzzle.infrastructure.repository.UserRepository;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import java.util.Optional;
@@ -54,9 +60,9 @@ public class AdminController {
 
   // Company, add new company
   @PostMapping("/create-info-company")
-  public DataResponse createCompany(@ModelAttribute CreateCompanyPayloadForAdmin companyPayload)
+  public DataResponse createCompany(@ModelAttribute CreateCompanyAdminDto companyPayload)
       throws NotFoundException {
-    CompanyDTO companyDTO = new CompanyDTO();
+    CompanyDto companyDTO = new CompanyDto();
     companyDTO.setName(companyPayload.getName());
     companyDTO.setDescription(companyPayload.getDescription());
     companyDTO.setWebsite(companyPayload.getWebsite());
@@ -76,9 +82,9 @@ public class AdminController {
   @PutMapping("/update-info-company/{companyId}")
   public DataResponse updateCompany(
       @PathVariable(value = "companyId") long companyId,
-      @ModelAttribute CreateCompanyPayloadForAdmin companyPayload)
+      @ModelAttribute CreateCompanyAdminDto companyPayload)
       throws NotFoundException {
-    CompanyDTO companyDTO = new CompanyDTO();
+    CompanyDto companyDTO = new CompanyDto();
     companyDTO.setName(companyPayload.getName());
     companyDTO.setDescription(companyPayload.getDescription());
     companyDTO.setWebsite(companyPayload.getWebsite());
@@ -115,9 +121,9 @@ public class AdminController {
 
   // Account
   @PostMapping("/add-account")
-  public DataResponse saveAccount(@RequestBody UserDTO user) {
-    userService.save(user);
-    return new DataResponse("Add user " + user.getUsername() + " success.");
+  public DataResponse saveAccount(@RequestBody CreateUserForAdminDto user) {
+    userService.registerUserForAdmin(user, true);
+    return new DataResponse("Add user " + user.getEmail() + " success.");
   }
 
   @DeleteMapping("/delete-account/{id}")
@@ -137,13 +143,13 @@ public class AdminController {
 
   // Company
   @PostMapping("/add-extra-info")
-  public ResponseObject createExtraInfo(@RequestBody ExtraInfoDTO extraInfoDTO) {
+  public ResponseObject createExtraInfo(@RequestBody ExtraInfoDto extraInfoDTO) {
     return extraInfoService.save(extraInfoDTO);
   }
 
   @PutMapping("/update-extra-info/{id}")
   public ResponseObject updateExtraInfo(
-      @RequestBody ExtraInfoDTO extraInfoDTO, @PathVariable long extraInfoId) {
+          @RequestBody ExtraInfoDto extraInfoDTO, @PathVariable long extraInfoId) {
     return extraInfoService.update(extraInfoDTO, extraInfoId);
   }
 
@@ -213,7 +219,7 @@ public class AdminController {
 
   @PutMapping("/update-account-by-id/{userId}")
   public DataResponse updateAccountById(
-      @PathVariable(value = "userId") long userId, @RequestBody UserDTO user) {
+      @PathVariable(value = "userId") long userId, @RequestBody UserPostDto user) {
 
     return userService.updateForAdmin(userId, user);
   }
@@ -254,13 +260,13 @@ public class AdminController {
   }
 
   @PostMapping("/add-category")
-  public DataResponse addCategory(@RequestBody CategoryDTO categoryDTO) {
+  public DataResponse addCategory(@RequestBody CategoryDto categoryDTO) {
     return categoryService.save(categoryDTO);
   }
 
   @PutMapping("/update-category/{categoryId}")
   public DataResponse updateCategory(
-      @PathVariable long categoryId, @RequestBody CategoryDTO categoryDTO) {
+      @PathVariable long categoryId, @RequestBody CategoryDto categoryDTO) {
     return categoryService.update(categoryDTO, categoryId);
   }
 

@@ -1,11 +1,11 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.entities.FileEntity;
-import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.FileEntity;
+import hcmute.puzzle.infrastructure.entities.UserEntity;
 import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.exception.PartialFailureException;
-import hcmute.puzzle.model.CloudinaryUploadFileResponse;
-import hcmute.puzzle.model.enums.FileCategory;
+import hcmute.puzzle.infrastructure.models.CloudinaryUploadFileResponse;
+import hcmute.puzzle.infrastructure.models.enums.FileCategory;
 
 import java.util.List;
 import java.util.Map;

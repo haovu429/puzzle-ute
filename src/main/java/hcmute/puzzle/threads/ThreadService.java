@@ -5,11 +5,10 @@ import java.util.UUID;
 import java.util.concurrent.*;
 
 import hcmute.puzzle.configuration.SystemInfo;
-import hcmute.puzzle.entities.TokenEntity;
-import hcmute.puzzle.entities.UserEntity;
-import hcmute.puzzle.repository.TokenRepository;
+import hcmute.puzzle.infrastructure.entities.TokenEntity;
+import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.repository.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import static hcmute.puzzle.services.impl.SecurityServiceImpl.RESET_PASSWORD_TOKEN;

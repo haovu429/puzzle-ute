@@ -1,11 +1,11 @@
 package hcmute.puzzle.services.impl;
 
-import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.CategoryDTO;
-import hcmute.puzzle.entities.CategoryEntity;
+import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.infrastructure.dtos.olds.CategoryDto;
+import hcmute.puzzle.infrastructure.entities.CategoryEntity;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.repository.CategoryRepository;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.repository.CategoryRepository;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class CategoryServiceImpl implements CategoryService {
   @Autowired CategoryRepository categoryRepository;
 
   @Override
-  public DataResponse save(CategoryDTO dto) {
+  public DataResponse save(CategoryDto dto) {
     dto.setId(0);
 
     CategoryEntity categoryEntity = categoryRepository.save(converter.toEntity(dto));
@@ -30,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService {
   }
 
   @Override
-  public DataResponse update(CategoryDTO dto, long id) {
+  public DataResponse update(CategoryDto dto, long id) {
     if (!categoryRepository.existsById(id)) {
       throw new CustomException("Category not found!");
     }
@@ -52,7 +52,7 @@ public class CategoryServiceImpl implements CategoryService {
 
   @Override
   public DataResponse getAll() {
-    List<CategoryDTO> categoryEntities =
+    List<CategoryDto> categoryEntities =
         categoryRepository.findAll().stream()
             .map(entity -> converter.toDTO(entity))
             .collect(Collectors.toList());

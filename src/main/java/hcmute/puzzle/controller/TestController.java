@@ -1,14 +1,14 @@
 package hcmute.puzzle.controller;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.firebase.FirebaseMessagingService;
-import hcmute.puzzle.firebase.Note;
-import hcmute.puzzle.model.payload.request.TokenObject;
-import hcmute.puzzle.repository.RoleRepository;
-import hcmute.puzzle.repository.UserRepository;
-import hcmute.puzzle.response.DataResponse;
-import hcmute.puzzle.security.CustomUserDetails;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.utils.firebase.FirebaseMessagingService;
+import hcmute.puzzle.utils.firebase.Note;
+import hcmute.puzzle.infrastructure.models.payload.request.TokenObject;
+import hcmute.puzzle.infrastructure.repository.RoleRepository;
+import hcmute.puzzle.infrastructure.repository.UserRepository;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.test.SetUpDB;
 import hcmute.puzzle.test.TestCloudinary;
 import hcmute.puzzle.utils.Constant;

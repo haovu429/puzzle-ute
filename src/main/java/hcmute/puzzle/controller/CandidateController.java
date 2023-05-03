@@ -1,18 +1,18 @@
 package hcmute.puzzle.controller;
 
-import hcmute.puzzle.dto.CandidateDTO;
-import hcmute.puzzle.dto.ExperienceDTO;
-import hcmute.puzzle.dto.JobAlertDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.entities.ApplicationEntity;
-import hcmute.puzzle.entities.ExperienceEntity;
-import hcmute.puzzle.entities.JobAlertEntity;
-import hcmute.puzzle.entities.JobPostEntity;
+import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ExperienceDto;
+import hcmute.puzzle.infrastructure.dtos.olds.JobAlertDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.entities.ApplicationEntity;
+import hcmute.puzzle.infrastructure.entities.ExperienceEntity;
+import hcmute.puzzle.infrastructure.entities.JobAlertEntity;
+import hcmute.puzzle.infrastructure.entities.JobPostEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
-import hcmute.puzzle.repository.*;
-import hcmute.puzzle.response.DataResponse;
-import hcmute.puzzle.security.CustomUserDetails;
+import hcmute.puzzle.infrastructure.repository.*;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -37,23 +37,28 @@ public class CandidateController {
   @Autowired ApplicationService applicationService;
   @Autowired CandidateService candidateService;
 
-  @Autowired UserRepository userRepository;
+  @Autowired
+  UserRepository userRepository;
 
   @Autowired JobPostRepository jobPostRepository;
 
-  @Autowired CandidateRepository candidateRepository;
+  @Autowired
+  CandidateRepository candidateRepository;
 
   @Autowired JwtAuthenticationFilter jwtAuthenticationFilter;
 
-  @Autowired ApplicationRepository applicationRepository;
+  @Autowired
+  ApplicationRepository applicationRepository;
 
-  @Autowired JobAlertRepository jobAlertRepository;
+  @Autowired
+  JobAlertRepository jobAlertRepository;
 
   @Autowired JobAlertService jobAlertService;
 
   @Autowired ExperienceService experienceService;
 
-  @Autowired ExperienceRepository experienceRepository;
+  @Autowired
+  ExperienceRepository experienceRepository;
 
   @Autowired EmployerService employerService;
 
@@ -63,7 +68,7 @@ public class CandidateController {
 
   @PostMapping("/add")
   ResponseObject saveCandidate(
-      @RequestBody @Validated CandidateDTO candidate,
+      @RequestBody @Validated CandidateDto candidate,
       BindingResult bindingResult,
       Authentication authentication) {
     if (bindingResult.hasErrors()) {
@@ -76,7 +81,7 @@ public class CandidateController {
     }
     candidate.setUserId(userDetails.getUser().getId());
 
-    Optional<CandidateDTO> candidateDTO = candidateService.save(candidate);
+    Optional<CandidateDto> candidateDTO = candidateService.save(candidate);
     if (candidateDTO.isPresent()) {
       return new ResponseObject(
           HttpStatus.OK.value(), "Create candidate successfully", candidateDTO.get());
@@ -85,7 +90,7 @@ public class CandidateController {
     }
 
     //        return new ResponseObject(
-    //                HttpStatus.OK.value(), "Create candidate successfully", new CandidateDTO());
+    //                HttpStatus.OK.value(), "Create candidate successfully", new CandidateDto());
   }
 
   // Gửi Authentication xác thực tài khoản thì xoá.
@@ -98,7 +103,7 @@ public class CandidateController {
 
   @PutMapping("/update")
   ResponseObject updateCandidate(
-      @RequestBody @Validated CandidateDTO candidate,
+      @RequestBody @Validated CandidateDto candidate,
       BindingResult bindingResult,
       Authentication authentication) {
     if (bindingResult.hasErrors()) {
@@ -256,7 +261,7 @@ public class CandidateController {
 
   @PostMapping("/add-job-alert")
   ResponseObject addJobAlert(
-      @RequestBody @Validated JobAlertDTO jobAlertDTO,
+      @RequestBody @Validated JobAlertDto jobAlertDTO,
       BindingResult bindingResult,
       Authentication authentication) {
     if (bindingResult.hasErrors()) {
@@ -268,7 +273,7 @@ public class CandidateController {
 
   @PutMapping("/update-job-alert")
   ResponseObject updateJobAlert(
-      @RequestBody @Validated JobAlertDTO jobAlertDTO,
+      @RequestBody @Validated JobAlertDto jobAlertDTO,
       BindingResult bindingResult,
       Authentication authentication) {
     if (bindingResult.hasErrors()) {
@@ -336,7 +341,7 @@ public class CandidateController {
 
   @PostMapping("/add-experience")
   ResponseObject addExperience(
-      @RequestBody @Validated ExperienceDTO experienceDTO,
+      @RequestBody @Validated ExperienceDto experienceDTO,
       BindingResult bindingResult,
       Authentication authentication) {
     if (bindingResult.hasErrors()) {
@@ -350,7 +355,7 @@ public class CandidateController {
 
   @PutMapping("/update-experience")
   ResponseObject updateExperience(
-      @RequestBody @Validated ExperienceDTO experienceDTO,
+      @RequestBody @Validated ExperienceDto experienceDTO,
       BindingResult bindingResult,
       Authentication authentication) {
     if (bindingResult.hasErrors()) {

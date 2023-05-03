@@ -1,10 +1,7 @@
 package hcmute.puzzle.services;
 
 import freemarker.template.TemplateException;
-import hcmute.puzzle.dto.ResetPassword;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.entities.TokenEntity;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;

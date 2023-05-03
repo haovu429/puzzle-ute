@@ -2,25 +2,23 @@ package hcmute.puzzle.services.impl;
 
 import freemarker.template.TemplateException;
 import hcmute.puzzle.configuration.SystemInfo;
-import hcmute.puzzle.entities.TokenEntity;
-import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.TokenEntity;
+import hcmute.puzzle.infrastructure.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.repository.TokenRepository;
-import hcmute.puzzle.repository.UserRepository;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.repository.TokenRepository;
+import hcmute.puzzle.infrastructure.repository.UserRepository;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 
 import hcmute.puzzle.services.SecurityService;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Logger;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
 import hcmute.puzzle.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

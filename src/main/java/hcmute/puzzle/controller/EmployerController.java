@@ -1,26 +1,26 @@
 package hcmute.puzzle.controller;
 
-import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.CompanyDTO;
-import hcmute.puzzle.dto.EmployerDTO;
-import hcmute.puzzle.dto.JobPostDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.entities.ApplicationEntity;
-import hcmute.puzzle.entities.CompanyEntity;
-import hcmute.puzzle.entities.JobPostEntity;
+import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.infrastructure.dtos.olds.CompanyDto;
+import hcmute.puzzle.infrastructure.dtos.olds.EmployerDto;
+import hcmute.puzzle.infrastructure.dtos.olds.JobPostDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.entities.ApplicationEntity;
+import hcmute.puzzle.infrastructure.entities.CompanyEntity;
+import hcmute.puzzle.infrastructure.entities.JobPostEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
-import hcmute.puzzle.mail.MailObject;
-import hcmute.puzzle.mail.SendMail;
-import hcmute.puzzle.model.ResponseApplication;
-import hcmute.puzzle.model.payload.request.company.CreateCompanyPayload;
-import hcmute.puzzle.repository.ApplicationRepository;
-import hcmute.puzzle.repository.CompanyRepository;
-import hcmute.puzzle.repository.JobPostRepository;
-import hcmute.puzzle.repository.UserRepository;
-import hcmute.puzzle.response.DataResponse;
-import hcmute.puzzle.security.CustomUserDetails;
+import hcmute.puzzle.utils.mail.MailObject;
+import hcmute.puzzle.utils.mail.SendMail;
+import hcmute.puzzle.infrastructure.models.ResponseApplication;
+import hcmute.puzzle.infrastructure.models.payload.request.company.CreateCompanyDto;
+import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
+import hcmute.puzzle.infrastructure.repository.CompanyRepository;
+import hcmute.puzzle.infrastructure.repository.JobPostRepository;
+import hcmute.puzzle.infrastructure.repository.UserRepository;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import java.util.Map;
@@ -71,7 +71,7 @@ public class EmployerController {
 
   @PutMapping("/update")
   ResponseObject updateEmployer(
-      @RequestBody @Validated EmployerDTO employer,
+      @RequestBody @Validated EmployerDto employer,
       BindingResult bindingResult,
       Authentication authentication) {
     if (bindingResult.hasErrors()) {
@@ -93,7 +93,7 @@ public class EmployerController {
 
   @PostMapping("/post-job")
   ResponseObject createJobPost(
-      @RequestBody @Validated JobPostDTO jobPostDTO, Authentication authentication) {
+          @RequestBody @Validated JobPostDto jobPostDTO, Authentication authentication) {
 
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     // Validate JobPost
@@ -124,7 +124,7 @@ public class EmployerController {
 
   @PutMapping("/update-job-post")
   ResponseObject updateJobPost(
-      @RequestBody @Validated JobPostDTO jobPostDTO, Authentication authentication) {
+          @RequestBody @Validated JobPostDto jobPostDTO, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
     // Validate JobPost
@@ -165,10 +165,10 @@ public class EmployerController {
 
   @PostMapping("/create-info-company")
   public DataResponse saveCompany(
-      @ModelAttribute CreateCompanyPayload companyPayload, Authentication authentication)
+          @ModelAttribute CreateCompanyDto companyPayload, Authentication authentication)
       throws NotFoundException {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    CompanyDTO companyDTO = new CompanyDTO();
+    CompanyDto companyDTO = new CompanyDto();
     companyDTO.setName(companyPayload.getName());
     companyDTO.setDescription(companyPayload.getDescription());
     companyDTO.setWebsite(companyPayload.getWebsite());

@@ -7,6 +7,11 @@ import org.springframework.beans.factory.annotation.Value;
 public class Constant {
   //  regex for email address
   public static final String EMAIL_REGEX = "^[a-zA-Z0-9_.]+@[a-zA-Z0-9_.]+$";
+
+  public static final String PASSWORD_REGEX = "^(?=.*[0-9])"
+          + "(?=.*[a-z])(?=.*[A-Z])"
+          + "(?=.*[@#$%^&+=])"
+          + "(?=\\S+$).{6,}$";
   //  regex for phone number has 10 digits
   public static final String PHONE_REGEX = "^(\\+84|0)\\d{9,10}$";
   public static final Map<String, String> FILTER_PRODUCT =

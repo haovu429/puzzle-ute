@@ -3,8 +3,10 @@ package hcmute.puzzle.test;
 import static hcmute.puzzle.utils.Constant.SYSTEM_MAIL;
 
 import hcmute.puzzle.entities.*;
-import hcmute.puzzle.model.enums.FileCategory;
-import hcmute.puzzle.model.enums.FileType;
+import hcmute.puzzle.infrastructure.entities.*;
+import hcmute.puzzle.infrastructure.models.enums.FileCategory;
+import hcmute.puzzle.infrastructure.models.enums.FileType;
+import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.repository.*;
 import hcmute.puzzle.utils.Constant;
 import java.util.*;
@@ -14,23 +16,28 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SetUpDB {
-  @Autowired RoleRepository roleRepository;
+  @Autowired
+  RoleRepository roleRepository;
 
   @Autowired CompanyRepository companyRepository;
 
-  @Autowired UserRepository userRepository;
+  @Autowired
+  UserRepository userRepository;
 
   @Autowired PasswordEncoder passwordEncoder;
 
   @Autowired JobPostRepository jobPostRepository;
 
-  @Autowired ExperienceRepository experienceRepository;
+  @Autowired
+  ExperienceRepository experienceRepository;
 
   @Autowired ExtraInfoRepository extraInfoRepository;
 
-  @Autowired CandidateRepository candidateRepository;
+  @Autowired
+  CandidateRepository candidateRepository;
 
-  @Autowired EmployerRepository employerRepository;
+  @Autowired
+  EmployerRepository employerRepository;
 
   @Autowired FileTypeRepository fileTypeRepository;
 

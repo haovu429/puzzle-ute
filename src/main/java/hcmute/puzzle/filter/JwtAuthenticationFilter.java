@@ -1,17 +1,15 @@
 package hcmute.puzzle.filter;
 
-import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.repository.UserRepository;
-import hcmute.puzzle.security.CustomUserDetails;
-import hcmute.puzzle.security.JwtTokenProvider;
-import hcmute.puzzle.security.UserService;
+import hcmute.puzzle.infrastructure.repository.UserRepository;
+import hcmute.puzzle.configuration.security.CustomUserDetails;
+import hcmute.puzzle.configuration.security.JwtTokenProvider;
+import hcmute.puzzle.configuration.security.UserService;
 import hcmute.puzzle.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

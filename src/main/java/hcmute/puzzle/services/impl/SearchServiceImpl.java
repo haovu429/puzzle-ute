@@ -1,9 +1,9 @@
 package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.model.ModelQuery;
-import hcmute.puzzle.model.SearchBetween;
-import hcmute.puzzle.model.TableQuery;
+import hcmute.puzzle.infrastructure.models.ModelQuery;
+import hcmute.puzzle.infrastructure.models.SearchBetween;
+import hcmute.puzzle.infrastructure.models.TableQuery;
 import hcmute.puzzle.services.SearchService;
 import org.springframework.stereotype.Service;
 

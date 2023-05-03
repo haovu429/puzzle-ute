@@ -1,7 +1,7 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
-import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;

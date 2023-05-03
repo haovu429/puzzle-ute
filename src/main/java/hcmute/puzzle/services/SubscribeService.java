@@ -1,10 +1,10 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.entities.InvoiceEntity;
-import hcmute.puzzle.entities.PackageEntity;
-import hcmute.puzzle.entities.SubscribeEntity;
-import hcmute.puzzle.entities.UserEntity;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.entities.InvoiceEntity;
+import hcmute.puzzle.infrastructure.entities.PackageEntity;
+import hcmute.puzzle.infrastructure.entities.SubscribeEntity;
+import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 
 import java.util.List;
 

@@ -1,18 +1,18 @@
 package hcmute.puzzle.services.impl;
 
-import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.CandidateDTO;
-import hcmute.puzzle.dto.JobPostDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.entities.CandidateEntity;
-import hcmute.puzzle.entities.JobPostEntity;
-import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
+import hcmute.puzzle.infrastructure.dtos.olds.JobPostDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.entities.CandidateEntity;
+import hcmute.puzzle.infrastructure.entities.JobPostEntity;
+import hcmute.puzzle.infrastructure.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.repository.ApplicationRepository;
-import hcmute.puzzle.repository.CandidateRepository;
-import hcmute.puzzle.repository.JobPostRepository;
-import hcmute.puzzle.repository.UserRepository;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
+import hcmute.puzzle.infrastructure.repository.CandidateRepository;
+import hcmute.puzzle.infrastructure.repository.JobPostRepository;
+import hcmute.puzzle.infrastructure.repository.UserRepository;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.services.JobPostService;
 import hcmute.puzzle.utils.CustomNullsFirstInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class JobPostServiceImpl implements JobPostService {
 
   @Autowired UserRepository userRepository;
 
-  public ResponseObject add(JobPostDTO jobPostDTO) {
+  public ResponseObject add(JobPostDto jobPostDTO) {
     validateJobPost(jobPostDTO);
     JobPostEntity jobPostEntity = converter.toEntity(jobPostDTO);
 
@@ -77,7 +77,7 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   @Override
-  public ResponseObject update(JobPostDTO JobPostDTO) {
+  public ResponseObject update(JobPostDto JobPostDTO) {
 
     boolean exists = jobPostRepository.existsById(JobPostDTO.getId());
 
@@ -110,7 +110,7 @@ public class JobPostServiceImpl implements JobPostService {
 
     jobPostEntities = jobPostRepository.findAll();
 
-    List<JobPostDTO> jobPostDTOS =
+    List<JobPostDto> jobPostDtos =
         jobPostEntities.stream()
             .map(
                 entity -> {
@@ -118,7 +118,7 @@ public class JobPostServiceImpl implements JobPostService {
                 })
             .collect(Collectors.toList());
 
-    return new ResponseObject(200, "Info of job post", jobPostDTOS);
+    return new ResponseObject(200, "Info of job post", jobPostDtos);
   }
 
   @Override
@@ -135,7 +135,7 @@ public class JobPostServiceImpl implements JobPostService {
 
   public ResponseObject getCandidatesApplyJobPost(long jobPostId) {
     Set<CandidateEntity> candidateApply = jobPostRepository.getCandidateApplyJobPost(jobPostId);
-    Set<CandidateDTO> candidateDTOS =
+    Set<CandidateDto> candidateDTOS =
         candidateApply.stream()
             .map(candidate -> converter.toDTO(candidate))
             .collect(Collectors.toSet());
@@ -146,7 +146,7 @@ public class JobPostServiceImpl implements JobPostService {
   //  public ResponseObject getJobPostCandidateApplied(long candidateId) {
   //    Set<JobPostEntity> jobPostApplied =
   // jobPostRepository.getJobPostCandidateApplied(candidateId);
-  //    Set<JobPostDTO> jobPostDTOS =
+  //    Set<JobPostDto> jobPostDTOS =
   //            jobPostApplied.stream()
   //                    .map(jobPost -> converter.toDTO(jobPost))
   //                    .collect(Collectors.toSet());
@@ -156,19 +156,19 @@ public class JobPostServiceImpl implements JobPostService {
 
   @Override
   public ResponseObject getJobPostAppliedByCandidateId(long candidateId) {
-    Set<JobPostDTO> jobPostDTOS =
+    Set<JobPostDto> jobPostDtos =
         jobPostRepository.findAllByAppliedCandidateId(candidateId).stream()
             .map(jobPostEntity -> converter.toDTO(jobPostEntity))
             .collect(Collectors.toSet());
-    processListJobPost(jobPostDTOS);
+    processListJobPost(jobPostDtos);
 
-    return new ResponseObject(200, "Job Post applied", jobPostDTOS);
+    return new ResponseObject(200, "Job Post applied", jobPostDtos);
   }
 
   @Override
   public ResponseObject getJobPostCreatedByEmployerId(long employerId) {
     List<Map<String, Object>> response = new ArrayList<>();
-    // Set<JobPostDTO> jobPostDTOS =
+    // Set<JobPostDto> jobPostDTOS =
     jobPostRepository.findAllByCreatedEmployerId(employerId).stream()
         .forEach(
             jobPostEntity -> {
@@ -185,45 +185,45 @@ public class JobPostServiceImpl implements JobPostService {
 
   @Override
   public ResponseObject getActiveJobPost() {
-    Set<JobPostDTO> jobPostDTOS =
+    Set<JobPostDto> jobPostDtos =
         jobPostRepository.findAllByActiveIsTrue().stream()
             .map(jobPostEntity -> {
-              JobPostDTO jobPostDTO = converter.toDTO(jobPostEntity);
+              JobPostDto jobPostDTO = converter.toDTO(jobPostEntity);
               jobPostDTO.setDescription(null);
               return jobPostDTO;
             })
             .collect(Collectors.toSet());
 
-    return new ResponseObject(200, "Job Post active", jobPostDTOS);
+    return new ResponseObject(200, "Job Post active", jobPostDtos);
   }
 
   @Override
   public ResponseObject getInactiveJobPost() {
-    Set<JobPostDTO> jobPostDTOS =
+    Set<JobPostDto> jobPostDtos =
         jobPostRepository.findAllByActiveIsFalse().stream()
             .map(jobPostEntity -> converter.toDTO(jobPostEntity))
             .collect(Collectors.toSet());
 
-    return new ResponseObject(200, "Job Post inactive", jobPostDTOS);
+    return new ResponseObject(200, "Job Post inactive", jobPostDtos);
   }
 
   public ResponseObject getActiveJobPostByCreateEmployerId(long employerId) {
-    Set<JobPostDTO> jobPostDTOS =
+    Set<JobPostDto> jobPostDtos =
         jobPostRepository.findAllByActiveAndCreatedEmployerId(true, employerId).stream()
             .map(jobPostEntity -> converter.toDTO(jobPostEntity))
             .collect(Collectors.toSet());
 
-    return new ResponseObject(200, "Job Post active", jobPostDTOS);
+    return new ResponseObject(200, "Job Post active", jobPostDtos);
   }
 
   @Override
   public ResponseObject getInactiveJobPostByCreateEmployerId(long employerId) {
-    Set<JobPostDTO> jobPostDTOS =
+    Set<JobPostDto> jobPostDtos =
         jobPostRepository.findAllByActiveAndCreatedEmployerId(false, employerId).stream()
             .map(jobPostEntity -> converter.toDTO(jobPostEntity))
             .collect(Collectors.toSet());
 
-    return new ResponseObject(200, "Job Post inactive", jobPostDTOS);
+    return new ResponseObject(200, "Job Post inactive", jobPostDtos);
   }
 
   @Override
@@ -234,13 +234,13 @@ public class JobPostServiceImpl implements JobPostService {
       throw new CustomException("Candidate isn't exist");
     }
 
-    Set<JobPostDTO> jobPostDTOS =
+    Set<JobPostDto> jobPostDtos =
         candidate.get().getSavedJobPost().stream()
             .map(jobPost -> converter.toDTO(jobPost))
             .collect(Collectors.toSet());
-    processListJobPost(jobPostDTOS);
+    processListJobPost(jobPostDtos);
 
-    return new ResponseObject(200, "Job Posts is saved",jobPostDTOS);
+    return new ResponseObject(200, "Job Posts is saved", jobPostDtos);
   }
 
   public ResponseObject activateJobPost(long jobPostId) {
@@ -257,7 +257,7 @@ public class JobPostServiceImpl implements JobPostService {
     return new ResponseObject(200, "Deactivate success", null);
   }
 
-  public void validateJobPost(JobPostDTO jobPostDTO) {
+  public void validateJobPost(JobPostDto jobPostDTO) {
     // check budget
     if (jobPostDTO.getMinBudget() > jobPostDTO.getMaxBudget()) {
       throw new CustomException("Min budget can't be greater than max budget");
@@ -275,11 +275,11 @@ public class JobPostServiceImpl implements JobPostService {
     List<JobPostEntity> jobPostEntities =
         em.createQuery(strQuery).setMaxResults(15).getResultList();
 
-    List<JobPostDTO> jobPostDTO0s =
+    List<JobPostDto> jobPostDto0s =
         jobPostEntities.stream()
             .map(jobPost -> converter.toDTO(jobPost))
             .collect(Collectors.toList());
-    return new ResponseObject(200, "Job Posts due soon", jobPostDTO0s);
+    return new ResponseObject(200, "Job Posts due soon", jobPostDto0s);
   }
 
   public ResponseObject getHotJobPost() {
@@ -291,11 +291,11 @@ public class JobPostServiceImpl implements JobPostService {
     List<JobPostEntity> jobPostEntities =
         em.createQuery(strQuery).setMaxResults(15).getResultList();
 
-    List<JobPostDTO> jobPostDTO0s =
+    List<JobPostDto> jobPostDto0s =
         jobPostEntities.stream()
             .map(jobPost -> converter.toDTO(jobPost))
             .collect(Collectors.toList());
-    return new ResponseObject(200, " Hot Job Posts", jobPostDTO0s);
+    return new ResponseObject(200, " Hot Job Posts", jobPostDto0s);
   }
 
   @Override
@@ -422,8 +422,8 @@ public class JobPostServiceImpl implements JobPostService {
     }
   }
 
-  public static void processListJobPost(Collection<JobPostDTO> jobPostDTOS){
-    jobPostDTOS.forEach(jobPostDTO -> {
+  public static void processListJobPost(Collection<JobPostDto> jobPostDtos){
+    jobPostDtos.forEach(jobPostDTO -> {
       jobPostDTO.setDescription(null);
     });
   }

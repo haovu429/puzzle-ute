@@ -1,14 +1,12 @@
 package hcmute.puzzle.services.impl;
 
-import hcmute.puzzle.entities.TokenEntity;
-import hcmute.puzzle.entities.UserEntity;
-import hcmute.puzzle.repository.UserRepository;
-import hcmute.puzzle.repository.TokenRepository;
+import hcmute.puzzle.infrastructure.entities.TokenEntity;
+import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.repository.UserRepository;
+import hcmute.puzzle.infrastructure.repository.TokenRepository;
 import hcmute.puzzle.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Service
 public class TokenServiceImpl implements TokenService {

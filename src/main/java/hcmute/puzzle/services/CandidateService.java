@@ -1,17 +1,17 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.dto.CandidateDTO;
-import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 
 import java.util.Optional;
 
 public interface CandidateService {
 
-  Optional<CandidateDTO> save(CandidateDTO candidateDTO);
+  Optional<CandidateDto> save(CandidateDto candidateDTO);
 
   ResponseObject delete(long id);
 
-  ResponseObject update(CandidateDTO candidateDTO);
+  ResponseObject update(CandidateDto candidateDTO);
 
   ResponseObject getOne(long id);
 

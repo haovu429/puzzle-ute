@@ -1,6 +1,6 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.UserEntity;
 
 public interface TokenService {
   UserEntity findUSerByToken(String token);

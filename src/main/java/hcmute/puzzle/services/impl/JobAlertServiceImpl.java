@@ -1,13 +1,13 @@
 package hcmute.puzzle.services.impl;
 
-import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.JobAlertDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.entities.CandidateEntity;
-import hcmute.puzzle.entities.JobAlertEntity;
+import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.infrastructure.dtos.olds.JobAlertDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.entities.CandidateEntity;
+import hcmute.puzzle.infrastructure.entities.JobAlertEntity;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.repository.CandidateRepository;
-import hcmute.puzzle.repository.JobAlertRepository;
+import hcmute.puzzle.infrastructure.repository.CandidateRepository;
+import hcmute.puzzle.infrastructure.repository.JobAlertRepository;
 import hcmute.puzzle.services.JobAlertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class JobAlertServiceImpl implements JobAlertService {
   @Autowired Converter converter;
 
   @Override
-  public ResponseObject save(long candidateId, JobAlertDTO jobAlertDTO) {
+  public ResponseObject save(long candidateId, JobAlertDto jobAlertDTO) {
     jobAlertDTO.setId(0);
 
     JobAlertEntity jobAlert = converter.toEntity(jobAlertDTO);
@@ -41,7 +41,7 @@ public class JobAlertServiceImpl implements JobAlertService {
   }
 
   @Override
-  public ResponseObject update(JobAlertDTO jobAlertDTO) {
+  public ResponseObject update(JobAlertDto jobAlertDTO) {
     boolean exists = jobAlertRepository.existsById(jobAlertDTO.getId());
 
     if (!exists) {
@@ -68,24 +68,24 @@ public class JobAlertServiceImpl implements JobAlertService {
 
   @Override
   public ResponseObject getAll() {
-    Set<JobAlertDTO> jobAlertDTOS = new HashSet<>();
+    Set<JobAlertDto> jobAlertDtos = new HashSet<>();
     jobAlertRepository.findAll().stream()
         .forEach(
             jobAlert -> {
-              jobAlertDTOS.add(converter.toDTO(jobAlert));
+              jobAlertDtos.add(converter.toDTO(jobAlert));
             });
 
-    return new ResponseObject(200, "Info JobAlert", jobAlertDTOS);
+    return new ResponseObject(200, "Info JobAlert", jobAlertDtos);
   }
 
   public ResponseObject getAllJobAlertByCandidateId(long jobAlertId) {
-    Set<JobAlertDTO> jobAlertDTOS = new HashSet<>();
+    Set<JobAlertDto> jobAlertDtos = new HashSet<>();
     jobAlertRepository.findAllByCandidateEntity_Id(jobAlertId).stream()
         .forEach(
             jobAlert -> {
-              jobAlertDTOS.add(converter.toDTO(jobAlert));
+              jobAlertDtos.add(converter.toDTO(jobAlert));
             });
-    return new ResponseObject(200, "Info JobAlert by candidate", jobAlertDTOS);
+    return new ResponseObject(200, "Info JobAlert by candidate", jobAlertDtos);
   }
 
   @Override

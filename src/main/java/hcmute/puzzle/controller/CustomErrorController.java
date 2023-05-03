@@ -16,6 +16,6 @@ public class CustomErrorController implements ErrorController {
   @RequestMapping("/error")
   @ResponseBody
   String error(HttpServletRequest request) {
-    return "<h1>ErrorDefine occurred</h1>";
+    return "<h1>Error occurred</h1>";
   }
 }

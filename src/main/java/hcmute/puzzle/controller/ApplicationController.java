@@ -1,7 +1,7 @@
 package hcmute.puzzle.controller;
 
-import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.services.ApplicationService;
 import hcmute.puzzle.utils.Constant;

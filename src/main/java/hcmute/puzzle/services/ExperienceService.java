@@ -1,13 +1,13 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.dto.ExperienceDTO;
-import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.olds.ExperienceDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 
 public interface ExperienceService {
 
-  ResponseObject save(long candidateId, ExperienceDTO experienceDTO);
+  ResponseObject save(long candidateId, ExperienceDto experienceDTO);
 
-  ResponseObject update(ExperienceDTO experienceDTO);
+  ResponseObject update(ExperienceDto experienceDTO);
 
   ResponseObject delete(long id);
 

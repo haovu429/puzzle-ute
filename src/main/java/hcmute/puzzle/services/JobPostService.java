@@ -1,21 +1,22 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.dto.JobPostDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.olds.JobPostDto;
+
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 
 public interface JobPostService {
-  ResponseObject add(JobPostDTO jobPostDTO);
+  ResponseObject add(JobPostDto jobPostDTO);
 
   ResponseObject delete(long id);
 
   DataResponse markJobPostWasDelete(long id);
 
-  ResponseObject update(JobPostDTO jobPostDTO);
+  ResponseObject update(JobPostDto jobPostDTO);
 
   ResponseObject getOne(long id);
 
-  void validateJobPost(JobPostDTO jobPostDTO);
+  void validateJobPost(JobPostDto jobPostDTO);
 
   ResponseObject getAll();
   ResponseObject getJobPostWithPage(int pageNum, int numOfRecord);

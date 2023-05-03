@@ -1,18 +1,16 @@
 package hcmute.puzzle.services.impl;
 
-import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.CompanyDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.entities.*;
+import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.infrastructure.dtos.olds.CompanyDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.exception.FileStorageException;
 import hcmute.puzzle.exception.NotFoundException;
-import hcmute.puzzle.model.enums.FileCategory;
-import hcmute.puzzle.repository.CandidateRepository;
-import hcmute.puzzle.repository.CompanyRepository;
-import hcmute.puzzle.repository.FileRepository;
-import hcmute.puzzle.repository.UserRepository;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.entities.*;
+import hcmute.puzzle.infrastructure.models.enums.FileCategory;
+import hcmute.puzzle.infrastructure.models.payload.request.company.CreateCompanyAdminDto;
+import hcmute.puzzle.infrastructure.repository.*;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.services.CompanyService;
 import hcmute.puzzle.services.FilesStorageService;
 import java.util.HashSet;
@@ -37,9 +35,12 @@ public class CompanyServiceImpl implements CompanyService {
 
   @Autowired UserRepository userRepository;
 
+  @Autowired
+  EmployerRepository employerRepository;
+
   @Override
   public DataResponse save(
-      CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer)
+          CompanyDto companyPayload, MultipartFile imageFile, EmployerEntity createEmployer)
       throws NotFoundException {
 
     CompanyEntity company = new CompanyEntity();
@@ -63,7 +64,7 @@ public class CompanyServiceImpl implements CompanyService {
               .uploadFileWithFileTypeReturnUrl(
                   String.valueOf(company.getId()), imageFile, FileCategory.IMAGE_COMPANY)
               .orElseThrow(() -> new FileStorageException("UPLOAD_FILE_FAILURE"));
-      ;
+
       company.setImage(fileEntity.getUrl());
       company = companyRepository.save(company);
     }
@@ -72,9 +73,40 @@ public class CompanyServiceImpl implements CompanyService {
   }
 
   @Override
+  public DataResponse createCompanyForAdmin(CreateCompanyAdminDto dto) {
+    EmployerEntity createdEmployer = employerRepository.findById(dto.getCreatedEmployerId())
+            .orElseThrow(() -> new NotFoundException("NOT_FOUND_CREATOR"));
+
+    CompanyEntity newCompany = CompanyEntity.builder()
+            .name(dto.getName())
+            .description(dto.getDescription())
+            .website(dto.getWebsite())
+            .isActive(dto.isActive())
+            .createdEmployer(createdEmployer)
+            .build();
+    newCompany = companyRepository.save(newCompany);
+
+    if (dto.getImage() != null && dto.getImage().getSize() > 0) {
+      UserEntity user = userRepository.findById(dto.getCreatedEmployerId())
+              .orElseThrow(() -> new NotFoundException("NOT_FOUND_USER"));
+
+      // lay id sau khi luu vao db de dat ten cho anh
+      FileEntity fileEntity =
+              storageService
+                      .uploadFileWithFileTypeReturnUrl(
+                              String.valueOf(newCompany.getId()), dto.getImage(), FileCategory.IMAGE_COMPANY)
+                      .orElseThrow(() -> new FileStorageException("UPLOAD_FILE_FAILURE"));
+
+      newCompany.setImage(fileEntity.getUrl());
+      newCompany = companyRepository.save(newCompany);
+    }
+    return new DataResponse(converter.toDTO(newCompany));
+  }
+
+  @Override
   public DataResponse update(
       long companyId,
-      CompanyDTO companyPayload,
+      CompanyDto companyPayload,
       MultipartFile imageFile,
       EmployerEntity createEmployer)
       throws NotFoundException {
@@ -144,26 +176,26 @@ public class CompanyServiceImpl implements CompanyService {
 
   @Override
   public ResponseObject getAll() {
-    Set<CompanyDTO> companyDTOS = new HashSet<>();
+    Set<CompanyDto> companyDtos = new HashSet<>();
     companyRepository.findAll().stream()
         .forEach(
             company -> {
-              companyDTOS.add(converter.toDTO(company));
+              companyDtos.add(converter.toDTO(company));
             });
 
-    return new ResponseObject(200, "Info company", companyDTOS);
+    return new ResponseObject(200, "Info company", companyDtos);
   }
 
   @Override
   public ResponseObject getAllCompanyInActive() {
-    Set<CompanyDTO> companyDTOS = new HashSet<>();
+    Set<CompanyDto> companyDtos = new HashSet<>();
     companyRepository.findCompanyEntitiesByActiveFalse().stream()
         .forEach(
             company -> {
-              companyDTOS.add(converter.toDTO(company));
+              companyDtos.add(converter.toDTO(company));
             });
 
-    return new ResponseObject(200, "Info company inactive", companyDTOS);
+    return new ResponseObject(200, "Info company inactive", companyDtos);
   }
 
   @Override
@@ -180,19 +212,19 @@ public class CompanyServiceImpl implements CompanyService {
       throw new CustomException("Candidate isn't exist");
     }
 
-    Set<CompanyDTO> companyDTOS =
+    Set<CompanyDto> companyDtos =
         candidate.get().getFollowingCompany().stream()
             .map(company -> converter.toDTO(company))
             .collect(Collectors.toSet());
 
-    return new ResponseObject(200, "Company saved", companyDTOS);
+    return new ResponseObject(200, "Company saved", companyDtos);
   }
 
   public DataResponse getCreatedCompanyByEmployerId(long employerId) {
-    List<CompanyDTO> companyDTOS =
+    List<CompanyDto> companyDtos =
         companyRepository.findByCreatedEmployer_Id(employerId).stream()
             .map(company -> converter.toDTO(company))
             .collect(Collectors.toList());
-    return new DataResponse(companyDTOS);
+    return new DataResponse(companyDtos);
   }
 }

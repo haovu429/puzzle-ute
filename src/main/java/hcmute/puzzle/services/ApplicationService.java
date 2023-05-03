@@ -1,7 +1,7 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import org.springframework.data.domain.Pageable;
 
 public interface ApplicationService {

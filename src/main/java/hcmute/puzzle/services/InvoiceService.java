@@ -1,7 +1,7 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.entities.InvoiceEntity;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.entities.InvoiceEntity;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 
 import java.util.Date;
 

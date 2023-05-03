@@ -1,18 +1,20 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.dto.CompanyDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.entities.EmployerEntity;
+import hcmute.puzzle.infrastructure.dtos.olds.CompanyDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.entities.EmployerEntity;
 import hcmute.puzzle.exception.NotFoundException;
-import hcmute.puzzle.model.payload.request.company.CreateCompanyPayload;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.models.payload.request.company.CreateCompanyAdminDto;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface CompanyService {
 
-  DataResponse save(CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer) throws NotFoundException;
+  DataResponse save(CompanyDto companyPayload, MultipartFile imageFile, EmployerEntity createEmployer) throws NotFoundException;
 
-  DataResponse update(long companyId, CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer) throws NotFoundException;
+  DataResponse createCompanyForAdmin(CreateCompanyAdminDto companyAdminDto);
+
+  DataResponse update(long companyId, CompanyDto companyPayload, MultipartFile imageFile, EmployerEntity createEmployer) throws NotFoundException;
 
   ResponseObject delete(long id);
 

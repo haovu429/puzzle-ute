@@ -1,11 +1,11 @@
 package hcmute.puzzle.services.impl;
 
-import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.ExtraInfoDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.entities.ExtraInfoEntity;
+import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.infrastructure.dtos.olds.ExtraInfoDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.entities.ExtraInfoEntity;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.repository.ExtraInfoRepository;
+import hcmute.puzzle.infrastructure.repository.ExtraInfoRepository;
 import hcmute.puzzle.services.ExtraInfoService;
 import hcmute.puzzle.utils.Constant;
 import java.util.HashSet;
@@ -22,7 +22,7 @@ public class ExtraInfoServiceImpl implements ExtraInfoService {
   @Autowired Converter converter;
 
   @Override
-  public ResponseObject save(ExtraInfoDTO extraInfoDTO) {
+  public ResponseObject save(ExtraInfoDto extraInfoDTO) {
     extraInfoDTO.setType(Constant.validateTypeExtraInfo(extraInfoDTO.getType().toUpperCase()));
 
     ExtraInfoEntity extraInfoEntity = converter.toEntity(extraInfoDTO);
@@ -32,7 +32,7 @@ public class ExtraInfoServiceImpl implements ExtraInfoService {
   }
 
   @Override
-  public ResponseObject update(ExtraInfoDTO extraInfoDTO, long extraInfoId) {
+  public ResponseObject update(ExtraInfoDto extraInfoDTO, long extraInfoId) {
     boolean exists = extraInfoRepository.existsById(extraInfoId);
     extraInfoDTO.setType(Constant.validateTypeExtraInfo(extraInfoDTO.getType().toUpperCase()));
 

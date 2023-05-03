@@ -1,12 +1,17 @@
 package hcmute.puzzle.services.impl;
 
-import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.EmployerDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.entities.*;
+import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.infrastructure.dtos.olds.EmployerDto;
+
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.repository.*;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.entities.CandidateEntity;
+import hcmute.puzzle.infrastructure.entities.EmployerEntity;
+import hcmute.puzzle.infrastructure.entities.RoleEntity;
+import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.repository.*;
+
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.services.EmployerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,16 +25,20 @@ import java.util.stream.Collectors;
 @Service
 public class EmployerServiceImpl implements EmployerService {
 
-  @Autowired CandidateRepository candidateRepository;
+  @Autowired
+  CandidateRepository candidateRepository;
 
-  @Autowired EmployerRepository employerRepository;
+  @Autowired
+  EmployerRepository employerRepository;
 
-  @Autowired UserRepository userRepository;
+  @Autowired
+  UserRepository userRepository;
 
   @Autowired
   JobPostRepository jobPostRepository;
 
-  @Autowired ApplicationRepository applicationRepository;
+  @Autowired
+  ApplicationRepository applicationRepository;
 
   @Autowired
   RoleRepository roleRepository;
@@ -40,7 +49,7 @@ public class EmployerServiceImpl implements EmployerService {
   public EntityManager em;
 
   @Override
-  public Optional<EmployerDTO> save(EmployerDTO employerDTO) {
+  public Optional<EmployerDto> save(EmployerDto employerDTO) {
     // casting provinceDTO to ProvinceEntity
     EmployerEntity employerEntity = converter.toEntity(employerDTO);
 
@@ -64,7 +73,7 @@ public class EmployerServiceImpl implements EmployerService {
     userEntity.get().getRoles().add(role.get());
     userRepository.save(userEntity.get());
 
-    Optional<EmployerDTO> result = Optional.of(converter.toDTO(employerEntity));
+    Optional<EmployerDto> result = Optional.of(converter.toDTO(employerEntity));
 
     return result;
   }
@@ -80,7 +89,7 @@ public class EmployerServiceImpl implements EmployerService {
   }
 
   @Override
-  public ResponseObject update(EmployerDTO employerDTO) {
+  public ResponseObject update(EmployerDto employerDTO) {
 
     boolean exists = employerRepository.existsById(employerDTO.getId());
 
@@ -116,12 +125,12 @@ public class EmployerServiceImpl implements EmployerService {
       throw new CustomException("Candidate isn't exist");
     }
 
-    Set<EmployerDTO> employerDTOS =
+    Set<EmployerDto> employerDtos =
             candidate.get().getFollowingEmployers().stream()
                     .map(employer -> converter.toDTO(employer))
                     .collect(Collectors.toSet());
 
-    return new ResponseObject(200, "Employer followed", employerDTOS);
+    return new ResponseObject(200, "Employer followed", employerDtos);
   }
 
   //markingJobpostWasDeleted

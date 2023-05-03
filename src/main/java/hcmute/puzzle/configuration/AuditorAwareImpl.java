@@ -1,7 +1,7 @@
 package hcmute.puzzle.configuration;
 
-import hcmute.puzzle.entities.UserEntity;
-import hcmute.puzzle.security.CustomUserDetails;
+import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.utils.Constant;
 import java.util.Optional;
 import org.apache.logging.log4j.LogManager;

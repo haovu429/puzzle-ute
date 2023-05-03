@@ -5,7 +5,7 @@ import com.cloudinary.utils.ObjectUtils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import hcmute.puzzle.configuration.FreemarkerConfiguration;
-import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.UserEntity;
 import hcmute.puzzle.services.FilesStorageService;
 
 import java.io.IOException;
@@ -14,7 +14,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import hcmute.puzzle.utils.FreeMakerTemplateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

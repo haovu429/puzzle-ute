@@ -1,21 +1,26 @@
 package hcmute.puzzle.controller;
 
-import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.*;
-import hcmute.puzzle.entities.CandidateEntity;
-import hcmute.puzzle.entities.JobPostEntity;
-import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.infrastructure.dtos.news.RegisterUserDto;
+import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
+import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
+import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
+import hcmute.puzzle.infrastructure.dtos.olds.JobPostDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.entities.CandidateEntity;
+import hcmute.puzzle.infrastructure.entities.JobPostEntity;
+import hcmute.puzzle.infrastructure.entities.UserEntity;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
-import hcmute.puzzle.model.CandidateFilter;
-import hcmute.puzzle.model.JobPostFilter;
-import hcmute.puzzle.model.ModelQuery;
-import hcmute.puzzle.model.SearchBetween;
-import hcmute.puzzle.model.payload.request.comment.CreateCommentPayload;
-import hcmute.puzzle.repository.ApplicationRepository;
-import hcmute.puzzle.repository.CandidateRepository;
-import hcmute.puzzle.repository.JobPostRepository;
-import hcmute.puzzle.repository.UserRepository;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.models.CandidateFilter;
+import hcmute.puzzle.infrastructure.models.JobPostFilter;
+import hcmute.puzzle.infrastructure.models.ModelQuery;
+import hcmute.puzzle.infrastructure.models.SearchBetween;
+import hcmute.puzzle.infrastructure.models.payload.request.comment.CreateCommentPayload;
+import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
+import hcmute.puzzle.infrastructure.repository.CandidateRepository;
+import hcmute.puzzle.infrastructure.repository.JobPostRepository;
+import hcmute.puzzle.infrastructure.repository.UserRepository;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.TimeUtil;
@@ -302,11 +307,11 @@ public class CommonController {
             jobPostFilter.getPageIndex(),
             jobPostFilter.isSortById());
 
-    List<JobPostDTO> jobPostDTOS =
+    List<JobPostDto> jobPostDtos =
         jobPostEntities.stream()
             .map(
                 jobPost -> {
-                  JobPostDTO jobPostDTO = converter.toDTO(jobPost);
+                  JobPostDto jobPostDTO = converter.toDTO(jobPost);
                   jobPostDTO.setDescription(null);
                   return jobPostDTO;
                 })
@@ -314,7 +319,7 @@ public class CommonController {
 
     // JobPostFilter jobPostFilter1 = new JobPostFilter();
 
-    return new ResponseObject(200, "Result for filter job post", jobPostDTOS);
+    return new ResponseObject(200, "Result for filter job post", jobPostDtos);
   }
 
   @PostMapping("/candidate-filter")
@@ -394,7 +399,7 @@ public class CommonController {
             candidateFilter.getPageIndex(),
             candidateFilter.isSortById());
 
-    List<CandidateDTO> candidateDTOS =
+    List<CandidateDto> candidateDTOS =
         candidateEntity.stream()
             .map(candidate -> converter.toDTO(candidate))
             .collect(Collectors.toList());
@@ -415,13 +420,8 @@ public class CommonController {
   }
 
   @PostMapping("/register")
-  public DataResponse registerAccount(@RequestBody UserDTO user) {
-    Set<String> roleCodes = new HashSet<>();
-    roleCodes.add("user");
-    user.setActive(false);
-    user.setRoleCodes(roleCodes);
-    userService.save(user);
-
+  public DataResponse registerAccount(@RequestBody RegisterUserDto user) {
+    userService.registerUser(user);
     return new DataResponse("Create user " + user.getEmail() + " success");
   }
 
@@ -484,7 +484,7 @@ public class CommonController {
   @PostMapping("/comment/{blogPostId}")
   public DataResponse createComment(
       @RequestBody CreateCommentPayload createCommentPayload, @PathVariable long blogPostId) {
-    CommentDTO commentDTO = modelMapper.map(createCommentPayload, CommentDTO.class);
+    CommentDto commentDTO = modelMapper.map(createCommentPayload, CommentDto.class);
     commentDTO.setBlogPostId(blogPostId);
     return commentService.save(commentDTO);
   }

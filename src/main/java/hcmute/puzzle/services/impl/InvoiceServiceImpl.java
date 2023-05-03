@@ -1,12 +1,12 @@
 package hcmute.puzzle.services.impl;
 
-import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.InvoiceDTO;
-import hcmute.puzzle.entities.InvoiceEntity;
+import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.infrastructure.dtos.olds.InvoiceDto;
+import hcmute.puzzle.infrastructure.entities.InvoiceEntity;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.model.enums.InvoiceStatus;
-import hcmute.puzzle.repository.InvoiceRepository;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.models.enums.InvoiceStatus;
+import hcmute.puzzle.infrastructure.repository.InvoiceRepository;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.services.InvoiceService;
 import org.springframework.aop.AopInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,27 +28,27 @@ public class InvoiceServiceImpl implements InvoiceService {
   }
 
   public DataResponse getInvoiceByEmailUser(String email) {
-    List<InvoiceDTO> invoiceDTOS =
+    List<InvoiceDto> invoiceDtos =
         invoiceRepository.findByEmail(email).stream()
             .map(invoiceEntity -> converter.toDTO(invoiceEntity))
             .collect(Collectors.toList());
-    return new DataResponse(invoiceDTOS);
+    return new DataResponse(invoiceDtos);
   }
 
   public DataResponse getAllInvoice(){
-    List<InvoiceDTO> invoiceDTOS =
+    List<InvoiceDto> invoiceDtos =
             invoiceRepository.findAll().stream()
                     .map(invoiceEntity -> converter.toDTO(invoiceEntity))
                     .collect(Collectors.toList());
-    return new DataResponse(invoiceDTOS);
+    return new DataResponse(invoiceDtos);
   }
 
   public DataResponse getAllInvoiceByTimeFrame(Date startTime, Date endTime){
-    List<InvoiceDTO> invoiceDTOS =
+    List<InvoiceDto> invoiceDtos =
             invoiceRepository.findAllByTimeFrame(startTime, endTime, InvoiceStatus.COMPLETED.getValue()).stream()
                     .map(invoiceEntity -> converter.toDTO(invoiceEntity))
                     .collect(Collectors.toList());
-    return new DataResponse(invoiceDTOS);
+    return new DataResponse(invoiceDtos);
   }
 
   public InvoiceEntity getOneInvoice(long invoiceId) {

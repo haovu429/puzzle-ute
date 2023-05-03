@@ -1,14 +1,14 @@
 package hcmute.puzzle.services;
 
 import freemarker.template.TemplateException;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.dto.UserDTO;
-import hcmute.puzzle.entities.TokenEntity;
-import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.infrastructure.dtos.news.*;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.entities.TokenEntity;
+import hcmute.puzzle.infrastructure.entities.UserEntity;
 import hcmute.puzzle.exception.NotFoundException;
-import hcmute.puzzle.model.enums.FileCategory;
-import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.models.enums.FileCategory;
+import hcmute.puzzle.infrastructure.models.payload.request.user.UpdateUserPayload;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
@@ -16,9 +16,13 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 public interface UserService {
-  UserEntity save(UserDTO userDTO);
+  UserEntity registerUser(RegisterUserDto registerUserDto);
 
-  DataResponse update(long id, UpdateUserPayload userPayload);
+  UserEntity registerUserForAdmin(CreateUserForAdminDto userForAdminDto, boolean admin);
+
+  DataResponse update(long id, UpdateUserDto user);
+
+  DataResponse updateUserForAdmin(long id, UpdateUserForAdminDto user);
 
   ResponseObject delete(long id);
 
@@ -32,7 +36,7 @@ public interface UserService {
 
   ResponseObject getListDataUserJoinLastNumWeeks(long numWeek);
 
-  DataResponse updateForAdmin(long id, UserDTO userPayload);
+  DataResponse updateForAdmin(long id, UserPostDto userPayload);
 
   DataResponse updateAvatarForUser(
       UserEntity userEntity, MultipartFile file, FileCategory fileCategory)

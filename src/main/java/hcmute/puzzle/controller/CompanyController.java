@@ -1,7 +1,5 @@
 package hcmute.puzzle.controller;
 
-import hcmute.puzzle.dto.CompanyDTO;
-import hcmute.puzzle.dto.ResponseObject;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.services.CompanyService;
 import hcmute.puzzle.utils.Constant;

@@ -1,16 +1,16 @@
 package hcmute.puzzle.services.impl;
 
-import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.BlogPostDTO;
-import hcmute.puzzle.entities.BlogPostEntity;
-import hcmute.puzzle.entities.FileEntity;
-import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.infrastructure.dtos.olds.BlogPostDto;
+import hcmute.puzzle.infrastructure.entities.BlogPostEntity;
+import hcmute.puzzle.infrastructure.entities.FileEntity;
+import hcmute.puzzle.infrastructure.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.exception.NotFoundException;
-import hcmute.puzzle.repository.BlogPostRepository;
-import hcmute.puzzle.repository.FileRepository;
-import hcmute.puzzle.response.DataResponse;
-import hcmute.puzzle.security.CustomUserDetails;
+import hcmute.puzzle.infrastructure.repository.BlogPostRepository;
+import hcmute.puzzle.infrastructure.repository.FileRepository;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.services.BlogPostService;
 import hcmute.puzzle.services.FilesStorageService;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class BlogPostServiceImpl implements BlogPostService {
   @Autowired private FilesStorageService filesStorageService;
 
   @Override
-  public DataResponse createBlogPost(BlogPostDTO dto) {
+  public DataResponse createBlogPost(BlogPostDto dto) {
     BlogPostEntity blogPost = converter.toEntity(dto);
     blogPost = blogPostRepository.save(blogPost);
     // process file (update blog id for file saved image)
@@ -58,7 +58,7 @@ public class BlogPostServiceImpl implements BlogPostService {
   }
 
   @Override
-  public DataResponse update(BlogPostDTO dto, long id) {
+  public DataResponse update(BlogPostDto dto, long id) {
     BlogPostEntity blogPost = blogPostRepository.getById(id);
     if (blogPost != null) {
       if (dto.getUserId() != blogPost.getAuthor().getId()) {
@@ -140,11 +140,11 @@ public class BlogPostServiceImpl implements BlogPostService {
 
   @Override
   public DataResponse getAll() {
-    List<BlogPostDTO> dtos =
+    List<BlogPostDto> dtos =
         blogPostRepository.findAll().stream()
             .map(
                 entity -> {
-                  BlogPostDTO blogPostDTO = converter.toDTO(entity);
+                  BlogPostDto blogPostDTO = converter.toDTO(entity);
                   blogPostDTO.setBody(null);
                   return blogPostDTO;
                 })
@@ -154,7 +154,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 
   @Override
   public DataResponse getOneById(long id) {
-    BlogPostDTO dto =
+    BlogPostDto dto =
         converter.toDTO(
             blogPostRepository
                 .findById(id)

@@ -1,13 +1,12 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.dto.CategoryDTO;
-import hcmute.puzzle.dto.CommentDTO;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 
 public interface CommentService {
-    DataResponse save(CommentDTO dto);
+    DataResponse save(CommentDto dto);
 
-    DataResponse update(CommentDTO dto, long id);
+    DataResponse update(CommentDto dto, long id);
 
     DataResponse delete(long id);
 

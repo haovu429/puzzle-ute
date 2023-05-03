@@ -1,23 +1,29 @@
 package hcmute.puzzle.controller;
 
-import hcmute.puzzle.converter.Converter;
+import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.dto.*;
-import hcmute.puzzle.entities.BlogPostEntity;
-import hcmute.puzzle.entities.FileEntity;
-import hcmute.puzzle.entities.InvoiceEntity;
-import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
+import hcmute.puzzle.infrastructure.dtos.olds.BlogPostDto;
+import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
+import hcmute.puzzle.infrastructure.dtos.olds.EmployerDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.entities.BlogPostEntity;
+import hcmute.puzzle.infrastructure.entities.FileEntity;
+import hcmute.puzzle.infrastructure.entities.InvoiceEntity;
+import hcmute.puzzle.infrastructure.entities.UserEntity;
 import hcmute.puzzle.exception.*;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
-import hcmute.puzzle.model.enums.FileCategory;
-import hcmute.puzzle.model.payload.request.blog_post.CreateBlogPostPayload;
-import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
-import hcmute.puzzle.repository.BlogPostRepository;
-import hcmute.puzzle.repository.UserRepository;
-import hcmute.puzzle.response.DataResponse;
-import hcmute.puzzle.security.CustomUserDetails;
+import hcmute.puzzle.infrastructure.mappers.UserMapper;
+import hcmute.puzzle.infrastructure.models.enums.FileCategory;
+import hcmute.puzzle.infrastructure.models.payload.request.blog_post.CreateBlogPostPayload;
+import hcmute.puzzle.infrastructure.models.payload.request.user.UpdateUserPayload;
+import hcmute.puzzle.infrastructure.repository.BlogPostRepository;
+import hcmute.puzzle.infrastructure.repository.UserRepository;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
-import hcmute.puzzle.utils.TimeUtil;
+
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
@@ -66,26 +72,11 @@ public class UserController {
   public ResponseObject getProfileAccount(Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    UserDTO userDTO = converter.toDTO(userDetails.getUser());
+    UserPostDto userPostDTO = UserMapper.INSTANCE.userToUserPostDto(userDetails.getUser());
+            //converter.toDTO(userDetails.getUser());
 
-    Map<String, Object> data = new HashMap<>();
-    data.put("username", userDTO.getUsername());
-    data.put("email", userDTO.getEmail());
-    data.put("phone", userDTO.getPhone());
-    data.put("avatar", userDTO.getAvatar());
 
-    String joinDate = TimeUtil.dateToString(userDTO.getJoinDate(), TimeUtil.FORMAT_DATE);
-    data.put("joinDate", joinDate);
-
-    data.put("fullName", userDTO.getFullName());
-    data.put("roleCodes", userDTO.getRoleCodes());
-    data.put("active", userDTO.isActive());
-    data.put("email_verified", userDTO.isEmailVerified());
-    data.put("locale", userDTO.getLocale());
-
-    userDTO.setPassword(null);
-
-    return new ResponseObject(200, "Profile info", data);
+    return new ResponseObject(200, "Profile info", userPostDTO);
   }
 
   @DeleteMapping("/user/{id}")
@@ -140,7 +131,7 @@ public class UserController {
 
   @PostMapping("/user/register-employer")
   ResponseObject registerEmployer(
-      @RequestBody @Validated EmployerDTO employer,
+      @RequestBody @Validated EmployerDto employer,
       BindingResult bindingResult,
       Authentication authentication) {
     if (bindingResult.hasErrors()) {
@@ -159,7 +150,7 @@ public class UserController {
 
     employer.setUserId(userDetails.getUser().getId());
 
-    Optional<EmployerDTO> employerDTO = employerService.save(employer);
+    Optional<EmployerDto> employerDTO = employerService.save(employer);
     if (employerDTO.isPresent()) {
       return new ResponseObject(
           HttpStatus.OK.value(), "Create employer successfully", employerDTO.get());
@@ -168,12 +159,12 @@ public class UserController {
     }
 
     //    return new ResponseObject(
-    //        HttpStatus.OK.value(), "Create employer successfully", new EmployerDTO());
+    //        HttpStatus.OK.value(), "Create employer successfully", new EmployerDto());
   }
 
   @PostMapping("/user/register-candidate")
   ResponseObject registerCandidate(
-      @RequestBody @Validated CandidateDTO candidate,
+      @RequestBody @Validated CandidateDto candidate,
       BindingResult bindingResult,
       Authentication authentication) {
     if (bindingResult.hasErrors()) {
@@ -197,7 +188,7 @@ public class UserController {
       throw new CustomException("Email contact invalid");
     }
 
-    Optional<CandidateDTO> candidateDTO = candidateService.save(candidate);
+    Optional<CandidateDto> candidateDTO = candidateService.save(candidate);
     if (candidateDTO.isPresent()) {
       return new ResponseObject(
           HttpStatus.OK.value(), "Create candidate successfully", candidateDTO.get());
@@ -206,7 +197,7 @@ public class UserController {
     }
 
     //        return new ResponseObject(
-    //                HttpStatus.OK.value(), "Create candidate successfully", new CandidateDTO());
+    //                HttpStatus.OK.value(), "Create candidate successfully", new CandidateDto());
   }
 
   @GetMapping("/user/get-viewed-job-post-amount")
@@ -263,7 +254,7 @@ public class UserController {
   public DataResponse createBlogPost(
       Authentication authentication, @RequestBody CreateBlogPostPayload createBlogPostPayload) {
     ModelMapper mapper = new ModelMapper();
-    BlogPostDTO blogPostDTO = mapper.map(createBlogPostPayload, BlogPostDTO.class);
+    BlogPostDto blogPostDTO = mapper.map(createBlogPostPayload, BlogPostDto.class);
     blogPostDTO.setCreateTime(new Date());
     blogPostDTO.setUserId(((CustomUserDetails) authentication.getPrincipal()).getUser().getId());
     return blogPostService.createBlogPost(blogPostDTO);
@@ -275,7 +266,7 @@ public class UserController {
       @RequestBody CreateBlogPostPayload createBlogPostPayload,
       @PathVariable long blogPostId) {
     ModelMapper mapper = new ModelMapper();
-    BlogPostDTO blogPostDTO = mapper.map(createBlogPostPayload, BlogPostDTO.class);
+    BlogPostDto blogPostDTO = mapper.map(createBlogPostPayload, BlogPostDto.class);
     blogPostDTO.setUserId(((CustomUserDetails) authentication.getPrincipal()).getUser().getId());
 
     //    UserEntity currentUser =

@@ -1,11 +1,11 @@
 package hcmute.puzzle.services.impl;
 
-import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.CandidateDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.entities.*;
+import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.repository.*;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.entities.*;
+import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,22 +16,27 @@ import java.util.Optional;
 @Service
 public class CandidateServiceImpl implements CandidateService {
 
-  @Autowired CandidateRepository candidateRepository;
+  @Autowired
+  CandidateRepository candidateRepository;
 
-  @Autowired EmployerRepository employerRepository;
+  @Autowired
+  EmployerRepository employerRepository;
 
-  @Autowired JobPostRepository jobPostRepository;
+  @Autowired
+  JobPostRepository jobPostRepository;
 
-  @Autowired UserRepository userRepository;
+  @Autowired
+  UserRepository userRepository;
 
-  @Autowired RoleRepository roleRepository;
+  @Autowired
+  RoleRepository roleRepository;
 
   @Autowired Converter converter;
 
   @Autowired CompanyRepository companyRepository;
 
   @Override
-  public Optional<CandidateDTO> save(CandidateDTO candidateDTO) {
+  public Optional<CandidateDto> save(CandidateDto candidateDTO) {
     // casting provinceDTO to ProvinceEntity
     CandidateEntity candidateEntity = converter.toEntity(candidateDTO);
 
@@ -55,7 +60,7 @@ public class CandidateServiceImpl implements CandidateService {
     userEntity.get().getRoles().add(role.get());
     userRepository.save(userEntity.get());
 
-    Optional<CandidateDTO> result = Optional.of(converter.toDTO(candidateEntity));
+    Optional<CandidateDto> result = Optional.of(converter.toDTO(candidateEntity));
 
     // return add Province success
     return result;
@@ -72,7 +77,7 @@ public class CandidateServiceImpl implements CandidateService {
   }
 
   @Override
-  public ResponseObject update(CandidateDTO candidateDTO) {
+  public ResponseObject update(CandidateDto candidateDTO) {
 
     boolean exists = candidateRepository.existsById(candidateDTO.getId());
 
@@ -96,7 +101,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     if (exists) {
       CandidateEntity candidate = candidateRepository.getReferenceById(id);
-      CandidateDTO candidateDTO = converter.toDTO(candidate);
+      CandidateDto candidateDTO = converter.toDTO(candidate);
 
       return new ResponseObject(200, "Info of candidate", candidateDTO);
     }
