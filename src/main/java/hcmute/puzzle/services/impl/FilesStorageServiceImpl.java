@@ -204,7 +204,10 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     CloudinaryUploadFileResponse response =
         uploadFileReturnResponseObject(fileName, file, fileType.getLocation(), author);
     String fileUrl = response.getSecure_url();
-    Date currentTime = new Date();
+
+    if (fileUrl != null || fileUrl.isEmpty() || fileUrl.isBlank()) {
+      throw new FileStorageException("UPLOAD_FILE_TO_CLOUD_FAILURE");
+    }
 
     // Save file info to db.
     FileEntity fileEntity =

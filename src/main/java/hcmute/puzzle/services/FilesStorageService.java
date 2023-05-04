@@ -14,21 +14,24 @@ import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FilesStorageService {
-  Map uploadFile(String imageName, MultipartFile file, String locationStorage);
+    Map uploadFile(String imageName, MultipartFile file, String locationStorage);
 
-  boolean deleteFile(String imageName, FileCategory category,  UserEntity deleter, boolean deleteByUrl) throws NotFoundException;
+    boolean deleteFile(String imageName, FileCategory category, UserEntity deleter, boolean deleteByUrl)
+            throws NotFoundException;
 
-  boolean deleteMultiFile(List<String> publicIds, UserEntity deleter) throws PartialFailureException;
+    boolean deleteMultiFile(List<String> publicIds, UserEntity deleter) throws PartialFailureException;
 
-  Optional<FileEntity> uploadFileWithFileTypeReturnUrl(String keyName, MultipartFile file, FileCategory fileCategory)
-      throws NotFoundException;
+    Optional<FileEntity> uploadFileWithFileTypeReturnUrl(String keyName
+            , MultipartFile file, FileCategory fileCategory)
+            throws NotFoundException;
 
-  String processFileName(String keyValue, FileCategory fileCategory);
+    String processFileName(String keyValue, FileCategory fileCategory);
 
-  CloudinaryUploadFileResponse uploadFileReturnResponseObject(String fileName, MultipartFile file, String fileLocation, UserEntity uploader);
+    CloudinaryUploadFileResponse uploadFileReturnResponseObject(String fileName
+            , MultipartFile file, String fileLocation, UserEntity uploader);
 
-  public List<String> detectedImageSrcList(String html);
+    public List<String> detectedImageSrcList(String html);
 
-  List<String> getDeletedImageSrcs(List<String> oldList, List<String> newList);
+    List<String> getDeletedImageSrcs(List<String> oldList, List<String> newList);
 }
 

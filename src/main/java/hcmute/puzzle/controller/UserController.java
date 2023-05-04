@@ -263,7 +263,7 @@ public class UserController {
       Authentication authentication,
       @RequestBody CreateBlogPostPayload createBlogPostPayload,
       @PathVariable long blogPostId) {
-    ModelMapper mapper = new ModelMapper();
+      ModelMapper mapper = new ModelMapper();
     BlogPostDto blogPostDTO = mapper.map(createBlogPostPayload, BlogPostDto.class);
     blogPostDTO.setUserId(((CustomUserDetails) authentication.getPrincipal()).getUser().getId());
 
