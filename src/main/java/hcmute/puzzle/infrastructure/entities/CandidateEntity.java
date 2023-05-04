@@ -77,9 +77,11 @@ public class CandidateEntity extends Auditable implements Serializable {
       name = "follow_employer",
       joinColumns = @JoinColumn(name = "candidate_id"),
       inverseJoinColumns = @JoinColumn(name = "employer_id"))
+  @Builder.Default
   private Set<EmployerEntity> followingEmployers = new HashSet<>();
 
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @Builder.Default
   private Set<ApplicationEntity> applicationEntities = new HashSet<>();
 
   //  @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
@@ -96,6 +98,7 @@ public class CandidateEntity extends Auditable implements Serializable {
   //      inverseJoinColumns = @JoinColumn(name = "service_id"))
   //  private Set<ServiceEntity> serviceEntities = new HashSet<>();
 
+  @Builder.Default
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinTable(
       name = "following_company",
@@ -103,12 +106,15 @@ public class CandidateEntity extends Auditable implements Serializable {
       inverseJoinColumns = @JoinColumn(name = "company_id"))
   private Set<CompanyEntity> followingCompany = new HashSet<>();
 
+  @Builder.Default
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<ExperienceEntity> experienceEntities = new HashSet<>();
 
+  @Builder.Default
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<EvaluateEntity> evaluateEntities = new HashSet<>();
 
+  @Builder.Default
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinTable(
       name = "saved_job_post",
@@ -116,6 +122,7 @@ public class CandidateEntity extends Auditable implements Serializable {
       inverseJoinColumns = @JoinColumn(name = "job_post_id"))
   private Set<JobPostEntity> savedJobPost = new HashSet<>();
 
+  @Builder.Default
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private Set<JobAlertEntity> jobAlertEntities = new HashSet<>();
 

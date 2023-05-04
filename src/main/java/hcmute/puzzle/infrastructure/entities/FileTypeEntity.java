@@ -2,16 +2,14 @@ package hcmute.puzzle.infrastructure.entities;
 
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
 import hcmute.puzzle.infrastructure.models.enums.FileType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 @Builder
 @Entity
 @Table(name = "md_file_type")

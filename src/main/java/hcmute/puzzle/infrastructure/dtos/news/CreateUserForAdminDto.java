@@ -53,11 +53,13 @@ public class CreateUserForAdminDto {
 //    private String locale;
 
     @JsonProperty("isActive")
+    @Builder.Default
     private boolean isActive = true;
 
     @JsonProperty("provider")
     private String provider;
 
+    @Builder.Default
     @JsonProperty("roleCodes")
     private List<String> roleCodes = new ArrayList<>();
 }

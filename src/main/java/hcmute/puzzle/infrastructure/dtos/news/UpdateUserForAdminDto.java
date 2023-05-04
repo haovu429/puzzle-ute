@@ -52,6 +52,7 @@ public class UpdateUserForAdminDto {
     @JsonProperty("provider")
     private String provider;
 
+    @Builder.Default
     @JsonProperty("roleCodes")
     private List<String> roleCodes = new ArrayList<>();
 }

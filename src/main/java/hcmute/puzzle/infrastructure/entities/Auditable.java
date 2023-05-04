@@ -1,7 +1,6 @@
 package hcmute.puzzle.infrastructure.entities;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
@@ -18,6 +17,8 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public abstract class Auditable {
 
     @CreatedBy

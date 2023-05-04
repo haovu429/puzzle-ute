@@ -33,6 +33,7 @@ public class JobAlertEntity extends Auditable implements Serializable {
   @Column(name = "city", columnDefinition = "VARCHAR(50)")
   private String city;
 
+  @Builder.Default
   @Column(name = "min_budget")
   private long minBudget = 0;
 

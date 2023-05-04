@@ -33,15 +33,18 @@ public class CompanyEntity extends Auditable implements Serializable {
   private String website;
 
   @Column(name = "is_active")
+  @Builder.Default
   private boolean isActive = false;
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
   @JoinColumn(name = "created_employer_id")
   private EmployerEntity createdEmployer;
 
+  @Builder.Default
   @ManyToMany(mappedBy = "followingCompany", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   private Set<CandidateEntity> followingCandidate = new HashSet<>();
 
+  @Builder.Default
   @OneToMany(mappedBy = "companyEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   private Set<JobPostEntity> jobPostEntities = new HashSet<>();
 

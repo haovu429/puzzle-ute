@@ -1,16 +1,14 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.infrastructure.converter.Converter;
-import hcmute.puzzle.dto.*;
+
+import hcmute.puzzle.infrastructure.dtos.news.UpdateUserDto;
 import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
 import hcmute.puzzle.infrastructure.dtos.olds.BlogPostDto;
 import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
 import hcmute.puzzle.infrastructure.dtos.olds.EmployerDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-import hcmute.puzzle.infrastructure.entities.BlogPostEntity;
-import hcmute.puzzle.infrastructure.entities.FileEntity;
-import hcmute.puzzle.infrastructure.entities.InvoiceEntity;
-import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.exception.*;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.infrastructure.mappers.UserMapper;
@@ -86,7 +84,7 @@ public class UserController {
 
   @PutMapping("/user")
   public DataResponse updateAccount(
-      Authentication authentication, @RequestBody UpdateUserPayload user) {
+      Authentication authentication, @RequestBody UpdateUserDto user) {
 
     // Optional<UserEntity>
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();

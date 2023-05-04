@@ -2,12 +2,10 @@ package hcmute.puzzle.test;
 
 import static hcmute.puzzle.utils.Constant.SYSTEM_MAIL;
 
-import hcmute.puzzle.entities.*;
 import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
 import hcmute.puzzle.infrastructure.models.enums.FileType;
 import hcmute.puzzle.infrastructure.repository.*;
-import hcmute.puzzle.repository.*;
 import hcmute.puzzle.utils.Constant;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +94,7 @@ public class SetUpDB {
             .email("candidate2@gmail.com")
             .password(passwordEncoder.encode("123456"))
             .build();
-
+    user2.setRoles(new ArrayList<>());
     user2.getRoles().add(userRole4);
     user2.getRoles().add(userRole2);
 
@@ -106,6 +104,7 @@ public class SetUpDB {
             .password(passwordEncoder.encode("123456"))
             .build();
 
+    user3.setRoles(new ArrayList<>());
     user3.getRoles().add(userRole3);
     user3.getRoles().add(userRole2);
 

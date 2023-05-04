@@ -38,9 +38,11 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 
   @Autowired private FileTypeRepository fileTypeRepository;
 
+  @Autowired CloudinaryUtil cloudinaryUtil;
+
   @Override
   public Map uploadFile(String publicId, MultipartFile file, String locationStorage) {
-    Cloudinary cloudinary = CloudinaryUtil.getCloudinary();
+    Cloudinary cloudinary = cloudinaryUtil.getCloudinary();
 
     try {
       byte[] image = Base64.encodeBase64(file.getBytes());
@@ -85,7 +87,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     // if deleteByUrl = true => key is url else key is public id
 
     // "puzzle_ute/user/avatar"
-    Cloudinary cloudinary = CloudinaryUtil.getCloudinary();
+    Cloudinary cloudinary = cloudinaryUtil.getCloudinary();
 
     FileEntity fileEntity;
     if (deleteByUrl) {
@@ -137,7 +139,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   public boolean deleteMultiFile(List<String> publicIds, UserEntity deleter)
       throws PartialFailureException {
     // "puzzle_ute/user/avatar"
-    Cloudinary cloudinary = CloudinaryUtil.getCloudinary();
+    Cloudinary cloudinary = cloudinaryUtil.getCloudinary();
     // Check public_id exists in db
     List<FileEntity> fileInfoFromDB =
         fileRepository.findAllByCloudinaryPublicIdInAndDeletedIs(publicIds, false);

@@ -11,24 +11,37 @@ import java.util.Map;
 
 
 @Mapper(
-        componentModel =  MappingConstants.ComponentModel.CDI
+        componentModel =  "spring"
 )
 public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    //@Mapping(target = "roleCodes", ignore = true)
+//    @Mapping(target = "roleCodes", ignore = true)
     UserPostDto userToUserPostDto(UserEntity entity);
 
-    @Mapping(target = "username", source = "username")
-    @Mapping(target = "email", source = "email")
-    @Mapping(target = "phone", source = "phone")
-    @Mapping(target = "avatar", source = "avatar")
-    @Mapping(target = "fullName", source = "fullName")
-    UserPostDto mapToUserPostDto(Map<String, String> map);
+//    @Mapping(target = "username", source = "userName")
+//    @Mapping(target = "email", source = "email")
+//    @Mapping(target = "phone", source = "phone")
+//    @Mapping(target = "avatar", source = "avatar")
+//    @Mapping(target = "fullName", source = "fullName")
+//    @Mapping(target = "roleCodes", ignore = true)
+//    UserPostDto mapToUserPostDto(Map<String, String> map);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "roles", ignore = true)
+//    @Mapping(target = "roles", ignore = true)
+//    @Mapping(target = "updatedBy", ignore = true)
+//    @Mapping(target = "updatedAt", ignore = true)
+//    @Mapping(target = "id", ignore = true)
+//    @Mapping(target = "email", ignore = true)
+//    @Mapping(target = "locale", ignore = true)
+//    @Mapping(target = "delete", ignore = true)
+//    @Mapping(target = "employerEntity", ignore = true)
+//    @Mapping(target = "candidateEntity", ignore = true)
+//    @Mapping(target = "documentEntities", ignore = true)
+//    @Mapping(target = "notificationEntities", ignore = true)
+//    @Mapping(target = "viewJobPosts", ignore = true)
+//    @Mapping(target = "subscribeEntities", ignore = true)
     void updateUserFromDto(UpdateUserForAdminDto dto, @MappingTarget UserEntity entity);
 
     UserEntity dtoToUser(UserPostDto userPostDTO);

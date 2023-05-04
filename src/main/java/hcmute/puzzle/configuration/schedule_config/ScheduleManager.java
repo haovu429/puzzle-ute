@@ -47,6 +47,7 @@ public class ScheduleManager {
     }
 
     private List<ScheduleJob> collectScheduleMethod() {
+        String packageName = "hcmute.puzzle";
         List<ScheduleJob> scheduleJobs = new ArrayList<>();
         List<Class<?>> clazzContainScheduleMethod = HasScheduleJobProcessing.getAnnotatedClass();
         for (Class<?> clazz : clazzContainScheduleMethod) {

@@ -87,7 +87,7 @@ public class Converter {
         throw new CustomException("Can't convert! Not found role has role code = " + code);
       }
     }
-    userEntity.setRoles(roleEntities);
+    userEntity.setRoles(roleEntities.stream().toList());
 
     return userEntity;
   }

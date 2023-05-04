@@ -26,11 +26,12 @@ public class TestCloudinary {
   public static void main(String[] args) throws IOException {
 
     //Configuration freeMakerConfiguration = FreeMakerTemplateUtils.getFreeMakerConfiguration();
-    Configuration freeMakerConfig= freeMarkerConfiguration.freemarkerConfig().getConfiguration();
-    Template temp = freeMakerConfig.getTemplate("forgot_password.html");
+//    Configuration freeMakerConfig= freeMarkerConfiguration.freemarkerConfig().getConfiguration();
+//    Template temp = freeMakerConfig.getTemplate("forgot_password.html");
     // testDetectImageTagHtml();
     // lib();
     // testDeleteManyFileCloudinary();
+    testCloudinary();
 
   }
 
@@ -180,7 +181,7 @@ public class TestCloudinary {
     return imageSrcList;
   }
 
-  void testCloudinary() {
+  static void testCloudinary() {
     // Set your Cloudinary credentials
 
     // Dotenv dotenv = Dotenv.load();

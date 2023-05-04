@@ -90,6 +90,7 @@ public class UserServiceImpl implements UserService {
     }
     //  hash password
     UserEntity user = new UserEntity();
+    user.setEmail(userDto.getEmail());
     user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
     List<String> roleCodes = new ArrayList<>();
@@ -256,14 +257,13 @@ public class UserServiceImpl implements UserService {
           roleEntities.add(role);
         }
       }
-      oldUser.get().setRoles(roleEntities);
+      oldUser.get().setRoles(roleEntities.stream().toList());
       // xoá token hiện tại --> bắt người dùng dăng nhập lại
       redisUtils.delete(oldUser.get().getEmail());
     }
 
 
     UserPostDto userPostDTO = converter.toDTO(userRepository.save(oldUser.get()));
-    userPostDTO.setPassword(null);
 
     return new DataResponse(userPostDTO);
   }
@@ -279,7 +279,6 @@ public class UserServiceImpl implements UserService {
     userEntity.setAvatar(savedFile.getUrl());
     userRepository.save(userEntity);
     UserPostDto userPostDTO = converter.toDTO(userEntity);
-    userPostDTO.setPassword(null);
     return new DataResponse(userPostDTO);
   }
 
@@ -302,7 +301,6 @@ public class UserServiceImpl implements UserService {
             .map(
                 userEntity -> {
                   UserPostDto userPostDTO = converter.toDTO(userEntity);
-                  userPostDTO.setPassword(null);
                   return userPostDTO;
                 })
             .collect(Collectors.toSet());

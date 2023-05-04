@@ -55,6 +55,7 @@ public class PackageEntity extends Auditable implements Serializable {
     @Builder.Default
     private boolean isDelete = false;
 
+    @Builder.Default
     @OneToMany(mappedBy = "packageEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
     private Set<SubscribeEntity> subscribeEntities = new HashSet<>(); // Khi add, phải add từ 2 phía
 }

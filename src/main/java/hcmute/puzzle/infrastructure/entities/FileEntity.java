@@ -8,6 +8,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 @Builder
 @Entity
 @Table(name = "file")

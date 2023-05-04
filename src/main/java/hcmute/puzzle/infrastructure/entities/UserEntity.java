@@ -11,11 +11,10 @@ import java.util.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @Entity
-
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 //@EntityListeners(AuditingEntityListener.class)
 // Avoid ErrorDefine table name is "user" in database
 @Table(name = "users")
@@ -92,7 +91,7 @@ public class UserEntity extends Auditable implements Serializable {
       name = "user_role",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "role_id"))
-  @Builder.Default
+//  @Builder.Default
   private List<RoleEntity> roles = new ArrayList<>();
 
   @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -119,5 +118,8 @@ public class UserEntity extends Auditable implements Serializable {
   @Builder.Default
   private Set<SubscribeEntity> subscribeEntities = new HashSet<>();
 
+  public UserEntity() {
+
+  }
 }
 

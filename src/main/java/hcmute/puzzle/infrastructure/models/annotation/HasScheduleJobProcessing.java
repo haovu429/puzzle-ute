@@ -1,13 +1,14 @@
 package hcmute.puzzle.infrastructure.models.annotation;
 
-import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.io.File;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@Slf4j
 public class HasScheduleJobProcessing {
     public static List<Class<?>> getAnnotatedClass() {
         List<Class<?>> annotatedClasses = new ArrayList<>();
@@ -51,17 +52,63 @@ public class HasScheduleJobProcessing {
     }
 
     private static void scanDirectoryForAnnotatedClasses(File directory, ClassLoader classLoader, List<Class<?>> annotatedClasses) throws Exception {
+        String packageName = "hcmute.puzzle";
         for (File file : directory.listFiles()) {
             if (file.isDirectory()) {
                 scanDirectoryForAnnotatedClasses(file, classLoader, annotatedClasses);
             } else if (file.getName().endsWith(".class")) {
-                String className = file.getName().replace(".class", "");
-                Class<?> clazz = Class.forName(className);
+                //String className = getClass(file.getName(), packageName);
+                        //file.getAbsolutePath().replace(".class", "");
+                Class<?> clazz = getClass(file.getName(), packageName);
+                        // Class.forName(className);
                 if (clazz.isAnnotationPresent(HasScheduleJob.class)) {
                     annotatedClasses.add(clazz);
                 }
             }
         }
+    }
+
+    private static void scanPackageForAnnotatedClasses(List<Class<?>> annotatedClasses) {
+        String packageName = "hcmute.puzzle";
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        String path = packageName.replace('.', '/');
+        Enumeration<URL> resources;
+        try {
+            resources = classLoader.getResources(path);
+            while (resources.hasMoreElements()) {
+                URL resource = resources.nextElement();
+                String fileName = resource.getFile();
+                if (fileName.endsWith(".class")) {
+                    String className = packageName + '.' + fileName.substring(fileName.lastIndexOf('/') + 1, fileName.length() - 6);
+                    System.out.println("Class name: " + className);
+                    annotatedClasses.add(resource.getClass());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static List<Class<?>> findAllClassesUsingClassLoader(String packageName) {
+        InputStream stream = ClassLoader.getSystemClassLoader()
+                .getResourceAsStream(packageName.replaceAll("[.]", "/"));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        return reader.lines()
+                .filter(line -> line.endsWith(".class"))
+                .map(line -> getClass(line, packageName))
+                .collect(Collectors.toList());
+    }
+
+    private static Class<?> getClass(String className, String packageName) {
+        try {
+            return Class.forName(packageName + "."
+                    + className.substring(0, className.lastIndexOf('.')));
+        } catch (ClassNotFoundException e) {
+            log.error(e.getMessage());
+            // handle the exception
+        }
+        return null;
     }
 
 }

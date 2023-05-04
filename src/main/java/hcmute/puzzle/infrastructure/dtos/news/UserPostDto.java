@@ -3,10 +3,7 @@ package hcmute.puzzle.infrastructure.dtos.news;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import hcmute.puzzle.infrastructure.entities.Auditable;
 import hcmute.puzzle.utils.Constant;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -17,6 +14,7 @@ import java.util.*;
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
 @NoArgsConstructor
 public class UserPostDto extends Auditable {
 
