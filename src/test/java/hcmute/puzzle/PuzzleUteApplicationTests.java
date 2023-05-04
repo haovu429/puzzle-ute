@@ -65,7 +65,7 @@ class PuzzleUteApplicationTests {
             .provider(Provider.LOCAL)
             .avatar("https://www.google.com/search?q=anne+hathaway&tbm=isch&ved=2ahUKEwjR6byc8NX-AhV1slYBHfgEBTsQ2-cCegQIABAA&oq=anne+hathaway&gs_lcp=CgNpbWcQAzIKCAAQigUQsQMQQzIECAAQAzIFCAAQgAQyBQgAEIAEMgUIABCABDIFCAAQgAQyBQgAEIAEMgUIABCABDIFCAAQgAQyBQgAEIAEOgcIABCKBRBDOggIABCABBCxA1CuCljuSWDvS2gCcAB4AIABnAGIAZYOkgEEMC4xNJgBAKABAaoBC2d3cy13aXotaW1nwAEB&sclient=img&ei=NZxQZJH7HfXk2roP-ImU2AM&bih=739&biw=1536&client=firefox-b-d#imgrc=l_S_oKhY86lypM")
             .email("haovu429@gmail.com")
-            .roles(roleEntities)
+//            .roles(roleEntities)
             .locale("VN")
             .build();
 
