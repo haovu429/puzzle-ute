@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -283,6 +285,6 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   }
 
   public List<String> getDeletedImageSrcs(List<String> oldList, List<String> newList) {
-    return oldList.stream().filter(item -> !newList.contains(item)).toList();
+    return oldList.stream().filter(item -> !newList.contains(item)).collect(Collectors.toList());
   }
 }

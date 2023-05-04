@@ -119,8 +119,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 
     List<String> publicIdsToDelete =
             fileRepository.findAllByUrlInAndDeletedIs(urls, false).stream()
-                    .map(FileEntity::getCloudinaryPublicId)
-                    .toList();
+                    .map(FileEntity::getCloudinaryPublicId).collect(Collectors.toList());
     if (!publicIdsToDelete.isEmpty())
       filesStorageService.deleteMultiFile(publicIdsToDelete, currentUser);
   }
@@ -165,7 +164,8 @@ public class BlogPostServiceImpl implements BlogPostService {
   public List<String> getUrlOfFirstListWhichSecondListNotContain(
       List<String> firstList, List<String> secondList) {
     // getDeletedBlogImageUrl
-    return firstList.stream().filter(item -> !secondList.contains(item)).toList();
+    return firstList.stream().filter(item -> !secondList.contains(item))
+                    .collect(Collectors.toList());
   }
 
   public List<String> detectedImageSrcList(String html) {

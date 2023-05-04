@@ -67,7 +67,8 @@ public class TestCloudinary {
     }
 
     oldSrcs.addAll(newSrcs);
-    List<String> mergeLists = oldSrcs.stream().collect(Collectors.toSet()).stream().toList();
+    List<String> mergeLists = oldSrcs.stream().collect(Collectors.toSet()).stream().collect(Collectors.toList());
+
     System.out.println("\n---Merge!----");
     for (String src : mergeLists) {
       System.out.println(src);
@@ -82,7 +83,7 @@ public class TestCloudinary {
 
   static List<String> getDeletedImageSrcs(List<String> oldList, List<String> newList) {
     List<String> deletedImageSrcs =
-        oldList.stream().filter(item -> !newList.contains(item)).toList();
+        oldList.stream().filter(item -> !newList.contains(item)).collect(Collectors.toList());
     return deletedImageSrcs;
   }
 

@@ -91,7 +91,7 @@ public class UserEntity extends Auditable implements Serializable {
       name = "user_role",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "role_id"))
-//  @Builder.Default
+  @Builder.Default
   private List<RoleEntity> roles = new ArrayList<>();
 
   @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

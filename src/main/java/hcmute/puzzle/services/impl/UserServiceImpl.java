@@ -257,7 +257,7 @@ public class UserServiceImpl implements UserService {
           roleEntities.add(role);
         }
       }
-      oldUser.get().setRoles(roleEntities.stream().toList());
+      oldUser.get().setRoles(roleEntities.stream().collect(Collectors.toList()));
       // xoá token hiện tại --> bắt người dùng dăng nhập lại
       redisUtils.delete(oldUser.get().getEmail());
     }
