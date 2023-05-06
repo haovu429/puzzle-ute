@@ -317,9 +317,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <systemPropertyVariables>
-                        <WSNSHELL_HOME>conf</WSNSHELL_HOME>
-                    </systemPropertyVariables>
+<!--                    <systemPropertyVariables>-->
+<!--                        <WSNSHELL_HOME>conf</WSNSHELL_HOME>-->
+<!--                    </systemPropertyVariables>-->
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>

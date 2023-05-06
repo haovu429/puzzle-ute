@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.concurrent.ScheduledFuture;
 
 @Slf4j
-@Service
+@Service(value = "scheduleService")
 @Getter
 @Setter
 @HasScheduleJob
@@ -29,8 +29,8 @@ public class ScheduleService {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
-    @Autowired
-    private TaskScheduler taskScheduler;
+//    @Autowired
+//    private TaskScheduler taskScheduler;
 
     private ScheduledFuture<?> scheduledTask;
 
@@ -45,25 +45,25 @@ public class ScheduleService {
         log.info("Hello world! xyz");
     }
 
-    @PostConstruct
-    public void refresh(){
-        log.info("current cron: " + env.getProperty("cronjob.service"));
-        stopScheduledTask();
-        startScheduledTask();
-    }
+//    @PostConstruct
+//    public void refresh(){
+//        log.info("current cron: " + env.getProperty("cronjob.service"));
+//        stopScheduledTask();
+//        startScheduledTask();
+//    }
 
-    private void startScheduledTask() {
-        log.info("start cron: ");
-        scheduledTask = taskScheduler.schedule(() -> runScheduledJob()
-                , new CronTrigger(Objects.requireNonNull(env.getProperty("cronjob.service"))));
-    }
+//    private void startScheduledTask() {
+//        log.info("start cron: ");
+//        scheduledTask = taskScheduler.schedule(() -> runScheduledJob()
+//                , new CronTrigger(Objects.requireNonNull(env.getProperty("cronjob.service"))));
+//    }
 
-    private void stopScheduledTask() {
-        if (scheduledTask != null) {
-            boolean resultCancel = scheduledTask.cancel(true);
-            log.info("stop cron: " + resultCancel);
-        }
-    }
+//    private void stopScheduledTask() {
+//        if (scheduledTask != null) {
+//            boolean resultCancel = scheduledTask.cancel(true);
+//            log.info("stop cron: " + resultCancel);
+//        }
+//    }
 
 //    public void updateScheduleTime(String newActivityName, String newStartTime, long newIntervalInSeconds) {
 //        activityName = newActivityName;

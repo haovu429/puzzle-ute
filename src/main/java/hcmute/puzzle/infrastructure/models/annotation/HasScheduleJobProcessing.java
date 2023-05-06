@@ -18,8 +18,11 @@ public class HasScheduleJobProcessing {
             // Get the class loader and a list of all class files on the classpath
             List<URL> classFileUrls = Collections.list(classLoader.getResources(""));
 
+            String classError = null;
             // Iterate over each class file URL
             for (URL classFileUrl : classFileUrls) {
+                classError = classFileUrl.toString();
+                log.error("Class error: " + classError);
                 File classFile = new File(classFileUrl.toURI());
                 if (classFile.isDirectory()) {
                     // If the URL points to a directory, recursively scan all files within it
@@ -34,13 +37,18 @@ public class HasScheduleJobProcessing {
                 }
             }
         } catch (IOException e) {
+            log.error("IOException");
             throw new RuntimeException(e);
         } catch (URISyntaxException e) {
+            log.error("URISyntaxException");
             throw new RuntimeException(e);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            log.error("ClassNotFoundException");
+            log.error(e.getMessage());
+            //throw new RuntimeException(e);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("Class error: ");
+            log.error(e.getMessage());
         }
 
         System.out.println("Classes annotated with @MyAnnotation:");
@@ -51,19 +59,34 @@ public class HasScheduleJobProcessing {
         return annotatedClasses;
     }
 
-    private static void scanDirectoryForAnnotatedClasses(File directory, ClassLoader classLoader, List<Class<?>> annotatedClasses) throws Exception {
+    private static void scanDirectoryForAnnotatedClasses(File directory, ClassLoader classLoader, List<Class<?>> annotatedClasses) {
         String packageName = "hcmute.puzzle";
         for (File file : directory.listFiles()) {
             if (file.isDirectory()) {
                 scanDirectoryForAnnotatedClasses(file, classLoader, annotatedClasses);
             } else if (file.getName().endsWith(".class")) {
-                //String className = getClass(file.getName(), packageName);
-                        //file.getAbsolutePath().replace(".class", "");
-                Class<?> clazz = getClass(file.getName(), packageName);
-                        // Class.forName(className);
-                if (clazz.isAnnotationPresent(HasScheduleJob.class)) {
-                    annotatedClasses.add(clazz);
+                try {
+                    //String className = getClass(file.getName(), packageName);
+                    //file.getAbsolutePath().replace(".class", "");
+                    int start = file.getPath().indexOf(packageName.replaceAll("[.]", "\\\\"));
+                    String path = file.getPath().substring(start).replaceAll("\\\\", ".").replace(".class", "");
+                    Class<?> clazz = Class.forName(path);
+                    if (clazz.isAnnotationPresent(HasScheduleJob.class)) {
+                        annotatedClasses.add(clazz);
+                    }
+                } catch (ClassNotFoundException e) {
+                    log.error("HAHA");
+                    continue;
+                //throw new RuntimeException(e);
+                } catch (Exception e) {
+                    log.error("HIHI");
+                    //throw new RuntimeException(e);
+                    continue;
+                } catch (Error e) {
+                    log.error("HOHO");
+                    continue;
                 }
+
             }
         }
     }
