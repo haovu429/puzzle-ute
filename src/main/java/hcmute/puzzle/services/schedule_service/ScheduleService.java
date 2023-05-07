@@ -2,6 +2,7 @@ package hcmute.puzzle.services.schedule_service;
 
 import hcmute.puzzle.infrastructure.models.annotation.HasScheduleJob;
 import hcmute.puzzle.infrastructure.models.annotation.JobAnnotation;
+import hcmute.puzzle.infrastructure.repository.UserRepository;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -23,20 +24,11 @@ import java.util.concurrent.ScheduledFuture;
 @HasScheduleJob
 public class ScheduleService {
 
-    @Autowired
-    private Environment env;
-
-    @Autowired
-    private ApplicationEventPublisher eventPublisher;
-
-//    @Autowired
-//    private TaskScheduler taskScheduler;
-
-    private ScheduledFuture<?> scheduledTask;
-
+    @Autowired UserRepository userRepository;
     //@Scheduled(cron = "${cronjob.service}")
     @JobAnnotation(key = "cronjob.service")
     public void runScheduledJob() {
+        userRepository.getUserByEmail("admin1@gmail.com");
         log.info("Hello world! abc");
     }
 
@@ -44,40 +36,4 @@ public class ScheduleService {
     public void runScheduledJobOther() {
         log.info("Hello world! xyz");
     }
-
-//    @PostConstruct
-//    public void refresh(){
-//        log.info("current cron: " + env.getProperty("cronjob.service"));
-//        stopScheduledTask();
-//        startScheduledTask();
-//    }
-
-//    private void startScheduledTask() {
-//        log.info("start cron: ");
-//        scheduledTask = taskScheduler.schedule(() -> runScheduledJob()
-//                , new CronTrigger(Objects.requireNonNull(env.getProperty("cronjob.service"))));
-//    }
-
-//    private void stopScheduledTask() {
-//        if (scheduledTask != null) {
-//            boolean resultCancel = scheduledTask.cancel(true);
-//            log.info("stop cron: " + resultCancel);
-//        }
-//    }
-
-//    public void updateScheduleTime(String newActivityName, String newStartTime, long newIntervalInSeconds) {
-//        activityName = newActivityName;
-//        //taskScheduler.schedule()
-//    }
-
-//    @EventListener
-//    public void handleConfigChangeEvent(EnvironmentChangeEvent event) {
-//        if (event.getKeys().contains("myapp.schedule.start-time") ||
-//                event.getKeys().contains("myapp.schedule.interval")) {
-//            String activityName = "Print hello world";
-//            String startTime = event.getNewValue("myapp.schedule.start-time");
-//            long intervalInSeconds = event.getNewValue("myapp.schedule.interval");
-//            updateScheduleTime(activityName, startTime, intervalInSeconds);
-//        }
-//    }
 }

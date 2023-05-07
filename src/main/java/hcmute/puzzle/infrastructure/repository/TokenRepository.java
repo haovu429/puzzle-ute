@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional
 public interface TokenRepository extends JpaRepository<TokenEntity, Integer> {
   //    @Query(value = "select u.id, u.avatar, u.email, u.name, u.password" +
   //            " from user as u, token as t" +

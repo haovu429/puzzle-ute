@@ -13,10 +13,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 public interface UserService {
-  UserEntity registerUser(RegisterUserDto registerUserDto);
+  Optional<UserEntity> registerUser(RegisterUserDto registerUserDto);
 
   UserEntity registerUserForAdmin(CreateUserForAdminDto userForAdminDto, boolean admin);
 
@@ -47,4 +48,7 @@ public interface UserService {
   // UserDetails loadUserByUsername(String email);
   void sendMailForgotPwd(String receiveMail, String urlResetPass, TokenEntity token)
       throws InterruptedException, MessagingException, TemplateException, IOException, ExecutionException;
+
+  void sendMailVerifyAccount(String receiveMail, String verifyAccountUrl, TokenEntity token)
+          throws InterruptedException, MessagingException, TemplateException, IOException, ExecutionException;
 }

@@ -54,6 +54,8 @@ public class UserServiceImpl implements UserService {
 
   @Autowired private RedisUtils redisUtils;
 
+  @Autowired private MailService mailService;
+
   public boolean checkEmailExists(String email) {
     UserEntity user = userRepository.getUserByEmail(email);
     return user == null;
@@ -65,11 +67,11 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserEntity registerUser(RegisterUserDto registerUserDto) {
-    return registerUserForAdmin(CreateUserForAdminDto.builder()
+  public Optional<UserEntity> registerUser(RegisterUserDto registerUserDto) {
+    return Optional.of(registerUserForAdmin(CreateUserForAdminDto.builder()
             .email(registerUserDto.getEmail())
             .password(registerUserDto.getPassword())
-            .build(), false);
+            .build(), false));
   }
 
   @Override
@@ -119,6 +121,8 @@ public class UserServiceImpl implements UserService {
 
     // Save to DB
     user = userRepository.save(user);
+
+
     return user;
   }
 
@@ -196,6 +200,7 @@ public class UserServiceImpl implements UserService {
 
   private void setRoleWithCreateAccountTypeUser(List<String> roleCodes, UserEntity user) {
     if (roleCodes!= null && !roleCodes.isEmpty()) {
+      List<RoleEntity> roleFromDb  = new ArrayList<>();
       for (String code : roleCodes) {
         RoleEntity role = roleRepository.findByCode(code).orElseThrow(
                 () -> new NotFoundException("NOT_FOUND_ROLE: + " + code));
@@ -208,8 +213,9 @@ public class UserServiceImpl implements UserService {
           EmployerEntity employer = new EmployerEntity();
           user.setEmployerEntity(employer);
         }
-        user.getRoles().add(role);
+        roleFromDb.add(role);
       }
+      user.setRoles(roleFromDb);
     }
   }
 
@@ -374,7 +380,16 @@ public class UserServiceImpl implements UserService {
           ExecutionException {
     MailService mailService = new MailService();
     mailService.executeSendMailWithThread(receiveMail, urlResetPass, token);
-    // Thread.sleep(10000);
-    log.info("asdasf");
+  }
+
+  @Async
+  public void sendMailVerifyAccount(String receiveMail, String verifyUrl, TokenEntity token)
+          throws InterruptedException,
+                 MessagingException,
+                 TemplateException,
+                 IOException,
+                 ExecutionException {
+    //MailService mailService = new MailService();
+    mailService.executeSendMailVerifyAccountWithThread(receiveMail, verifyUrl, token);
   }
 }

@@ -1,5 +1,6 @@
 package hcmute.puzzle.controller;
 
+import freemarker.template.TemplateException;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.news.RegisterUserDto;
 import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
@@ -24,13 +25,19 @@ import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.TimeUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "/common")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
@@ -71,6 +78,8 @@ public class CommonController {
   @Autowired CommentService commentService;
 
   @Autowired ModelMapper modelMapper;
+
+  @Autowired SecurityService securityService;
 
   @GetMapping("/job-post/get-all")
   ResponseObject getAllJobPost() {
@@ -421,8 +430,17 @@ public class CommonController {
 
   @PostMapping("/register")
   public DataResponse registerAccount(@RequestBody RegisterUserDto user) {
-    userService.registerUser(user);
-    return new DataResponse("Create user " + user.getEmail() + " success");
+    UserEntity userEntity = userService.registerUser(user).orElse(null);
+    try {
+      if (userEntity != null) {
+        securityService.sendTokenVerifyAccount(userEntity.getEmail());
+        return new DataResponse("Create user " + user.getEmail() + " success");
+        }
+      }
+    catch (MessagingException | TemplateException | IOException | ExecutionException | InterruptedException e) {
+      log.error(e.getMessage());
+    }
+    return new DataResponse("Error while sent mail verify");
   }
 
   @GetMapping("/get-hot-job-post")

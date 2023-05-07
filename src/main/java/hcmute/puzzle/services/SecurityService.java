@@ -12,5 +12,8 @@ public interface SecurityService {
 
   DataResponse sendTokenForgotPwd(HttpServletRequest request, String email) throws MessagingException, TemplateException, IOException, ExecutionException, InterruptedException;
 
+  DataResponse sendTokenVerifyAccount(String email) throws MessagingException, TemplateException, IOException, ExecutionException, InterruptedException;
+
   DataResponse resetPassword(String token, String newPassword);
+
 }

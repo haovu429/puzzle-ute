@@ -16,7 +16,7 @@ import static hcmute.puzzle.services.impl.SecurityServiceImpl.RESET_PASSWORD_TOK
 @Service
 public class ThreadService {
 
-  @Autowired private TokenRepository tokenRepository;
+  @Autowired TokenRepository tokenRepository;
 
   public static final String MAIL_TASK = "MAIL_TASK";
 

@@ -205,7 +205,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
         uploadFileReturnResponseObject(fileName, file, fileType.getLocation(), author);
     String fileUrl = response.getSecure_url();
 
-    if (fileUrl != null || fileUrl.isEmpty() || fileUrl.isBlank()) {
+    if (fileUrl == null || fileUrl.isEmpty() || fileUrl.isBlank()) {
       throw new FileStorageException("UPLOAD_FILE_TO_CLOUD_FAILURE");
     }
 

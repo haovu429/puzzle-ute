@@ -44,6 +44,8 @@ public class SecurityServiceImpl implements SecurityService {
 
     public static final String RESET_PASSWORD_TOKEN = "RESET_PASSWORD_TOKEN";
 
+    public static final String VERIFY_ACCOUNT_TOKEN = "VERIFY_ACCOUNT_TOKEN";
+
     @Override
     public DataResponse sendTokenForgotPwd(HttpServletRequest request, String email)
             throws MessagingException,
@@ -87,6 +89,41 @@ public class SecurityServiceImpl implements SecurityService {
         log.info("Responseeeeeeeeeeee");
         return new DataResponse("Mail is sent, please check!");
     }
+
+    @Override
+    public DataResponse sendTokenVerifyAccount(String email)
+            throws MessagingException,
+                   TemplateException,
+                   IOException,
+                   ExecutionException,
+                   InterruptedException {
+        UserEntity foundUser = userRepository.getUserByEmail(email);
+        if (foundUser == null) {
+            throw new RuntimeException("Can not found User Account with email " + email);
+        }
+
+        if (foundUser.isEmailVerified()) {
+            throw new CustomException(
+                    "The account's email is verified, No need to repeat");
+        }
+
+        String tokenValue = UUID.randomUUID().toString();
+        Date nowTime = new Date();
+        Date expiredTime = new Date(nowTime.getTime() + SystemInfo.TOKEN_VERIFY_ACCOUNT_DURATION);
+
+        TokenEntity createToken = new TokenEntity();
+        createToken.setToken(tokenValue);
+        createToken.setExpiryTime(expiredTime);
+        createToken.setUser(foundUser);
+        createToken.setType(VERIFY_ACCOUNT_TOKEN);
+
+        String urlFrontEnd = "https://keen-semifreddo-66d931.netlify.app/verify_account";
+        String finalUrlFrontEnd = urlFrontEnd + "?token=" + tokenValue;
+        this.userService.sendMailVerifyAccount(foundUser.getEmail(), finalUrlFrontEnd, createToken);
+
+        return new DataResponse("Mail verify account is sent, please check!");
+    }
+
 
     //  private TokenEntity createTokenForgotPassword(UserEntity foundUser) {
     //    String tokenValue = UUID.randomUUID().toString();
