@@ -29,6 +29,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -299,8 +300,8 @@ public class EmployerController {
 
   @GetMapping("/get-application-by-job-post/{jobPostId}")
   ResponseObject getApplicationByJobPost(
-      Authentication authentication, @PathVariable long jobPostId) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+       @PathVariable long jobPostId) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
     if (jobPost.isEmpty()) {
       throw new CustomException("Job post isn't exists");
@@ -315,8 +316,8 @@ public class EmployerController {
 
   @GetMapping("/get-candidate-and-result-by-job-post/{jobPostId}")
   DataResponse getCandidateAndApplicationResultByJobPost(
-      Authentication authentication, @PathVariable long jobPostId) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+       @PathVariable long jobPostId) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
     if (jobPost.isEmpty()) {
       throw new CustomException("Job post isn't exists");
@@ -345,8 +346,8 @@ public class EmployerController {
 
   @GetMapping("/get-application-rate-of-job-post/{jobPostId}")
   DataResponse getApplicationRateOfJobPost(
-      Authentication authentication, @PathVariable(value = "jobPostId") long jobPostId) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+       @PathVariable(value = "jobPostId") long jobPostId) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     // Check have rights
     Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
     if (jobPost.isEmpty()) {

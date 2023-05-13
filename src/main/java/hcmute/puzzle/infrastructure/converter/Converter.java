@@ -69,7 +69,9 @@ public class Converter {
         // userPostDTO.setJoinDate(entity.getCreatedAt());
         userPostDTO.setLastLoginAt(entity.getLastLoginAt());
         userPostDTO.setActive(entity.isActive());
-        userPostDTO.setProvider(entity.getProvider().toString());
+        if (entity.getProvider() != null) {
+            userPostDTO.setProvider(entity.getProvider().toString());
+        }
         userPostDTO.setFullName(entity.getFullName());
         userPostDTO.setEmailVerified(entity.isEmailVerified());
         userPostDTO.setLocale(entity.getLocale());

@@ -16,4 +16,6 @@ public interface SecurityService {
 
   DataResponse resetPassword(String token, String newPassword);
 
+  DataResponse verifyAccount(String token);
+
 }

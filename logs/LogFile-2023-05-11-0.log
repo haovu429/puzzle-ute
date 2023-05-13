@@ -1,0 +1,1863 @@
+21:43:14.555 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 16488 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+21:43:14.557 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+21:43:18.748 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+21:43:18.767 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+21:43:18.795 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+21:43:18.796 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+21:43:18.796 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+21:43:18.797 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+21:43:18.797 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+21:43:24.319 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+21:43:24.323 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:43:24.326 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+21:43:24.326 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:43:25.644 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 11.435 seconds (JVM running for 12.081)
+21:44:01.562 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 13176 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+21:44:01.564 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+21:44:05.853 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+21:44:05.871 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+21:44:05.899 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+21:44:05.899 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+21:44:05.899 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+21:44:05.900 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+21:44:05.900 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+21:44:08.285 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+21:44:08.289 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:44:08.292 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+21:44:08.292 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:44:09.785 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.592 seconds (JVM running for 9.294)
+21:48:55.688 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 8568 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+21:48:55.689 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+21:48:59.875 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+21:48:59.897 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+21:48:59.925 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+21:48:59.925 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+21:48:59.925 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+21:48:59.926 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+21:48:59.926 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+21:49:02.229 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+21:49:02.233 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:49:02.236 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+21:49:02.236 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:49:03.655 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.3 seconds (JVM running for 8.965)
+21:49:08.059 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 18044 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+21:49:08.061 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+21:49:12.288 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+21:49:12.306 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+21:49:12.333 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+21:49:12.334 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+21:49:12.334 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+21:49:12.334 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+21:49:12.335 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+21:49:14.922 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+21:49:14.926 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:49:14.929 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+21:49:14.929 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:49:16.291 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.583 seconds (JVM running for 9.316)
+21:52:19.728 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 17856 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+21:52:19.730 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+21:52:23.816 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+21:52:23.833 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+21:52:23.859 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+21:52:23.859 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+21:52:23.859 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+21:52:23.860 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+21:52:23.860 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+21:52:28.555 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+21:52:28.559 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:52:28.562 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+21:52:28.563 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:52:29.885 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 10.505 seconds (JVM running for 11.138)
+21:53:56.314 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 18216 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+21:53:56.316 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+21:54:00.407 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+21:54:00.425 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+21:54:00.451 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+21:54:00.451 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+21:54:00.451 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+21:54:00.453 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+21:54:00.453 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+21:54:03.549 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+21:54:03.553 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:54:03.556 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+21:54:03.556 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:54:04.904 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.94 seconds (JVM running for 9.573)
+21:55:15.844 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 3048 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+21:55:15.845 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+21:55:20.117 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+21:55:20.140 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+21:55:20.172 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+21:55:20.172 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+21:55:20.172 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+21:55:20.173 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+21:55:20.173 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+21:55:22.236 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+21:55:22.240 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:55:22.243 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+21:55:22.244 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:55:23.563 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.061 seconds (JVM running for 8.707)
+21:57:50.210 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 19364 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+21:57:50.210 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+21:57:54.380 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+21:57:54.397 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+21:57:54.423 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+21:57:54.423 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+21:57:54.423 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+21:57:54.424 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+21:57:54.424 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+21:57:56.701 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+21:57:56.705 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:57:56.708 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+21:57:56.709 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:57:58.060 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.214 seconds (JVM running for 8.87)
+21:59:48.260 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 13860 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+21:59:48.261 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+21:59:52.313 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+21:59:52.330 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+21:59:52.355 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+21:59:52.355 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+21:59:52.355 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+21:59:52.356 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+21:59:52.356 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+21:59:54.283 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+21:59:54.287 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:59:54.289 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+21:59:54.290 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+21:59:55.636 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 7.714 seconds (JVM running for 8.358)
+22:00:00.013 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:00:00.076 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:07:32.893 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 6380 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+22:07:32.895 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+22:07:37.307 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:07:37.325 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:07:37.350 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:07:37.350 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:07:37.351 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:07:37.351 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:07:37.351 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:07:39.452 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+22:07:39.456 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:07:39.459 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+22:07:39.460 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:07:40.816 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.3 seconds (JVM running for 8.956)
+22:11:16.229 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 7944 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+22:11:16.231 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+22:11:20.754 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:11:20.775 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:11:20.809 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:11:20.809 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:11:20.809 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:11:20.810 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:11:20.810 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:11:23.200 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+22:11:23.204 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:11:23.207 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+22:11:23.208 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:11:24.571 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.675 seconds (JVM running for 19.913)
+22:12:29.507 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 23188 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+22:12:29.509 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+22:12:34.023 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:12:34.042 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:12:34.069 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:12:34.069 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:12:34.069 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:12:34.070 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:12:34.070 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:12:36.223 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+22:12:36.227 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:12:36.230 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+22:12:36.231 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:12:37.710 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.588 seconds (JVM running for 9.303)
+22:12:43.886 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 18764 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+22:12:43.887 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+22:12:48.459 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:12:48.479 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:12:48.506 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:12:48.506 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:12:48.506 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:12:48.507 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:12:48.507 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:12:50.491 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+22:12:50.495 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:12:50.498 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+22:12:50.498 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:12:51.943 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.491 seconds (JVM running for 9.322)
+22:14:28.846 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 6404 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+22:14:28.848 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+22:14:33.003 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:14:33.021 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:14:33.047 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:14:33.047 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:14:33.047 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:14:33.048 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:14:33.048 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:14:35.302 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+22:14:35.306 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:14:35.309 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+22:14:35.310 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:14:36.694 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.198 seconds (JVM running for 8.849)
+22:17:04.614 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 22048 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+22:17:04.615 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+22:17:09.215 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:17:09.234 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:17:09.260 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:17:09.260 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:17:09.260 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:17:09.261 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:17:09.261 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:17:11.197 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+22:17:11.201 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:17:11.203 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+22:17:11.204 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:17:12.560 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.45 seconds (JVM running for 9.203)
+22:19:20.906 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 2136 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+22:19:20.907 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+22:19:25.437 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:19:25.459 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:19:25.495 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:19:25.495 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:19:25.495 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:19:25.496 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:19:25.496 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:19:27.560 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+22:19:27.565 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:19:27.569 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+22:19:27.570 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:19:29.235 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.796 seconds (JVM running for 9.645)
+22:19:56.578 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 17220 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+22:19:56.580 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+22:20:00.922 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:20:00.949 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:20:00.984 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:20:00.984 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:20:00.984 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:20:00.985 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:20:00.986 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:20:03.099 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+22:20:03.103 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:20:03.107 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+22:20:03.107 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:20:04.499 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.32 seconds (JVM running for 9.136)
+22:21:17.212 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 17976 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+22:21:17.214 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+22:21:21.399 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:21:21.417 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:21:21.450 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:21:21.451 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:21:21.451 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:21:21.451 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:21:21.452 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:21:23.557 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+22:21:23.561 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:21:23.564 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+22:21:23.564 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:21:25.110 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.32 seconds (JVM running for 9.181)
+22:22:07.651 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 6636 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+22:22:07.653 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+22:22:12.446 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:22:12.464 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:22:12.491 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:22:12.491 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:22:12.491 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:22:12.492 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:22:12.493 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:22:15.297 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+22:22:15.301 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:22:15.305 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+22:22:15.306 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:22:16.734 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 9.543 seconds (JVM running for 10.586)
+22:29:56.231 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 20588 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+22:29:56.233 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+22:30:00.964 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:30:00.982 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:30:01.007 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:30:01.007 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:30:01.007 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:30:01.008 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:30:01.008 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:30:03.010 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+22:30:03.014 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:30:03.017 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+22:30:03.018 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:30:04.425 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.603 seconds (JVM running for 9.545)
+22:31:54.647 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 11812 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+22:31:54.649 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+22:31:58.969 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:31:58.988 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:31:59.015 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:31:59.016 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:31:59.016 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:31:59.016 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:31:59.016 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:32:01.233 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+22:32:01.237 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:32:01.240 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+22:32:01.241 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:32:02.617 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.326 seconds (JVM running for 8.983)
+22:32:40.785 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 20852 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+22:32:40.787 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+22:32:45.499 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:32:45.516 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:32:45.542 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:32:45.542 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:32:45.542 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:32:45.544 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:32:45.544 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:32:47.615 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+22:32:47.619 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:32:47.622 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+22:32:47.622 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:32:49.017 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.645 seconds (JVM running for 9.601)
+22:40:00.071 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:40:57.699 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 9420 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+22:40:57.701 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+22:41:01.875 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:41:01.893 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:41:01.920 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:41:01.920 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:41:01.920 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:41:01.921 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:41:01.921 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:41:04.042 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+22:41:04.046 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:41:04.049 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+22:41:04.049 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:41:05.413 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.08 seconds (JVM running for 8.738)
+22:42:17.065 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 13676 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+22:42:17.066 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+22:42:21.297 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:42:21.320 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:42:21.354 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:42:21.354 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:42:21.354 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:42:21.355 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:42:21.355 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:42:23.241 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+22:42:23.245 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:42:23.248 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+22:42:23.248 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:42:24.660 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 7.985 seconds (JVM running for 8.697)
+22:47:24.147 [http-nio-8080-exec-2] INFO  h.p.c.s.ScheduleManager - stop cron: true
+22:47:24.148 [http-nio-8080-exec-2] INFO  h.p.c.s.ScheduleManager - stop cron: true
+22:47:24.148 [http-nio-8080-exec-2] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:47:24.151 [http-nio-8080-exec-2] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:47:24.153 [http-nio-8080-exec-2] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:47:24.154 [http-nio-8080-exec-2] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:47:24.154 [http-nio-8080-exec-2] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:47:24.154 [http-nio-8080-exec-2] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:47:24.154 [http-nio-8080-exec-2] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:47:24.159 [http-nio-8080-exec-2] INFO  h.p.c.s.ScheduleManager - current cron: 0/20 * * * * ?
+22:47:24.160 [http-nio-8080-exec-2] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:47:24.165 [http-nio-8080-exec-2] INFO  h.p.c.s.ScheduleManager - current cron: 0/30 * * * * ?
+22:47:24.165 [http-nio-8080-exec-2] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:47:30.007 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:47:40.073 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:48:00.001 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:48:00.004 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:48:20.005 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:48:30.002 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:48:40.015 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:48:50.839 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 16308 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+22:48:50.841 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+22:48:54.884 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:48:54.902 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:48:54.929 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:48:54.929 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:48:54.929 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:48:54.930 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:48:54.930 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:48:56.907 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/20 * * * * ?
+22:48:56.911 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:48:56.914 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/30 * * * * ?
+22:48:56.914 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:48:58.246 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 7.738 seconds (JVM running for 8.384)
+22:49:00.011 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:49:00.062 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:49:20.022 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:49:28.965 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 22888 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+22:49:28.967 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+22:49:33.000 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+22:49:33.017 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+22:49:33.043 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+22:49:33.044 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+22:49:33.044 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+22:49:33.044 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+22:49:33.044 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+22:49:35.057 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/20 * * * * ?
+22:49:35.061 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:49:35.064 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/30 * * * * ?
+22:49:35.065 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+22:49:36.462 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 7.824 seconds (JVM running for 8.485)
+22:49:40.062 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:50:00.004 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:50:00.011 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:50:20.007 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:50:30.015 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:50:40.010 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:51:00.008 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:51:00.021 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:51:20.011 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:51:30.001 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:51:40.013 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:52:00.013 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:52:00.018 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:52:20.005 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:52:30.001 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:52:40.015 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:53:00.004 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:53:00.010 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:53:20.017 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:53:30.015 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:53:40.014 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:54:00.001 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:54:00.011 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:54:20.013 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:54:30.004 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:54:40.007 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:55:00.015 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:55:00.020 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:55:20.015 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:55:30.013 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:55:40.021 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:56:00.005 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:56:00.012 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:56:20.021 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:56:30.007 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:56:40.018 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:57:00.009 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:57:00.012 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:57:20.012 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:57:30.011 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:57:40.023 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:58:00.014 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:58:00.023 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:58:20.024 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:58:30.005 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:58:40.011 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:59:00.011 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:59:00.015 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:59:20.008 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+22:59:30.012 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+22:59:40.013 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:00:00.006 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:00:00.013 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:00:20.015 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:00:30.011 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:00:40.006 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:01:00.003 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:01:00.009 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:01:20.019 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:01:30.005 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:01:40.013 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:02:00.014 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:02:00.021 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:02:20.016 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:02:28.738 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 2692 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+23:02:28.739 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+23:02:32.884 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+23:02:32.903 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+23:02:32.931 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+23:02:32.931 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+23:02:32.931 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+23:02:32.932 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+23:02:32.932 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+23:02:35.428 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/30 * * * * ?
+23:02:35.432 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+23:02:35.435 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/20 * * * * ?
+23:02:35.435 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+23:02:36.729 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.333 seconds (JVM running for 9.048)
+23:02:40.071 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:03:00.011 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:03:00.021 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:03:20.023 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:03:30.002 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:03:40.019 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:04:00.003 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:04:00.014 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:04:20.019 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:04:30.001 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:04:40.013 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:05:00.011 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:05:00.016 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:05:20.010 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:05:30.012 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:05:40.006 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:06:00.014 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:06:00.022 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:06:20.018 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:06:30.011 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:06:40.013 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:07:00.016 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:07:00.019 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:07:20.955 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 20992 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+23:07:20.957 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+23:07:25.010 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+23:07:25.029 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+23:07:25.055 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+23:07:25.056 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+23:07:25.056 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+23:07:25.057 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+23:07:25.057 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+23:07:27.056 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/30 * * * * ?
+23:07:27.060 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+23:07:27.063 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/20 * * * * ?
+23:07:27.064 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+23:07:28.499 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 7.862 seconds (JVM running for 8.488)
+23:07:30.012 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:07:40.107 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:08:00.014 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:08:00.023 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:08:20.009 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:08:30.014 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:08:40.017 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:08:45.284 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 23332 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+23:08:45.286 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+23:08:49.286 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+23:08:49.303 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+23:08:49.329 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+23:08:49.329 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+23:08:49.329 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+23:08:49.330 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+23:08:49.330 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+23:08:51.652 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/30 * * * * ?
+23:08:51.656 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+23:08:51.659 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/20 * * * * ?
+23:08:51.659 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+23:08:53.010 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.053 seconds (JVM running for 8.693)
+23:09:00.002 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:09:00.054 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:09:20.016 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:09:30.003 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:09:40.011 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:10:00.003 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:10:00.007 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:10:20.007 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:10:30.015 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:10:40.015 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:11:05.747 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 2708 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+23:11:05.748 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+23:11:09.973 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+23:11:09.992 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+23:11:10.020 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+23:11:10.020 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+23:11:10.020 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+23:11:10.020 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+23:11:10.021 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+23:13:19.802 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 8876 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+23:13:19.804 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+23:13:21.542 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 20196 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+23:13:21.546 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+23:13:24.587 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+23:13:24.604 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+23:13:24.632 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+23:13:24.632 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+23:13:24.632 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+23:13:24.633 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+23:13:24.633 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+23:13:26.276 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+23:13:26.295 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+23:13:26.323 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+23:13:26.323 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+23:13:26.323 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+23:13:26.324 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+23:13:26.324 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+23:13:28.055 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/30 * * * * ?
+23:13:28.060 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+23:13:28.063 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/20 * * * * ?
+23:13:28.065 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+23:13:29.080 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/30 * * * * ?
+23:13:29.086 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+23:13:29.092 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/20 * * * * ?
+23:13:29.093 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+23:13:29.498 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 10.026 seconds (JVM running for 10.583)
+23:13:30.011 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:13:30.606 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 9.457 seconds (JVM running for 10.216)
+23:13:40.067 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:14:00.010 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:14:00.016 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:14:20.006 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:14:30.013 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:14:40.013 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:15:00.013 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:15:00.021 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:15:20.013 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:15:30.005 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:15:40.006 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:16:00.007 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:16:00.017 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:16:20.023 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:16:30.006 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:16:40.019 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:16:56.692 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 22452 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+23:16:56.694 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+23:17:01.020 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+23:17:01.038 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+23:17:01.067 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+23:17:01.067 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+23:17:01.067 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+23:17:01.068 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+23:17:01.068 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+23:17:03.172 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/20 * * * * ?
+23:17:03.176 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+23:17:03.178 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/30 * * * * ?
+23:17:03.179 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+23:17:05.085 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.717 seconds (JVM running for 9.404)
+23:17:20.107 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:17:30.011 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:17:40.024 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:18:00.006 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:18:00.012 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:18:20.006 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:18:30.001 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:18:40.018 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:19:00.015 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:19:00.022 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:19:20.021 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:19:30.014 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:19:40.016 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:20:00.005 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:20:00.012 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:20:20.016 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:20:30.004 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:20:40.012 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:21:00.003 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:21:00.009 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:21:20.015 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:21:30.003 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:21:40.011 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:22:00.005 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:22:00.012 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:22:20.014 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:22:30.012 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:22:40.006 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:23:00.004 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:23:00.009 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:23:20.021 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:23:30.013 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:23:40.016 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:24:00.006 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:24:00.015 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:24:20.015 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:24:35.586 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 20904 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+23:24:35.587 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+23:24:39.960 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+23:24:39.977 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+23:24:40.005 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+23:24:40.005 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+23:24:40.005 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+23:24:40.006 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+23:24:40.006 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+23:24:42.146 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/30 * * * * ?
+23:24:42.150 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+23:24:42.153 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/20 * * * * ?
+23:24:42.154 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+23:24:43.589 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.325 seconds (JVM running for 8.968)
+23:25:00.013 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:25:00.063 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:25:20.020 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:25:30.000 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:25:40.010 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:26:00.007 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:26:00.014 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:26:20.004 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:26:30.010 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:26:40.014 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:27:00.013 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:27:00.020 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:27:20.022 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:27:30.009 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:27:40.009 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:28:00.008 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:28:00.020 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:28:20.024 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:28:30.006 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:28:40.016 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:29:00.003 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:29:00.011 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:29:20.018 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:29:30.010 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:29:40.015 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:30:00.003 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:30:00.013 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:30:20.012 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:30:30.009 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:30:40.004 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:31:00.014 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:31:00.024 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:31:20.017 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:31:30.012 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:31:40.010 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:32:00.010 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:32:00.014 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:32:20.019 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:32:30.004 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:32:40.017 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:33:00.011 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! xyz
+23:33:00.018 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:33:15.660 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 8796 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+23:33:15.662 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+23:33:20.125 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+23:33:20.147 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+23:33:20.180 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+23:33:20.180 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+23:33:20.180 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+23:33:20.181 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+23:33:20.181 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+23:33:23.106 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+23:33:23.110 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+23:33:23.113 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+23:33:23.114 [main] ERROR h.p.c.s.ScheduleManager - null
+23:33:24.849 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 9.761 seconds (JVM running for 11.79)
+23:33:28.057 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:33:44.311 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 1308 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+23:33:44.312 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+23:33:48.807 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+23:33:48.827 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+23:33:48.862 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+23:33:48.862 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+23:33:48.862 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+23:33:48.863 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+23:33:48.863 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+23:33:50.937 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+23:33:50.937 [main] ERROR h.p.c.s.ScheduleManager - null
+23:33:50.941 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+23:33:50.946 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+23:33:52.437 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.529 seconds (JVM running for 9.302)
+23:33:56.049 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:34:00.015 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:34:28.013 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:34:56.018 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:35:00.021 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:35:28.023 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:35:56.010 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:36:00.023 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:36:28.011 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:36:56.021 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:37:00.023 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:37:28.018 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:37:56.010 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:38:00.013 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:38:28.025 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:38:56.006 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:39:00.017 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:39:28.017 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:39:56.012 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:40:00.012 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:40:28.006 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:40:56.020 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:41:00.015 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:41:28.007 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:41:56.022 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:42:00.013 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:42:28.006 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:42:56.022 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:43:00.008 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:43:28.010 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:43:56.009 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:44:00.008 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:44:28.017 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+23:56:45.618 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 10632 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+23:56:45.620 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+23:58:56.760 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 10696 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+23:58:56.769 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+00:03:05.580 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 21204 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+00:03:05.582 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+00:24:17.749 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 1484 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+00:24:17.752 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+00:24:24.381 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+00:24:24.407 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+00:24:24.452 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+00:24:24.452 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+00:24:24.452 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+00:24:24.453 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+00:24:24.453 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+00:24:26.817 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+00:24:26.818 [main] ERROR h.p.c.s.ScheduleManager - null
+00:24:26.824 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+00:24:26.833 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+00:24:28.116 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:24:29.560 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 12.406 seconds (JVM running for 13.355)
+00:24:56.025 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:25:00.018 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:25:28.026 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:25:56.014 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:26:00.019 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:26:28.010 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:26:56.014 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:27:00.025 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:27:28.016 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:27:56.012 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:28:00.008 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:28:28.018 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:28:56.025 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:29:00.007 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:29:28.019 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:29:56.006 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:30:00.024 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:30:28.016 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:30:56.020 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:31:00.018 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:31:33.541 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 14364 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+00:31:33.543 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+00:31:38.783 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+00:31:38.805 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+00:31:38.841 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+00:31:38.841 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+00:31:38.841 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+00:31:38.842 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+00:31:38.842 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+00:31:40.725 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+00:31:40.729 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+00:31:40.733 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+00:31:40.734 [main] ERROR h.p.c.s.ScheduleManager - null
+00:32:26.553 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 11820 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+00:32:26.555 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+00:32:31.320 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+00:32:31.338 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+00:32:31.379 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+00:32:31.379 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+00:32:31.379 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+00:32:31.380 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+00:32:31.380 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+00:32:33.043 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+00:32:33.044 [main] ERROR h.p.c.s.ScheduleManager - null
+00:32:33.047 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+00:32:33.051 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+00:32:35.180 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 9.016 seconds (JVM running for 9.773)
+00:32:56.104 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:33:00.016 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:33:28.018 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:33:56.013 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:34:00.019 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:34:28.014 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:34:56.013 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:35:00.017 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:35:28.015 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:35:56.016 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:36:00.017 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:36:28.021 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:36:56.016 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:37:00.012 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:37:28.015 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:37:56.019 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:38:00.024 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:38:28.019 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:38:56.005 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:39:00.011 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:39:41.527 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 9316 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+00:39:41.529 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+00:39:48.179 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+00:39:48.200 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+00:39:48.233 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+00:39:48.233 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+00:39:48.233 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+00:39:48.234 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+00:39:48.234 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+00:39:50.296 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+00:39:50.299 [main] ERROR h.p.c.s.ScheduleManager - null
+00:39:50.302 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+00:39:50.306 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+00:47:54.614 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 2504 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+00:47:54.621 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+00:48:01.040 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+00:48:01.062 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+00:48:01.101 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+00:48:01.101 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+00:48:01.101 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+00:48:01.102 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+00:48:01.102 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+00:48:02.931 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+00:48:02.931 [main] ERROR h.p.c.s.ScheduleManager - null
+00:48:02.935 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+00:48:02.940 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+00:48:05.236 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 10.981 seconds (JVM running for 11.71)
+00:48:28.077 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:48:56.023 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:49:00.010 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:49:28.024 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:49:56.005 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:50:00.011 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:50:23.348 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 12052 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+00:50:23.350 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+00:50:29.811 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+00:50:29.830 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+00:50:29.867 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+00:50:29.867 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+00:50:29.867 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+00:50:29.868 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+00:50:29.868 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+00:50:31.644 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+00:50:31.645 [main] ERROR h.p.c.s.ScheduleManager - null
+00:50:31.648 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+00:50:31.653 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+00:50:33.940 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 10.985 seconds (JVM running for 11.788)
+00:50:56.144 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:51:00.021 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:51:18.888 [http-nio-8080-exec-4] ERROR h.p.configuration.AuditorAwareImpl - class java.lang.String cannot be cast to class hcmute.puzzle.configuration.security.CustomUserDetails (java.lang.String is in module java.base of loader 'bootstrap'; hcmute.puzzle.configuration.security.CustomUserDetails is in unnamed module of loader 'app')
+00:51:18.990 [ThreadPoolTaskScheduler2] ERROR h.p.configuration.AuditorAwareImpl - Cannot invoke "org.springframework.security.core.Authentication.getPrincipal()" because the return value of "org.springframework.security.core.context.SecurityContext.getAuthentication()" is null
+00:51:25.482 [http-nio-8080-exec-5] INFO  h.p.s.impl.SecurityServiceImpl - Responseeeeeeeeeeee
+00:51:25.483 [ThreadPoolTaskScheduler3] ERROR h.p.configuration.AuditorAwareImpl - Cannot invoke "org.springframework.security.core.Authentication.getPrincipal()" because the return value of "org.springframework.security.core.context.SecurityContext.getAuthentication()" is null
+00:51:26.555 [pool-13-thread-1] ERROR h.p.services.impl.UserServiceImpl - Exception reading response
+00:51:28.017 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:51:56.019 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:52:00.017 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:52:28.014 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:52:36.178 [http-nio-8080-exec-9] ERROR h.p.configuration.AuditorAwareImpl - class java.lang.String cannot be cast to class hcmute.puzzle.configuration.security.CustomUserDetails (java.lang.String is in module java.base of loader 'bootstrap'; hcmute.puzzle.configuration.security.CustomUserDetails is in unnamed module of loader 'app')
+00:52:36.179 [http-nio-8080-exec-9] ERROR h.p.configuration.AuditorAwareImpl - class java.lang.String cannot be cast to class hcmute.puzzle.configuration.security.CustomUserDetails (java.lang.String is in module java.base of loader 'bootstrap'; hcmute.puzzle.configuration.security.CustomUserDetails is in unnamed module of loader 'app')
+00:52:56.024 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:53:00.006 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:53:28.005 [ThreadPoolTaskScheduler5] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:53:56.011 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:54:00.013 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:54:28.016 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:54:56.012 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:55:04.668 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 24120 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+00:55:04.669 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+00:55:11.411 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+00:55:11.434 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+00:55:11.468 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+00:55:11.468 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+00:55:11.468 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+00:55:11.470 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+00:55:11.470 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+00:55:13.274 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+00:55:13.275 [main] ERROR h.p.c.s.ScheduleManager - null
+00:55:13.278 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+00:55:13.281 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+00:55:16.456 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 12.192 seconds (JVM running for 13.0)
+00:55:28.068 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:55:56.019 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:56:00.022 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:56:28.010 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:56:53.259 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 10800 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+00:56:53.260 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+00:57:00.181 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+00:57:00.205 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+00:57:00.239 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+00:57:00.239 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+00:57:00.239 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+00:57:00.240 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+00:57:00.240 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+00:57:02.359 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+00:57:02.360 [main] ERROR h.p.c.s.ScheduleManager - null
+00:57:02.367 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+00:57:02.373 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+00:57:04.608 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 11.744 seconds (JVM running for 12.518)
+00:57:28.116 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:57:56.022 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:58:00.016 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:58:28.005 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:58:56.017 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:59:00.008 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:59:28.010 [ThreadPoolTaskScheduler4] INFO  h.p.s.s.ScheduleService - Hello world! abc
+00:59:56.011 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+01:00:00.021 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+01:00:28.018 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+01:00:46.546 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 15600 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+01:00:46.548 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+01:00:53.621 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+01:00:53.646 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+01:00:53.682 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+01:00:53.682 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+01:00:53.682 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+01:00:53.690 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+01:00:53.691 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+01:00:55.631 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+01:00:55.632 [main] ERROR h.p.c.s.ScheduleManager - null
+01:00:55.635 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+01:00:55.640 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+01:00:56.146 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+01:00:57.827 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 11.685 seconds (JVM running for 12.47)
+01:01:00.012 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+01:01:28.018 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+01:01:56.018 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+01:02:19.537 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+01:03:13.921 [ThreadPoolTaskScheduler3] INFO  h.p.s.s.ScheduleService - Hello world! abc
+01:03:24.158 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 20156 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+01:03:24.160 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+01:03:31.129 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+01:03:31.148 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+01:03:31.188 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+01:03:31.188 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+01:03:31.188 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+01:03:31.189 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+01:03:31.189 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+01:03:32.988 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+01:03:32.989 [main] ERROR h.p.c.s.ScheduleManager - null
+01:03:32.994 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+01:03:33.006 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+01:03:35.288 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 11.659 seconds (JVM running for 12.53)
+01:03:56.014 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+01:04:00.015 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+04:36:11.456 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 11468 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+04:36:11.457 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+04:36:17.878 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+04:36:17.895 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+04:36:17.942 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+04:36:17.942 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+04:36:17.942 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+04:36:17.943 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+04:36:17.943 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+04:36:20.272 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+04:36:20.277 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+04:36:20.280 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+04:36:20.280 [main] ERROR h.p.c.s.ScheduleManager - null
+04:36:22.243 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 11.156 seconds (JVM running for 22.658)
+04:36:28.061 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+04:36:56.025 [ThreadPoolTaskScheduler1] INFO  h.p.s.s.ScheduleService - Hello world! abc
+04:37:00.014 [ThreadPoolTaskScheduler2] INFO  h.p.s.s.ScheduleService - Hello world! abc
+04:37:23.730 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 12968 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+04:37:23.733 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+04:37:29.501 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+04:37:29.517 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+04:37:29.547 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+04:37:29.547 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+04:37:29.547 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+04:37:29.548 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+04:37:29.548 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+04:37:31.535 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+04:37:31.535 [main] ERROR h.p.c.s.ScheduleManager - null
+04:37:31.539 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+04:37:31.543 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+04:37:33.334 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 9.928 seconds (JVM running for 10.701)
+04:39:24.572 [http-nio-8080-exec-2] INFO  h.p.filter.JwtAuthenticationFilter - UserDetail is none!
+04:43:20.733 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 3660 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+04:43:20.735 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+04:43:26.152 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+04:43:26.169 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+04:43:26.200 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+04:43:26.200 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+04:43:26.200 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+04:43:26.201 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+04:43:26.201 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+04:43:27.837 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+04:43:27.838 [main] ERROR h.p.c.s.ScheduleManager - null
+04:43:27.841 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+04:43:27.845 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+04:43:29.646 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 9.236 seconds (JVM running for 9.909)
+04:43:57.041 [http-nio-8080-exec-1] INFO  h.p.filter.JwtAuthenticationFilter - UserDetail is none!
+04:53:12.376 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 7996 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+04:53:12.379 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+04:53:17.936 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+04:53:17.954 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+04:53:17.981 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+04:53:17.981 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+04:53:17.981 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+04:53:17.982 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+04:53:17.982 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+04:53:19.840 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+04:53:19.841 [main] ERROR h.p.c.s.ScheduleManager - null
+04:53:19.844 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+04:53:19.848 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+04:53:21.664 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 9.684 seconds (JVM running for 10.411)
+04:53:26.376 [http-nio-8080-exec-2] INFO  h.p.filter.JwtAuthenticationFilter - UserDetail is none!
+04:58:16.749 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 2700 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+04:58:16.751 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+04:58:22.407 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+04:58:22.423 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+04:58:22.451 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+04:58:22.451 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+04:58:22.451 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+04:58:22.452 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+04:58:22.452 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+04:58:24.403 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+04:58:24.404 [main] ERROR h.p.c.s.ScheduleManager - null
+04:58:24.407 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+04:58:24.411 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+04:58:26.311 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 9.934 seconds (JVM running for 11.15)
+04:58:38.188 [http-nio-8080-exec-7] INFO  h.p.filter.JwtAuthenticationFilter - UserDetail is none!
+05:07:27.993 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 840 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+05:07:27.995 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+05:07:33.395 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+05:07:33.412 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+05:07:33.439 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+05:07:33.439 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+05:07:33.439 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+05:07:33.439 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+05:07:33.440 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+05:07:35.113 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+05:07:35.118 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+05:07:35.121 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+05:07:35.121 [main] ERROR h.p.c.s.ScheduleManager - null
+05:07:36.896 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 9.248 seconds (JVM running for 10.058)
+05:09:54.828 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 5832 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+05:09:54.830 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+05:10:00.459 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+05:10:00.475 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+05:10:00.501 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+05:10:00.501 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+05:10:00.501 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+05:10:00.502 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+05:10:00.502 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+05:10:02.652 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+05:10:02.653 [main] ERROR h.p.c.s.ScheduleManager - null
+05:10:02.656 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+05:10:02.660 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+05:10:04.416 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 9.961 seconds (JVM running for 10.761)
+05:12:28.154 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 6052 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+05:12:28.156 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+05:12:33.639 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+05:12:33.656 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+05:12:33.684 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+05:12:33.685 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+05:12:33.685 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+05:12:33.686 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+05:12:33.686 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+05:12:35.366 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+05:12:35.368 [main] ERROR h.p.c.s.ScheduleManager - null
+05:12:35.378 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+05:12:35.389 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+05:12:38.398 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 10.558 seconds (JVM running for 11.209)
+05:36:15.343 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 2328 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+05:36:15.345 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+05:36:20.848 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+05:36:20.866 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+05:36:20.895 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+05:36:20.895 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+05:36:20.895 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+05:36:20.896 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+05:36:20.896 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+05:36:22.914 [main] INFO  h.p.c.s.ScheduleManager - current cron: null
+05:36:22.915 [main] ERROR h.p.c.s.ScheduleManager - null
+05:36:22.917 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0/28 * * * * ?
+05:36:22.921 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+05:36:24.705 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 9.72 seconds (JVM running for 10.392)
+05:37:01.428 [http-nio-8080-exec-2] ERROR h.p.configuration.AuditorAwareImpl - class java.lang.String cannot be cast to class hcmute.puzzle.configuration.security.CustomUserDetails (java.lang.String is in module java.base of loader 'bootstrap'; hcmute.puzzle.configuration.security.CustomUserDetails is in unnamed module of loader 'app')
+05:47:17.578 [http-nio-8080-exec-5] ERROR h.p.filter.JwtAuthenticationFilter - failed on set user authentication
+hcmute.puzzle.exception.UnauthorizedException: THIS ACCOUNT ISN'T ACTIVE
+	at hcmute.puzzle.filter.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:84)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:103)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:89)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:112)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:82)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:55)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:221)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:186)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:354)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:267)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+05:47:29.460 [http-nio-8080-exec-8] ERROR h.p.configuration.AuditorAwareImpl - class java.lang.String cannot be cast to class hcmute.puzzle.configuration.security.CustomUserDetails (java.lang.String is in module java.base of loader 'bootstrap'; hcmute.puzzle.configuration.security.CustomUserDetails is in unnamed module of loader 'app')
+05:47:31.010 [http-nio-8080-exec-4] ERROR h.p.filter.JwtAuthenticationFilter - failed on set user authentication
+hcmute.puzzle.exception.UnauthorizedException: THIS ACCOUNT ISN'T ACTIVE
+	at hcmute.puzzle.filter.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:84)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:103)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:89)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:112)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:82)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:55)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:221)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:186)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:354)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:267)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+05:47:40.175 [http-nio-8080-exec-3] ERROR h.p.configuration.AuditorAwareImpl - class java.lang.String cannot be cast to class hcmute.puzzle.configuration.security.CustomUserDetails (java.lang.String is in module java.base of loader 'bootstrap'; hcmute.puzzle.configuration.security.CustomUserDetails is in unnamed module of loader 'app')
+05:47:41.973 [http-nio-8080-exec-1] ERROR h.p.filter.JwtAuthenticationFilter - failed on set user authentication
+hcmute.puzzle.exception.UnauthorizedException: THIS ACCOUNT ISN'T ACTIVE
+	at hcmute.puzzle.filter.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:84)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:103)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:89)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:112)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:82)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:55)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:221)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:186)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:354)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:267)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+05:48:18.476 [http-nio-8080-exec-2] ERROR h.p.filter.JwtAuthenticationFilter - failed on set user authentication
+hcmute.puzzle.exception.UnauthorizedException: THIS ACCOUNT ISN'T ACTIVE
+	at hcmute.puzzle.filter.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:84)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:103)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:89)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:112)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:82)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:55)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:221)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:186)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:354)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:267)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+05:48:53.963 [http-nio-8080-exec-9] ERROR h.p.configuration.AuditorAwareImpl - class java.lang.String cannot be cast to class hcmute.puzzle.configuration.security.CustomUserDetails (java.lang.String is in module java.base of loader 'bootstrap'; hcmute.puzzle.configuration.security.CustomUserDetails is in unnamed module of loader 'app')
+05:48:58.072 [http-nio-8080-exec-10] ERROR h.p.filter.JwtAuthenticationFilter - failed on set user authentication
+hcmute.puzzle.exception.UnauthorizedException: THIS ACCOUNT ISN'T ACTIVE
+	at hcmute.puzzle.filter.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:84)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:103)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:89)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:112)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:82)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:55)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:221)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:186)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:354)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:267)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+05:49:13.355 [http-nio-8080-exec-5] ERROR h.p.filter.JwtAuthenticationFilter - failed on set user authentication
+hcmute.puzzle.exception.UnauthorizedException: THIS ACCOUNT ISN'T ACTIVE
+	at hcmute.puzzle.filter.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:84)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:103)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:89)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:112)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:82)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:55)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:221)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:186)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:354)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:267)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+05:50:52.627 [http-nio-8080-exec-6] ERROR h.p.filter.JwtAuthenticationFilter - failed on set user authentication
+hcmute.puzzle.exception.UnauthorizedException: THIS ACCOUNT ISN'T ACTIVE
+	at hcmute.puzzle.filter.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:84)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:103)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:89)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:112)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:82)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:55)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:221)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:186)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:354)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:267)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+05:52:17.326 [http-nio-8080-exec-7] ERROR h.p.filter.JwtAuthenticationFilter - failed on set user authentication
+hcmute.puzzle.exception.UnauthorizedException: THIS ACCOUNT ISN'T ACTIVE
+	at hcmute.puzzle.filter.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:84)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:103)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:89)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:112)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:82)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:55)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:221)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:186)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:354)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:267)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+05:54:56.830 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 18080 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+05:54:56.831 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+05:58:31.277 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 17536 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+05:58:31.280 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+05:58:36.024 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+05:58:36.043 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+05:58:36.075 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+05:58:36.075 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+05:58:36.076 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+05:58:36.076 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+05:58:36.076 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+05:58:37.879 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+05:58:37.884 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+05:58:37.887 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+05:58:37.888 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+05:58:51.844 [http-nio-8080-exec-4] ERROR h.p.configuration.AuditorAwareImpl - class java.lang.String cannot be cast to class hcmute.puzzle.configuration.security.CustomUserDetails (java.lang.String is in module java.base of loader 'bootstrap'; hcmute.puzzle.configuration.security.CustomUserDetails is in unnamed module of loader 'app')
+05:58:51.873 [http-nio-8080-exec-8] INFO  h.p.filter.JwtAuthenticationFilter - UserDetail is none!
+05:58:57.239 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 10864 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+05:58:57.241 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+05:59:01.808 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+05:59:01.831 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+05:59:01.869 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+05:59:01.870 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+05:59:01.870 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+05:59:01.871 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+05:59:01.871 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+05:59:03.666 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+05:59:03.671 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+05:59:03.675 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+05:59:03.676 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+05:59:05.605 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.747 seconds (JVM running for 9.399)
+05:59:21.667 [http-nio-8080-exec-3] ERROR h.p.configuration.AuditorAwareImpl - class java.lang.String cannot be cast to class hcmute.puzzle.configuration.security.CustomUserDetails (java.lang.String is in module java.base of loader 'bootstrap'; hcmute.puzzle.configuration.security.CustomUserDetails is in unnamed module of loader 'app')
+06:01:11.019 [http-nio-8080-exec-2] ERROR h.p.exception.MyExceptionHandler - Username isn't exists
+06:03:43.794 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 6436 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+06:03:43.795 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+06:03:47.969 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+06:03:47.986 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+06:03:48.017 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+06:03:48.017 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+06:03:48.017 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+06:03:48.018 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+06:03:48.018 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+06:03:49.819 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+06:03:49.823 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:03:49.826 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+06:03:49.827 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:03:51.595 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.159 seconds (JVM running for 8.792)
+06:04:33.619 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 4344 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+06:04:33.621 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+06:04:37.916 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+06:04:37.933 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+06:04:37.962 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+06:04:37.962 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+06:04:37.962 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+06:04:37.963 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+06:04:37.963 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+06:04:39.871 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+06:04:39.875 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:04:39.878 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+06:04:39.879 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:04:41.753 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.506 seconds (JVM running for 9.136)
+06:05:58.046 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 16148 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+06:05:58.047 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+06:06:02.286 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+06:06:02.302 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+06:06:02.330 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+06:06:02.330 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+06:06:02.330 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+06:06:02.331 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+06:06:02.331 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+06:06:03.884 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+06:06:03.888 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:06:03.891 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+06:06:03.891 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:06:05.658 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 7.978 seconds (JVM running for 8.693)
+06:07:06.102 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 18148 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+06:07:06.103 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+06:07:11.151 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+06:07:11.171 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+06:07:11.209 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+06:07:11.209 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+06:07:11.209 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+06:07:11.210 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+06:07:11.210 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+06:07:13.040 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+06:07:13.045 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:07:13.048 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+06:07:13.048 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:07:15.179 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 9.414 seconds (JVM running for 10.137)
+06:15:26.808 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 17628 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+06:15:26.810 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+06:15:30.995 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+06:15:31.013 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+06:15:31.041 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+06:15:31.042 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+06:15:31.042 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+06:15:31.042 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+06:15:31.043 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+06:15:33.125 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+06:15:33.129 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:15:33.132 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+06:15:33.133 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:15:34.897 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.434 seconds (JVM running for 9.146)
+06:31:41.425 [http-nio-8080-exec-9] ERROR h.p.configuration.AuditorAwareImpl - class java.lang.String cannot be cast to class hcmute.puzzle.configuration.security.CustomUserDetails (java.lang.String is in module java.base of loader 'bootstrap'; hcmute.puzzle.configuration.security.CustomUserDetails is in unnamed module of loader 'app')
+06:32:09.828 [http-nio-8080-exec-4] ERROR h.p.configuration.AuditorAwareImpl - class java.lang.String cannot be cast to class hcmute.puzzle.configuration.security.CustomUserDetails (java.lang.String is in module java.base of loader 'bootstrap'; hcmute.puzzle.configuration.security.CustomUserDetails is in unnamed module of loader 'app')
+06:32:19.860 [http-nio-8080-exec-8] ERROR h.p.filter.JwtAuthenticationFilter - failed on set user authentication
+hcmute.puzzle.exception.UnauthorizedException: THIS ACCOUNT ISN'T ACTIVE
+	at hcmute.puzzle.filter.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:84)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:103)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:89)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:112)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:82)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:55)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:221)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:186)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:354)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:267)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+06:32:24.019 [http-nio-8080-exec-6] ERROR h.p.configuration.AuditorAwareImpl - class java.lang.String cannot be cast to class hcmute.puzzle.configuration.security.CustomUserDetails (java.lang.String is in module java.base of loader 'bootstrap'; hcmute.puzzle.configuration.security.CustomUserDetails is in unnamed module of loader 'app')
+06:32:25.760 [http-nio-8080-exec-9] ERROR h.p.filter.JwtAuthenticationFilter - failed on set user authentication
+hcmute.puzzle.exception.UnauthorizedException: THIS ACCOUNT ISN'T ACTIVE
+	at hcmute.puzzle.filter.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:84)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:103)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:89)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:112)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:82)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:55)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:221)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:186)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:354)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:267)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+06:33:31.905 [http-nio-8080-exec-7] ERROR h.p.configuration.AuditorAwareImpl - class java.lang.String cannot be cast to class hcmute.puzzle.configuration.security.CustomUserDetails (java.lang.String is in module java.base of loader 'bootstrap'; hcmute.puzzle.configuration.security.CustomUserDetails is in unnamed module of loader 'app')
+06:34:48.679 [http-nio-8080-exec-4] ERROR h.p.configuration.AuditorAwareImpl - class java.lang.String cannot be cast to class hcmute.puzzle.configuration.security.CustomUserDetails (java.lang.String is in module java.base of loader 'bootstrap'; hcmute.puzzle.configuration.security.CustomUserDetails is in unnamed module of loader 'app')
+06:36:32.133 [http-nio-8080-exec-3] ERROR h.p.filter.JwtAuthenticationFilter - failed on set user authentication
+hcmute.puzzle.exception.UnauthorizedException: THIS ACCOUNT ISN'T ACTIVE
+	at hcmute.puzzle.filter.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:84)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:103)
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:89)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:112)
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:82)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:55)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:346)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:221)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:186)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:354)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:267)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.boot.actuate.metrics.web.servlet.WebMvcMetricsFilter.doFilterInternal(WebMvcMetricsFilter.java:96)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:117)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:189)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:162)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:197)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:541)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:135)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:360)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:399)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:890)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1789)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+06:40:10.601 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 18176 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+06:40:10.603 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+06:40:15.322 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+06:40:15.337 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+06:40:15.369 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+06:40:15.369 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+06:40:15.369 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+06:40:15.370 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+06:40:15.370 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+06:40:17.153 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+06:40:17.158 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:40:17.162 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+06:40:17.163 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:40:19.135 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.898 seconds (JVM running for 9.587)
+06:44:43.655 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 1876 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+06:44:43.656 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+06:44:47.874 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+06:44:47.891 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+06:44:47.921 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+06:44:47.921 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+06:44:47.921 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+06:44:47.922 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+06:44:47.922 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+06:44:49.959 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+06:44:49.962 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:44:49.966 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+06:44:49.967 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:44:51.797 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.505 seconds (JVM running for 9.143)
+06:45:16.510 [http-nio-8080-exec-5] ERROR h.p.exception.MyExceptionHandler - THIS ACCOUNT ISN'T ACTIVE
+06:45:33.761 [http-nio-8080-exec-7] ERROR h.p.configuration.AuditorAwareImpl - class java.lang.String cannot be cast to class hcmute.puzzle.configuration.security.CustomUserDetails (java.lang.String is in module java.base of loader 'bootstrap'; hcmute.puzzle.configuration.security.CustomUserDetails is in unnamed module of loader 'app')
+06:45:38.874 [http-nio-8080-exec-9] ERROR h.p.exception.MyExceptionHandler - Username already exists
+06:50:29.972 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 18052 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+06:50:29.973 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+06:50:34.105 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+06:50:34.122 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+06:50:34.151 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+06:50:34.151 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+06:50:34.151 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+06:50:34.152 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+06:50:34.152 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+06:50:36.619 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+06:50:36.623 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:50:36.627 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+06:50:36.627 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:50:38.479 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.882 seconds (JVM running for 9.542)
+06:50:45.198 [http-nio-8080-exec-1] INFO  h.p.filter.JwtAuthenticationFilter - UserDetail is none!
+06:50:47.897 [http-nio-8080-exec-9] ERROR h.p.exception.MyExceptionHandler - THIS ACCOUNT ISN'T ACTIVE
+06:50:55.616 [http-nio-8080-exec-6] ERROR h.p.exception.MyExceptionHandler - THIS ACCOUNT ISN'T ACTIVE
+06:51:25.422 [http-nio-8080-exec-4] ERROR h.p.configuration.AuditorAwareImpl - class java.lang.String cannot be cast to class hcmute.puzzle.configuration.security.CustomUserDetails (java.lang.String is in module java.base of loader 'bootstrap'; hcmute.puzzle.configuration.security.CustomUserDetails is in unnamed module of loader 'app')
+06:52:21.812 [http-nio-8080-exec-6] ERROR h.p.exception.MyExceptionHandler - Username already exists
+06:55:16.156 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Starting PuzzleUteApplication using Java 18.0.2 on DESKTOP-9UEKMS4 with PID 18144 (E:\GitHub\puzzle-ute\target\classes started by caiho in E:\GitHub\puzzle-ute)
+06:55:16.158 [main] INFO  hcmute.puzzle.PuzzleUteApplication - The following 1 profile is active: "local"
+06:55:20.553 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: file:/E:/GitHub/puzzle-ute/target/classes/
+06:55:20.569 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - HOHO
+06:55:20.599 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: jar:file:/C:/Users/caiho/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.4/jackson-dataformat-yaml-2.13.4.jar!/META-INF/versions/9/
+06:55:20.600 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - Class error: 
+06:55:20.600 [main] ERROR h.p.i.m.a.HasScheduleJobProcessing - URI is not hierarchical
+06:55:20.601 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJobOther
+06:55:20.601 [main] INFO  h.p.c.s.ScheduleManager - Job schedule: runScheduledJob
+06:55:22.572 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/30 * * * ?
+06:55:22.576 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:55:22.578 [main] INFO  h.p.c.s.ScheduleManager - current cron: 0 0/20 * * * ?
+06:55:22.579 [main] INFO  h.p.c.s.ScheduleManager - start cron: 
+06:55:24.668 [main] INFO  hcmute.puzzle.PuzzleUteApplication - Started PuzzleUteApplication in 8.884 seconds (JVM running for 9.692)
+06:55:32.138 [http-nio-8080-exec-3] ERROR h.p.configuration.AuditorAwareImpl - class java.lang.String cannot be cast to class hcmute.puzzle.configuration.security.CustomUserDetails (java.lang.String is in module java.base of loader 'bootstrap'; hcmute.puzzle.configuration.security.CustomUserDetails is in unnamed module of loader 'app')
+06:55:34.471 [http-nio-8080-exec-4] ERROR h.p.exception.MyExceptionHandler - Username already exists

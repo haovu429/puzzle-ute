@@ -1,45 +1,27 @@
 package hcmute.puzzle;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
-import com.ulisesbocchio.jasyptspringboot.annotation.EncryptablePropertySource;
-import hcmute.puzzle.utils.Constant;
-import io.github.cdimascio.dotenv.Dotenv;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Info;
+
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-
-
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.TimeZone;
 
+// http://localhost:8080/api/swagger-ui/index.html?configUrl=api/api-docs -> search for "/api/api-docs"
+// http://localhost:8080/oauth2/authorization/google
+//@OpenAPIDefinition(info = @Info(title = "Puzzle API", version = "v1"))
+//@SecurityScheme(name = "puzzle", bearerFormat = "JWT", scheme = "bearer",
+//        type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
 @EnableEncryptableProperties
 @EnableTransactionManagement
 @SpringBootApplication
@@ -47,8 +29,6 @@ import java.util.TimeZone;
 @EnableWebMvc
 @EnableAsync(proxyTargetClass=true)
 // @EnableAutoConfiguration
-// http://localhost:8080/swagger-ui/index.html
-// http://localhost:8080/oauth2/authorization/google
 public class PuzzleUteApplication {
 
   @PostConstruct
@@ -60,6 +40,8 @@ public class PuzzleUteApplication {
     System.setProperty("user.timezone", "Asia/Ho_Chi_Minh");
     SpringApplication.run(PuzzleUteApplication.class, args);
   }
+
+
 
 
 

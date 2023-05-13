@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
 
   public boolean checkUsernameExists(String username) {
     UserEntity user = userRepository.getUserByUsername(username);
-    return user == null;
+    return user != null;
   }
 
   @Override
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
     }
 
     // Check username Exists
-    if (!checkUsernameExists(userDto.getUsername())) {
+    if (checkUsernameExists(userDto.getUsername())) {
       throw new AlreadyExistsException("Username already exists");
     }
 
@@ -154,12 +154,10 @@ public class UserServiceImpl implements UserService {
     return m.matches();
   }
 
-  public void sendMailVerifyAccount(String receiveMail, String urlVerify) {}
-
   @Override
   public DataResponse update(long id, UpdateUserDto user) {
     // Check username Exists
-    if (!checkUsernameExists(user.getUsername())) {
+    if (checkUsernameExists(user.getUsername())) {
       throw new AlreadyExistsException("Username already exists");
     }
     UpdateUserForAdminDto updateUserForAdminDto = UpdateUserForAdminDto.builder()
@@ -169,7 +167,7 @@ public class UserServiceImpl implements UserService {
             .phone(user.getPhone())
             .build();
 
-    return new DataResponse(updateUserForAdmin(id, updateUserForAdminDto));
+    return updateUserForAdmin(id, updateUserForAdminDto);
   }
 
   public DataResponse updateUserForAdmin(long id, UpdateUserForAdminDto user) {
@@ -192,7 +190,9 @@ public class UserServiceImpl implements UserService {
                       RoleEntity::getCode).collect(Collectors.toList()),
               updateUser);
     }
-    UserPostDto userPostDTO = converter.toDTO(userRepository.save(updateUser));
+    UserMapper mapper = UserMapper.INSTANCE;
+
+    UserPostDto userPostDTO =  mapper.userToUserPostDto(userRepository.save(updateUser));// converter.toDTO(userRepository.save(updateUser));
     redisUtils.delete(updateUser.getEmail());
 
     return new DataResponse(userPostDTO);
@@ -378,7 +378,7 @@ public class UserServiceImpl implements UserService {
           TemplateException,
           IOException,
           ExecutionException {
-    MailService mailService = new MailService();
+    //MailService mailService = new MailService();
     mailService.executeSendMailWithThread(receiveMail, urlResetPass, token);
   }
 

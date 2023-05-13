@@ -7,6 +7,6 @@ public class AlreadyExistsException extends CustomException{
     }
 
     public AlreadyExistsException() {
-        super(ErrorDefine.ClientError.ALREADY_EXISTS_ERROR);
+        super(409,ErrorDefine.ClientError.ALREADY_EXISTS_ERROR);
     }
 }

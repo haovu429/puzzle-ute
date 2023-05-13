@@ -41,13 +41,13 @@ public class UpdateUserForAdminDto {
     private String fullName;
 
     @JsonProperty("emailVerified")
-    private boolean emailVerified;
+    private Boolean emailVerified;
 
 //    @JsonProperty("locale")
 //    private String locale;
 
     @JsonProperty("isActive")
-    private boolean isActive;
+    private Boolean isActive;
 
     @JsonProperty("provider")
     private String provider;

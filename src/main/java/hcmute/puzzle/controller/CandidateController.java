@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -438,8 +439,8 @@ public class CandidateController {
 
   @GetMapping("/get-application-by-job-post-id-applied/{jobPostId}")
   ResponseObject getApplicationByJobPost(
-      Authentication authentication, @PathVariable long jobPostId) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+       @PathVariable long jobPostId) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     return applicationService.getApplicationByJobPostIdAndCandidateId(
         jobPostId, userDetails.getUser().getId());
   }

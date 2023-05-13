@@ -22,7 +22,7 @@ public class TestCloudinary {
 
   @Autowired FilesStorageService filesStorageService;
 
-  @Autowired private static FreemarkerConfiguration freeMarkerConfiguration;
+  @Autowired FreemarkerConfiguration freeMarkerConfiguration;
   public static void main(String[] args) throws IOException {
 
     //Configuration freeMakerConfiguration = FreeMakerTemplateUtils.getFreeMakerConfiguration();

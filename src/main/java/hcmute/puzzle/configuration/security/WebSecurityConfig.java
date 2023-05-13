@@ -7,9 +7,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import hcmute.puzzle.configuration.accessHandler.CustomAccessDeniedHandler;
 import hcmute.puzzle.configuration.accessHandler.CustomAuthenticationHandler;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
+import hcmute.puzzle.infrastructure.models.enums.Roles;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.CustomOAuth2UserService;
-import hcmute.puzzle.infrastructure.models.enums.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,8 +20,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -35,138 +39,118 @@ import java.io.IOException;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class WebSecurityConfig {
-  private static final String[] AUTH_WHITE_LIST = {
-    "/v3-docs/**", "/swagger-ui/**", "/v2-docs/**", "/swagger-resources/**"
-  };
+    private static final String[] AUTH_WHITE_LIST = {
+            "/v3-docs/**", "/swagger-ui/**", "/v2-docs/**", "/swagger-resources/**"
+    };
 
-  //    @Autowired
-  //    private AuthEntryPointJwt unauthorizedHandler;
+    //    @Autowired
+    //    private AuthEntryPointJwt unauthorizedHandler;
 
-  @Autowired CustomOAuth2UserService oauthUserService;
+    @Autowired
+    CustomOAuth2UserService oauthUserService;
+
+    @Autowired UserDetailsService userDetailsService;
 
 //  @Autowired OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
-  @Autowired UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-  @Autowired UserService userService;
+    @Autowired
+    UserService userService;
 
+    @Bean
+    FirebaseMessaging firebaseMessaging() throws IOException {
+        GoogleCredentials googleCredentials =
+                GoogleCredentials.fromStream(
+                        new ClassPathResource("firebase-service-account.json").getInputStream());
+        FirebaseOptions firebaseOptions =
+                FirebaseOptions.builder().setCredentials(googleCredentials).build();
+        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "puzzle-ute");
+        return FirebaseMessaging.getInstance(app);
+    }
 
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
+    }
 
-  //  @Autowired
-  //  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-  //    auth.inMemoryAuthentication()
-  //        .withUser("guest")
-  //        .password(passwordEncoder().encode("guest_pass"))
-  //        .authorities("GUEST");
-  //  }
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
-  @Bean
-  FirebaseMessaging firebaseMessaging() throws IOException {
-    GoogleCredentials googleCredentials =
-        GoogleCredentials.fromStream(
-            new ClassPathResource("firebase-service-account.json").getInputStream());
-    FirebaseOptions firebaseOptions =
-        FirebaseOptions.builder().setCredentials(googleCredentials).build();
-    FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "puzzle-ute");
-    return FirebaseMessaging.getInstance(app);
-  }
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
+    }
 
-  @Bean
-  public JwtAuthenticationFilter jwtAuthenticationFilter() {
-    return new JwtAuthenticationFilter();
-  }
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return new CustomAuthenticationHandler();
+    }
 
-  // https://www.codejava.net/frameworks/spring-boot/fix-websecurityconfigureradapter-deprecated
-  // https://stackoverflow.com/questions/72381114/spring-security-upgrading-the-deprecated-websecurityconfigureradapter-in-spring
-  //    @Bean(BeanIds.AUTHENTICATION_MANAGER)
-  //    public AuthenticationManager authenticationManagerBean(AuthenticationManagerBuilder builder)
-  // throws Exception {
-  //        // Get AuthenticationManager bean
-  //        return
-  // builder.userDetailsService(userService).passwordEncoder(passwordEncoder()).and().build();
-  //    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-  @Bean
-  public AuthenticationManager authenticationManager(
-      AuthenticationConfiguration authenticationConfiguration) throws Exception {
-    return authenticationConfiguration.getAuthenticationManager();
-  }
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
 
-  @Bean
-  public AccessDeniedHandler accessDeniedHandler() {
-    return new CustomAccessDeniedHandler();
-  }
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-  @Bean
-  public AuthenticationEntryPoint authenticationEntryPoint() {
-    return new CustomAuthenticationHandler();
-  }
+        http.cors()
+                .disable()
+                .csrf().disable()
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint())
+                .accessDeniedHandler(accessDeniedHandler())
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
+                .antMatchers("/common/**", "/schedule-config/**", "/test/**"
+                        , "/init-db", "/oauth2/**", "/api-docs", "/actuator/**"
+                        , "/login/**", "/auth/**", "/login-google/**", "/forgot-password"
+                        , "/reset-password", "/swagger-ui/**","/swagger-ui.html", "/v3/api-docs/**", "/puzzle-api/**", "/"
+                        , "/login-google", "/oauth/**", "/pay-result/**")
+                .permitAll()
+                .antMatchers("/static/images/**")
+                .permitAll()
+                .antMatchers(AUTH_WHITE_LIST)
+                .permitAll()
+                .antMatchers("/user/**")
+                .hasAuthority(Roles.USER.value)
+                .antMatchers("/role/admin", "/admin/**")
+                .hasAnyAuthority(Roles.ADMIN.value)
+                .antMatchers("/candidate/**")
+                .hasAuthority(Roles.CANDIDATE.value)
+                .antMatchers("/employer/**", "/pay/**")
+                .hasAuthority(Roles.EMPLOYER.value)
+                .anyRequest()
+                .authenticated()
+                .and()
+                .httpBasic()
+                .and()
+                .rememberMe()
+                .key(java.util.UUID.randomUUID().toString())
+                .tokenValiditySeconds(1209600);
+        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    // Password encoder, để Spring Security sử dụng mã hóa mật khẩu người dùng
-    return new BCryptPasswordEncoder();
-  }
-
-  @Bean
-  public HttpSessionEventPublisher httpSessionEventPublisher() {
-    return new HttpSessionEventPublisher();
-  }
-
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.cors()
-        .disable()
-        .csrf()
-        .disable()
-        .exceptionHandling()
-        .authenticationEntryPoint(authenticationEntryPoint())
-        .accessDeniedHandler(accessDeniedHandler())
-        .and()
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .authorizeRequests()
-        .antMatchers("/common/**", "/schedule-config/**", "/test/**"
-                , "/init-db", "/oauth2/**", "/api-docs", "/actuator/**"
-                , "/login/**", "/auth/**" , "/login-google/**", "/forgot-password"
-                , "/reset-password", "/swagger-ui/**", "/puzzle-api/**", "/"
-                , "/login-google", "/oauth/**", "/pay-result/**")
-        .permitAll()
-        .antMatchers(AUTH_WHITE_LIST)
-        .permitAll()
-        .antMatchers("/user/**")
-        .hasAuthority(Roles.USER.value)
-        .antMatchers("/role/admin", "/admin/**")
-        .hasAnyAuthority(Roles.ADMIN.value)
-        .antMatchers("/candidate/**")
-        .hasAuthority(Roles.CANDIDATE.value)
-        .antMatchers("/employer/**", "/pay/**")
-        .hasAuthority(Roles.EMPLOYER.value)
-        .anyRequest()
-        .authenticated()
-        .and()
-        .formLogin()
-        .permitAll()
-        .and()
-        .rememberMe()
-        .key("AbcdEfghIjklmNopQrsTuvXyz_0123456789")
-        .and()
-        .logout()
-        .permitAll()
-        .and()
-        .httpBasic();
-
-    http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-    return http.build();
-  }
-
-  //    @Bean
-  //    public WebSecurityCustomizer webSecurityCustomizer() {
-  //      return (web) ->
-  //          web.ignoring()
-  //              .antMatchers(
-  //                  "/images/**", "/js/**", "/webjars/**", "/css/**", "/lib/**", "/favicon.ico");
-  //    }
-  // https://viblo.asia/p/securing-spring-boot-with-jwt-part-2-xac-thuc-nguoi-dung-dua-tren-du-lieu-trong-co-so-du-lieu-63vKjnJVK2R
+//      @Bean
+//      public WebSecurityCustomizer webSecurityCustomizer() {
+//        return (web) ->
+//            web.ignoring()
+//                .antMatchers(
+//                    "/images/**", "/js/**", "/webjars/**", "/css/**", "/lib/**", "/favicon.ico");
+//      }
+    //https://viblo.asia/p/securing-spring-boot-with-jwt-part-2-xac-thuc-nguoi-dung-dua-tren-du-lieu-trong-co-so-du-lieu-63vKjnJVK2R
 }

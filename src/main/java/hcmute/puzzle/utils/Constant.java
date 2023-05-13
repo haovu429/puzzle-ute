@@ -55,8 +55,17 @@ public class Constant {
 
   public class FileLocation {
     public static final String STORAGE_BLOG_IMAGE_LOCATION = "puzzle_ute/user/blog";
-
     public static final String STORAGE_IMAGE_LOCATION = "puzzle_ute/user/avatar";
     public static final String STORAGE_COMPANY_IMAGE_LOCATION = "puzzle_ute/company/image";
+  }
+
+  public class AuthPath {
+    public static final String LOGIN_URL = "/login";
+    public static final String LOGOUT_URL = "/logout";
+    public static final String LOGIN_GOOGLE_URL = "/login-google";
+    public static final String FORGOT_PASSWORD_URL = "/forgot-password";
+    public static final String RESET_PASSWORD_URL = "/reset-password";
+    public static final String RESEND_VERIFY_TOKEN_URL = "/resend-mail/verify-account";
+    public static final String VERIFY_ACCOUNT_URL = "/verify-account";
   }
 }

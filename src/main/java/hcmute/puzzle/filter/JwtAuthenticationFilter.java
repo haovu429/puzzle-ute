@@ -1,5 +1,6 @@
 package hcmute.puzzle.filter;
 
+import hcmute.puzzle.exception.UnauthorizedException;
 import hcmute.puzzle.infrastructure.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
@@ -71,22 +72,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = redisUtils.get(email) == null ? "" : redisUtils.get(email).toString();
         // System.out.println("Dung? :" + token.equals(jwt));
         if (userDetails != null  && token.equals(jwt) ) {
-          // set authentication to context
-          UsernamePasswordAuthenticationToken authentication =
-              new UsernamePasswordAuthenticationToken(
-                  userDetails, null, userDetails.getAuthorities());
-          authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+          if (userDetails.getUser().isActive() && !userDetails.getUser().isDelete()) {
+            // set authentication to context
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-          SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+          } else {
+            throw new UnauthorizedException("THIS ACCOUNT ISN'T ACTIVE");
+          }
         } else {
          log.info("UserDetail is none!");
         }
       }
-    } catch (AccessDeniedException ex) {
+    } catch (AccessDeniedException e) {
+      e.printStackTrace();
       throw new AccessDeniedException("Access Denied");
-    } catch (Exception exception) {
-      exception.printStackTrace();
-      log.error("failed on set user authentication", exception);
+    } catch (Exception e) {
+      e.printStackTrace();
+      log.error("failed on set user authentication", e);
     }
 
     filterChain.doFilter(request, response);

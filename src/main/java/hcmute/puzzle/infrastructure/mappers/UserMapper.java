@@ -7,6 +7,7 @@ import hcmute.puzzle.infrastructure.entities.UserEntity;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -17,7 +18,7 @@ public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-//    @Mapping(target = "roleCodes", ignore = true)
+    @Mapping(target = "roleCodes", source = "roles")
     UserPostDto userToUserPostDto(UserEntity entity);
 
 //    @Mapping(target = "username", source = "userName")
@@ -58,7 +59,8 @@ public interface UserMapper {
         return role.getCode().toUpperCase();
     }
 
-//    @IterableMapping()
-//    List<String> roles(List<RoleEntity> roles);
+
+    @IterableMapping(elementTargetType = String.class)
+    List<String> roles(List<RoleEntity> roles);
 
 }

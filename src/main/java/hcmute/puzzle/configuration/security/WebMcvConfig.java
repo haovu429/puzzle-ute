@@ -1,7 +1,6 @@
 package hcmute.puzzle.configuration.security;
 
 import hcmute.puzzle.interceptor.CommonInterceptor;
-import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
@@ -28,6 +27,11 @@ public class WebMcvConfig implements WebMvcConfigurer {
             .allowedOrigins(LIST_HOST_FRONT_END)
             .allowCredentials(true)
             .maxAge(3600);
+  }
+  @Override
+  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    registry.addResourceHandler("/conf/**")
+            .addResourceLocations("classpath:/conf/");
   }
 
 //  @Bean

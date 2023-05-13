@@ -11,6 +11,8 @@ import hcmute.puzzle.utils.Constant;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -70,8 +72,8 @@ public class ExtraInfoServiceImpl implements ExtraInfoService {
   public ResponseObject getByType(String type) {
     Set<ExtraInfoEntity> extraInfoEntities = new HashSet<>();
     extraInfoEntities.addAll(extraInfoRepository.getExtraInfoEntitiesByType(type.toUpperCase()));
-
-    return new ResponseObject(200, "ExtraInfo by type", extraInfoEntities);
+    Set<ExtraInfoDto> extraInfoDtos = extraInfoEntities.stream().map(ext -> converter.toDTO(ext)).collect(Collectors.toSet());
+    return new ResponseObject(200, "ExtraInfo by type", extraInfoDtos);
   }
 
   @Override
@@ -80,6 +82,6 @@ public class ExtraInfoServiceImpl implements ExtraInfoService {
     if (extraInfo.isEmpty()) {
       throw new CustomException("Extra info isn't exists");
     }
-    return new ResponseObject(200, "ExtraInfo", extraInfo.get());
+    return new ResponseObject(200, "ExtraInfo", converter.toDTO(extraInfo.get()));
   }
 }

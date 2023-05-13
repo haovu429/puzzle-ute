@@ -24,16 +24,21 @@ import hcmute.puzzle.utils.Constant;
 
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class UserController {
 
@@ -67,8 +72,8 @@ public class UserController {
   }
 
   @GetMapping("/user/profile")
-  public ResponseObject getProfileAccount(Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+  public ResponseObject getProfileAccount() {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     UserPostDto userPostDTO = UserMapper.INSTANCE.userToUserPostDto(userDetails.getUser());
             //converter.toDTO(userDetails.getUser());
@@ -83,11 +88,10 @@ public class UserController {
   }
 
   @PutMapping("/user")
-  public DataResponse updateAccount(
-      Authentication authentication, @RequestBody UpdateUserDto user) {
+  public DataResponse updateAccount(@RequestBody UpdateUserDto user) {
 
     // Optional<UserEntity>
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     return userService.update(userDetails.getUser().getId(), user);
   }
 
@@ -130,13 +134,12 @@ public class UserController {
   @PostMapping("/user/register-employer")
   ResponseObject registerEmployer(
       @RequestBody @Validated EmployerDto employer,
-      BindingResult bindingResult,
-      Authentication authentication) {
+      BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       throw new CustomException(bindingResult.getFieldError().toString());
     }
 
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     if (userDetails.getUser().getCandidateEntity() != null) {
       throw new CustomException("This account is Candidate!");
@@ -163,13 +166,12 @@ public class UserController {
   @PostMapping("/user/register-candidate")
   ResponseObject registerCandidate(
       @RequestBody @Validated CandidateDto candidate,
-      BindingResult bindingResult,
-      Authentication authentication) {
+      BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
 
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     if (userDetails.getUser().getEmployerEntity() != null) {
       throw new CustomException("This account is Employer!");
@@ -199,15 +201,16 @@ public class UserController {
   }
 
   @GetMapping("/user/get-viewed-job-post-amount")
-  DataResponse getAmountApplicationToEmployer(HttpServletRequest request) {
+  DataResponse getAmountApplicationToEmployer() {
 
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
+    CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-    if (linkUser.isEmpty()) {
+
+    if (customUserDetails.getUser() == null) {
       throw new CustomException("Not found account");
     }
 
-    return jobPostService.getViewedJobPostAmountByUserId(linkUser.get().getId());
+    return jobPostService.getViewedJobPostAmountByUserId(customUserDetails.getUser().getId());
   }
 
   // log history viewed Job Post
@@ -225,15 +228,14 @@ public class UserController {
   }
 
   @GetMapping("/user/get-invoice")
-  public DataResponse getInvoiceForUser(Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+  public DataResponse getInvoiceForUser() {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     return invoiceService.getInvoiceByEmailUser(userDetails.getUser().getEmail());
   }
 
   @GetMapping("/user/get-one-invoice/{invoiceId}")
-  public DataResponse getAllInvoice(
-      Authentication authentication, @PathVariable(value = "invoiceId") long invoiceId) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+  public DataResponse getAllInvoice(@PathVariable(value = "invoiceId") long invoiceId) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     InvoiceEntity invoice = invoiceService.getOneInvoice(invoiceId);
     if (!userDetails.getUser().getEmail().equals(invoice.getEmail())) {
       throw new CustomException("You don't have rights for this invoice");
@@ -242,30 +244,28 @@ public class UserController {
   }
 
   @GetMapping("/user/get-subscribed-package")
-  public DataResponse getPackageSubscribe(Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+  public DataResponse getPackageSubscribe() {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     return subscribeService.getAllSubscriptionsByUserId(userDetails.getUser().getId());
   }
 
   @PostMapping("/user/create-blog-post")
-  public DataResponse createBlogPost(
-      Authentication authentication, @RequestBody CreateBlogPostPayload createBlogPostPayload) {
+  public DataResponse createBlogPost(@RequestBody CreateBlogPostPayload createBlogPostPayload) {
     ModelMapper mapper = new ModelMapper();
     BlogPostDto blogPostDTO = mapper.map(createBlogPostPayload, BlogPostDto.class);
     blogPostDTO.setCreateTime(new Date());
-    blogPostDTO.setUserId(((CustomUserDetails) authentication.getPrincipal()).getUser().getId());
+    blogPostDTO.setUserId(((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser().getId());
     return blogPostService.createBlogPost(blogPostDTO);
   }
 
   @PutMapping("/user/update-blog-post/{blogPostId}")
   public DataResponse updateBlogPost(
-      Authentication authentication,
       @RequestBody CreateBlogPostPayload createBlogPostPayload,
       @PathVariable long blogPostId) {
       ModelMapper mapper = new ModelMapper();
     BlogPostDto blogPostDTO = mapper.map(createBlogPostPayload, BlogPostDto.class);
-    blogPostDTO.setUserId(((CustomUserDetails) authentication.getPrincipal()).getUser().getId());
+    blogPostDTO.setUserId(((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser().getId());
 
     //    UserEntity currentUser =
     //        ((CustomUserDetails)
@@ -275,8 +275,9 @@ public class UserController {
   }
 
   @DeleteMapping("/user/delete-blog-post/{blogPostId}")
-  public DataResponse deleteBlogPost(Authentication authentication, @PathVariable long blogPostId) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+  public DataResponse deleteBlogPost(@PathVariable long blogPostId) {
+    CustomUserDetails userDetails =
+            (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Optional<BlogPostEntity> blogPost = blogPostRepository.findById(blogPostId);
     if (blogPost.get().getAuthor().getId() != userDetails.getUser().getId()) {
       throw new CustomException("You don't have rights for this blog post");

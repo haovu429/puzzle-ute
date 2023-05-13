@@ -165,4 +165,26 @@ public class SecurityServiceImpl implements SecurityService {
 
         return new DataResponse("change password successful");
     }
+
+    @Override
+    public DataResponse verifyAccount(String token) {
+        TokenEntity foundToken = tokenRepository.findByToken(token);
+        if (foundToken == null) {
+            throw new CustomException("Token is invalid");
+        }
+
+        if (foundToken.getExpiryTime().before(new Date())) {
+            throw new CustomException("Token was expired");
+        }
+        UserEntity user = tokenRepository.findUserByToken(token);
+        if (user == null) {
+            throw new CustomException("No user was found");
+        }
+
+        user.setEmailVerified(true);
+        userRepository.save(user);
+        tokenRepository.delete(foundToken);
+
+        return new DataResponse("Account is verified");
+    }
 }

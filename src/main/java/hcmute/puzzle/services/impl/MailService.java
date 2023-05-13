@@ -89,7 +89,7 @@ public class MailService {
             };
 
     TokenEntity tokenEntity = token;
-    ThreadService threadService = new ThreadService();
+    ThreadService threadService = threadService1;
     threadService.execute(sendMail, ThreadService.MAIL_TASK, tokenEntity);
     ExecutorService executorService = threadService.executorService;
     if (executorService != null) {

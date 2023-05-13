@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
@@ -24,8 +25,8 @@ import java.util.Optional;
 @RestController
 //@Controller
 public class PaymentController {
-    public static final String URL_PAYPAL_SUCCESS = "api/pay-result/success";
-    public static final String URL_PAYPAL_CANCEL = "api/pay-result/cancel";
+    public static final String URL_PAYPAL_SUCCESS = "/pay-result/success";
+    public static final String URL_PAYPAL_CANCEL = "/pay-result/cancel";
     private Logger log = LoggerFactory.getLogger(getClass());
     @Autowired
     private PaypalService paypalService;
@@ -40,15 +41,15 @@ public class PaymentController {
     public String index(){
         return "index";
     }
-    @GetMapping("/api/pay")
-    public DataResponse pay(HttpServletRequest request, Authentication authentication, @RequestParam("packageCode") String packageCode ){
+    @GetMapping("/pay")
+    public DataResponse pay(HttpServletRequest request,  @RequestParam("packageCode") String packageCode ){
         // Custom logic
         Optional<PackageEntity> packageEntity = packageRepository.findByCode(packageCode);
         if (packageEntity.isEmpty()) {
             throw new CustomException("Package not found");
         }
 
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String customParamRequest = "?userId=" + userDetails.getUser().getId() + "&packageCode=" + packageCode;
 
         //check Subscribed

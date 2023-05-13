@@ -21,18 +21,18 @@ import java.util.concurrent.ScheduledFuture;
 @Service(value = "scheduleService")
 @Getter
 @Setter
-@HasScheduleJob
+//@HasScheduleJob
 public class ScheduleService {
 
     @Autowired UserRepository userRepository;
     //@Scheduled(cron = "${cronjob.service}")
-    @JobAnnotation(key = "cronjob.service")
+//    @JobAnnotation(key = "cronjob.service")
     public void runScheduledJob() {
         userRepository.getUserByEmail("admin1@gmail.com");
         log.info("Hello world! abc");
     }
 
-    @JobAnnotation(key = "cronjob.xyz")
+//    @JobAnnotation(key = "cronjob.xyz")
     public void runScheduledJobOther() {
         log.info("Hello world! xyz");
     }

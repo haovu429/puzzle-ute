@@ -10,6 +10,8 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import static redis.clients.jedis.util.JedisURIHelper.getUser;
+
 @Component
 public class AuditorAwareImpl implements AuditorAware<String> {
 
@@ -19,10 +21,10 @@ public class AuditorAwareImpl implements AuditorAware<String> {
   public Optional<String> getCurrentAuditor() {
     UserEntity currentUser = null;
     try {
-      currentUser =
-          ((CustomUserDetails)
-                  SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-              .getUser();
+      if (SecurityContextHolder.getContext().getAuthentication() != null
+              && SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof CustomUserDetails) {
+        currentUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
+      }
     } catch (Exception e) {
       logger.error(e.getMessage());
     }

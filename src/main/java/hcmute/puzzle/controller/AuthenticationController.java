@@ -2,27 +2,21 @@ package hcmute.puzzle.controller;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import freemarker.template.TemplateException;
-import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-import hcmute.puzzle.infrastructure.entities.UserEntity;
-import hcmute.puzzle.utils.login_google.GooglePojo;
-import hcmute.puzzle.utils.login_google.GoogleUtils;
-import hcmute.puzzle.infrastructure.repository.UserRepository;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.configuration.security.JwtTokenProvider;
 import hcmute.puzzle.configuration.security.UserService;
+import hcmute.puzzle.exception.NotFoundDataException;
+import hcmute.puzzle.exception.UnauthorizedException;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.request.LoginRequest;
+import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.SecurityService;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.RedisUtils;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
-import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
+import hcmute.puzzle.utils.login_google.GooglePojo;
+import hcmute.puzzle.utils.login_google.GoogleUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,9 +24,22 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+
+import static hcmute.puzzle.utils.Constant.AuthPath.*;
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
@@ -51,33 +58,28 @@ public class AuthenticationController {
 
   @Autowired private SecurityService securityService;
 
-  public static final String LOGIN_URL = "/login";
 
-  public static final String LOGOUT_URL = "/logout";
 
-  public static final String LOGIN_GOOGLE_URL = "/login-google";
-
-  public static final String FORGOT_PASSWORD_URL = "/forgot-password";
-  public static final String RESET_PASSWORD_URL = "/reset-password";
-
+//  @Transactional
   @PostMapping(LOGIN_URL)
   public ResponseObject authenticateUser(
-      @Validated @RequestBody ObjectNode objectNode,
+      @Validated @RequestBody LoginRequest loginRequest,
       @RequestParam(value = "rememberMe", required = false) Boolean rememberMe) {
     try {
-      // String a = objectNode.get("email").toString();
-      UserEntity user = userRepository.getByEmail(objectNode.get("email").asText());
+      String email = loginRequest.getEmail();
+      UserEntity user = userRepository.getByEmail(email).orElseThrow(
+              () -> new NotFoundDataException("EMAIL ISN'T EXISTS")
+      );
+
+      if (!user.isActive()) {
+        throw new UnauthorizedException("THIS ACCOUNT ISN'T ACTIVE");
+      }
+
       if (user != null) {
         Authentication authentication =
             authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                    objectNode.get("email").asText(), objectNode.get("password").asText()));
-        //        Set in security context
-        // SecurityContextHolder.getContext().setAuthentication(authentication);
-        //        SecurityContext sc = SecurityContextHolder.getContext();
-        //        sc.setAuthentication(authentication);
-        //        HttpSession session = req.getSession(true);
-        //        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, sc);
+                        loginRequest.getEmail(), loginRequest.getPassword()));
 
         Long JWT_EXPIRATION = (long) (60 * 60 * 24 * 1000); // 1 day
         if (rememberMe != null) {
@@ -97,7 +99,8 @@ public class AuthenticationController {
         Map<String, Object> result = new HashMap<>();
         result.put("jwt", jwt);
         result.put("roles", roles);
-
+        user.setLastLoginAt(new Date());
+        userRepository.save(user);
         return new ResponseObject(200, "Login success", result);
 
       } else {
@@ -160,5 +163,18 @@ public class AuthenticationController {
       @RequestParam(value = "token") String token,
       @RequestParam(value = "newPassword") String newPassword) {
     return securityService.resetPassword(token, newPassword);
+  }
+
+  @GetMapping(RESEND_VERIFY_TOKEN_URL)
+  public DataResponse resendMailVerifyAccount(@RequestParam(value = "email") String email)
+          throws MessagingException, TemplateException, IOException, ExecutionException, InterruptedException {
+
+    return securityService.sendTokenVerifyAccount(email);
+  }
+
+  @PutMapping(VERIFY_ACCOUNT_URL)
+  public DataResponse verifyAccount(@RequestBody Map<String, String> data) {
+    String token = data.get("token");
+    return securityService.verifyAccount(token);
   }
 }

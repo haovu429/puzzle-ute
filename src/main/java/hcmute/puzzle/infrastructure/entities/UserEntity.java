@@ -114,9 +114,13 @@ public class UserEntity extends Auditable implements Serializable {
   @Builder.Default
   private Set<JobPostEntity> viewJobPosts = new HashSet<>();
 
-  @OneToMany(mappedBy = "packageEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "regUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @Builder.Default
   private Set<SubscribeEntity> subscribeEntities = new HashSet<>();
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @Builder.Default
+  private Set<TokenEntity> TokenEntity = new HashSet<>();
 
   public UserEntity() {
 

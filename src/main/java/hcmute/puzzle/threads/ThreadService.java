@@ -27,9 +27,9 @@ public class ThreadService {
   public <T> Future<T> execute(Callable<T> callable, String taskType, TokenEntity token)
       throws InterruptedException, ExecutionException {
     executorService = Executors.newFixedThreadPool(2);
+    TokenEntity savedToken = tokenRepository.save(token);
     Future<T> future = executorService.submit(callable);
     executorService.shutdown();
-
     while (!future.isDone() && !future.isCancelled()) {
       Thread.sleep(200);
       System.out.println("Waiting for task completion...");
@@ -42,8 +42,8 @@ public class ThreadService {
             && result instanceof Boolean)
     {
       Boolean boolResult = (Boolean) result;
-      if (boolResult.equals(true)) {
-        tokenRepository.save(token);
+      if (boolResult.equals(false)) {
+        tokenRepository.delete(savedToken);
       }
     }
 
