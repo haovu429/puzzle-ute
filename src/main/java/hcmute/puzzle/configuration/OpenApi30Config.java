@@ -33,7 +33,7 @@ import org.springframework.context.annotation.Configuration;
                 ),
                 @Server(
                         description = "PROD ENV",
-                        url = "www.puzzleute.tk/api"
+                        url = "https://puzzle-ute.herokuapp.com/api"
                 )
         }
 )
