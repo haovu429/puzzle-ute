@@ -16,10 +16,10 @@ import java.util.Map;
 @Service
 public class SearchServiceImpl implements SearchService {
 
-  @PersistenceContext public EntityManager em;
-
-  public static String TYPE_MATCH_TEXT = "TEXT";
-  public static String TYPE_MATCH_NUMBER = "NUMBER";
+  public static final String TYPE_MATCH_TEXT = "TEXT";
+  public static final String TYPE_MATCH_NUMBER = "NUMBER";
+  @PersistenceContext
+  public EntityManager em;
 
   private static String checkTypeList(List list) {
     if (list != null && !list.isEmpty()) {

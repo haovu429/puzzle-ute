@@ -74,10 +74,7 @@ public class UserController {
   @GetMapping("/user/profile")
   public ResponseObject getProfileAccount() {
     CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
     UserPostDto userPostDTO = UserMapper.INSTANCE.userToUserPostDto(userDetails.getUser());
-            //converter.toDTO(userDetails.getUser());
-
 
     return new ResponseObject(200, "Profile info", userPostDTO);
   }
