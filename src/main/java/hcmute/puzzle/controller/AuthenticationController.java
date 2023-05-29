@@ -58,8 +58,6 @@ public class AuthenticationController {
 
   @Autowired private SecurityService securityService;
 
-
-
 //  @Transactional
   @PostMapping(LOGIN_URL)
   public ResponseObject authenticateUser(

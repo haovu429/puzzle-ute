@@ -377,8 +377,17 @@ public class SetUpDB {
                         .author(SYSTEM_MAIL)
                         .build();
 
+        FileTypeEntity blogThumbnailType =
+                FileTypeEntity.builder()
+                        .category(FileCategory.THUMBNAIL_BLOGPOST)
+                        .type(FileType.IMAGE)
+                        .location(Constant.FileLocation.STORAGE_BLOG_THUMBNAIL_LOCATION)
+                        .storageName(Constant.StorageName.CLOUDINARY)
+                        .author(SYSTEM_MAIL)
+                        .build();
+
         List<FileTypeEntity> fileTypeList =
-                new ArrayList<>(Arrays.asList(avatarType, companyType, blogImageType));
+                new ArrayList<>(Arrays.asList(avatarType, companyType, blogImageType, blogThumbnailType));
         fileTypeRepository.saveAll(fileTypeList);
     }
 }

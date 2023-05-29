@@ -1,4 +1,4 @@
-package hcmute.puzzle.utils.paypal;
+package hcmute.puzzle.paypal;
 
 import java.util.HashMap;
 import java.util.Map;

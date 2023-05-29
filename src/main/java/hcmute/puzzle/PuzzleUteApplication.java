@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -22,6 +24,7 @@ import java.util.TimeZone;
 //@OpenAPIDefinition(info = @Info(title = "Puzzle API", version = "v1"))
 //@SecurityScheme(name = "puzzle", bearerFormat = "JWT", scheme = "bearer",
 //        type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
+
 @EnableEncryptableProperties
 @EnableTransactionManagement
 @SpringBootApplication

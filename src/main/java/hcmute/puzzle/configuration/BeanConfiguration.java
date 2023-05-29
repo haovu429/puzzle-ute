@@ -1,14 +1,13 @@
 package hcmute.puzzle.configuration;
 
-import com.cloudinary.Cloudinary;
-import hcmute.puzzle.utils.CloudinaryUtil;
 import liquibase.integration.spring.SpringLiquibase;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.CorsEndpointProperties;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
 import org.springframework.boot.actuate.autoconfigure.web.server.ManagementPortType;
@@ -17,23 +16,15 @@ import org.springframework.boot.actuate.endpoint.web.*;
 import org.springframework.boot.actuate.endpoint.web.annotation.ControllerEndpointsSupplier;
 import org.springframework.boot.actuate.endpoint.web.annotation.ServletEndpointsSupplier;
 import org.springframework.boot.actuate.endpoint.web.servlet.WebMvcEndpointHandlerMapping;
-import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+
+@Slf4j
 
 @Configuration
 public class BeanConfiguration {
@@ -41,8 +32,16 @@ public class BeanConfiguration {
 //    @Autowired
 //    DataSource dataSource;
 
+    @Value("${spring.liquibase.enabled}")
+    boolean shouldRun;
+
+
+    @Value("${spring.liquibase.change-log}")
+    String changeLogPath;
+
     @Autowired
     Environment environment;
+
     //https://www.devglan.com/online-tools/jasypt-online-encryption-decryption
     @Bean(name = "jasyptStringEncryptor")
     public StringEncryptor stringEncryptor() {
@@ -60,9 +59,14 @@ public class BeanConfiguration {
     }
     @Bean
     public SpringLiquibase liquibase(DataSource dataSource) {
+        log.info("--------Configuring Liquibase----------");
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("overwrite-output-file", "true");
         SpringLiquibase liquibase = new SpringLiquibase();
-        liquibase.setChangeLog("classpath:db/changelog/liquibase-changeLog.xml");
+        liquibase.setChangeLog(changeLogPath);
         liquibase.setDataSource(dataSource);
+        liquibase.setShouldRun(shouldRun);
+        liquibase.setChangeLogParameters(parameters);
         return liquibase;
     }
 
@@ -90,6 +94,13 @@ public class BeanConfiguration {
         return webEndpointProperties.getDiscovery().isEnabled() && (StringUtils.hasText(basePath)
                 || ManagementPortType.get(environment).equals(ManagementPortType.DIFFERENT));
     }
+
+//    @Bean(name = "multipartResolver")
+//    public CommonsMultipartResolver commonsMultipartResolver() {
+//        return new CommonsMultipartResolver();
+//    }
+
+
 
 //    @Bean
 //    public UserDetailsService users() {

@@ -1,4 +1,4 @@
-package hcmute.puzzle.utils.paypal;
+package hcmute.puzzle.paypal;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,7 +12,6 @@ import hcmute.puzzle.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import com.paypal.api.payments.Links;
@@ -21,9 +20,9 @@ import com.paypal.base.rest.PayPalRESTException;
 
 import java.util.Optional;
 
-//@RequestMapping(path = "/api")
+// @RequestMapping(path = "/api")
 @RestController
-//@Controller
+// @Controller
 public class PaymentController {
     public static final String URL_PAYPAL_SUCCESS = "/pay-result/success";
     public static final String URL_PAYPAL_CANCEL = "/pay-result/cancel";
@@ -39,10 +38,10 @@ public class PaymentController {
 
     @GetMapping("/")
     public String index(){
-        return "index";
+        return "hi!";
     }
     @GetMapping("/pay")
-    public DataResponse pay(HttpServletRequest request,  @RequestParam("packageCode") String packageCode ){
+    public DataResponse pay(HttpServletRequest request, @RequestParam("packageCode") String packageCode ){
         // Custom logic
         Optional<PackageEntity> packageEntity = packageRepository.findByCode(packageCode);
         if (packageEntity.isEmpty()) {
@@ -52,7 +51,7 @@ public class PaymentController {
         CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String customParamRequest = "?userId=" + userDetails.getUser().getId() + "&packageCode=" + packageCode;
 
-        //check Subscribed
+        // check Subscribed
         subscribeService.checkSubscribed(userDetails.getUser().getId(), packageEntity.get().getId());
 
         String cancelUrl = Util.getBaseURL(request) + "/" + URL_PAYPAL_CANCEL + customParamRequest;
@@ -69,7 +68,7 @@ public class PaymentController {
                     successUrl);
             for(Links links : payment.getLinks()){
                 if(links.getRel().equals("approval_url")){
-                    //eturn "redirect:" + links.getHref();
+                    // "redirect:" + links.getHref();
                     return new DataResponse(links.getHref());
                 }
             }
@@ -80,7 +79,4 @@ public class PaymentController {
         //return "redirect:/";
         throw new  CustomException("ErrorDefine pay");
     }
-
-
-    //public DataResponse
 }

@@ -2,20 +2,35 @@ package hcmute.puzzle.controller;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
+import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.olds.SubCommentDto;
+import hcmute.puzzle.infrastructure.entities.BlogPostEntity;
+import hcmute.puzzle.infrastructure.entities.CommentEntity;
+import hcmute.puzzle.infrastructure.entities.SubCommentEntity;
+import hcmute.puzzle.infrastructure.mappers.CommentMapper;
+import hcmute.puzzle.infrastructure.mappers.SubCommentMapper;
 import hcmute.puzzle.infrastructure.models.payload.request.TokenObject;
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
-import hcmute.puzzle.infrastructure.repository.RoleRepository;
-import hcmute.puzzle.infrastructure.repository.UserRepository;
+import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.test.SetUpDB;
 import hcmute.puzzle.test.TestCloudinary;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.firebase.FirebaseMessagingService;
 import hcmute.puzzle.utils.firebase.Note;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Slf4j
 @RestController
 @RequestMapping(path = "/test")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
@@ -31,8 +46,75 @@ public class TestController {
 	@Autowired
 	TestCloudinary testCloudinary;
 
+	@Autowired
+	SubCommentRepository subCommentRepository;
+
+	@Autowired
+	CommentMapper commentMapper;
+
+	@Autowired
+	CommentRepository commentRepository;
+
+	@Autowired
+	BlogPostRepository blogPostRepository;
+
+	// inject for comment mapper use
+	@Autowired
+	SubCommentMapper subCommentMapper;
+
 	public TestController(FirebaseMessagingService firebaseService) {
 		this.firebaseService = firebaseService;
+	}
+
+	@RequestMapping(
+			path = "/converter/sub-comment/{subCommentId}",
+			method = RequestMethod.GET,
+			produces = MediaType.APPLICATION_JSON_VALUE
+	)
+	public ResponseEntity converterSubComment(@PathVariable long commentId) {
+
+		CommentEntity comment = commentRepository.findById(commentId).orElse(null);
+		CommentDto commentDto = commentMapper.commentToCommentDto(comment);
+		return ResponseEntity.ok().body(commentDto);
+	}
+
+	class LuckyNumber {
+		Integer num;
+		String reward;
+
+		public LuckyNumber(Integer num, String reward) {
+			this.num = num;
+			this.reward = reward;
+		}
+
+	}
+
+	@RequestMapping(
+			path = "/compare",
+			method = RequestMethod.GET,
+			produces = MediaType.TEXT_PLAIN_VALUE
+	)
+	public String testMapAndForEach() {
+		List<LuckyNumber> intList = new ArrayList<>();
+		intList.add(new LuckyNumber(1, "House"));
+		intList.add(new LuckyNumber(2, "Cash"));
+		intList.add(new LuckyNumber(3, "Duck"));
+		intList = intList.stream().map(number -> {
+			if (number.num == 2){
+				return new LuckyNumber(99, "car");
+			} else {
+				return new LuckyNumber(0, "fail");
+			}
+		}).collect(Collectors.toList());
+
+		intList.forEach(number -> {
+			if (number.num == 2){
+				number.num =99;
+			} else {
+				number.num =0;
+			}
+		});
+		return "OK";
 	}
 
 	@GetMapping("/init-db")

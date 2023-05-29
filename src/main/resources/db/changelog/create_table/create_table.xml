@@ -1,0 +1,587 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="caiho (generated)" id="1684877748266-1">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="users_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="avatar" type="TEXT"/>
+            <column name="email" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email_verified" type="BOOLEAN"/>
+            <column name="full_name" type="VARCHAR(100)"/>
+            <column name="is_active" type="BOOLEAN"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="last_login_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="locale" type="VARCHAR(10)"/>
+            <column name="password" type="VARCHAR(100)"/>
+            <column name="phone" type="VARCHAR(20)"/>
+            <column name="provider" type="VARCHAR(255)"/>
+            <column name="username" type="VARCHAR(100)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-3">
+        <createTable tableName="package">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="package_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="code" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cost" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="duration" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="for_user_type" type="VARCHAR(50)"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="num_of_job_post" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="public_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="service_type" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-4">
+        <createTable tableName="md_file_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="md_file_type_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="author" type="VARCHAR(100)"/>
+            <column name="category" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="location" type="TEXT"/>
+            <column name="storage_name" type="VARCHAR(50)"/>
+            <column name="type" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-6">
+        <createTable tableName="company">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="company_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="description" type="TEXT"/>
+            <column name="image" type="TEXT"/>
+            <column name="is_active" type="BOOLEAN"/>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="website" type="TEXT"/>
+            <column name="created_employer_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="caiho (generated)" id="1684877748266-15">
+        <createTable tableName="application">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="application_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="note" type="VARCHAR(200)"/>
+            <column name="result" type="VARCHAR(50)"/>
+            <column name="candidate_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="job_post_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-16">
+        <createTable tableName="blog_post">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="blog_post_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="body" type="TEXT"/>
+            <column name="category_blog" type="VARCHAR(200)"/>
+            <column name="title" type="VARCHAR(200)"/>
+            <column name="author" type="BIGINT"/>
+            <column name="tags" type="VARCHAR(200)"/>
+            <column name="thumbnail" type="TEXT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-17">
+        <createTable tableName="candidate">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="candidate_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="blind" type="BOOLEAN"/>
+            <column name="communication_dis" type="BOOLEAN"/>
+            <column name="deaf" type="BOOLEAN"/>
+            <column name="detail_dis" type="TEXT"/>
+            <column name="education_level" type="VARCHAR(100)"/>
+            <column name="email_contact" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(50)"/>
+            <column name="hand_dis" type="BOOLEAN"/>
+            <column name="introduction" type="TEXT"/>
+            <column name="labor" type="BOOLEAN"/>
+            <column name="last_name" type="VARCHAR(50)"/>
+            <column name="phone_num" type="VARCHAR(20)"/>
+            <column name="position" type="TEXT"/>
+            <column name="services" type="TEXT"/>
+            <column name="skills" type="TEXT"/>
+            <column name="verified_dis" type="BOOLEAN"/>
+            <column name="work_status" type="VARCHAR(50)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-18">
+        <createTable tableName="category">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="category_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="is_active" type="BOOLEAN"/>
+            <column name="name" type="VARCHAR(200)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-19">
+        <createTable tableName="comment">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="comment_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="content" type="VARCHAR(200)"/>
+            <column name="dis_like_num" type="INTEGER"/>
+            <column name="email" type="VARCHAR(100)"/>
+            <column name="like_num" type="INTEGER"/>
+            <column name="nickname" type="VARCHAR(50)"/>
+            <column name="blog_post_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-20">
+        <createTable tableName="document">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="document_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="title" type="VARCHAR(100)"/>
+            <column name="type" type="VARCHAR(50)"/>
+            <column name="url" type="TEXT"/>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-21">
+        <createTable tableName="employer">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="employer_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="firstname" type="VARCHAR(50)"/>
+            <column name="lastname" type="VARCHAR(50)"/>
+            <column name="recruitment_email" type="VARCHAR(100)"/>
+            <column name="recruitment_phone" type="VARCHAR(20)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-22">
+        <createTable tableName="evaluate">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="evaluate_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="note" type="VARCHAR(200)"/>
+            <column name="rate" type="INTEGER"/>
+            <column name="candidate_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="employer_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-23">
+        <createTable tableName="experience">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="experience_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="company" type="VARCHAR(100)"/>
+            <column name="description" type="TEXT"/>
+            <column name="employment_type" type="VARCHAR(50)"/>
+            <column name="end_date" type="date"/>
+            <column name="industry" type="VARCHAR(200)"/>
+            <column name="is_working" type="BOOLEAN"/>
+            <column name="skills" type="TEXT"/>
+            <column name="start_date" type="date"/>
+            <column name="title" type="VARCHAR(50)"/>
+            <column name="candidate_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-24">
+        <createTable tableName="extra_info">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="extra_info_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="is_active" type="BOOLEAN"/>
+            <column name="name" type="VARCHAR(200)"/>
+            <column name="type" type="VARCHAR(100)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-25">
+        <createTable tableName="file">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="file_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="category" type="VARCHAR(50)"/>
+            <column name="cloudinary_public_id" type="VARCHAR(255)"/>
+            <column name="extension" type="VARCHAR(10)"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="location" type="TEXT"/>
+            <column name="name" type="VARCHAR(100)"/>
+            <column name="object_id" type="BIGINT"/>
+            <column name="type" type="VARCHAR(50)"/>
+            <column name="url" type="TEXT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-26">
+        <createTable tableName="follow_employer">
+            <column name="candidate_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="follow_employer_pkey"/>
+            </column>
+            <column name="employer_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="follow_employer_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-27">
+        <createTable tableName="following_company">
+            <column name="candidate_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="following_company_pkey"/>
+            </column>
+            <column name="company_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="following_company_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-28">
+        <createTable tableName="invoice">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="invoice_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="email" type="VARCHAR(100)"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="pay_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="payment_method" type="VARCHAR(30)"/>
+            <column name="phone" type="VARCHAR(20)"/>
+            <column name="price" type="BIGINT"/>
+            <column name="service_type" type="VARCHAR(30)"/>
+            <column name="status" type="VARCHAR(30)"/>
+            <column name="transaction_code" type="VARCHAR(30)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-29">
+        <createTable tableName="job_alert">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="job_alert_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="city" type="VARCHAR(50)"/>
+            <column name="employment_type" type="VARCHAR(100)"/>
+            <column name="industry" type="VARCHAR(200)"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="min_budget" type="BIGINT"/>
+            <column name="tag" type="TEXT"/>
+            <column name="workplace_type" type="VARCHAR(100)"/>
+            <column name="candidate_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-30">
+        <createTable tableName="job_post">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="job_post_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="address" type="VARCHAR(200)"/>
+            <column name="blind" type="BOOLEAN"/>
+            <column name="city" type="VARCHAR(100)"/>
+            <column name="communication_dis" type="BOOLEAN"/>
+            <column name="create_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="deaf" type="BOOLEAN"/>
+            <column name="description" type="TEXT"/>
+            <column name="due_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="education_level" type="VARCHAR(100)"/>
+            <column name="employment_type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="experience_year" type="INTEGER"/>
+            <column name="hand_dis" type="BOOLEAN"/>
+            <column name="is_active" type="BOOLEAN"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="labor" type="BOOLEAN"/>
+            <column name="max_budget" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="min_budget" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="positions" type="TEXT"/>
+            <column name="quantity" type="INTEGER"/>
+            <column name="skills" type="TEXT"/>
+            <column name="title" type="VARCHAR(200)"/>
+            <column name="views" type="BIGINT"/>
+            <column name="work_status" type="VARCHAR(20)"/>
+            <column name="workplace_type" type="VARCHAR(50)"/>
+            <column name="category_id" type="BIGINT"/>
+            <column name="company_id" type="BIGINT"/>
+            <column name="created_employer" type="BIGINT"/>
+            <column name="subscriber_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-31">
+        <createTable tableName="md_task_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="md_task_type_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="description" type="TEXT"/>
+            <column name="name" type="VARCHAR(100)"/>
+            <column name="type" type="VARCHAR(100)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-32">
+        <createTable tableName="notification">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="notification_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="brief" type="VARCHAR(200)"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="title" type="VARCHAR(100)"/>
+            <column name="type" type="VARCHAR(50)"/>
+            <column name="company_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-33">
+        <createTable tableName="role">
+            <column name="code" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="role_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-34">
+        <createTable tableName="saved_job_post">
+            <column name="candidate_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="saved_job_post_pkey"/>
+            </column>
+            <column name="job_post_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="saved_job_post_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-35">
+        <createTable tableName="sub_comment">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sub_comment_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="blog_category" type="VARCHAR(100)"/>
+            <column name="content" type="VARCHAR(200)"/>
+            <column name="email" type="VARCHAR(100)"/>
+            <column name="interact" type="VARCHAR(30)"/>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="nickname" type="VARCHAR(50)"/>
+            <column name="comment_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-36">
+        <createTable tableName="subscribe">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="subscribe_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="expiration_time" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_deleted" type="BOOLEAN"/>
+            <column name="payment_transaction_code" type="VARCHAR(30)"/>
+            <column name="remaining_slot" type="INTEGER"/>
+            <column name="start_time" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="package_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reg_user_email" type="VARCHAR(100)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-37">
+        <createTable tableName="token">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="token_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="update_by" type="VARCHAR(100)"/>
+            <column name="expiry_time" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-38">
+        <createTable tableName="user_role">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-39">
+        <createTable tableName="viewed_user">
+            <column name="job_post_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="viewed_user_pkey"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="viewed_user_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-40">
+        <insert tableName="candidate">
+            <column name="user_id" valueNumeric="3"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.124"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.124"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="blind" valueBoolean="false"/>
+            <column name="communication_dis" valueBoolean="false"/>
+            <column name="deaf" valueBoolean="false"/>
+            <column name="detail_dis"/>
+            <column name="education_level"/>
+            <column name="email_contact" value="haovu961@gmail.com"/>
+            <column name="first_name" value="Minh"/>
+            <column name="hand_dis" valueBoolean="false"/>
+            <column name="introduction"/>
+            <column name="labor" valueBoolean="false"/>
+            <column name="last_name" value="Lê Quang"/>
+            <column name="phone_num"/>
+            <column name="position"/>
+            <column name="services"/>
+            <column name="skills" value="flutter#golang"/>
+            <column name="verified_dis" valueBoolean="false"/>
+            <column name="work_status"/>
+        </insert>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-14">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="1" maxValue="9223372036854775807"
+                        minValue="1" sequenceName="hibernate_sequence" startValue="1"/>
+    </changeSet>
+
+</databaseChangeLog>

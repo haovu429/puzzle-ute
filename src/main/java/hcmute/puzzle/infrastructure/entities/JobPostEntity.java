@@ -133,4 +133,8 @@ public class JobPostEntity extends Auditable implements Serializable {
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "category_id")
   private CategoryEntity categoryEntity;
+
+  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+  @JoinColumn(name = "subscriber_id")
+  private SubscribeEntity subscriber;
 }

@@ -1,6 +1,7 @@
 package hcmute.puzzle.infrastructure.entities;
 
 import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
@@ -8,6 +9,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Builder
 @Entity
 @Table(name = "sub_comment")
@@ -26,8 +28,8 @@ public class SubCommentEntity extends Auditable {
     @Column(name = "content", columnDefinition = "VARCHAR(200)")
     private String content;
 
-    @Column(name = "blog_category", columnDefinition = "VARCHAR(100)")
-    private String blogCategory;
+//    @Column(name = "blog_category", columnDefinition = "VARCHAR(100)")
+//    private String blogCategory;
 
     @Column(name = "interact", columnDefinition = "VARCHAR(30)")
     private String interact;
@@ -38,5 +40,9 @@ public class SubCommentEntity extends Auditable {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     @JoinColumn(name = "comment_id")
-    private CommentEntity commentEntity;
+    private CommentEntity comment;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity author;
 }

@@ -37,6 +37,7 @@ public class Constant {
 
   public static final String SUFFIX_COMPANY_IMAGE_FILE_NAME = "_company_image"; // id_company_image
 
+  public static final String SUFFIX_BLOG_POST_THUMBNAIL = "_blogpost_thumbnail"; // id_company_image
   public static final String SYSTEM_MAIL = "puzzle429@gmail.com";
 
   public static String validateTypeExtraInfo(String type) {
@@ -55,6 +56,7 @@ public class Constant {
 
   public class FileLocation {
     public static final String STORAGE_BLOG_IMAGE_LOCATION = "puzzle_ute/user/blog";
+    public static final String STORAGE_BLOG_THUMBNAIL_LOCATION = "puzzle_ute/user/blog/thumbnail";
     public static final String STORAGE_IMAGE_LOCATION = "puzzle_ute/user/avatar";
     public static final String STORAGE_COMPANY_IMAGE_LOCATION = "puzzle_ute/company/image";
   }

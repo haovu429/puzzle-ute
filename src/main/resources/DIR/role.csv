@@ -1,0 +1,5 @@
+"code","created_at","created_by","updated_at","update_by","is_deleted","name"
+"user","2023-05-09T22:59:44.207","puzzle429@gmail.com","2023-05-09T22:59:44.207","puzzle429@gmail.com","false","USER"
+"admin","2023-05-09T22:59:44.22","puzzle429@gmail.com","2023-05-09T22:59:44.22","puzzle429@gmail.com","false","ADMIN"
+"candidate","2023-05-09T22:59:44.222","puzzle429@gmail.com","2023-05-09T22:59:44.222","puzzle429@gmail.com","false","CANDIDATE"
+"employer","2023-05-09T22:59:44.223","puzzle429@gmail.com","2023-05-09T22:59:44.223","puzzle429@gmail.com","false","EMPLOYER"

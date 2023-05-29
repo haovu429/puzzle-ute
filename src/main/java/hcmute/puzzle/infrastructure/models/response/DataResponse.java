@@ -3,7 +3,7 @@ package hcmute.puzzle.infrastructure.models.response;
 import lombok.*;
 
 @Data
-public class DataResponse {
+public class DataResponse<T> {
 
   public static final int STATUS_OK = 200;
   public static final int STATUS_NO_CONTENT = 200;
@@ -35,7 +35,7 @@ public class DataResponse {
   private String errCode;
   private String errMsg;
   private int status;
-  private Object data;
+  private T data;
 
   public DataResponse(String errCode, String errMsg, int status) {
     this.errCode = errCode;
@@ -43,7 +43,7 @@ public class DataResponse {
     this.status = status;
   }
 
-  public DataResponse(Object data) {
+  public DataResponse(T data) {
     this.errCode = "";
     this.status = STATUS_OK;
     this.data = data;

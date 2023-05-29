@@ -1,6 +1,7 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
 import hcmute.puzzle.infrastructure.dtos.olds.CompanyDto;
 import hcmute.puzzle.infrastructure.dtos.olds.EmployerDto;
 import hcmute.puzzle.infrastructure.dtos.olds.JobPostDto;
@@ -25,6 +26,8 @@ import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import java.util.Map;
 import java.util.Optional;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,10 +38,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static hcmute.puzzle.utils.Constant.SUFFIX_COMPANY_IMAGE_FILE_NAME;
+
 @Log4j2
 @RestController
 @RequestMapping(path = "/employer")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
+@SecurityRequirement(name = "bearerAuth")
 public class EmployerController {
   @Autowired EmployerService employerService;
 
@@ -389,7 +395,7 @@ public class EmployerController {
   }
 
   @PostMapping("/upload-image-company/{companyId}")
-  public ResponseObject uploadAvatar(
+  public ResponseObject<UserPostDto> uploadAvatar(
       @PathVariable(value = "companyId") long companyId,
       @RequestParam("file") MultipartFile file,
       Authentication authentication) {
@@ -404,8 +410,8 @@ public class EmployerController {
     if (company.get().getCreatedEmployer().getId() != userDetails.getUser().getId()) {
       throw new CustomException("You don't have rights for this company");
     }
-
-    String fileName = "company_image_" + company.get().getId();
+    String fileName = String.format("%s_%s", company.get().getId(), SUFFIX_COMPANY_IMAGE_FILE_NAME);
+    //String fileName = company.get().getId() + "_" + SUFFIX_COMPANY_IMAGE_FILE_NAME;
 
     Map response = null;
 

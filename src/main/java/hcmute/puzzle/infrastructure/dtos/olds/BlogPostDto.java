@@ -1,20 +1,24 @@
 package hcmute.puzzle.infrastructure.dtos.olds;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.sun.istack.NotNull;
+import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class BlogPostDto {
     private long id;
     private String title;
     private String body;
-    private Date createTime;
-    private Date lastUpdate;
-    private String categoryBlog;
+    private String thumbnail;
+    private long categoryId;
+    private String tags;
+    private Date createdAt;
+    private Date updatedAt;
     private long userId;
+    private List<CommentDto> comments;
 }

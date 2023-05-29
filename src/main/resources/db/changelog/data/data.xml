@@ -1,0 +1,820 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="caiho (generated)" id="1684877748266-2">
+        <insert tableName="users">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.049"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.049"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="avatar"/>
+            <column name="email" value="employer1@gmail.com"/>
+            <column name="email_verified" valueBoolean="false"/>
+            <column name="full_name"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="last_login_at"/>
+            <column name="locale"/>
+            <column name="password" value="$2a$10$WuEqJKWC9wq6kyPjnouove2iIjd.Fdy4R/1Oax0dd0QdG0JIDekm2"/>
+            <column name="phone"/>
+            <column name="provider"/>
+            <column name="username"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" valueNumeric="2"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.065"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.065"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="avatar"/>
+            <column name="email" value="employer2@gmail.com"/>
+            <column name="email_verified" valueBoolean="false"/>
+            <column name="full_name"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="last_login_at"/>
+            <column name="locale"/>
+            <column name="password" value="$2a$10$N.4HNe6xt6h965nZkuU3UeV8X1teX/3EVNNgtsXB037q4nJjput/."/>
+            <column name="phone"/>
+            <column name="provider"/>
+            <column name="username"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" valueNumeric="3"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.068"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.068"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="avatar"/>
+            <column name="email" value="candidate1@gmail.com"/>
+            <column name="email_verified" valueBoolean="false"/>
+            <column name="full_name"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="last_login_at"/>
+            <column name="locale"/>
+            <column name="password" value="$2a$10$uvDQnT1aulejMAxWDtS1P.b3CD8JnlFvY2iVDff7NS6iLb0D.HrgS"/>
+            <column name="phone"/>
+            <column name="provider"/>
+            <column name="username"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" valueNumeric="8"/>
+            <column name="created_at" valueDate="2023-05-12T07:11:01.563"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-12T07:11:01.563"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="avatar"/>
+            <column name="email" value="haovu9612@gmail.com"/>
+            <column name="email_verified" valueBoolean="false"/>
+            <column name="full_name"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="last_login_at"/>
+            <column name="locale"/>
+            <column name="password" value="$2a$10$8RJAYKMyvhNaT2JNtM9tWOkNGepJqKmS2a/HPd5ojZ1md9EUHm0yi"/>
+            <column name="phone"/>
+            <column name="provider"/>
+            <column name="username"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" valueNumeric="7"/>
+            <column name="created_at" valueDate="2023-05-09T23:17:20.488"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T23:35:08.359"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="avatar"/>
+            <column name="email" value="haovu961@gmail.com"/>
+            <column name="email_verified" valueBoolean="true"/>
+            <column name="full_name"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="last_login_at"/>
+            <column name="locale"/>
+            <column name="password" value="$2a$10$uv/wNlKYps/v.o6GJ/4thOtP10khhmKPhDQzzae4wLO8dXXNgLEEy"/>
+            <column name="phone"/>
+            <column name="provider"/>
+            <column name="username"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" valueNumeric="4"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.073"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-14T04:57:55.89"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="avatar"/>
+            <column name="email" value="admin1@gmail.com"/>
+            <column name="email_verified" valueBoolean="false"/>
+            <column name="full_name" value="qua dep trai quá troi qua dat"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="last_login_at" valueDate="2023-05-14T04:57:55.849"/>
+            <column name="locale"/>
+            <column name="password" value="$2a$10$PhsHRVxkqGbzSAaRFkQ5Eek4VYpNApWcWxspnLNslSNzoHkdVBVnu"/>
+            <column name="phone"/>
+            <column name="provider"/>
+            <column name="username" value="haodeptrai962"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" valueNumeric="9"/>
+            <column name="created_at" valueDate="2023-05-13T17:33:08.414"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-13T17:33:08.414"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="avatar"/>
+            <column name="email" value="haovu9634@gmail.com"/>
+            <column name="email_verified" valueBoolean="false"/>
+            <column name="full_name"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="last_login_at"/>
+            <column name="locale"/>
+            <column name="password" value="$2a$10$7XxBWQly78GOa.l8bIFg6u8P73WGXh8OMjjiH9JKH4DDOcE96nYaK"/>
+            <column name="phone"/>
+            <column name="provider"/>
+            <column name="username"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" valueNumeric="10"/>
+            <column name="created_at" valueDate="2023-05-13T18:40:05.913"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-13T18:40:05.913"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="avatar"/>
+            <column name="email" value="haovu963@gmail.com"/>
+            <column name="email_verified" valueBoolean="false"/>
+            <column name="full_name"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="last_login_at"/>
+            <column name="locale"/>
+            <column name="password" value="$2a$10$W/L31mPq16W3BFtBAdpgZ.ZxoMCB8fSEWTv5fHvsCU8vNdorCt3ee"/>
+            <column name="phone"/>
+            <column name="provider"/>
+            <column name="username"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" valueNumeric="11"/>
+            <column name="created_at" valueDate="2023-05-13T18:44:06.353"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-13T18:44:06.353"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="avatar"/>
+            <column name="email" value="haovu965@gmail.com"/>
+            <column name="email_verified" valueBoolean="false"/>
+            <column name="full_name"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="last_login_at"/>
+            <column name="locale"/>
+            <column name="password" value="$2a$10$i2KtiM7ZjTAP5iNnBl4ft.6vFuQlS5SiznDI7VT8GJ4AUXGf8xcXm"/>
+            <column name="phone"/>
+            <column name="provider"/>
+            <column name="username"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" valueNumeric="12"/>
+            <column name="created_at" valueDate="2023-05-13T18:46:04.416"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-13T18:46:04.416"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="avatar"/>
+            <column name="email" value="haovu9654@gmail.com"/>
+            <column name="email_verified" valueBoolean="false"/>
+            <column name="full_name"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="last_login_at"/>
+            <column name="locale"/>
+            <column name="password" value="$2a$10$DJ1J391b2CnFYKF0iIkwWO07633CGDgQtqdtgOd/RFQNfJJTIeq8u"/>
+            <column name="phone"/>
+            <column name="provider"/>
+            <column name="username"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" valueNumeric="13"/>
+            <column name="created_at" valueDate="2023-05-13T18:49:10.165"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-13T18:49:10.165"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="avatar"/>
+            <column name="email" value="haovu96546@gmail.com"/>
+            <column name="email_verified" valueBoolean="false"/>
+            <column name="full_name"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="last_login_at"/>
+            <column name="locale"/>
+            <column name="password" value="$2a$10$OYwaOIEO.eMGegpfSVhJqupPCp989KfegXaK0LLP2/UQC3fkBtEpW"/>
+            <column name="phone"/>
+            <column name="provider"/>
+            <column name="username"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" valueNumeric="14"/>
+            <column name="created_at" valueDate="2023-05-13T18:50:42.431"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-13T18:50:42.431"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="avatar"/>
+            <column name="email" value="haovu96509@gmail.com"/>
+            <column name="email_verified" valueBoolean="false"/>
+            <column name="full_name"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="last_login_at"/>
+            <column name="locale"/>
+            <column name="password" value="$2a$10$gb0yxlBKnC1ahol2LL7paOJMK137BZj6WIPw51.ti8NnFufGWAmSe"/>
+            <column name="phone"/>
+            <column name="provider"/>
+            <column name="username"/>
+        </insert>
+        <insert tableName="users">
+            <column name="id" valueNumeric="15"/>
+            <column name="created_at" valueDate="2023-05-14T02:14:39.606"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-14T02:14:39.606"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="avatar"/>
+            <column name="email" value="haovu9651@gmail.com"/>
+            <column name="email_verified" valueBoolean="false"/>
+            <column name="full_name"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="last_login_at"/>
+            <column name="locale"/>
+            <column name="password" value="$2a$10$pqeTRnrLyOe5QS/KEBAvtux9KU3d6NHmJ9v0Woa5iLq512CfTgIDe"/>
+            <column name="phone"/>
+            <column name="provider"/>
+            <column name="username"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="caiho (generated)" id="1684877748266-5">
+        <insert tableName="md_file_type">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.231"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.231"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="author" value="puzzle429@gmail.com"/>
+            <column name="category" value="IMAGE_AVATAR"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="location" value="puzzle_ute/user/avatar"/>
+            <column name="storage_name" value="CLOUDINARY"/>
+            <column name="type" value="image"/>
+        </insert>
+        <insert tableName="md_file_type">
+            <column name="id" valueNumeric="2"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.239"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.239"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="author" value="puzzle429@gmail.com"/>
+            <column name="category" value="IMAGE_COMPANY"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="location" value="puzzle_ute/company/image"/>
+            <column name="storage_name" value="CLOUDINARY"/>
+            <column name="type" value="image"/>
+        </insert>
+        <insert tableName="md_file_type">
+            <column name="id" valueNumeric="3"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.24"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.24"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="author" value="puzzle429@gmail.com"/>
+            <column name="category" value="IMAGE_BLOG"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="location" value="puzzle_ute/user/blog"/>
+            <column name="storage_name" value="CLOUDINARY"/>
+            <column name="type" value="image"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="caiho (generated)" id="1684877748266-7">
+        <insert tableName="company">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.165"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.165"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="description"/>
+            <column name="image"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="name" value="Zalo"/>
+            <column name="website"/>
+            <column name="created_employer_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="company">
+            <column name="id" valueNumeric="2"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.168"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.168"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="description"/>
+            <column name="image"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="name" value="FPT soft"/>
+            <column name="website"/>
+            <column name="created_employer_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="company">
+            <column name="id" valueNumeric="3"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.171"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.171"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="description"/>
+            <column name="image"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="name" value="Shopee"/>
+            <column name="website"/>
+            <column name="created_employer_id" valueNumeric="2"/>
+        </insert>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-41">
+        <insert tableName="employer">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.146"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.146"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="firstname" value="Văn"/>
+            <column name="lastname" value="Minh"/>
+            <column name="recruitment_email"/>
+            <column name="recruitment_phone"/>
+        </insert>
+        <insert tableName="employer">
+            <column name="user_id" valueNumeric="2"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.147"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.147"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="firstname" value="Văn"/>
+            <column name="lastname" value="Hoàng"/>
+            <column name="recruitment_email"/>
+            <column name="recruitment_phone"/>
+        </insert>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-42">
+        <insert tableName="extra_info">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.206"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.206"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="name" value="Java Develop"/>
+            <column name="type" value="SERVICE"/>
+        </insert>
+        <insert tableName="extra_info">
+            <column name="id" valueNumeric="2"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.209"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.209"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="name" value="Dot Net Develop"/>
+            <column name="type" value="POSITION"/>
+        </insert>
+        <insert tableName="extra_info">
+            <column name="id" valueNumeric="3"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.21"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.21"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="name" value="Mobile Develop"/>
+            <column name="type" value="POSITION"/>
+        </insert>
+        <insert tableName="extra_info">
+            <column name="id" valueNumeric="4"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.211"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.211"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="name" value="Flutter Develop"/>
+            <column name="type"/>
+        </insert>
+        <insert tableName="extra_info">
+            <column name="id" valueNumeric="5"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.212"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.212"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="name" value="dot Net Develop"/>
+            <column name="type"/>
+        </insert>
+        <insert tableName="extra_info">
+            <column name="id" valueNumeric="6"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.213"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.213"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="name"/>
+            <column name="type"/>
+        </insert>
+        <insert tableName="extra_info">
+            <column name="id" valueNumeric="7"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.215"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.215"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="name" value="Java Develop"/>
+            <column name="type" value="POSITION"/>
+        </insert>
+        <insert tableName="extra_info">
+            <column name="id" valueNumeric="8"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.215"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.215"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="name" value="Mobile Develop"/>
+            <column name="type"/>
+        </insert>
+        <insert tableName="extra_info">
+            <column name="id" valueNumeric="9"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.217"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.217"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="name"/>
+            <column name="type"/>
+        </insert>
+        <insert tableName="extra_info">
+            <column name="id" valueNumeric="10"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.219"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.219"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="name" value="Java Develop"/>
+            <column name="type" value="POSITION"/>
+        </insert>
+        <insert tableName="extra_info">
+            <column name="id" valueNumeric="11"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.221"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.221"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="name" value="Flutter Develop"/>
+            <column name="type"/>
+        </insert>
+        <insert tableName="extra_info">
+            <column name="id" valueNumeric="12"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.222"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.222"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="name" value="Java"/>
+            <column name="type" value="SKILL"/>
+        </insert>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-43">
+        <insert tableName="job_post">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.189"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.189"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="address" value="Linh Tây, Thủ Đức, Tp.Hồ Chí Minh"/>
+            <column name="blind" valueBoolean="false"/>
+            <column name="city" value="Tp Hồ Chí Minh"/>
+            <column name="communication_dis" valueBoolean="false"/>
+            <column name="create_time" valueDate="2023-05-09T22:59:45.189"/>
+            <column name="deaf" valueBoolean="false"/>
+            <column name="description" value="Nhân viên bán hàng lương cứng 8 M, hoa hồng theo doanh thu"/>
+            <column name="due_time"/>
+            <column name="education_level" value="Cao Đẳng"/>
+            <column name="employment_type" value="PART_TIME"/>
+            <column name="experience_year" valueNumeric="1"/>
+            <column name="hand_dis" valueBoolean="false"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="labor" valueBoolean="false"/>
+            <column name="max_budget" valueNumeric="1000"/>
+            <column name="min_budget" valueNumeric="800"/>
+            <column name="positions"/>
+            <column name="quantity" valueNumeric="3"/>
+            <column name="skills"/>
+            <column name="title" value="Nhân viên Sale"/>
+            <column name="views" valueNumeric="0"/>
+            <column name="work_status"/>
+            <column name="workplace_type" value="OFFICE"/>
+            <column name="category_id"/>
+            <column name="company_id"/>
+            <column name="created_employer" valueNumeric="1"/>
+            <column name="subscriber_id"/>
+        </insert>
+        <insert tableName="job_post">
+            <column name="id" valueNumeric="2"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.193"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.193"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="address" value="Linh Tây, Thủ Đức, Tp.Hồ Chí Minh"/>
+            <column name="blind" valueBoolean="false"/>
+            <column name="city" value="Tp Hồ Chí Minh"/>
+            <column name="communication_dis" valueBoolean="false"/>
+            <column name="create_time" valueDate="2023-05-09T22:59:45.193"/>
+            <column name="deaf" valueBoolean="false"/>
+            <column name="description" value="Nhân viên bán hàng lương cứng 8 M, hoa hồng theo doanh thu"/>
+            <column name="due_time"/>
+            <column name="education_level" value="Cao Đẳng"/>
+            <column name="employment_type" value="PART_TIME"/>
+            <column name="experience_year" valueNumeric="1"/>
+            <column name="hand_dis" valueBoolean="false"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="labor" valueBoolean="false"/>
+            <column name="max_budget" valueNumeric="1000"/>
+            <column name="min_budget" valueNumeric="800"/>
+            <column name="positions"/>
+            <column name="quantity" valueNumeric="3"/>
+            <column name="skills"/>
+            <column name="title" value="Nhân viên Marketing"/>
+            <column name="views" valueNumeric="0"/>
+            <column name="work_status"/>
+            <column name="workplace_type" value="OFFICE"/>
+            <column name="category_id"/>
+            <column name="company_id"/>
+            <column name="created_employer" valueNumeric="2"/>
+            <column name="subscriber_id"/>
+        </insert>
+        <insert tableName="job_post">
+            <column name="id" valueNumeric="3"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.195"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-12T09:50:12.161"/>
+            <column name="update_by" value="admin1@gmail.com"/>
+            <column name="address" value="Linh Tây, Thủ Đức, Tp.Hồ Chí Minh"/>
+            <column name="blind" valueBoolean="false"/>
+            <column name="city" value="Tp Hồ Chí Minh"/>
+            <column name="communication_dis" valueBoolean="false"/>
+            <column name="create_time" valueDate="2023-05-09T22:59:45.195"/>
+            <column name="deaf" valueBoolean="false"/>
+            <column name="description" value="Nhân viên bán hàng lương cứng 8 M, hoa hồng theo doanh thu"/>
+            <column name="due_time"/>
+            <column name="education_level" value="Cao Đẳng"/>
+            <column name="employment_type" value="FULL_TIME"/>
+            <column name="experience_year" valueNumeric="1"/>
+            <column name="hand_dis" valueBoolean="false"/>
+            <column name="is_active" valueBoolean="false"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="labor" valueBoolean="false"/>
+            <column name="max_budget" valueNumeric="1000"/>
+            <column name="min_budget" valueNumeric="800"/>
+            <column name="positions"/>
+            <column name="quantity" valueNumeric="3"/>
+            <column name="skills"/>
+            <column name="title" value="Dev java"/>
+            <column name="views" valueNumeric="1"/>
+            <column name="work_status"/>
+            <column name="workplace_type" value="OFFICE"/>
+            <column name="category_id" />
+            <column name="company_id"/>
+            <column name="created_employer" valueNumeric="2"/>
+            <column name="subscriber_id"/>
+        </insert>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-44">
+        <insert tableName="role">
+            <column name="code" value="user"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:44.207"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:44.207"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="name" value="USER"/>
+        </insert>
+        <insert tableName="role">
+            <column name="code" value="admin"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:44.22"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:44.22"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="name" value="ADMIN"/>
+        </insert>
+        <insert tableName="role">
+            <column name="code" value="candidate"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:44.222"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:44.222"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="name" value="CANDIDATE"/>
+        </insert>
+        <insert tableName="role">
+            <column name="code" value="employer"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:44.223"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:44.223"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="name" value="EMPLOYER"/>
+        </insert>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-45">
+        <insert tableName="token">
+            <column name="id" valueNumeric="2"/>
+            <column name="created_at" valueDate="2023-05-09T23:17:20.51"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T23:17:20.51"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="expiry_time" valueDate="2023-05-09T23:22:20.503"/>
+            <column name="token" value="438ce1de-905c-43f5-a0e0-50c0e81a0bf2"/>
+            <column name="type" value="VERIFY_ACCOUNT_TOKEN"/>
+            <column name="user_id" valueNumeric="7"/>
+        </insert>
+        <insert tableName="token">
+            <column name="id" valueNumeric="4"/>
+            <column name="created_at" valueDate="2023-05-12T07:11:01.634"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-12T07:11:01.634"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="expiry_time" valueDate="2023-05-12T07:16:01.623"/>
+            <column name="token" value="d2a2715d-b57a-465b-88f6-7fd2d9f60c42"/>
+            <column name="type" value="VERIFY_ACCOUNT_TOKEN"/>
+            <column name="user_id" valueNumeric="8"/>
+        </insert>
+        <insert tableName="token">
+            <column name="id" valueNumeric="5"/>
+            <column name="created_at" valueDate="2023-05-13T17:33:08.442"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-13T17:33:08.442"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="expiry_time" valueDate="2023-05-13T17:38:08.43"/>
+            <column name="token" value="348acc0d-522b-40dd-8950-0fb29587cc7b"/>
+            <column name="type" value="VERIFY_ACCOUNT_TOKEN"/>
+            <column name="user_id" valueNumeric="9"/>
+        </insert>
+        <insert tableName="token">
+            <column name="id" valueNumeric="6"/>
+            <column name="created_at" valueDate="2023-05-13T18:40:05.992"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-13T18:40:05.992"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="expiry_time" valueDate="2023-05-13T18:45:05.975"/>
+            <column name="token" value="e3e1f408-29e1-4535-bd51-1f87c1511e71"/>
+            <column name="type" value="VERIFY_ACCOUNT_TOKEN"/>
+            <column name="user_id" valueNumeric="10"/>
+        </insert>
+        <insert tableName="token">
+            <column name="id" valueNumeric="7"/>
+            <column name="created_at" valueDate="2023-05-13T18:44:06.421"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-13T18:44:06.421"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="expiry_time" valueDate="2023-05-13T18:49:06.407"/>
+            <column name="token" value="894ea31c-737a-4732-9e1b-b3b366257847"/>
+            <column name="type" value="VERIFY_ACCOUNT_TOKEN"/>
+            <column name="user_id" valueNumeric="11"/>
+        </insert>
+        <insert tableName="token">
+            <column name="id" valueNumeric="8"/>
+            <column name="created_at" valueDate="2023-05-13T18:46:04.472"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-13T18:46:04.472"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="expiry_time" valueDate="2023-05-13T18:51:04.46"/>
+            <column name="token" value="cf6abbb7-6d15-4b86-8b7a-3226ed400a17"/>
+            <column name="type" value="VERIFY_ACCOUNT_TOKEN"/>
+            <column name="user_id" valueNumeric="12"/>
+        </insert>
+        <insert tableName="token">
+            <column name="id" valueNumeric="11"/>
+            <column name="created_at" valueDate="2023-05-14T02:14:39.661"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-14T02:14:39.661"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="expiry_time" valueDate="2023-05-14T02:19:39.653"/>
+            <column name="token" value="17547206-ba7d-4b4d-a54c-9f1a7d0b25a8"/>
+            <column name="type" value="VERIFY_ACCOUNT_TOKEN"/>
+            <column name="user_id" valueNumeric="15"/>
+        </insert>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-46">
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="role_id" value="employer"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="role_id" value="user"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="2"/>
+            <column name="role_id" value="employer"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="2"/>
+            <column name="role_id" value="user"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="3"/>
+            <column name="role_id" value="candidate"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="3"/>
+            <column name="role_id" value="user"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="4"/>
+            <column name="role_id" value="admin"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="4"/>
+            <column name="role_id" value="user"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="7"/>
+            <column name="role_id" value="user"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="8"/>
+            <column name="role_id" value="user"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="9"/>
+            <column name="role_id" value="user"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="10"/>
+            <column name="role_id" value="user"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="11"/>
+            <column name="role_id" value="user"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="12"/>
+            <column name="role_id" value="user"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="13"/>
+            <column name="role_id" value="user"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="14"/>
+            <column name="role_id" value="user"/>
+        </insert>
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="15"/>
+            <column name="role_id" value="user"/>
+        </insert>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1684877748266-47">
+        <insert tableName="viewed_user">
+            <column name="job_post_id" valueNumeric="3"/>
+            <column name="user_id" valueNumeric="4"/>
+        </insert>
+    </changeSet>
+    <changeSet id="1684877748266-81" author="lvhao">
+        <insert tableName="category">
+            <column name="id" valueNumeric="1"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="name" value="Môi trường"/>
+        </insert>
+    </changeSet>
+    <changeSet id="1684877748266-82" author="lvhao">
+        <insert tableName="category">
+            <column name="id" valueNumeric="2"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="name" value="Môi IT"/>
+        </insert>
+    </changeSet>
+    <changeSet id="20230525-1" author="lvhao">
+        <insert tableName="md_file_type">
+            <column name="id" valueNumeric="4"/>
+            <column name="author" value="puzzle429@gmail.com"/>
+            <column name="category" value="THUMBNAIL_BLOGPOST"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="location" value="puzzle_ute/user/blog/thumbnail"/>
+            <column name="storage_name" value="CLOUDINARY"/>
+            <column name="type" value="image"/>
+        </insert>
+    </changeSet>
+    <changeSet id="20230525-2" author="lvhao">
+        <insert tableName="comment">
+            <column name="id" valueNumeric="1"/>
+            <column name="content" value="puzzle429@gmail.com"/>
+            <column name="email" value="haodeptry@gmail.com"/>
+            <column name="nickname" valueBoolean="false"/>
+            <column name="blog_post_id" valueNumeric="3"/>
+            <column name="user_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

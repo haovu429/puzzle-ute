@@ -1,7 +1,7 @@
 package hcmute.puzzle.infrastructure.models.enums;
 
 public enum FileCategory {
-    IMAGE_AVATAR("IMAGE_AVATAR"), IMAGE_BLOG("IMAGE_BLOG"), IMAGE_COMPANY("IMAGE_COMPANY");
+    IMAGE_AVATAR("IMAGE_AVATAR"), IMAGE_BLOG("IMAGE_BLOG"), IMAGE_COMPANY("IMAGE_COMPANY"), THUMBNAIL_BLOGPOST("THUMBNAIL_BLOGPOST");
 
     private String value;
     FileCategory(String value) {

@@ -1,4 +1,4 @@
-package hcmute.puzzle.utils.paypal;
+package hcmute.puzzle.paypal;
 
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Date;
 import java.util.Optional;
 
-import static hcmute.puzzle.utils.paypal.PaymentController.URL_PAYPAL_CANCEL;
-import static hcmute.puzzle.utils.paypal.PaymentController.URL_PAYPAL_SUCCESS;
+import static hcmute.puzzle.paypal.PaymentController.URL_PAYPAL_CANCEL;
+import static hcmute.puzzle.paypal.PaymentController.URL_PAYPAL_SUCCESS;
 
 @Controller
 public class ResultController {
@@ -119,7 +119,6 @@ public class ResultController {
           public void run() {
             try {
               System.out.println("new thread?");
-
               SendMail.sendMail(mailObject);
             } catch(Exception e) {
               System.out.println(e.getMessage());

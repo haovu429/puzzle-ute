@@ -1,4 +1,4 @@
-package hcmute.puzzle.utils.paypal;
+package hcmute.puzzle.paypal;
 
 import java.util.ArrayList;
 import java.util.List;

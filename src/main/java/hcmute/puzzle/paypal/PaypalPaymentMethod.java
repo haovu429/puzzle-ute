@@ -1,4 +1,4 @@
-package hcmute.puzzle.utils.paypal;
+package hcmute.puzzle.paypal;
 
 public enum PaypalPaymentMethod {
     credit_card, paypal

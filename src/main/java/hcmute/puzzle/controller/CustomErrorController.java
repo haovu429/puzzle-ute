@@ -1,6 +1,7 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.utils.Constant;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
+@SecurityRequirement(name = "bearerAuth")
 public class CustomErrorController implements ErrorController {
 
   @RequestMapping("/error")

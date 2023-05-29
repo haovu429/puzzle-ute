@@ -21,14 +21,19 @@ public interface FilesStorageService {
 
     boolean deleteMultiFile(List<String> publicIds, UserEntity deleter) throws PartialFailureException;
 
-    Optional<FileEntity> uploadFileWithFileTypeReturnUrl(String keyName
+    Optional<String> uploadFileWithFileTypeReturnUrl(String keyName
+            , MultipartFile file, FileCategory fileCategory, boolean saveDB)
+            throws NotFoundException;
+
+    Optional<FileEntity> uploadFileWithFileTypeReturnFileEntity(String keyName
             , MultipartFile file, FileCategory fileCategory)
             throws NotFoundException;
+
 
     String processFileName(String keyValue, FileCategory fileCategory);
 
     CloudinaryUploadFileResponse uploadFileReturnResponseObject(String fileName
-            , MultipartFile file, String fileLocation, UserEntity uploader);
+            , MultipartFile file, String fileLocation);
 
     public List<String> detectedImageSrcList(String html);
 

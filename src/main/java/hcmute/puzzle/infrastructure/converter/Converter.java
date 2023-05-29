@@ -735,7 +735,7 @@ public class Converter {
         try {
             Optional<CommentEntity> commentEntity = commentRepository.findById(dto.getCommentId());
             if (commentEntity.isPresent()) {
-                entity.setCommentEntity(commentEntity.get());
+                entity.setComment(commentEntity.get());
             }
         } catch (Exception e) {
             log.error(e.getMessage());

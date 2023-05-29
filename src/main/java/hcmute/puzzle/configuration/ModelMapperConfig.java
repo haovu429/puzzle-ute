@@ -51,7 +51,7 @@ public class ModelMapperConfig {
     TypeMap<SubCommentEntity, SubCommentDto> subCommentEntityToDTO =
         modelMapper.createTypeMap(SubCommentEntity.class, SubCommentDto.class);
     subCommentEntityToDTO.addMappings(
-        mapper -> mapper.map(src -> src.getCommentEntity().getId(), SubCommentDto::setCommentId));
+        mapper -> mapper.map(src -> src.getComment().getId(), SubCommentDto::setCommentId));
 
     return modelMapper;
   }

@@ -5,28 +5,19 @@ import hcmute.puzzle.exception.*;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.news.*;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-
 import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.mappers.UserMapper;
 import hcmute.puzzle.infrastructure.models.DataStaticJoinAccount;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
 import hcmute.puzzle.infrastructure.models.enums.Roles;
-import hcmute.puzzle.infrastructure.models.payload.request.user.UpdateUserPayload;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.RoleRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.services.UserService;
 import hcmute.puzzle.utils.Provider;
 import hcmute.puzzle.utils.RedisUtils;
 import hcmute.puzzle.utils.TimeUtil;
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import javax.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +27,14 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.mail.MessagingException;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -277,12 +276,12 @@ public class UserServiceImpl implements UserService {
   public DataResponse updateAvatarForUser(
       UserEntity userEntity, MultipartFile file, FileCategory fileCategory)
       throws NotFoundException {
-    FileEntity savedFile =
-        storageService
-            .uploadFileWithFileTypeReturnUrl(userEntity.getEmail(), file, fileCategory)
+    String imageUrl =
+            storageService
+                    .uploadFileWithFileTypeReturnUrl(userEntity.getEmail(), file, fileCategory, true)
             .orElseThrow(() -> new FileStorageException("UPLOAD_FILE_FAILURE"));
 
-    userEntity.setAvatar(savedFile.getUrl());
+    userEntity.setAvatar(imageUrl);
     userRepository.save(userEntity);
     UserPostDto userPostDTO = converter.toDTO(userEntity);
     return new DataResponse(userPostDTO);

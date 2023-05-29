@@ -59,13 +59,13 @@ public class CompanyServiceImpl implements CompanyService {
       }
 
       // lay id sau khi luu vao db de dat ten cho anh
-      FileEntity fileEntity =
+      String imageUrl =
           storageService
               .uploadFileWithFileTypeReturnUrl(
-                  String.valueOf(company.getId()), imageFile, FileCategory.IMAGE_COMPANY)
+                  String.valueOf(company.getId()), imageFile, FileCategory.IMAGE_COMPANY, true)
               .orElseThrow(() -> new FileStorageException("UPLOAD_FILE_FAILURE"));
 
-      company.setImage(fileEntity.getUrl());
+      company.setImage(imageUrl);
       company = companyRepository.save(company);
     }
 
@@ -91,13 +91,13 @@ public class CompanyServiceImpl implements CompanyService {
               .orElseThrow(() -> new NotFoundException("NOT_FOUND_USER"));
 
       // lay id sau khi luu vao db de dat ten cho anh
-      FileEntity fileEntity =
+      String imageUrl =
               storageService
                       .uploadFileWithFileTypeReturnUrl(
-                              String.valueOf(newCompany.getId()), dto.getImage(), FileCategory.IMAGE_COMPANY)
+                              String.valueOf(newCompany.getId()), dto.getImage(), FileCategory.IMAGE_COMPANY, true)
                       .orElseThrow(() -> new FileStorageException("UPLOAD_FILE_FAILURE"));
 
-      newCompany.setImage(fileEntity.getUrl());
+      newCompany.setImage(imageUrl);
       newCompany = companyRepository.save(newCompany);
     }
     return new DataResponse(converter.toDTO(newCompany));
@@ -142,15 +142,15 @@ public class CompanyServiceImpl implements CompanyService {
     if (imageFile != null && imageFile.getSize() > 0) {
 
       // lay id sau khi luu vao db de dat ten cho anh
-      FileEntity savedFile =
+      String imageUrl =
           storageService
               .uploadFileWithFileTypeReturnUrl(
-                  String.valueOf(company.getId()), imageFile, FileCategory.IMAGE_COMPANY)
+                  String.valueOf(company.getId()), imageFile, FileCategory.IMAGE_COMPANY, true)
               .orElseThrow(() -> new FileStorageException("UPLOAD_FILE_FAILURE"));
-      company.setImage(savedFile.getUrl());
+      company.setImage(imageUrl);
       company = companyRepository.save(company);
       FileEntity fileEntity =
-          fileRepository.findAllByUrlAndDeletedIs(savedFile.getUrl(), false).orElse(null);
+          fileRepository.findAllByUrlAndDeletedIs(imageUrl, false).orElse(null);
       // Update object id for image
       if (fileEntity != null) {
         fileEntity.setObjectId(company.getId());

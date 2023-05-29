@@ -1,19 +1,27 @@
 package hcmute.puzzle.infrastructure.dtos.olds;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class CommentDto {
 
     private long id;
     private String nickname;
     private String email;
     private String content;
-    private int likeNum = 0;
-    private int disLikeNum = 0;
+    private Integer likeNum;
+    private Integer disLikeNum;
     private long blogPostId;
+    private Date createdAt;
+    private long userId;
+    //custom while use, resolve to info front end know current user has right to edit comment.
+    private boolean canEdit;
+    private List<SubCommentDto> subComments;
 }

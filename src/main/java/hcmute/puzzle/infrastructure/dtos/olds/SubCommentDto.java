@@ -1,8 +1,6 @@
 package hcmute.puzzle.infrastructure.dtos.olds;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
@@ -12,7 +10,9 @@ public class SubCommentDto {
     private String nickname;
     private String email;
     private String content;
-    private String blogCategory;
     private String interact;
+    //custom while use, resolve to info front end know current user has right to edit comment.
+    private boolean canEdit;
     private long commentId;
+    private long userId;
 }

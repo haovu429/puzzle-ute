@@ -429,7 +429,7 @@ public class CommonController {
   }
 
   @PostMapping("/register")
-  public DataResponse registerAccount(@RequestBody RegisterUserDto user) {
+  public DataResponse<String> registerAccount(@RequestBody RegisterUserDto user) {
 
     try {
       UserEntity userEntity = userService.registerUser(user).orElse(null);

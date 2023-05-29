@@ -1,4 +1,4 @@
-package hcmute.puzzle.utils.paypal;
+package hcmute.puzzle.paypal;
 
 public enum PaypalPaymentIntent {
     sale, authorize, order

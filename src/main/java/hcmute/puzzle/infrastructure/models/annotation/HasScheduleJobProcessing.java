@@ -1,6 +1,7 @@
 package hcmute.puzzle.infrastructure.models.annotation;
 
 import lombok.extern.slf4j.Slf4j;
+import org.reflections.Reflections;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -10,19 +11,22 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class HasScheduleJobProcessing {
+
+    private static final String packageName = "hcmute.puzzle";
+
     public static List<Class<?>> getAnnotatedClass() {
         List<Class<?>> annotatedClasses = new ArrayList<>();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
+        List<String> classErrors = new ArrayList<>();
         try {
             // Get the class loader and a list of all class files on the classpath
             List<URL> classFileUrls = Collections.list(classLoader.getResources(""));
 
-            String classError = null;
+
             // Iterate over each class file URL
             for (URL classFileUrl : classFileUrls) {
-                classError = classFileUrl.toString();
-                log.error("Class error: " + classError);
+                classErrors.add(classFileUrl.toString());
+                log.warn(String.valueOf(classFileUrl.toURI()));
                 File classFile = new File(classFileUrl.toURI());
                 if (classFile.isDirectory()) {
                     // If the URL points to a directory, recursively scan all files within it
@@ -46,10 +50,14 @@ public class HasScheduleJobProcessing {
             log.error("ClassNotFoundException");
             log.error(e.getMessage());
             //throw new RuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            log.error(e.getMessage());
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("Class error: ");
             log.error(e.getMessage());
         }
+        log.warn("Class error: " + classErrors.toString());
 
         System.out.println("Classes annotated with @MyAnnotation:");
         for (Class<?> clazz : annotatedClasses) {
@@ -60,7 +68,6 @@ public class HasScheduleJobProcessing {
     }
 
     private static void scanDirectoryForAnnotatedClasses(File directory, ClassLoader classLoader, List<Class<?>> annotatedClasses) {
-        String packageName = "hcmute.puzzle";
         for (File file : directory.listFiles()) {
             if (file.isDirectory()) {
                 scanDirectoryForAnnotatedClasses(file, classLoader, annotatedClasses);
@@ -75,15 +82,18 @@ public class HasScheduleJobProcessing {
                         annotatedClasses.add(clazz);
                     }
                 } catch (ClassNotFoundException e) {
-                    log.error("HAHA");
+                    e.printStackTrace();
+                    log.error("ClassNotFoundException");
                     continue;
                 //throw new RuntimeException(e);
                 } catch (Exception e) {
-                    log.error("HIHI");
+                    e.printStackTrace();
+                    log.error("Exception");
                     //throw new RuntimeException(e);
                     continue;
                 } catch (Error e) {
-                    log.error("HOHO");
+                    //e.printStackTrace();
+                    log.error("Error: " + e.getMessage());
                     continue;
                 }
 

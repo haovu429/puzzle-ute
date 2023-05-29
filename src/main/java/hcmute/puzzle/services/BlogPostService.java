@@ -1,13 +1,15 @@
 package hcmute.puzzle.services;
 
 import hcmute.puzzle.infrastructure.dtos.olds.BlogPostDto;
+import hcmute.puzzle.infrastructure.dtos.request.BlogPostRequest;
+import hcmute.puzzle.infrastructure.dtos.request.BlogPostUpdateRequest;
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
 
 public interface BlogPostService {
 
-    DataResponse createBlogPost(BlogPostDto dto);
+    DataResponse createBlogPost(BlogPostRequest blogPostRequest);
 
-    DataResponse update(BlogPostDto dto, long id);
+    DataResponse update(BlogPostUpdateRequest blogPostUpdateRequest, long id);
 
     DataResponse delete(long id);
 
