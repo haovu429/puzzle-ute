@@ -1,9 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <changeSet author="caiho (generated)" id="1684877748266-1">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="caiho (generated)" id="1685462408085-1">
         <createTable tableName="users">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="users_pkey"/>
@@ -28,7 +25,7 @@
             <column name="username" type="VARCHAR(100)"/>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-3">
+    <changeSet author="caiho (generated)" id="1685462408085-2">
         <createTable tableName="package">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="package_pkey"/>
@@ -61,7 +58,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-4">
+    <changeSet author="caiho (generated)" id="1685462408085-3">
         <createTable tableName="md_file_type">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="md_file_type_pkey"/>
@@ -80,7 +77,7 @@
             <column name="type" type="VARCHAR(50)"/>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-6">
+    <changeSet author="caiho (generated)" id="1685462408085-4">
         <createTable tableName="company">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="company_pkey"/>
@@ -99,8 +96,25 @@
             <column name="created_employer_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-
-    <changeSet author="caiho (generated)" id="1684877748266-15">
+    <changeSet author="caiho (generated)" id="1685462408085-5">
+        <addUniqueConstraint columnNames="email" constraintName="uk_6dotkott2kjsp8vw4d0m25fb7" tableName="users"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685462408085-6">
+        <addUniqueConstraint columnNames="phone" constraintName="uk_du5v5sr43g5bfnji4vb8hg5s3" tableName="users"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685462408085-7">
+        <addUniqueConstraint columnNames="username" constraintName="uk_r43af9ap4edm43mmtq01oddj6" tableName="users"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685462408085-8">
+        <addUniqueConstraint columnNames="code" constraintName="uk_977xcn6kkg04ibee1ie29tnem" tableName="package"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685462408085-9">
+        <addUniqueConstraint columnNames="category" constraintName="uk_ctjfon9pvjgaageyikt6v3kpo" tableName="md_file_type"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685462408085-10">
+        <addUniqueConstraint columnNames="name" constraintName="uk_niu8sfil2gxywcru9ah3r4ec5" tableName="company"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685462408085-11">
         <createTable tableName="application">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="application_pkey"/>
@@ -119,7 +133,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-16">
+    <changeSet author="caiho (generated)" id="1685462408085-12">
         <createTable tableName="blog_post">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="blog_post_pkey"/>
@@ -134,9 +148,10 @@
             <column name="author" type="BIGINT"/>
             <column name="tags" type="VARCHAR(200)"/>
             <column name="thumbnail" type="TEXT"/>
+            <column name="category_blog_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-17">
+    <changeSet author="caiho (generated)" id="1685462408085-13">
         <createTable tableName="candidate">
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="candidate_pkey"/>
@@ -166,7 +181,7 @@
             <column name="work_status" type="VARCHAR(50)"/>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-18">
+    <changeSet author="caiho (generated)" id="1685462408085-14">
         <createTable tableName="category">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="category_pkey"/>
@@ -179,7 +194,7 @@
             <column name="name" type="VARCHAR(200)"/>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-19">
+    <changeSet author="caiho (generated)" id="1685462408085-15">
         <createTable tableName="comment">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="comment_pkey"/>
@@ -199,7 +214,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-20">
+    <changeSet author="caiho (generated)" id="1685462408085-16">
         <createTable tableName="document">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="document_pkey"/>
@@ -216,7 +231,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-21">
+    <changeSet author="caiho (generated)" id="1685462408085-17">
         <createTable tableName="employer">
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="employer_pkey"/>
@@ -231,7 +246,7 @@
             <column name="recruitment_phone" type="VARCHAR(20)"/>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-22">
+    <changeSet author="caiho (generated)" id="1685462408085-18">
         <createTable tableName="evaluate">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="evaluate_pkey"/>
@@ -250,7 +265,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-23">
+    <changeSet author="caiho (generated)" id="1685462408085-19">
         <createTable tableName="experience">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="experience_pkey"/>
@@ -273,7 +288,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-24">
+    <changeSet author="caiho (generated)" id="1685462408085-20">
         <createTable tableName="extra_info">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="extra_info_pkey"/>
@@ -287,7 +302,7 @@
             <column name="type" type="VARCHAR(100)"/>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-25">
+    <changeSet author="caiho (generated)" id="1685462408085-21">
         <createTable tableName="file">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="file_pkey"/>
@@ -307,7 +322,7 @@
             <column name="url" type="TEXT"/>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-26">
+    <changeSet author="caiho (generated)" id="1685462408085-22">
         <createTable tableName="follow_employer">
             <column name="candidate_id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="follow_employer_pkey"/>
@@ -317,7 +332,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-27">
+    <changeSet author="caiho (generated)" id="1685462408085-23">
         <createTable tableName="following_company">
             <column name="candidate_id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="following_company_pkey"/>
@@ -327,7 +342,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-28">
+    <changeSet author="caiho (generated)" id="1685462408085-24">
         <createTable tableName="invoice">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="invoice_pkey"/>
@@ -347,7 +362,7 @@
             <column name="transaction_code" type="VARCHAR(30)"/>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-29">
+    <changeSet author="caiho (generated)" id="1685462408085-25">
         <createTable tableName="job_alert">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="job_alert_pkey"/>
@@ -368,7 +383,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-30">
+    <changeSet author="caiho (generated)" id="1685462408085-26">
         <createTable tableName="job_post">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="job_post_pkey"/>
@@ -413,7 +428,7 @@
             <column name="subscriber_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-31">
+    <changeSet author="caiho (generated)" id="1685462408085-27">
         <createTable tableName="md_task_type">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="md_task_type_pkey"/>
@@ -427,7 +442,7 @@
             <column name="type" type="VARCHAR(100)"/>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-32">
+    <changeSet author="caiho (generated)" id="1685462408085-28">
         <createTable tableName="notification">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="notification_pkey"/>
@@ -445,7 +460,7 @@
             <column name="user_id" type="BIGINT"/>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-33">
+    <changeSet author="caiho (generated)" id="1685462408085-29">
         <createTable tableName="role">
             <column name="code" type="VARCHAR(255)">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="role_pkey"/>
@@ -458,7 +473,7 @@
             <column name="name" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-34">
+    <changeSet author="caiho (generated)" id="1685462408085-30">
         <createTable tableName="saved_job_post">
             <column name="candidate_id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="saved_job_post_pkey"/>
@@ -468,7 +483,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-35">
+    <changeSet author="caiho (generated)" id="1685462408085-31">
         <createTable tableName="sub_comment">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="sub_comment_pkey"/>
@@ -477,16 +492,18 @@
             <column name="created_by" type="VARCHAR(100)"/>
             <column name="updated_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
             <column name="update_by" type="VARCHAR(100)"/>
-            <column name="blog_category" type="VARCHAR(100)"/>
             <column name="content" type="VARCHAR(200)"/>
             <column name="email" type="VARCHAR(100)"/>
             <column name="interact" type="VARCHAR(30)"/>
             <column name="is_deleted" type="BOOLEAN"/>
             <column name="nickname" type="VARCHAR(50)"/>
             <column name="comment_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-36">
+    <changeSet author="caiho (generated)" id="1685462408085-32">
         <createTable tableName="subscribe">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="subscribe_pkey"/>
@@ -510,7 +527,7 @@
             <column name="reg_user_email" type="VARCHAR(100)"/>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-37">
+    <changeSet author="caiho (generated)" id="1685462408085-33">
         <createTable tableName="token">
             <column name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="token_pkey"/>
@@ -533,7 +550,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-38">
+    <changeSet author="caiho (generated)" id="1685462408085-34">
         <createTable tableName="user_role">
             <column name="user_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -543,7 +560,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-39">
+    <changeSet author="caiho (generated)" id="1685462408085-35">
         <createTable tableName="viewed_user">
             <column name="job_post_id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="viewed_user_pkey"/>
@@ -552,36 +569,6 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="viewed_user_pkey"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-40">
-        <insert tableName="candidate">
-            <column name="user_id" valueNumeric="3"/>
-            <column name="created_at" valueDate="2023-05-09T22:59:45.124"/>
-            <column name="created_by" value="puzzle429@gmail.com"/>
-            <column name="updated_at" valueDate="2023-05-09T22:59:45.124"/>
-            <column name="update_by" value="puzzle429@gmail.com"/>
-            <column name="blind" valueBoolean="false"/>
-            <column name="communication_dis" valueBoolean="false"/>
-            <column name="deaf" valueBoolean="false"/>
-            <column name="detail_dis"/>
-            <column name="education_level"/>
-            <column name="email_contact" value="haovu961@gmail.com"/>
-            <column name="first_name" value="Minh"/>
-            <column name="hand_dis" valueBoolean="false"/>
-            <column name="introduction"/>
-            <column name="labor" valueBoolean="false"/>
-            <column name="last_name" value="Lê Quang"/>
-            <column name="phone_num"/>
-            <column name="position"/>
-            <column name="services"/>
-            <column name="skills" value="flutter#golang"/>
-            <column name="verified_dis" valueBoolean="false"/>
-            <column name="work_status"/>
-        </insert>
-    </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-14">
-        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="1" maxValue="9223372036854775807"
-                        minValue="1" sequenceName="hibernate_sequence" startValue="1"/>
     </changeSet>
 
 </databaseChangeLog>

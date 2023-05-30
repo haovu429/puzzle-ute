@@ -1,0 +1,12 @@
+====All===
+liquibase --driver=org.postgresql.Driver --changeLogFile=db/changelog.xml  --classpath=postgresql-9.4-1201-jdbc41.jar --url="jdbc:postgresql://localhost:5432/puzzle_ute"  --username=postgres --password=azkaban11 --defaultSchemaName=public --diff-types="catalogs, tables, functions, views, columns, indexes, foreignkeys, primarykeys, uniqueconstraints, data, storedprocedures, triggers, sequences, databasepackage, databasepackagebody" generateChangeLog 
+
+====Create table=====
+liquibase --driver=org.postgresql.Driver --changeLogFile=db/create_table.xml  --classpath=postgresql-9.4-1201-jdbc41.jar --url="jdbc:postgresql://localhost:5432/puzzle_ute"  --username=postgres --password=azkaban11 --defaultSchemaName=public --diff-types="catalogs, tables, functions, views, columns, indexes, primarykeys, uniqueconstraints, storedprocedures, triggers, sequences, databasepackage, databasepackagebody" generateChangeLog
+
+====Add data=====
+liquibase --driver=org.postgresql.Driver --changeLogFile=db/data.xml  --classpath=postgresql-9.4-1201-jdbc41.jar --url="jdbc:postgresql://localhost:5432/puzzle_ute"  --username=postgres --password=azkaban11 --defaultSchemaName=public --diff-types="data" generateChangeLog 
+
+====Add constraint=====
+liquibase --driver=org.postgresql.Driver --changeLogFile=db/constraint.xml  --classpath=postgresql-9.4-1201-jdbc41.jar --url="jdbc:postgresql://localhost:5432/puzzle_ute"  --username=postgres --password=azkaban11 --defaultSchemaName=public --diff-types="foreignkeys" generateChangeLog 
+

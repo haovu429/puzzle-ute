@@ -1,9 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <changeSet author="caiho (generated)" id="1684877748266-2">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="caiho (generated)" id="1685462503716-1">
         <insert tableName="users">
             <column name="id" valueNumeric="1"/>
             <column name="created_at" valueDate="2023-05-09T22:59:45.049"/>
@@ -98,25 +95,6 @@
             <column name="phone"/>
             <column name="provider"/>
             <column name="username"/>
-        </insert>
-        <insert tableName="users">
-            <column name="id" valueNumeric="4"/>
-            <column name="created_at" valueDate="2023-05-09T22:59:45.073"/>
-            <column name="created_by" value="puzzle429@gmail.com"/>
-            <column name="updated_at" valueDate="2023-05-14T04:57:55.89"/>
-            <column name="update_by" value="puzzle429@gmail.com"/>
-            <column name="avatar"/>
-            <column name="email" value="admin1@gmail.com"/>
-            <column name="email_verified" valueBoolean="false"/>
-            <column name="full_name" value="qua dep trai quá troi qua dat"/>
-            <column name="is_active" valueBoolean="true"/>
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="last_login_at" valueDate="2023-05-14T04:57:55.849"/>
-            <column name="locale"/>
-            <column name="password" value="$2a$10$PhsHRVxkqGbzSAaRFkQ5Eek4VYpNApWcWxspnLNslSNzoHkdVBVnu"/>
-            <column name="phone"/>
-            <column name="provider"/>
-            <column name="username" value="haodeptrai962"/>
         </insert>
         <insert tableName="users">
             <column name="id" valueNumeric="9"/>
@@ -251,9 +229,27 @@
             <column name="provider"/>
             <column name="username"/>
         </insert>
+        <insert tableName="users">
+            <column name="id" valueNumeric="4"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.073"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-30T00:45:53.374"/>
+            <column name="update_by" value="admin1@gmail.com"/>
+            <column name="avatar"/>
+            <column name="email" value="admin1@gmail.com"/>
+            <column name="email_verified" valueBoolean="false"/>
+            <column name="full_name" value="qua dep trai quá troi qua dat"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="last_login_at" valueDate="2023-05-30T00:40:14.498"/>
+            <column name="locale"/>
+            <column name="password" value="$2a$10$PhsHRVxkqGbzSAaRFkQ5Eek4VYpNApWcWxspnLNslSNzoHkdVBVnu"/>
+            <column name="phone"/>
+            <column name="provider"/>
+            <column name="username" value="haodeptrai962"/>
+        </insert>
     </changeSet>
-
-    <changeSet author="caiho (generated)" id="1684877748266-5">
+    <changeSet author="caiho (generated)" id="1685462503716-2">
         <insert tableName="md_file_type">
             <column name="id" valueNumeric="1"/>
             <column name="created_at" valueDate="2023-05-09T22:59:45.231"/>
@@ -293,9 +289,21 @@
             <column name="storage_name" value="CLOUDINARY"/>
             <column name="type" value="image"/>
         </insert>
+        <insert tableName="md_file_type">
+            <column name="id" valueNumeric="4"/>
+            <column name="created_at"/>
+            <column name="created_by"/>
+            <column name="updated_at"/>
+            <column name="update_by"/>
+            <column name="author" value="puzzle429@gmail.com"/>
+            <column name="category" value="THUMBNAIL_BLOGPOST"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="location" value="puzzle_ute/user/blog/thumbnail"/>
+            <column name="storage_name" value="CLOUDINARY"/>
+            <column name="type" value="image"/>
+        </insert>
     </changeSet>
-
-    <changeSet author="caiho (generated)" id="1684877748266-7">
+    <changeSet author="caiho (generated)" id="1685462503716-3">
         <insert tableName="company">
             <column name="id" valueNumeric="1"/>
             <column name="created_at" valueDate="2023-05-09T22:59:45.165"/>
@@ -336,7 +344,113 @@
             <column name="created_employer_id" valueNumeric="2"/>
         </insert>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-41">
+    <changeSet author="caiho (generated)" id="1685462503716-4">
+        <insert tableName="blog_post">
+            <column name="id" valueNumeric="2"/>
+            <column name="created_at" valueDate="2023-05-25T23:13:24.965"/>
+            <column name="created_by" value="admin1@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-25T23:13:24.965"/>
+            <column name="update_by" value="admin1@gmail.com"/>
+            <column name="body" value=" Hao danh dau"/>
+            <column name="category_blog" value="1"/>
+            <column name="title" value=" String boot setup basic"/>
+            <column name="author" valueNumeric="4"/>
+            <column name="tags" value=" #String boot #API"/>
+            <column name="thumbnail"/>
+            <column name="category_blog_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="blog_post">
+            <column name="id" valueNumeric="3"/>
+            <column name="created_at" valueDate="2023-05-25T23:16:02.265"/>
+            <column name="created_by" value="admin1@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-26T22:53:08.235"/>
+            <column name="update_by" value="admin1@gmail.com"/>
+            <column name="body" value=" Hao đã tạo bài này"/>
+            <column name="category_blog" value="1"/>
+            <column name="title" value=" String boot setup basic"/>
+            <column name="author" valueNumeric="4"/>
+            <column name="tags" value=" #String boot #API"/>
+            <column name="thumbnail" value="https://res.cloudinary.com/drwwfkcmg/image/upload/v1685031364/puzzle_ute/user/blog/thumbnail/3__blogpost_thumbnail2023-05-25T23:16:02.jpg"/>
+            <column name="category_blog_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="blog_post">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_at" valueDate="2023-05-25T22:58:58.635"/>
+            <column name="created_by" value="admin1@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-25T22:58:58.635"/>
+            <column name="update_by" value="admin1@gmail.com"/>
+            <column name="body" value=" Hao danh dau"/>
+            <column name="category_blog" value="1"/>
+            <column name="title" value=" String boot setup basic"/>
+            <column name="author" valueNumeric="4"/>
+            <column name="tags" value=" #String boot #API"/>
+            <column name="thumbnail"/>
+            <column name="category_blog_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685462503716-5">
+        <insert tableName="candidate">
+            <column name="user_id" valueNumeric="3"/>
+            <column name="created_at" valueDate="2023-05-09T22:59:45.124"/>
+            <column name="created_by" value="puzzle429@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-09T22:59:45.124"/>
+            <column name="update_by" value="puzzle429@gmail.com"/>
+            <column name="blind" valueBoolean="false"/>
+            <column name="communication_dis" valueBoolean="false"/>
+            <column name="deaf" valueBoolean="false"/>
+            <column name="detail_dis"/>
+            <column name="education_level"/>
+            <column name="email_contact" value="haovu961@gmail.com"/>
+            <column name="first_name" value="Minh"/>
+            <column name="hand_dis" valueBoolean="false"/>
+            <column name="introduction"/>
+            <column name="labor" valueBoolean="false"/>
+            <column name="last_name" value="Lê Quang"/>
+            <column name="phone_num"/>
+            <column name="position"/>
+            <column name="services"/>
+            <column name="skills" value="flutter#golang"/>
+            <column name="verified_dis" valueBoolean="false"/>
+            <column name="work_status"/>
+        </insert>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685462503716-6">
+        <insert tableName="category">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_at"/>
+            <column name="created_by"/>
+            <column name="updated_at"/>
+            <column name="update_by"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="name" value="Môi trường"/>
+        </insert>
+        <insert tableName="category">
+            <column name="id" valueNumeric="2"/>
+            <column name="created_at"/>
+            <column name="created_by"/>
+            <column name="updated_at"/>
+            <column name="update_by"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="name" value="Môi IT"/>
+        </insert>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685462503716-7">
+        <insert tableName="comment">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_at"/>
+            <column name="created_by"/>
+            <column name="updated_at"/>
+            <column name="update_by"/>
+            <column name="content" value="puzzle429@gmail.com"/>
+            <column name="dis_like_num"/>
+            <column name="email" value="haodeptry@gmail.com"/>
+            <column name="like_num"/>
+            <column name="nickname" value="haodeptry"/>
+            <column name="blog_post_id" valueNumeric="3"/>
+            <column name="user_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685462503716-8">
         <insert tableName="employer">
             <column name="user_id" valueNumeric="1"/>
             <column name="created_at" valueDate="2023-05-09T22:59:45.146"/>
@@ -360,7 +474,7 @@
             <column name="recruitment_phone"/>
         </insert>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-42">
+    <changeSet author="caiho (generated)" id="1685462503716-9">
         <insert tableName="extra_info">
             <column name="id" valueNumeric="1"/>
             <column name="created_at" valueDate="2023-05-09T22:59:45.206"/>
@@ -482,7 +596,105 @@
             <column name="type" value="SKILL"/>
         </insert>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-43">
+    <changeSet author="caiho (generated)" id="1685462503716-10">
+        <insert tableName="file">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_at" valueDate="2023-05-25T23:16:04.839"/>
+            <column name="created_by" value="admin1@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-25T23:16:04.839"/>
+            <column name="update_by" value="admin1@gmail.com"/>
+            <column name="category" value="THUMBNAIL_BLOGPOST"/>
+            <column name="cloudinary_public_id" value="puzzle_ute/user/blog/thumbnail/3__blogpost_thumbnail2023-05-25T23:16:02"/>
+            <column name="extension" value="jpg"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="location" value="puzzle_ute/user/blog/thumbnail"/>
+            <column name="name" value="3__blogpost_thumbnail2023-05-25T23:16:02"/>
+            <column name="object_id" valueNumeric="0"/>
+            <column name="type" value="image"/>
+            <column name="url" value="https://res.cloudinary.com/drwwfkcmg/image/upload/v1685031364/puzzle_ute/user/blog/thumbnail/3__blogpost_thumbnail2023-05-25T23:16:02.jpg"/>
+        </insert>
+        <insert tableName="file">
+            <column name="id" valueNumeric="2"/>
+            <column name="created_at" valueDate="2023-05-26T03:13:59.096"/>
+            <column name="created_by" value="admin1@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-26T03:13:59.096"/>
+            <column name="update_by" value="admin1@gmail.com"/>
+            <column name="category" value="THUMBNAIL_BLOGPOST"/>
+            <column name="cloudinary_public_id" value="puzzle_ute/user/blog/thumbnail/3__blogpost_thumbnail2023-05-26T03:13:56"/>
+            <column name="extension" value="jpg"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="location" value="puzzle_ute/user/blog/thumbnail"/>
+            <column name="name" value="3__blogpost_thumbnail2023-05-26T03:13:56"/>
+            <column name="object_id" valueNumeric="0"/>
+            <column name="type" value="image"/>
+            <column name="url" value="https://res.cloudinary.com/drwwfkcmg/image/upload/v1685045638/puzzle_ute/user/blog/thumbnail/3__blogpost_thumbnail2023-05-26T03:13:56.jpg"/>
+        </insert>
+        <insert tableName="file">
+            <column name="id" valueNumeric="3"/>
+            <column name="created_at" valueDate="2023-05-26T22:52:48.944"/>
+            <column name="created_by" value="admin1@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-26T22:52:48.944"/>
+            <column name="update_by" value="admin1@gmail.com"/>
+            <column name="category" value="THUMBNAIL_BLOGPOST"/>
+            <column name="cloudinary_public_id" value="puzzle_ute/user/blog/thumbnail/3__blogpost_thumbnail2023-05-26T22:52:43"/>
+            <column name="extension" value="jpg"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="location" value="puzzle_ute/user/blog/thumbnail"/>
+            <column name="name" value="3__blogpost_thumbnail2023-05-26T22:52:43"/>
+            <column name="object_id" valueNumeric="0"/>
+            <column name="type" value="image"/>
+            <column name="url" value="https://res.cloudinary.com/drwwfkcmg/image/upload/v1685116368/puzzle_ute/user/blog/thumbnail/3__blogpost_thumbnail2023-05-26T22:52:43.jpg"/>
+        </insert>
+        <insert tableName="file">
+            <column name="id" valueNumeric="4"/>
+            <column name="created_at" valueDate="2023-05-26T22:53:11.167"/>
+            <column name="created_by" value="admin1@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-26T22:53:11.167"/>
+            <column name="update_by" value="admin1@gmail.com"/>
+            <column name="category" value="THUMBNAIL_BLOGPOST"/>
+            <column name="cloudinary_public_id" value="puzzle_ute/user/blog/thumbnail/3__blogpost_thumbnail2023-05-26T22:53:08"/>
+            <column name="extension" value="jpg"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="location" value="puzzle_ute/user/blog/thumbnail"/>
+            <column name="name" value="3__blogpost_thumbnail2023-05-26T22:53:08"/>
+            <column name="object_id" valueNumeric="0"/>
+            <column name="type" value="image"/>
+            <column name="url" value="https://res.cloudinary.com/drwwfkcmg/image/upload/v1685116390/puzzle_ute/user/blog/thumbnail/3__blogpost_thumbnail2023-05-26T22:53:08.jpg"/>
+        </insert>
+        <insert tableName="file">
+            <column name="id" valueNumeric="5"/>
+            <column name="created_at" valueDate="2023-05-30T00:40:41.702"/>
+            <column name="created_by" value="admin1@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-30T00:44:53.515"/>
+            <column name="update_by" value="admin1@gmail.com"/>
+            <column name="category" value="IMAGE_AVATAR"/>
+            <column name="cloudinary_public_id" value="puzzle_ute/user/avatar/admin1@gmail.com2023-05-30T00:40:39_avatar"/>
+            <column name="extension" value="jpg"/>
+            <column name="is_deleted" valueBoolean="true"/>
+            <column name="location" value="puzzle_ute/user/avatar"/>
+            <column name="name" value="admin1@gmail.com2023-05-30T00:40:39_avatar"/>
+            <column name="object_id" valueNumeric="0"/>
+            <column name="type" value="image"/>
+            <column name="url" value="https://res.cloudinary.com/drwwfkcmg/image/upload/v1685382040/puzzle_ute/user/avatar/admin1%40gmail.com2023-05-30T00:40:39_avatar.jpg"/>
+        </insert>
+        <insert tableName="file">
+            <column name="id" valueNumeric="6"/>
+            <column name="created_at" valueDate="2023-05-30T00:45:35.866"/>
+            <column name="created_by" value="admin1@gmail.com"/>
+            <column name="updated_at" valueDate="2023-05-30T00:45:53.367"/>
+            <column name="update_by" value="admin1@gmail.com"/>
+            <column name="category" value="IMAGE_AVATAR"/>
+            <column name="cloudinary_public_id" value="puzzle_ute/user/avatar/admin1@gmail.com2023-05-30T00:45:33_avatar"/>
+            <column name="extension" value="jpg"/>
+            <column name="is_deleted" valueBoolean="true"/>
+            <column name="location" value="puzzle_ute/user/avatar"/>
+            <column name="name" value="admin1@gmail.com2023-05-30T00:45:33_avatar"/>
+            <column name="object_id" valueNumeric="0"/>
+            <column name="type" value="image"/>
+            <column name="url" value="https://res.cloudinary.com/drwwfkcmg/image/upload/v1685382334/puzzle_ute/user/avatar/admin1%40gmail.com2023-05-30T00:45:33_avatar.jpg"/>
+        </insert>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685462503716-11">
         <insert tableName="job_post">
             <column name="id" valueNumeric="1"/>
             <column name="created_at" valueDate="2023-05-09T22:59:45.189"/>
@@ -513,7 +725,7 @@
             <column name="views" valueNumeric="0"/>
             <column name="work_status"/>
             <column name="workplace_type" value="OFFICE"/>
-            <column name="category_id"/>
+            <column name="category_id" valueNumeric="2"/>
             <column name="company_id"/>
             <column name="created_employer" valueNumeric="1"/>
             <column name="subscriber_id"/>
@@ -548,7 +760,7 @@
             <column name="views" valueNumeric="0"/>
             <column name="work_status"/>
             <column name="workplace_type" value="OFFICE"/>
-            <column name="category_id"/>
+            <column name="category_id" valueNumeric="2"/>
             <column name="company_id"/>
             <column name="created_employer" valueNumeric="2"/>
             <column name="subscriber_id"/>
@@ -583,13 +795,13 @@
             <column name="views" valueNumeric="1"/>
             <column name="work_status"/>
             <column name="workplace_type" value="OFFICE"/>
-            <column name="category_id" />
+            <column name="category_id" valueNumeric="2"/>
             <column name="company_id"/>
             <column name="created_employer" valueNumeric="2"/>
             <column name="subscriber_id"/>
         </insert>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-44">
+    <changeSet author="caiho (generated)" id="1685462503716-12">
         <insert tableName="role">
             <column name="code" value="user"/>
             <column name="created_at" valueDate="2023-05-09T22:59:44.207"/>
@@ -627,7 +839,23 @@
             <column name="name" value="EMPLOYER"/>
         </insert>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-45">
+    <changeSet author="caiho (generated)" id="1685462503716-13">
+        <insert tableName="sub_comment">
+            <column name="id" valueNumeric="1"/>
+            <column name="created_at"/>
+            <column name="created_by"/>
+            <column name="updated_at"/>
+            <column name="update_by"/>
+            <column name="content" value="Hảo đã thêm sub comment này "/>
+            <column name="email" value="haovu961@gmail.com"/>
+            <column name="interact" value="LIKE"/>
+            <column name="is_deleted" valueBoolean="false"/>
+            <column name="nickname" value="haodeptry"/>
+            <column name="comment_id" valueNumeric="1"/>
+            <column name="user_id" valueNumeric="4"/>
+        </insert>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685462503716-14">
         <insert tableName="token">
             <column name="id" valueNumeric="2"/>
             <column name="created_at" valueDate="2023-05-09T23:17:20.51"/>
@@ -706,7 +934,7 @@
             <column name="user_id" valueNumeric="15"/>
         </insert>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-46">
+    <changeSet author="caiho (generated)" id="1685462503716-15">
         <insert tableName="user_role">
             <column name="user_id" valueNumeric="1"/>
             <column name="role_id" value="employer"/>
@@ -776,45 +1004,10 @@
             <column name="role_id" value="user"/>
         </insert>
     </changeSet>
-    <changeSet author="caiho (generated)" id="1684877748266-47">
+    <changeSet author="caiho (generated)" id="1685462503716-16">
         <insert tableName="viewed_user">
             <column name="job_post_id" valueNumeric="3"/>
             <column name="user_id" valueNumeric="4"/>
-        </insert>
-    </changeSet>
-    <changeSet id="1684877748266-81" author="lvhao">
-        <insert tableName="category">
-            <column name="id" valueNumeric="1"/>
-            <column name="is_active" valueBoolean="true"/>
-            <column name="name" value="Môi trường"/>
-        </insert>
-    </changeSet>
-    <changeSet id="1684877748266-82" author="lvhao">
-        <insert tableName="category">
-            <column name="id" valueNumeric="2"/>
-            <column name="is_active" valueBoolean="true"/>
-            <column name="name" value="Môi IT"/>
-        </insert>
-    </changeSet>
-    <changeSet id="20230525-1" author="lvhao">
-        <insert tableName="md_file_type">
-            <column name="id" valueNumeric="4"/>
-            <column name="author" value="puzzle429@gmail.com"/>
-            <column name="category" value="THUMBNAIL_BLOGPOST"/>
-            <column name="is_deleted" valueBoolean="false"/>
-            <column name="location" value="puzzle_ute/user/blog/thumbnail"/>
-            <column name="storage_name" value="CLOUDINARY"/>
-            <column name="type" value="image"/>
-        </insert>
-    </changeSet>
-    <changeSet id="20230525-2" author="lvhao">
-        <insert tableName="comment">
-            <column name="id" valueNumeric="1"/>
-            <column name="content" value="puzzle429@gmail.com"/>
-            <column name="email" value="haodeptry@gmail.com"/>
-            <column name="nickname" valueBoolean="false"/>
-            <column name="blog_post_id" valueNumeric="3"/>
-            <column name="user_id" valueNumeric="1"/>
         </insert>
     </changeSet>
 </databaseChangeLog>
