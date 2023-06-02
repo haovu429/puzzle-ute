@@ -275,11 +275,6 @@ public class AdminController {
     return categoryService.delete(categoryId);
   }
 
-  @GetMapping("/blog-post")
-  public DataResponse getAllBlogPost() {
-    return blogPostService.getAll();
-  }
-
   @DeleteMapping("/delete-blog-post/{blogPostId}")
   public DataResponse deleteBlogPost(@PathVariable long blogPostId) {
     return blogPostService.delete(blogPostId);

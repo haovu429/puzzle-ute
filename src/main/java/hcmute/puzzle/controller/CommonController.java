@@ -4,10 +4,7 @@ import freemarker.template.TemplateException;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.news.RegisterUserDto;
 import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
-import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
-import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
-import hcmute.puzzle.infrastructure.dtos.olds.JobPostDto;
-import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.olds.*;
 import hcmute.puzzle.infrastructure.entities.CandidateEntity;
 import hcmute.puzzle.infrastructure.entities.JobPostEntity;
 import hcmute.puzzle.infrastructure.entities.UserEntity;
@@ -80,6 +77,8 @@ public class CommonController {
   @Autowired ModelMapper modelMapper;
 
   @Autowired SecurityService securityService;
+
+  @Autowired CategoryService categoryService;
 
   @GetMapping("/job-post/get-all")
   ResponseObject getAllJobPost() {
@@ -524,5 +523,10 @@ public class CommonController {
   @GetMapping("/blog-post")
   public DataResponse getAllBlogPost() {
     return blogPostService.getAll();
+  }
+
+  @GetMapping("/get-all-category")
+  public DataResponse getAllCategory() {
+    return categoryService.getAll();
   }
 }
