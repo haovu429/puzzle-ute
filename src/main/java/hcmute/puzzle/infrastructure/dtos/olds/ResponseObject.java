@@ -2,8 +2,8 @@ package hcmute.puzzle.infrastructure.dtos.olds;
 
 public class ResponseObject<T> {
   private String errorCode;
-  private int status;
   private String message;
+  private int status;
   private T data;
 
   public ResponseObject(int status, String message, T data) {

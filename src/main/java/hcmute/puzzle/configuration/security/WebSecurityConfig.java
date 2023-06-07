@@ -1,9 +1,5 @@
 package hcmute.puzzle.configuration.security;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.messaging.FirebaseMessaging;
 import hcmute.puzzle.configuration.accessHandler.CustomAccessDeniedHandler;
 import hcmute.puzzle.configuration.accessHandler.CustomAuthenticationHandler;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
@@ -13,35 +9,29 @@ import hcmute.puzzle.services.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
-import java.io.IOException;
-
 // @EnableJpaRepositories(basePackages="java")
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class WebSecurityConfig {
-    private static final String[] AUTH_WHITE_LIST = {
-            "/v3-docs/**", "/swagger-ui/**", "/v2-docs/**", "/swagger-resources/**"
-    };
+    private static final String[] AUTH_WHITE_LIST = {"/v3-docs/**", "/swagger-ui/**", "/v2-docs/**",
+            "/swagger-resources/**", "/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-ui/index.html",
+            "/v3/api-docs/**"};
 
     //    @Autowired
     //    private AuthEntryPointJwt unauthorizedHandler;
@@ -49,26 +39,16 @@ public class WebSecurityConfig {
     @Autowired
     CustomOAuth2UserService oauthUserService;
 
-    @Autowired UserDetailsService userDetailsService;
+    @Autowired
+    UserDetailsService userDetailsService;
 
-//  @Autowired OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    //  @Autowired OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
     @Autowired
     UserRepository userRepository;
 
     @Autowired
-    UserService userService;
-
-    @Bean
-    FirebaseMessaging firebaseMessaging() throws IOException {
-        GoogleCredentials googleCredentials =
-                GoogleCredentials.fromStream(
-                        new ClassPathResource("firebase-service-account.json").getInputStream());
-        FirebaseOptions firebaseOptions =
-                FirebaseOptions.builder().setCredentials(googleCredentials).build();
-        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "puzzle-ute");
-        return FirebaseMessaging.getInstance(app);
-    }
+	UserSecurityService userService;
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -105,42 +85,42 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.cors()
-                .disable()
-                .csrf().disable()
-                .exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPoint())
-                .accessDeniedHandler(accessDeniedHandler())
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/common/**", "/schedule-config/**", "/test/**"
-                        , "/init-db", "/oauth2/**", "/api-docs", "/actuator/**"
-                        , "/login/**", "/auth/**", "/login-google/**", "/forgot-password"
-                        , "/reset-password", "/swagger-ui/**","/swagger-ui.html", "/v3/api-docs/**", "/puzzle-api/**", "/"
-                        , "/login-google", "/oauth/**", "/pay-result/**")
-                .permitAll()
-                .antMatchers("/static/images/**")
-                .permitAll()
-                .antMatchers(AUTH_WHITE_LIST)
-                .permitAll()
-                .antMatchers("/user/**")
-                .hasAuthority(Roles.USER.value)
-                .antMatchers("/role/admin", "/admin/**")
-                .hasAnyAuthority(Roles.ADMIN.value)
-                .antMatchers("/candidate/**")
-                .hasAuthority(Roles.CANDIDATE.value)
-                .antMatchers("/employer/**", "/pay/**")
-                .hasAuthority(Roles.EMPLOYER.value)
-                .anyRequest()
-                .authenticated()
-                .and()
-                .httpBasic()
-                .and()
-                .rememberMe()
-                .key(java.util.UUID.randomUUID().toString())
-                .tokenValiditySeconds(1209600);
+            .disable()
+            .csrf()
+            .disable()
+            .exceptionHandling()
+            .authenticationEntryPoint(authenticationEntryPoint())
+            .accessDeniedHandler(accessDeniedHandler())
+            .and()
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeRequests()
+            .antMatchers("/common/**", "/schedule-config/**", "/test/**", "/init-db"
+                    , "/oauth2/**", "/api-docs", "/actuator/**", "/login/**", "/auth/**"
+                    , "/login-google/**", "/forgot-password", "/reset-password"
+                    , "/", "/login-google", "/oauth/**", "/pay-result/**")
+            .permitAll()
+            .antMatchers("/static/images/**")
+            .permitAll()
+            .antMatchers(AUTH_WHITE_LIST)
+            .permitAll()
+            .antMatchers("/user/**")
+            .hasAuthority(Roles.USER.value)
+            .antMatchers("/role/admin", "/admin/**")
+            .hasAnyAuthority(Roles.ADMIN.value)
+            .antMatchers("/candidate/**")
+            .hasAuthority(Roles.CANDIDATE.value)
+            .antMatchers("/employer/**", "/pay/**")
+            .hasAuthority(Roles.EMPLOYER.value)
+            .anyRequest()
+            .authenticated()
+            .and()
+            .httpBasic()
+            .and()
+            .rememberMe()
+            .key(java.util.UUID.randomUUID().toString())
+            .tokenValiditySeconds(1209600);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

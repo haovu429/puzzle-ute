@@ -4,6 +4,7 @@ import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
 import hcmute.puzzle.infrastructure.dtos.olds.*;
 import hcmute.puzzle.infrastructure.entities.*;
+import hcmute.puzzle.infrastructure.entities.Package;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.utils.Provider;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-public class Converter {
+public class Converter<T, D> {
 
     @Autowired
     private ApplicationRepository applicationRepository;
@@ -58,8 +59,9 @@ public class Converter {
     public Converter() {
     }
 
+
     // User
-    public UserPostDto toDTO(UserEntity entity) {
+    public UserPostDto toDTO(User entity) {
         UserPostDto userPostDTO = new UserPostDto();
         userPostDTO.setId(entity.getId());
         userPostDTO.setUsername(entity.getUsername());
@@ -84,21 +86,21 @@ public class Converter {
         return userPostDTO;
     }
 
-    public UserEntity toEntity(UserPostDto dto) {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setId(dto.getId());
-        userEntity.setUsername(dto.getUsername());
-        userEntity.setEmail(dto.getEmail());
-        userEntity.setPhone(dto.getPhone());
-        userEntity.setAvatar(dto.getAvatar());
-        userEntity.setLastLoginAt(dto.getLastLoginAt());
-        userEntity.setActive(dto.isActive());
-        userEntity.setProvider(Provider.asProvider(dto.getProvider()));
-        userEntity.setFullName(dto.getFullName());
-        userEntity.setEmailVerified(dto.isEmailVerified());
-        userEntity.setLocale(dto.getLocale());
+    public User toEntity(UserPostDto dto) {
+        User user = new User();
+        user.setId(dto.getId());
+        user.setUsername(dto.getUsername());
+        user.setEmail(dto.getEmail());
+        user.setPhone(dto.getPhone());
+        user.setAvatar(dto.getAvatar());
+        user.setLastLoginAt(dto.getLastLoginAt());
+        user.setActive(dto.isActive());
+        user.setProvider(Provider.asProvider(dto.getProvider()));
+        user.setFullName(dto.getFullName());
+        user.setEmailVerified(dto.isEmailVerified());
+        user.setLocale(dto.getLocale());
 
-        Set<RoleEntity> roleEntities = new HashSet<>();
+        Set<Role> roleEntities = new HashSet<>();
         for (String code : dto.getRoleCodes()) {
             if (roleRepository.existsById(code)) {
                 roleEntities.add(roleRepository.findOneByCode(code));
@@ -106,45 +108,45 @@ public class Converter {
                 throw new CustomException("Can't convert! Not found role has role code = " + code);
             }
         }
-        userEntity.setRoles(new ArrayList<>(roleEntities));
+        user.setRoles(roleEntities);
 
-        return userEntity;
+        return user;
     }
 
     //  Role
-    public RoleDto toDTO(RoleEntity entity) {
+    public RoleDto toDTO(Role entity) {
         RoleDto roleDTO = RoleDto.builder().code(entity.getCode()).name(entity.getName()).build();
         return roleDTO;
     }
 
-    public RoleEntity toEntity(RoleDto dto) {
-        RoleEntity roleEntity = new RoleEntity();
-        roleEntity.setCode(dto.getCode());
-        roleEntity.setName(dto.getName());
-        return roleEntity;
+    public Role toEntity(RoleDto dto) {
+        Role role = new Role();
+        role.setCode(dto.getCode());
+        role.setName(dto.getName());
+        return role;
     }
 
     // ApplicationEntity
-    public ApplicationDto toDTO(ApplicationEntity entity) {
+    public ApplicationDto toDTO(Application entity) {
         ApplicationDto applicationDTO = new ApplicationDto();
         applicationDTO.setId(entity.getId());
         applicationDTO.setResult(entity.getResult());
         applicationDTO.setNote(entity.getNote());
         //applicationDTO.setCreateTime(entity.getCreateTime());
 
-        if (entity.getCandidateEntity() != null) {
-            applicationDTO.setCandidateId(entity.getCandidateEntity().getId());
+        if (entity.getCandidate() != null) {
+            applicationDTO.setCandidateId(entity.getCandidate().getId());
         }
 
-        if (entity.getJobPostEntity() != null) {
-            applicationDTO.setJobPostId(entity.getJobPostEntity().getId());
+        if (entity.getJobPost() != null) {
+            applicationDTO.setJobPostId(entity.getJobPost().getId());
         }
 
         return applicationDTO;
     }
 
-    public ApplicationEntity toEntity(ApplicationDto dto) {
-        ApplicationEntity entity = new ApplicationEntity();
+    public Application toEntity(ApplicationDto dto) {
+        Application entity = new Application();
         entity.setId(dto.getId());
         entity.setResult(dto.getResult());
         entity.setNote(dto.getNote());
@@ -166,7 +168,7 @@ public class Converter {
 
     // Candidate
 
-    public CandidateDto toDTO(CandidateEntity entity) {
+    public CandidateDto toDTO(Candidate entity) {
         CandidateDto dto = new CandidateDto();
         dto.setId(entity.getId());
         dto.setFirstName(entity.getFirstName());
@@ -187,16 +189,16 @@ public class Converter {
         dto.setServices(entity.getServices());
         dto.setPosition(entity.getPosition());
 
-        if (entity.getUserEntity() == null) {
+        if (entity.getUser() == null) {
             throw new CustomException("Can't convert userEntity because it is null");
         }
-        dto.setUserId(entity.getUserEntity().getId());
+        dto.setUserId(entity.getUser().getId());
 
         return dto;
     }
 
-    public CandidateEntity toEntity(CandidateDto dto) {
-        CandidateEntity entity = new CandidateEntity();
+    public Candidate toEntity(CandidateDto dto) {
+        Candidate entity = new Candidate();
 
         entity.setId(dto.getId());
         entity.setFirstName(dto.getFirstName());
@@ -217,17 +219,17 @@ public class Converter {
         entity.setServices(dto.getServices());
         entity.setPosition(dto.getPosition());
 
-        Optional<UserEntity> userEntity = userRepository.findById(dto.getUserId());
+        Optional<User> userEntity = userRepository.findById(dto.getUserId());
         if (userEntity.isEmpty()) {
             throw new NoSuchElementException("Can't convert userId");
         }
-        entity.setUserEntity(userEntity.get());
+        entity.setUser(userEntity.get());
 
         return entity;
     }
 
     // Company
-    public CompanyDto toDTO(CompanyEntity entity) {
+    public CompanyDto toDTO(Company entity) {
         CompanyDto dto =
                 CompanyDto.builder().id(entity.getId()).name(entity.getName()).image(entity.getImage()).description(entity.getDescription()).website(entity.getWebsite())
                         .isActive(entity.isActive()).build();
@@ -239,8 +241,8 @@ public class Converter {
         return dto;
     }
 
-    public CompanyEntity toEntity(CompanyDto dto) {
-        CompanyEntity entity = new CompanyEntity();
+    public Company toEntity(CompanyDto dto) {
+        Company entity = new Company();
         entity.setId(dto.getId());
         entity.setName(dto.getName());
         entity.setImage(dto.getImage());
@@ -249,7 +251,7 @@ public class Converter {
         entity.setActive(dto.isActive());
 
         if (dto.getCreatedEmployerId() != null) {
-            Optional<EmployerEntity> employerEntity =
+            Optional<Employer> employerEntity =
                     employerRepository.findById(dto.getCreatedEmployerId());
             if (employerEntity.isEmpty()) {
                 throw new NoSuchElementException("Can't convert userId");
@@ -261,7 +263,7 @@ public class Converter {
     }
 
     // Document
-    public DocumentDto toDTO(DocumentEntity entity) {
+    public DocumentDto toDTO(Document entity) {
         DocumentDto dto = new DocumentDto();
         dto.setId(entity.getId());
         dto.setType(entity.getType());
@@ -271,8 +273,8 @@ public class Converter {
         return dto;
     }
 
-    public DocumentEntity toEntity(DocumentDto dto) {
-        DocumentEntity entity = new DocumentEntity();
+    public Document toEntity(DocumentDto dto) {
+        Document entity = new Document();
         entity.setId(dto.getId());
         entity.setType(dto.getType());
         entity.setTitle(dto.getTitle());
@@ -282,40 +284,40 @@ public class Converter {
     }
 
     // Employer
-    public EmployerDto toDTO(EmployerEntity entity) {
+    public EmployerDto toDTO(Employer entity) {
         EmployerDto dto = new EmployerDto();
         dto.setId(entity.getId());
-        dto.setFirstname(entity.getFirstname());
-        dto.setLastname(entity.getLastname());
+        dto.setFirstname(entity.getFirstName());
+        dto.setLastname(entity.getLastName());
         dto.setRecruitmentEmail(entity.getRecruitmentEmail());
         dto.setRecruitmentPhone(entity.getRecruitmentPhone());
 
-        if (entity.getUserEntity() == null) {
+        if (entity.getUser() == null) {
             throw new CustomException("Can't convert userEntity because it is null");
         }
-        dto.setUserId(entity.getUserEntity().getId());
+        dto.setUserId(entity.getUser().getId());
         return dto;
     }
 
-    public EmployerEntity toEntity(EmployerDto dto) {
-        EmployerEntity entity = new EmployerEntity();
+    public Employer toEntity(EmployerDto dto) {
+        Employer entity = new Employer();
         entity.setId(dto.getId());
-        entity.setFirstname(dto.getFirstname());
-        entity.setLastname(dto.getLastname());
+        entity.setFirstName(dto.getFirstname());
+        entity.setLastName(dto.getLastname());
         entity.setRecruitmentEmail(dto.getRecruitmentEmail());
         entity.setRecruitmentPhone(dto.getRecruitmentPhone());
 
-        Optional<UserEntity> userEntity = userRepository.findById(dto.getUserId());
+        Optional<User> userEntity = userRepository.findById(dto.getUserId());
         if (userEntity.isEmpty()) {
             throw new NoSuchElementException("Can't convert userId");
         }
-        entity.setUserEntity(userEntity.get());
+        entity.setUser(userEntity.get());
 
         return entity;
     }
 
     // Evaluate
-    public EvaluateDto toDTO(EvaluateEntity entity) {
+    public EvaluateDto toDTO(Evaluate entity) {
         EvaluateDto dto = new EvaluateDto();
         dto.setId(entity.getId());
         dto.setRate(entity.getRate());
@@ -325,8 +327,8 @@ public class Converter {
         return dto;
     }
 
-    public EvaluateEntity toEntity(EvaluateDto dto) {
-        EvaluateEntity entity = new EvaluateEntity();
+    public Evaluate toEntity(EvaluateDto dto) {
+        Evaluate entity = new Evaluate();
         entity.setId(dto.getId());
         entity.setRate(dto.getRate());
         entity.setNote(dto.getNote());
@@ -336,7 +338,7 @@ public class Converter {
     }
 
     // Experience
-    public ExperienceDto toDTO(ExperienceEntity entity) {
+    public ExperienceDto toDTO(Experience entity) {
         ExperienceDto dto = new ExperienceDto();
         dto.setId(entity.getId());
         dto.setTitle(entity.getTitle());
@@ -349,16 +351,16 @@ public class Converter {
         dto.setDescription(entity.getDescription());
         dto.setSkills(entity.getSkills());
 
-        if (entity.getCandidateEntity() == null) {
+        if (entity.getCandidate() == null) {
             throw new CustomException("Can't convert candidateEntity because it is null");
         }
-        dto.setCandidateId(entity.getCandidateEntity().getId());
+        dto.setCandidateId(entity.getCandidate().getId());
 
         return dto;
     }
 
-    public ExperienceEntity toEntity(ExperienceDto dto) {
-        ExperienceEntity entity = new ExperienceEntity();
+    public Experience toEntity(ExperienceDto dto) {
+        Experience entity = new Experience();
         entity.setId(dto.getId());
         entity.setTitle(dto.getTitle());
         entity.setEmploymentType(dto.getEmploymentType());
@@ -370,17 +372,17 @@ public class Converter {
         entity.setDescription(dto.getDescription());
         entity.setSkills(dto.getSkills());
 
-        Optional<CandidateEntity> candidateEntity = candidateRepository.findById(dto.getCandidateId());
+        Optional<Candidate> candidateEntity = candidateRepository.findById(dto.getCandidateId());
         if (candidateEntity.isPresent()) {
             // throw new NoSuchElementException("Can't convert candidateId");
-            entity.setCandidateEntity(candidateEntity.get());
+            entity.setCandidate(candidateEntity.get());
         }
 
         return entity;
     }
 
     // Image
-    public StorageFileDto toDTO(FileEntity entity) {
+    public StorageFileDto toDTO(File entity) {
         StorageFileDto dto = new StorageFileDto();
         dto.setId(entity.getId());
         dto.setType(entity.getType());
@@ -394,8 +396,8 @@ public class Converter {
         return dto;
     }
 
-    public FileEntity toEntity(StorageFileDto dto) {
-        FileEntity entity = new FileEntity();
+    public File toEntity(StorageFileDto dto) {
+        File entity = new File();
         entity.setId(dto.getId());
         entity.setType(dto.getType());
         entity.setName(dto.getName());
@@ -409,7 +411,7 @@ public class Converter {
     }
 
     // JobAlert
-    public JobAlertDto toDTO(JobAlertEntity entity) {
+    public JobAlertDto toDTO(JobAlert entity) {
         JobAlertDto dto = new JobAlertDto();
         dto.setId(entity.getId());
         dto.setTag(entity.getTag());
@@ -419,16 +421,16 @@ public class Converter {
         dto.setCity(entity.getCity());
         dto.setMinBudget(entity.getMinBudget());
 
-        if (entity.getCandidateEntity() == null) {
+        if (entity.getCandidate() == null) {
             throw new CustomException("Can't convert candidateEntity because it is null");
         }
-        dto.setCandidateId(entity.getCandidateEntity().getId());
+        dto.setCandidateId(entity.getCandidate().getId());
 
         return dto;
     }
 
-    public JobAlertEntity toEntity(JobAlertDto dto) {
-        JobAlertEntity entity = new JobAlertEntity();
+    public JobAlert toEntity(JobAlertDto dto) {
+        JobAlert entity = new JobAlert();
         entity.setId(dto.getId());
         entity.setTag(dto.getTag());
         entity.setIndustry(dto.getIndustry());
@@ -437,17 +439,17 @@ public class Converter {
         entity.setCity(dto.getCity());
         entity.setMinBudget(dto.getMinBudget());
 
-        Optional<CandidateEntity> candidateEntity = candidateRepository.findById(dto.getCandidateId());
+        Optional<Candidate> candidateEntity = candidateRepository.findById(dto.getCandidateId());
         if (candidateEntity.isPresent()) {
             // throw new NoSuchElementException("Can't convert candidateId");
-            entity.setCandidateEntity(candidateEntity.get());
+            entity.setCandidate(candidateEntity.get());
         }
 
         return entity;
     }
 
     // JobPost
-    public JobPostDto toDTO(JobPostEntity entity) {
+    public JobPostDto toDTO(JobPost entity) {
         JobPostDto dto = new JobPostDto();
         dto.setId(entity.getId());
         dto.setTitle(entity.getTitle());
@@ -461,8 +463,8 @@ public class Converter {
         dto.setQuantity(entity.getQuantity());
         dto.setMinBudget(entity.getMinBudget());
         dto.setMaxBudget(entity.getMaxBudget());
-        dto.setCreateTime(entity.getCreateTime());
-        dto.setDueTime(entity.getDueTime());
+//        dto.setCreateTime(entity.getCreateTime());
+        dto.setDueTime(entity.getDeadline());
         dto.setWorkStatus(entity.getWorkStatus());
         dto.setBlind(entity.isBlind());
         dto.setDeaf(entity.isDeaf());
@@ -470,14 +472,14 @@ public class Converter {
         dto.setHandDis(entity.isHandDis());
         dto.setLabor(entity.isLabor());
         dto.setSkills(entity.getSkills());
-        dto.setPositions(entity.getPositions());
+//        dto.setPositions(entity.getPositions());
         dto.setViews(entity.getViews());
         dto.setActive(entity.isActive());
         dto.setDeleted(entity.isDeleted());
 
-        if (entity.getCompanyEntity() != null) {
-            dto.setLogo(entity.getCompanyEntity().getImage());
-            dto.setCompanyId(entity.getCompanyEntity().getId());
+        if (entity.getCompany() != null) {
+            dto.setLogo(entity.getCompany().getImage());
+            dto.setCompanyId(entity.getCompany().getId());
         }
 
         if (entity.getCreatedEmployer() == null) {
@@ -488,8 +490,8 @@ public class Converter {
         return dto;
     }
 
-    public JobPostEntity toEntity(JobPostDto dto) {
-        JobPostEntity entity = new JobPostEntity();
+    public JobPost toEntity(JobPostDto dto) {
+        JobPost entity = new JobPost();
         entity.setId(dto.getId());
         entity.setTitle(dto.getTitle());
         entity.setEmploymentType(dto.getEmploymentType());
@@ -502,8 +504,8 @@ public class Converter {
         entity.setQuantity(dto.getQuantity());
         entity.setMinBudget(dto.getMinBudget());
         entity.setMaxBudget(dto.getMaxBudget());
-        entity.setCreateTime(dto.getCreateTime());
-        entity.setDueTime(dto.getDueTime());
+//        entity.setCreateTime(dto.getCreateTime());
+        entity.setDeadline(dto.getDueTime());
         entity.setWorkStatus(dto.getWorkStatus());
         entity.setBlind(dto.isBlind());
         entity.setDeaf(dto.isDeaf());
@@ -512,30 +514,30 @@ public class Converter {
         entity.setLabor(dto.isLabor());
         entity.setSkills(dto.getSkills());
         entity.setViews(dto.getViews());
-        entity.setPositions(dto.getPositions());
+//        entity.setPositions(dto.getPositions());
         entity.setActive(dto.isActive());
 
-        Optional<EmployerEntity> createEmployer =
+        Optional<Employer> createEmployer =
                 employerRepository.findById(dto.getCreatedEmployerId());
         if (createEmployer.isEmpty()) {
             throw new NoSuchElementException("Can't convert createEmployerId");
         }
         entity.setCreatedEmployer(createEmployer.get());
         System.out.println("category Id = " + dto.getCategoryId());
-        Optional<CategoryEntity> categoryEntity =
+        Optional<Category> categoryEntity =
                 categoryRepository.findById(dto.getCategoryId());
 
         if (categoryEntity.isEmpty()) {
             throw new NoSuchElementException("Can't convert categoryId");
         }
         System.out.println("category  = " + categoryEntity.get().getName());
-        entity.setCategoryEntity(categoryEntity.get());
+        entity.setCategory(categoryEntity.get());
 
         if (dto.getCompanyId() != -1) {
-            Optional<CompanyEntity> company =
+            Optional<Company> company =
                     companyRepository.findById(dto.getCompanyId());
             if (company.isPresent()) {
-                entity.setCompanyEntity(company.get());
+                entity.setCompany(company.get());
             }
         }
 
@@ -543,7 +545,7 @@ public class Converter {
     }
 
     // Notification
-    public NotificationDto toDTO(NotificationEntity entity) {
+    public NotificationDto toDTO(Notification entity) {
         NotificationDto dto = new NotificationDto();
         dto.setId(entity.getId());
         dto.setType(entity.getType());
@@ -554,8 +556,8 @@ public class Converter {
         return dto;
     }
 
-    public NotificationEntity toEntity(NotificationDto dto) {
-        NotificationEntity entity = new NotificationEntity();
+    public Notification toEntity(NotificationDto dto) {
+        Notification entity = new Notification();
         entity.setId(dto.getId());
         entity.setType(dto.getType());
         entity.setTitle(dto.getTitle());
@@ -565,7 +567,7 @@ public class Converter {
         return entity;
     }
 
-    public ExtraInfoDto toDTO(ExtraInfoEntity entity) {
+    public ExtraInfoDto toDTO(ExtraInfo entity) {
         ExtraInfoDto dto = new ExtraInfoDto();
         dto.setName(entity.getName());
         dto.setType(entity.getType());
@@ -574,8 +576,8 @@ public class Converter {
         return dto;
     }
 
-    public ExtraInfoEntity toEntity(ExtraInfoDto dto) {
-        ExtraInfoEntity entity = new ExtraInfoEntity();
+    public ExtraInfo toEntity(ExtraInfoDto dto) {
+        ExtraInfo entity = new ExtraInfo();
         entity.setName(dto.getName());
         entity.setType(dto.getType());
         entity.setActive(dto.isActive());
@@ -583,7 +585,7 @@ public class Converter {
         return entity;
     }
 
-    public InvoiceDto toDTO(InvoiceEntity entity) {
+    public InvoiceDto toDTO(Invoice entity) {
         InvoiceDto dto = new InvoiceDto();
         dto.setId(entity.getId());
         dto.setEmail(entity.getEmail());
@@ -598,8 +600,8 @@ public class Converter {
         return dto;
     }
 
-    public InvoiceEntity toEntity(InvoiceDto dto) {
-        InvoiceEntity entity = new InvoiceEntity();
+    public Invoice toEntity(InvoiceDto dto) {
+        Invoice entity = new Invoice();
         entity.setId(dto.getId());
         entity.setEmail(dto.getEmail());
         entity.setPhone(dto.getPhone());
@@ -613,7 +615,7 @@ public class Converter {
         return entity;
     }
 
-    public PackageDto toDTO(PackageEntity entity) {
+    public PackageDto toDTO(Package entity) {
         PackageDto dto = new PackageDto();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
@@ -630,8 +632,8 @@ public class Converter {
         return dto;
     }
 
-    public PackageEntity toEntity(PackageDto dto) {
-        PackageEntity entity = new PackageEntity();
+    public Package toEntity(PackageDto dto) {
+        Package entity = new Package();
         entity.setId(dto.getId());
         entity.setName(dto.getName());
         entity.setCode(dto.getCode());
@@ -647,7 +649,7 @@ public class Converter {
         return entity;
     }
 
-    public SubscribeDto toDTO(SubscribeEntity entity) {
+    public SubscribeDto toDTO(Subscription entity) {
         SubscribeDto dto = new SubscribeDto();
         dto.setId(entity.getId());
         dto.setStartTime(entity.getStartTime());
@@ -656,8 +658,8 @@ public class Converter {
         return dto;
     }
 
-    public SubscribeEntity toEntity(SubscribeDto dto) {
-        SubscribeEntity entity = new SubscribeEntity();
+    public Subscription toEntity(SubscribeDto dto) {
+        Subscription entity = new Subscription();
         entity.setId(dto.getId());
         entity.setStartTime(dto.getStartTime());
         entity.setExpirationTime(dto.getExpirationTime());
@@ -665,7 +667,7 @@ public class Converter {
         return entity;
     }
 
-    public CategoryDto toDTO(CategoryEntity entity) {
+    public CategoryDto toDTO(Category entity) {
         CategoryDto dto = new CategoryDto();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
@@ -673,15 +675,15 @@ public class Converter {
         return dto;
     }
 
-    public CategoryEntity toEntity(CategoryDto dto) {
-        CategoryEntity entity = new CategoryEntity();
+    public Category toEntity(CategoryDto dto) {
+        Category entity = new Category();
         entity.setId(dto.getId());
         entity.setName(dto.getName());
         entity.setActive(dto.isActive());
         return entity;
     }
 
-    public BlogPostDto toDTO(BlogPostEntity entity) {
+    public BlogPostDto toDTO(BlogPost entity) {
 //    // setup
 //    TypeMap<BlogPostEntity, BlogPostDto> propertyMapper = modelMapper.createTypeMap(BlogPostEntity.class, BlogPostDto.class);
 //    // add deep mapping to flatten source's Player object into a single field in destination
@@ -692,11 +694,11 @@ public class Converter {
         return blogPostDTO;
     }
 
-    public BlogPostEntity toEntity(BlogPostDto dto) {
-        BlogPostEntity entity = modelMapper.map(dto, BlogPostEntity.class);
+    public BlogPost toEntity(BlogPostDto dto) {
+        BlogPost entity = modelMapper.map(dto, BlogPost.class);
 
         try {
-            Optional<UserEntity> userEntity = userRepository.findById(dto.getUserId());
+            Optional<User> userEntity = userRepository.findById(dto.getUserId());
             if (userEntity.isPresent()) {
                 entity.setAuthor(userEntity.get());
             }
@@ -707,17 +709,17 @@ public class Converter {
         return entity;
     }
 
-    public CommentDto toDTO(CommentEntity entity) {
+    public CommentDto toDTO(Comment entity) {
         CommentDto dto = modelMapper.map(entity, CommentDto.class);
         return dto;
     }
 
-    public CommentEntity toEntity(CommentDto dto) {
-        CommentEntity entity = modelMapper.map(dto, CommentEntity.class);
+    public Comment toEntity(CommentDto dto) {
+        Comment entity = modelMapper.map(dto, Comment.class);
         try {
-            Optional<BlogPostEntity> blogPostEntity = blogPostRepository.findById(dto.getBlogPostId());
+            Optional<BlogPost> blogPostEntity = blogPostRepository.findById(dto.getBlogPostId());
             if (blogPostEntity.isPresent()) {
-                entity.setBlogPostEntity(blogPostEntity.get());
+                entity.setBlogPost(blogPostEntity.get());
             }
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -725,15 +727,15 @@ public class Converter {
         return entity;
     }
 
-    public SubCommentDto toDTO(SubCommentEntity entity) {
+    public SubCommentDto toDTO(SubComment entity) {
         SubCommentDto dto = modelMapper.map(entity, SubCommentDto.class);
         return dto;
     }
 
-    public SubCommentEntity toEntity(SubCommentDto dto) {
-        SubCommentEntity entity = modelMapper.map(dto, SubCommentEntity.class);
+    public SubComment toEntity(SubCommentDto dto) {
+        SubComment entity = modelMapper.map(dto, SubComment.class);
         try {
-            Optional<CommentEntity> commentEntity = commentRepository.findById(dto.getCommentId());
+            Optional<Comment> commentEntity = commentRepository.findById(dto.getCommentId());
             if (commentEntity.isPresent()) {
                 entity.setComment(commentEntity.get());
             }

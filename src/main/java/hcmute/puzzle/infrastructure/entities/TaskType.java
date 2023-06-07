@@ -7,8 +7,8 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper=false)
 @Builder
+@EqualsAndHashCode(callSuper=false)
 @Entity
 @Table(name = "md_task_type")
 public class TaskTypeEntity extends Auditable{

@@ -11,7 +11,7 @@ import hcmute.puzzle.infrastructure.models.enums.PaymentMethod;
 import hcmute.puzzle.infrastructure.repository.PackageRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.InvoiceService;
-import hcmute.puzzle.services.SubscribeService;
+import hcmute.puzzle.services.SubscriptionService;
 import hcmute.puzzle.utils.mail.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class ResultController {
 
   @Autowired private PackageRepository packageRepository;
 
-  @Autowired private SubscribeService subscribeService;
+  @Autowired private SubscriptionService subscriptionService;
 
   @Autowired private InvoiceService invoiceService;
 
@@ -127,7 +127,7 @@ public class ResultController {
         };
         one.start();
 
-        subscribeService.subscribePackage(userEntity.get(), packageEntity.get(), invoiceEntity);
+        subscriptionService.subscribePackage(userEntity.get(), packageEntity.get(), invoiceEntity);
         return "success";
       }
     } catch (PayPalRESTException e) {

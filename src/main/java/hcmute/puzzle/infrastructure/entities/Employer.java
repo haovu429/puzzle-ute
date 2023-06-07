@@ -1,17 +1,20 @@
 package hcmute.puzzle.infrastructure.entities;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import hcmute.puzzle.configuration.SystemInfo;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "employer")
 public class EmployerEntity extends Auditable implements Serializable {
@@ -21,11 +24,11 @@ public class EmployerEntity extends Auditable implements Serializable {
   @Column(name = "user_id")
   private long id;
 
-  @Column(name = "firstname", columnDefinition = "VARCHAR(50)")
-  private String firstname;
+  @Column(name = "first_name", columnDefinition = "VARCHAR(100)", nullable = false)
+  private String firstName;
 
-  @Column(name = "lastname", columnDefinition = "VARCHAR(50)")
-  private String lastname;
+  @Column(name = "last_name", columnDefinition = "VARCHAR(100)")
+  private String lastName;
 
   @Column(name = "recruitment_email", columnDefinition = "VARCHAR(100)")
   private String recruitmentEmail;
@@ -34,19 +37,23 @@ public class EmployerEntity extends Auditable implements Serializable {
   private String recruitmentPhone;
 
   @ManyToMany(mappedBy = "followingEmployers", cascade = CascadeType.ALL)
+  @Builder.Default
   private Set<CandidateEntity> followCandidates = new HashSet<>();
 
   @OneToMany(mappedBy = "createdEmployer", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<JobPostEntity> jobPostEntities = new HashSet<>();
+  @Builder.Default
+  private List<JobPostEntity> jobPostEntities = new ArrayList<>();
 
   @OneToMany(mappedBy = "employerEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<EvaluateEntity> evaluateEntities = new HashSet<>();
+  @Builder.Default
+  private List<EvaluateEntity> evaluateEntities = new ArrayList<>();
 
-  @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.LAZY)
   @MapsId
   @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
   private UserEntity userEntity;
 
-  @OneToMany(mappedBy = "createdEmployer", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-  private Set<CompanyEntity> companyEntities = new HashSet<>();
+  @OneToMany(mappedBy = "createdEmployer", fetch = FetchType.LAZY)
+  @Builder.Default
+  private List<CompanyEntity> companyEntities = new ArrayList<>();
 }

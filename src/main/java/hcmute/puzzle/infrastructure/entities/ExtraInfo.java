@@ -1,8 +1,6 @@
 package hcmute.puzzle.infrastructure.entities;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,6 +8,8 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "extra_info")
 public class ExtraInfoEntity extends Auditable implements Serializable {

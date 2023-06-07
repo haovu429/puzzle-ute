@@ -26,6 +26,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
@@ -56,25 +58,26 @@ public class UserServiceImpl implements UserService {
   @Autowired private MailService mailService;
 
   public boolean checkEmailExists(String email) {
-    UserEntity user = userRepository.getUserByEmail(email);
+    User user = userRepository.getUserByEmail(email);
     return user == null;
   }
 
   public boolean checkUsernameExists(String username) {
-    UserEntity user = userRepository.getUserByUsername(username);
+    User user = userRepository.getUserByUsername(username);
     return user != null;
   }
 
   @Override
-  public Optional<UserEntity> registerUser(RegisterUserDto registerUserDto) {
+  public Optional<User> registerUser(RegisterUserDto registerUserDto) {
     return Optional.of(registerUserForAdmin(CreateUserForAdminDto.builder()
             .email(registerUserDto.getEmail())
             .password(registerUserDto.getPassword())
             .build(), false));
   }
 
+  @Transactional
   @Override
-  public UserEntity registerUserForAdmin(CreateUserForAdminDto userDto, boolean admin) {
+  public User registerUserForAdmin(CreateUserForAdminDto userDto, boolean admin) {
     // Check Email Exists
     if (!checkEmailExists(userDto.getEmail())) {
       throw new AlreadyExistsException("Email already exists");
@@ -85,20 +88,21 @@ public class UserServiceImpl implements UserService {
       throw new AlreadyExistsException("Username already exists");
     }
 
-    if (!isValidPassword(userDto.getPassword())) {
-      throw new InvalidException("Constraint passes length more than six and contains at least one special character," +
-              " number, uppercase, lowercase");
-    }
+    //    if (!isValidPassword(userDto.getPassword())) {
+    //      throw new InvalidException("Constraint passes length more than six and contains at least one special character," +
+    //              " number, uppercase, lowercase");
+    //    }
     //  hash password
-    UserEntity user = new UserEntity();
-    user.setEmail(userDto.getEmail());
-    user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+    User user = User.builder()
+                    .email(userDto.getEmail())
+                    .password(passwordEncoder.encode(userDto.getPassword()))
+                    .build();
 
     List<String> roleCodes = new ArrayList<>();
     if (admin) {
       user.setUsername(userDto.getUsername());
       user.setAvatar(userDto.getAvatar());
-      user.setFullName(userDto.getFullName());
+      //      user.setFullName(userDto.getFullName());
       user.setPhone(userDto.getPhone());
       user.setActive(userDto.isActive());
       user.setLocale(user.getLocale());
@@ -109,15 +113,12 @@ public class UserServiceImpl implements UserService {
       user.setActive(false);
       roleCodes.add("user");
     }
-    List<RoleEntity> rolesFromDb = roleRepository.findAllByCodeIn(roleCodes);
+    user = userRepository.save(user);
+    List<Role> rolesFromDb = roleRepository.findAllByCodeIn(roleCodes);
     if (rolesFromDb == null || rolesFromDb.isEmpty()) {
       throw new NotFoundException("NOT_FOUND_ROLE");
     }
-    setRoleWithCreateAccountTypeUser(
-            rolesFromDb.stream().map(
-                    RoleEntity::getCode).collect(Collectors.toList()),
-            user);
-
+    setRoleWithCreateAccountTypeUser(rolesFromDb.stream().map(Role::getCode).collect(Collectors.toList()), user);
     // Save to DB
     user = userRepository.save(user);
 
@@ -171,7 +172,7 @@ public class UserServiceImpl implements UserService {
 
   public DataResponse updateUserForAdmin(long id, UpdateUserForAdminDto user) {
 
-    UserEntity updateUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException("NOT_FOUND_USER"));
+    User updateUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException("NOT_FOUND_USER"));
     UserMapper.INSTANCE.updateUserFromDto(user, updateUser);
     if (user.getRoleCodes() != null && !user.getRoleCodes().isEmpty()){
 
@@ -180,48 +181,72 @@ public class UserServiceImpl implements UserService {
         roleRepository.deleteAll(updateUser.getRoles());
       }
 
-      List<RoleEntity> rolesFromDb = roleRepository.findAllByCodeIn(user.getRoleCodes());
+      List<Role> rolesFromDb = roleRepository.findAllByCodeIn(user.getRoleCodes());
       if (rolesFromDb == null || rolesFromDb.isEmpty()) {
         throw new NotFoundException("NOT_FOUND_ROLE");
       }
-      setRoleWithCreateAccountTypeUser(
-              rolesFromDb.stream().map(
-                      RoleEntity::getCode).collect(Collectors.toList()),
-              updateUser);
+      setRoleWithCreateAccountTypeUser(rolesFromDb.stream().map(Role::getCode).collect(Collectors.toList()),
+                                       updateUser);
     }
     UserMapper mapper = UserMapper.INSTANCE;
 
-    UserPostDto userPostDTO =  mapper.userToUserPostDto(userRepository.save(updateUser));// converter.toDTO(userRepository.save(updateUser));
+    UserPostDto userPostDTO = mapper.userToUserPostDto(
+            userRepository.save(updateUser));// converter.toDTO(userRepository.save(updateUser));
     redisUtils.delete(updateUser.getEmail());
 
     return new DataResponse(userPostDTO);
   }
 
-  private void setRoleWithCreateAccountTypeUser(List<String> roleCodes, UserEntity user) {
-    if (roleCodes!= null && !roleCodes.isEmpty()) {
-      List<RoleEntity> roleFromDb  = new ArrayList<>();
+  @Transactional
+  public void setRoleWithCreateAccountTypeUser(List<String> roleCodes, User user) {
+    if (roleCodes != null && !roleCodes.isEmpty()) {
+      Set<Role> roleFromDB = new HashSet<>();
       for (String code : roleCodes) {
-        RoleEntity role = roleRepository.findByCode(code).orElseThrow(
-                () -> new NotFoundException("NOT_FOUND_ROLE: + " + code));
-        if (role.getName().equals(Roles.CANDIDATE.value)) {
-          CandidateEntity candidate = new CandidateEntity();
-          user.setCandidateEntity(candidate);
+        Role role = roleRepository.findByCode(code)
+                                  .orElseThrow(() -> new NotFoundException("NOT_FOUND_ROLE: + " + code));
+        if (role.getCode().equalsIgnoreCase(Roles.CANDIDATE.value)) {
+          Candidate candidate = Candidate.builder()
+                                         .emailContact(user.getEmail())
+                                         .firstName(user.getFullName())
+                                         .build();
+          candidate.setUser(user);
+          user.setCandidate(candidate);
+        } else if (role.getName().equalsIgnoreCase(Roles.EMPLOYER.value)) {
+          Employer employer = Employer.builder()
+                                      .firstName(user.getFullName())
+                                      .build();
+          employer.setUser(user);
+          user.setEmployer(employer);
         }
-
-        if (role.getName().equals(Roles.EMPLOYER.value)) {
-          EmployerEntity employer = new EmployerEntity();
-          user.setEmployerEntity(employer);
-        }
-        roleFromDb.add(role);
+        roleFromDB.add(role);
       }
-      user.setRoles(roleFromDb);
+      user.setRoles(roleFromDB);
     }
+  }
+
+  @Transactional(propagation = Propagation.MANDATORY)
+  public void prepareForRole(User user) {
+    if (Objects.isNull(user.getRoles())) {
+      return;
+    }
+    user.getRoles().forEach(role -> {
+      if (role.getCode().equalsIgnoreCase(Roles.CANDIDATE.value)) {
+        Candidate candidate = Candidate.builder().emailContact(user.getEmail()).build();
+        candidate.setUser(user);
+        user.setCandidate(candidate);
+      } else if (role.getName().equalsIgnoreCase(Roles.EMPLOYER.value)) {
+        Employer employer = Employer.builder().build();
+        employer.setUser(user);
+        user.setEmployer(employer);
+      }
+    });
+    userRepository.save(user);
   }
 
   @Override
   public DataResponse updateForAdmin(long id, UserPostDto userPayload) {
 
-    Optional<UserEntity> oldUser = userRepository.findById(id);
+    Optional<User> oldUser = userRepository.findById(id);
 
     if (oldUser.isEmpty()) {
       throw new CustomException("This account isn't exists");
@@ -234,7 +259,7 @@ public class UserServiceImpl implements UserService {
       oldUser.get().setPhone(userPayload.getPhone());
     }
     if (userPayload.getFullName() != null) {
-      oldUser.get().setFullName(userPayload.getFullName());
+      //      oldUser.get().setFullName(userPayload.getFullName());
     }
 
     if (userPayload.isEmailVerified() != oldUser.get().isEmailVerified()) {
@@ -246,23 +271,23 @@ public class UserServiceImpl implements UserService {
     oldUser.get().setActive(userPayload.isActive());
 
     if (userPayload.getRoleCodes() != null && !userPayload.getRoleCodes().isEmpty()) {
-      Set<RoleEntity> roleEntities = new HashSet<>();
+      Set<Role> roleEntities = new HashSet<>();
       for (String code : userPayload.getRoleCodes()) {
-        RoleEntity role = roleRepository.findOneByCode(code);
+        Role role = roleRepository.findOneByCode(code);
         if (role.getName().equals(Roles.CANDIDATE.value)) {
-          CandidateEntity candidate = new CandidateEntity();
-          oldUser.get().setCandidateEntity(candidate);
+          Candidate candidate = new Candidate();
+          oldUser.get().setCandidate(candidate);
         }
 
         if (role.getName().equals(Roles.EMPLOYER.value)) {
-          EmployerEntity employer = new EmployerEntity();
-          oldUser.get().setEmployerEntity(employer);
+          Employer employer = new Employer();
+          oldUser.get().setEmployer(employer);
         }
         if (role != null) {
           roleEntities.add(role);
         }
       }
-      oldUser.get().setRoles(roleEntities.stream().collect(Collectors.toList()));
+      oldUser.get().setRoles(roleEntities);
       // xoá token hiện tại --> bắt người dùng dăng nhập lại
       redisUtils.delete(oldUser.get().getEmail());
     }
@@ -274,16 +299,16 @@ public class UserServiceImpl implements UserService {
   }
 
   public DataResponse updateAvatarForUser(
-      UserEntity userEntity, MultipartFile file, FileCategory fileCategory)
+      User user, MultipartFile file, FileCategory fileCategory)
       throws NotFoundException {
     String imageUrl =
             storageService
-                    .uploadFileWithFileTypeReturnUrl(userEntity.getEmail(), file, fileCategory, true)
+                    .uploadFileWithFileTypeReturnUrl(user.getEmail(), file, fileCategory, true)
             .orElseThrow(() -> new FileStorageException("UPLOAD_FILE_FAILURE"));
 
-    userEntity.setAvatar(imageUrl);
-    userRepository.save(userEntity);
-    UserPostDto userPostDTO = converter.toDTO(userEntity);
+    user.setAvatar(imageUrl);
+    userRepository.save(user);
+    UserPostDto userPostDTO = converter.toDTO(user);
     return new DataResponse(userPostDTO);
   }
 
@@ -291,7 +316,10 @@ public class UserServiceImpl implements UserService {
   public ResponseObject delete(long id) {
     boolean exists = userRepository.existsById(id);
     if (exists) {
-      userRepository.deleteById(id);
+      User user = userRepository.findById(id).orElseThrow(() -> new NotFoundDataException("NOT FOUND USER"));
+      // delete roles of user
+      user.getRoles().clear();
+      userRepository.delete(user);
       return new ResponseObject(HttpStatus.OK.value(), "Delete user success", "");
     } else {
       throw new CustomException("User not found");
@@ -319,8 +347,8 @@ public class UserServiceImpl implements UserService {
     if (!exists) {
       throw new CustomException("Account isn't exists");
     }
-    Optional<UserEntity> userEntity = userRepository.findById(id);
-    userEntity.get().getRoles().add(new RoleEntity("user"));
+    Optional<User> userEntity = userRepository.findById(id);
+    userEntity.get().getRoles().add(new Role("user"));
     userRepository.save(userEntity.get());
 
     return new ResponseObject(
@@ -329,10 +357,10 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public ResponseObject getUserByAccount(String email, String password) {
-    UserEntity userEntity = userRepository.getUserByAccount(email, password);
-    if (userEntity != null) {
+    User user = userRepository.getUserByEmailAndPassword(email, password);
+    if (user != null) {
       return new ResponseObject(
-          HttpStatus.OK.value(), "Get user success", converter.toDTO(userEntity));
+          HttpStatus.OK.value(), "Get user success", converter.toDTO(user));
     } else {
       throw new CustomException("User not found");
     }
@@ -371,7 +399,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Async
-  public void sendMailForgotPwd(String receiveMail, String urlResetPass, TokenEntity token)
+  public void sendMailForgotPwd(String receiveMail, String urlResetPass, Token token)
       throws InterruptedException,
           MessagingException,
           TemplateException,
@@ -382,7 +410,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Async
-  public void sendMailVerifyAccount(String receiveMail, String verifyUrl, TokenEntity token)
+  public void sendMailVerifyAccount(String receiveMail, String verifyUrl, Token token)
           throws InterruptedException,
                  MessagingException,
                  TemplateException,

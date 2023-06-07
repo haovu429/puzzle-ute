@@ -3,7 +3,7 @@ package hcmute.puzzle.services.impl;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.entities.InvoiceEntity;
 import hcmute.puzzle.infrastructure.entities.PackageEntity;
-import hcmute.puzzle.infrastructure.entities.SubscribeEntity;
+import hcmute.puzzle.infrastructure.entities.SubscriptionEntity;
 import hcmute.puzzle.infrastructure.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.repository.EmployerRepository;
@@ -11,7 +11,7 @@ import hcmute.puzzle.infrastructure.repository.PackageRepository;
 import hcmute.puzzle.infrastructure.repository.SubscribeRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
-import hcmute.puzzle.services.SubscribeService;
+import hcmute.puzzle.services.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ import javax.persistence.PersistenceContext;
 import java.util.*;
 
 @Service
-public class SubscribeServiceImpl implements SubscribeService {
+public class SubscriptionServiceImpl implements SubscriptionService {
 
   @Autowired EmployerRepository employerRepository;
 
@@ -40,7 +40,7 @@ public class SubscribeServiceImpl implements SubscribeService {
 
     checkSubscribed(user.getId(), packageEntity.getId());
     Date nowTime = new Date();
-    SubscribeEntity subscribe = new SubscribeEntity();
+    SubscriptionEntity subscribe = new SubscriptionEntity();
     subscribe.setStartTime(nowTime);
     subscribe.setExpirationTime(new Date(nowTime.getTime() + packageEntity.getDuration()));
     subscribe.setPackageEntity(packageEntity);
@@ -71,7 +71,7 @@ public class SubscribeServiceImpl implements SubscribeService {
   }
 
   public void checkSubscribed(long userId, long packId) {
-    List<SubscribeEntity> subscribes =
+    List<SubscriptionEntity> subscribes =
             getCurrentSubscribeByUserIdAndPackId(userId, packId);
     if (subscribes != null && !subscribes.isEmpty()) {
       throw new CustomException(
@@ -82,8 +82,8 @@ public class SubscribeServiceImpl implements SubscribeService {
   }
 
   // Lấy đối tượng đăng ký dịch vụ chỉ định đang có hiện tại (chưa hết hạn)
-  public List<SubscribeEntity> getCurrentSubscribeByUserIdAndPackId(long userId, long packId) {
-    List<SubscribeEntity> subscribeEntities = new ArrayList<>();
+  public List<SubscriptionEntity> getCurrentSubscribeByUserIdAndPackId(long userId, long packId) {
+    List<SubscriptionEntity> subscribeEntities = new ArrayList<>();
     try {
       StringBuilder sql =
           new StringBuilder(
@@ -119,7 +119,7 @@ public class SubscribeServiceImpl implements SubscribeService {
   // Lấy các đối tượng đăng ký các dịch vụ đang có hiện tại (chưa hết hạn)
   public DataResponse getCurrentValidSubscriptions(long userId) {
     String sql =
-        "SELECT sub, pack FROM SubscribeEntity sub, PackageEntity pack, UserEntity u WHERE sub.packageEntity.id = pack.id"
+        "SELECT sub, pack FROM SubscriptionEntity sub, PackageEntity pack, UserEntity u WHERE sub.packageEntity.id = pack.id"
             + " AND sub.regUser.id = u.id AND u.id=:userId AND sub.expirationTime > :nowTime";
     // Join example with addEntity and addJoin
     List<Object[]> rows =
@@ -131,7 +131,7 @@ public class SubscribeServiceImpl implements SubscribeService {
     List<Map<String, Object>> response = new ArrayList<>();
     for (Object[] row : rows) {
       Map<String, Object> subAndPack = new HashMap<>();
-      SubscribeEntity subscribe = (SubscribeEntity) row[0];
+      SubscriptionEntity subscribe = (SubscriptionEntity) row[0];
       System.out.println("Application Info::" + subscribe);
       PackageEntity packageEntity = (PackageEntity) row[1];
       System.out.println("Candidate Info::" + packageEntity);
@@ -144,7 +144,7 @@ public class SubscribeServiceImpl implements SubscribeService {
 
   public DataResponse getAllSubscriptionsByUserId(long userId) {
     String sql =
-            "SELECT sub, pack FROM SubscribeEntity sub, PackageEntity pack, UserEntity u WHERE sub.packageEntity.id = pack.id"
+            "SELECT sub, pack FROM SubscriptionEntity sub, PackageEntity pack, UserEntity u WHERE sub.packageEntity.id = pack.id"
                     + " AND sub.regUser.id = u.id AND u.id=:userId";
     // Join example with addEntity and addJoin
     List<Object[]> rows =
@@ -155,7 +155,7 @@ public class SubscribeServiceImpl implements SubscribeService {
     List<Map<String, Object>> response = new ArrayList<>();
     for (Object[] row : rows) {
       Map<String, Object> subAndPack = new HashMap<>();
-      SubscribeEntity subscribe = (SubscribeEntity) row[0];
+      SubscriptionEntity subscribe = (SubscriptionEntity) row[0];
       //System.out.println("subscribe Info::" + subscribe);
       PackageEntity packageEntity = (PackageEntity) row[1];
       //System.out.println("packageEntity Info::" + packageEntity);

@@ -270,19 +270,26 @@ public class BlogPostServiceImpl implements BlogPostService {
 
   @Override
   public DataResponse getOneById(long id) {
-    BlogPostDto dto =
-            converter.toDTO(
-                    blogPostRepository
-                            .findById(id)
-                            .orElseThrow(() -> new NotFoundException("NOT_FOUND_BLOG_POST")));
+    BlogPostDto dto = converter.toDTO(blogPostRepository.findById(id)
+                                                        .orElseThrow(() -> new NotFoundException("NOT_FOUND_BLOG_POST")));
     return new DataResponse(dto);
   }
 
-  public List<String> getUrlOfFirstListWhichSecondListNotContain(
-          List<String> firstList, List<String> secondList) {
+  @Override
+  public List<BlogPostDto> getBlogPostByUser(long userId) {
+    List<BlogPostEntity> blogPosts = blogPostRepository.findAllByAuthorId(userId);
+    List<BlogPostDto> blogPostDtos = new ArrayList<>();
+    if (blogPosts != null && !blogPosts.isEmpty()) {
+      blogPostDtos = blogPosts .stream()
+                            .map(entity -> blogPostMapper.blogPostToBlogPostDto(entity))
+                            .toList();
+    }
+    return blogPostDtos;
+  }
+
+  public List<String> getUrlOfFirstListWhichSecondListNotContain(List<String> firstList, List<String> secondList) {
     // getDeletedBlogImageUrl
-    return firstList.stream().filter(item -> !secondList.contains(item))
-            .collect(Collectors.toList());
+    return firstList.stream().filter(item -> !secondList.contains(item)).collect(Collectors.toList());
   }
 
   public List<String> detectedImageSrcList(String html) {

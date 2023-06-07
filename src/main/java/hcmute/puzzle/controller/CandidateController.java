@@ -1,18 +1,16 @@
 package hcmute.puzzle.controller;
 
+import hcmute.puzzle.configuration.security.CustomUserDetails;
+import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.NotFoundDataException;
+import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ExperienceDto;
 import hcmute.puzzle.infrastructure.dtos.olds.JobAlertDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-import hcmute.puzzle.infrastructure.entities.ApplicationEntity;
-import hcmute.puzzle.infrastructure.entities.ExperienceEntity;
-import hcmute.puzzle.infrastructure.entities.JobAlertEntity;
-import hcmute.puzzle.infrastructure.entities.JobPostEntity;
-import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.filter.JwtAuthenticationFilter;
-import hcmute.puzzle.infrastructure.repository.*;
+import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
-import hcmute.puzzle.configuration.security.CustomUserDetails;
+import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -24,10 +22,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+import javax.persistence.EntityGraph;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.*;
+
+import static hcmute.puzzle.utils.Constant.ResponseCode.STATUS_CUSTOM_EXCEPTION;
+import static hcmute.puzzle.utils.Constant.ResponseCode.STATUS_NOT_AGAIN;
+import static hcmute.puzzle.utils.Constant.ResponseMessage.CODE_ERROR_INACTIVE;
+import static hcmute.puzzle.utils.Constant.ResponseMessage.CODE_ERROR_NOT_AGAIN;
 
 @RestController
 @RequestMapping(path = "/candidate")
@@ -35,18 +38,22 @@ import java.util.Optional;
 @SecurityRequirement(name = "bearerAuth")
 public class CandidateController {
 
-  @Autowired ApplicationService applicationService;
-  @Autowired CandidateService candidateService;
+  @Autowired
+  ApplicationService applicationService;
+  @Autowired
+  CandidateService candidateService;
 
   @Autowired
   UserRepository userRepository;
 
-  @Autowired JobPostRepository jobPostRepository;
+  @Autowired
+  JobPostRepository jobPostRepository;
 
   @Autowired
   CandidateRepository candidateRepository;
 
-  @Autowired JwtAuthenticationFilter jwtAuthenticationFilter;
+  @Autowired
+  JwtAuthenticationFilter jwtAuthenticationFilter;
 
   @Autowired
   ApplicationRepository applicationRepository;
@@ -67,8 +74,12 @@ public class CandidateController {
 
   @Autowired JobPostService jobPostService;
 
+  @PersistenceContext
+  public EntityManager em;
+
+
   @PostMapping("/add")
-  ResponseObject saveCandidate(
+  ResponseObject<CandidateDto> saveCandidate(
       @RequestBody @Validated CandidateDto candidate,
       BindingResult bindingResult,
       Authentication authentication) {
@@ -77,15 +88,14 @@ public class CandidateController {
     }
 
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    if (userDetails.getUser().getCandidateEntity() != null) {
+    if (userDetails.getUser().getCandidate() != null) {
       throw new CustomException("Info candidate for this account was created!");
     }
     candidate.setUserId(userDetails.getUser().getId());
 
     Optional<CandidateDto> candidateDTO = candidateService.save(candidate);
     if (candidateDTO.isPresent()) {
-      return new ResponseObject(
-          HttpStatus.OK.value(), "Create candidate successfully", candidateDTO.get());
+      return new ResponseObject<>(HttpStatus.OK.value(), "Create candidate successfully", candidateDTO.get());
     } else {
       throw new RuntimeException("Add candidate failed");
     }
@@ -95,18 +105,16 @@ public class CandidateController {
   }
 
   // Gửi Authentication xác thực tài khoản thì xoá.
-  @DeleteMapping("/candidate")
-  ResponseObject deleteCandidate(Authentication authentication) {
-
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return candidateService.delete(userDetails.getUser().getId());
-  }
+  //  @DeleteMapping("/candidate")
+  //  ResponseObject deleteCandidate(Authentication authentication) {
+  //
+  //    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+  //    return candidateService.delete(userDetails.getUser().getId());
+  //  }
 
   @PutMapping("/update")
-  ResponseObject updateCandidate(
-      @RequestBody @Validated CandidateDto candidate,
-      BindingResult bindingResult,
-      Authentication authentication) {
+  ResponseObject updateCandidate(@RequestBody @Validated CandidateDto candidate, BindingResult bindingResult,
+          Authentication authentication) {
     if (bindingResult.hasErrors()) {
       throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
@@ -165,51 +173,59 @@ public class CandidateController {
   }
 
   @GetMapping("/apply-job-post/{postId}")
-  DataResponse applyJobPost(@PathVariable Long postId, Authentication authentication) {
+  DataResponse<String> applyJobPost(@PathVariable Long postId, Authentication authentication) {
 
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    Optional<JobPostEntity> jobPost = jobPostRepository.findById(postId);
+    JobPost jobPost = jobPostRepository.findById(postId)
+                                       .orElseThrow(() -> new NotFoundDataException("JobPost no value present"));
 
-    if (jobPost.isEmpty()) {
-      throw new NoSuchElementException("JobPost no value present");
-    }
 
-    if (!jobPost.get().isActive()) {
+    if (!jobPost.isActive()) {
       // throw new CustomException("You can't apply this jobPost. It isn't active");
-      return new DataResponse(
-          DataResponse.CODE_ERROR_INACTIVE,
-          "You can't apply this jobPost. It isn't active",
-          DataResponse.STATUS_CUSTOM_EXCEPTION);
+      return new DataResponse<String>(CODE_ERROR_INACTIVE, "You can't apply this jobPost. It isn't active",
+                                      STATUS_CUSTOM_EXCEPTION);
     }
 
-    if (jobPost.get().getDueTime().before(new Date())) {
+    if (Objects.nonNull(jobPost.getDeadline()) && jobPost.getDeadline().before(new Date())) {
       // throw new CustomException("You can't apply this jobPost. It isn't active");
-      return new DataResponse(
-              DataResponse.CODE_ERROR_INACTIVE,
-              "You can't apply this jobPost. job post has expired",
-              DataResponse.STATUS_CUSTOM_EXCEPTION);
+      return new DataResponse<>(CODE_ERROR_INACTIVE, "You can't apply this jobPost. job post has expired",
+                                STATUS_CUSTOM_EXCEPTION);
     }
 
-    Optional<ApplicationEntity> application =
+    Optional<Application> application =
         applicationRepository.findApplicationByCanIdAndJobPostId(
             userDetails.getUser().getId(), postId);
     if (application.isPresent()) {
       // throw new CustomException("You applied for this job");
-      return new DataResponse(
-          DataResponse.CODE_ERROR_NOT_AGAIN, "You applied for this job", DataResponse.STATUS_NOT_AGAIN);
+      return new DataResponse<String>(CODE_ERROR_NOT_AGAIN, "You applied for this job", STATUS_NOT_AGAIN);
     }
 
-    ApplicationEntity applicationEntity = new ApplicationEntity();
-    applicationEntity.setCandidateEntity(userDetails.getUser().getCandidateEntity());
-    applicationEntity.setJobPostEntity(jobPost.get());
+    Application applicationEntity = new Application();
+    applicationEntity.setCandidate(userDetails.getUser().getCandidate());
+    applicationEntity.setJobPost(jobPost);
     //applicationEntity.setCreateTime(new Date());
     applicationRepository.save(applicationEntity);
 
-    jobPost.get().getViewedUsers().add(userDetails.getUser());
-    jobPostRepository.save(jobPost.get());
+    EntityGraph<JobPost> graph = this.em.createEntityGraph(JobPost.class);
+    graph.addAttributeNodes("viewUsers");
 
-    return new DataResponse("Apply success");
+    Map<String, Object> hints = new HashMap<String, Object>();
+    hints.put("javax.persistence.loadgraph", graph);
+
+    jobPost = this.em.find(JobPost.class, jobPost.getId(), hints);
+
+//    List<UserEntity> viewUsers = applicationRepository.findAllUserViewedJobPost(jobPost.getId());
+//    if (viewUsers != null) {
+//      viewUsers.add(userDetails.getUser());
+//    } else {
+//      viewUsers = new ArrayList<>();
+//    }
+    jobPost.getViewedUsers().add(userDetails.getUser());
+//    jobPost.setViewedUsers(new HashSet<>(viewUsers));
+    jobPostRepository.save(jobPost);
+
+    return new DataResponse<>("Apply success");
   }
 
   @GetMapping("/cancel-apply-job-post/{postId}")
@@ -228,10 +244,10 @@ public class CandidateController {
     //    }
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    Optional<ApplicationEntity> application =
+    Optional<Application> application =
         applicationRepository.findApplicationByCanIdAndJobPostId(
             userDetails.getUser().getId(), postId);
-    if (!application.isPresent()) {
+    if (application.isEmpty()) {
       throw new CustomException("You have not applied this JobPost or JobPost doesn't exist");
     }
     applicationRepository.delete(application.get());
@@ -282,13 +298,13 @@ public class CandidateController {
     }
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(jobAlertDTO.getId());
+    Optional<JobAlert> jobAlert = jobAlertRepository.findById(jobAlertDTO.getId());
 
     if (jobAlert.isEmpty()) {
       throw new CustomException("Job Alert isn't exists");
     }
 
-    if (jobAlert.get().getCandidateEntity().getId() != userDetails.getUser().getId()) {
+    if (jobAlert.get().getCandidate().getId() != userDetails.getUser().getId()) {
       throw new CustomException("You don't have rights for this JobAlert");
     }
 
@@ -302,13 +318,13 @@ public class CandidateController {
       @PathVariable(value = "jobAlertId") long id, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(id);
+    Optional<JobAlert> jobAlert = jobAlertRepository.findById(id);
 
     if (jobAlert.isEmpty()) {
       throw new CustomException("Job Alert isn't exists");
     }
 
-    if (jobAlert.get().getCandidateEntity().getId() != userDetails.getUser().getId()) {
+    if (jobAlert.get().getCandidate().getId() != userDetails.getUser().getId()) {
       throw new CustomException("You don't have rights for this JobAlert");
     }
 
@@ -327,13 +343,13 @@ public class CandidateController {
       @PathVariable(value = "jobAlertId") long jobAlertId, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(jobAlertId);
+    Optional<JobAlert> jobAlert = jobAlertRepository.findById(jobAlertId);
 
     if (jobAlert.isEmpty()) {
       throw new CustomException("Job Alert have this id isn't exist");
     }
 
-    if (jobAlert.get().getCandidateEntity().getId() != userDetails.getUser().getId()) {
+    if (jobAlert.get().getCandidate().getId() != userDetails.getUser().getId()) {
       throw new CustomException("You don't have right for this Job Alert");
     }
 
@@ -365,13 +381,13 @@ public class CandidateController {
 
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    Optional<ExperienceEntity> experience = experienceRepository.findById(experienceDTO.getId());
+    Optional<Experience> experience = experienceRepository.findById(experienceDTO.getId());
 
     if (experience.isEmpty()) {
       throw new CustomException("Experience isn't exists");
     }
 
-    if (experience.get().getCandidateEntity().getId() != userDetails.getUser().getId()) {
+    if (experience.get().getCandidate().getId() != userDetails.getUser().getId()) {
       throw new CustomException("You don't have rights for this Experience");
     }
 
@@ -385,13 +401,13 @@ public class CandidateController {
       @PathVariable(value = "experienceId") long id, Authentication authentication) {
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    Optional<ExperienceEntity> experience = experienceRepository.findById(id);
+    Optional<Experience> experience = experienceRepository.findById(id);
 
     if (experience.isEmpty()) {
       throw new CustomException("Experience isn't exists");
     }
 
-    if (experience.get().getCandidateEntity().getId() != userDetails.getUser().getId()) {
+    if (experience.get().getCandidate().getId() != userDetails.getUser().getId()) {
       throw new CustomException("You don't have rights for this Experience");
     }
 
@@ -410,13 +426,13 @@ public class CandidateController {
 
     CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-    Optional<ExperienceEntity> experience = experienceRepository.findById(experienceId);
+    Optional<Experience> experience = experienceRepository.findById(experienceId);
 
     if (experience.isEmpty()) {
       throw new CustomException("Experience have this id isn't exist");
     }
 
-    if (experience.get().getCandidateEntity().getId() != userDetails.getUser().getId()) {
+    if (experience.get().getCandidate().getId() != userDetails.getUser().getId()) {
       throw new CustomException("You don't have right for this Experience");
     }
 

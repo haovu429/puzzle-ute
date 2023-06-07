@@ -1,14 +1,14 @@
 package hcmute.puzzle.infrastructure.entities;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "category")
 public class CategoryEntity extends Auditable{

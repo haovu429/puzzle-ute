@@ -1,5 +1,9 @@
 package hcmute.puzzle.configuration;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
 import liquibase.integration.spring.SpringLiquibase;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -19,13 +23,14 @@ import org.springframework.boot.actuate.endpoint.web.servlet.WebMvcEndpointHandl
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
+import java.io.IOException;
 import java.util.*;
 
 @Slf4j
-
 @Configuration
 public class BeanConfiguration {
 
@@ -75,7 +80,7 @@ public class BeanConfiguration {
                                                                          ServletEndpointsSupplier servletEndpointsSupplier, ControllerEndpointsSupplier controllerEndpointsSupplier,
                                                                          EndpointMediaTypes endpointMediaTypes, CorsEndpointProperties corsProperties,
                                                                          WebEndpointProperties webEndpointProperties, Environment environment) {
-        List<ExposableEndpoint<?>> allEndpoints = new ArrayList();
+        List<ExposableEndpoint<?>> allEndpoints = new ArrayList<>();
         Collection<ExposableWebEndpoint> webEndpoints = webEndpointsSupplier.getEndpoints();
         allEndpoints.addAll(webEndpoints);
         allEndpoints.addAll(servletEndpointsSupplier.getEndpoints());
@@ -93,6 +98,17 @@ public class BeanConfiguration {
                                                String basePath) {
         return webEndpointProperties.getDiscovery().isEnabled() && (StringUtils.hasText(basePath)
                 || ManagementPortType.get(environment).equals(ManagementPortType.DIFFERENT));
+    }
+
+    @Bean
+    FirebaseMessaging firebaseMessaging() throws IOException {
+        GoogleCredentials googleCredentials =
+                GoogleCredentials.fromStream(
+                        new ClassPathResource("firebase-service-account.json").getInputStream());
+        FirebaseOptions firebaseOptions =
+                FirebaseOptions.builder().setCredentials(googleCredentials).build();
+        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "puzzle-ute");
+        return FirebaseMessaging.getInstance(app);
     }
 
 //    @Bean(name = "multipartResolver")

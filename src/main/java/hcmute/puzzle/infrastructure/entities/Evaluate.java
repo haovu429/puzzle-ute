@@ -1,8 +1,6 @@
 package hcmute.puzzle.infrastructure.entities;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,6 +8,8 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "evaluate")
 public class EvaluateEntity extends Auditable implements Serializable {
@@ -19,6 +19,7 @@ public class EvaluateEntity extends Auditable implements Serializable {
   private long id;
 
   @Column(name = "rate")
+  @Builder.Default
   private int rate = -1;
 
   @Column(name = "note", columnDefinition = "VARCHAR(200)")

@@ -44,5 +44,9 @@ import org.springframework.context.annotation.Configuration;
         scheme = "bearer",
         description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\""
 )
+
 public class OpenApi30Config {
+    /**
+     * https://loda.me/articles/sb25-restful-api-document-voi-spring-boot-openapi-30
+     */
 }

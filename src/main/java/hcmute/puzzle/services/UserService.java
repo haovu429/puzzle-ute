@@ -3,11 +3,10 @@ package hcmute.puzzle.services;
 import freemarker.template.TemplateException;
 import hcmute.puzzle.infrastructure.dtos.news.*;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-import hcmute.puzzle.infrastructure.entities.TokenEntity;
-import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.Token;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
-import hcmute.puzzle.infrastructure.models.payload.request.user.UpdateUserPayload;
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,9 +16,9 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 public interface UserService {
-  Optional<UserEntity> registerUser(RegisterUserDto registerUserDto);
+  Optional<User> registerUser(RegisterUserDto registerUserDto);
 
-  UserEntity registerUserForAdmin(CreateUserForAdminDto userForAdminDto, boolean admin);
+  User registerUserForAdmin(CreateUserForAdminDto userForAdminDto, boolean admin);
 
   DataResponse update(long id, UpdateUserDto user);
 
@@ -39,16 +38,18 @@ public interface UserService {
 
   DataResponse updateForAdmin(long id, UserPostDto userPayload);
 
+  public void prepareForRole(User user);
+
   DataResponse updateAvatarForUser(
-      UserEntity userEntity, MultipartFile file, FileCategory fileCategory)
+      User user, MultipartFile file, FileCategory fileCategory)
       throws NotFoundException;
 
   // void processOAuthPostLogin(String username);
 
   // UserDetails loadUserByUsername(String email);
-  void sendMailForgotPwd(String receiveMail, String urlResetPass, TokenEntity token)
+  void sendMailForgotPwd(String receiveMail, String urlResetPass, Token token)
       throws InterruptedException, MessagingException, TemplateException, IOException, ExecutionException;
 
-  void sendMailVerifyAccount(String receiveMail, String verifyAccountUrl, TokenEntity token)
+  void sendMailVerifyAccount(String receiveMail, String verifyAccountUrl, Token token)
           throws InterruptedException, MessagingException, TemplateException, IOException, ExecutionException;
 }

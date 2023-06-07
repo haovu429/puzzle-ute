@@ -1,31 +1,34 @@
 package hcmute.puzzle.controller;
 
 import freemarker.template.TemplateException;
+import hcmute.puzzle.exception.AlreadyExistsException;
+import hcmute.puzzle.exception.ErrorDefine;
+import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.news.RegisterUserDto;
-import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
-import hcmute.puzzle.infrastructure.dtos.olds.*;
+import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
+import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
+import hcmute.puzzle.infrastructure.dtos.olds.JobPostDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 import hcmute.puzzle.infrastructure.entities.CandidateEntity;
 import hcmute.puzzle.infrastructure.entities.JobPostEntity;
 import hcmute.puzzle.infrastructure.entities.UserEntity;
-import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.infrastructure.models.CandidateFilter;
 import hcmute.puzzle.infrastructure.models.JobPostFilter;
 import hcmute.puzzle.infrastructure.models.ModelQuery;
 import hcmute.puzzle.infrastructure.models.SearchBetween;
 import hcmute.puzzle.infrastructure.models.payload.request.comment.CreateCommentPayload;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
 import hcmute.puzzle.infrastructure.repository.CandidateRepository;
 import hcmute.puzzle.infrastructure.repository.JobPostRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
@@ -435,13 +438,18 @@ public class CommonController {
       if (userEntity != null) {
         securityService.sendTokenVerifyAccount(userEntity.getEmail());
         return new DataResponse("Create user " + user.getEmail() + " success");
-        }
       }
-    catch (MessagingException | TemplateException | IOException | ExecutionException | InterruptedException e) {
+    } catch (MessagingException | TemplateException | IOException | ExecutionException | InterruptedException e) {
       log.error(e.getMessage());
+      return new DataResponse<>(ErrorDefine.ServerError.SERVER_ERROR);
+    } catch (AlreadyExistsException e) {
+      e.printStackTrace();
+      log.error(e.getMessage(), e);
+      return new DataResponse<>(e.getMessage());
     } catch (Exception e) {
       e.printStackTrace();
       log.error(e.getMessage(), e);
+      return new DataResponse<>(ErrorDefine.ServerError.SERVER_ERROR);
     }
     return new DataResponse("Error while sent mail verify");
   }

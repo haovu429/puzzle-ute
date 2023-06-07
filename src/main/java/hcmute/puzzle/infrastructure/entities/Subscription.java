@@ -12,8 +12,8 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "subscribe")
-public class SubscribeEntity extends Auditable implements Serializable {
+@Table(name = "subscription")
+public class SubscriptionEntity extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -32,11 +32,11 @@ public class SubscribeEntity extends Auditable implements Serializable {
     @Column(name = "remaining_slot")
     private int remainingSlot;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reg_user_email", referencedColumnName = "email")
     private UserEntity regUser; // Có thể tạo đăng ký gói trước
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "package_id", nullable = false)
     private PackageEntity packageEntity;
 
@@ -44,7 +44,7 @@ public class SubscribeEntity extends Auditable implements Serializable {
     @Builder.Default
     private boolean isDelete = false;
 
-//    @OneToOne(mappedBy = "subscribeEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+//    @OneToOne(mappedBy = "subscribeEntity",, fetch = FetchType.LAZY)
 //    private InvoiceEntity invoiceEntity;
 
     @Override

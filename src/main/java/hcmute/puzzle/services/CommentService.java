@@ -1,5 +1,6 @@
 package hcmute.puzzle.services;
 
+import hcmute.puzzle.infrastructure.dtos.news.CreateCommentRequest;
 import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
 
@@ -17,4 +18,6 @@ public interface CommentService {
     DataResponse likeComment(long id);
 
     DataResponse disLikeComment(long id);
+
+    CommentDto addComment(CreateCommentRequest createCommentRequest, long blogPostId);
 }

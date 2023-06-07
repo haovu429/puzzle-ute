@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class BlogPostDto {
     private long id;
     private String title;

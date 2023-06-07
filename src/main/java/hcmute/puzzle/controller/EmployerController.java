@@ -70,11 +70,12 @@ public class EmployerController {
 
   @Autowired InvoiceService invoiceService;
 
-  @DeleteMapping("/employer")
-  ResponseObject deleteEmployer(Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return employerService.delete(userDetails.getUser().getId());
-  }
+  // Delete by user Entity
+//  @DeleteMapping("/deactivate")
+//  ResponseObject deleteEmployer(Authentication authentication) {
+//    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+//    return employerService.delete(userDetails.getUser().getId());
+//  }
 
   @PutMapping("/update")
   ResponseObject updateEmployer(

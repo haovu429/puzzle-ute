@@ -1,19 +1,21 @@
 package hcmute.puzzle.configuration.security;
 
-import hcmute.puzzle.infrastructure.entities.RoleEntity;
-import hcmute.puzzle.infrastructure.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.utils.login_google.GooglePojo;
+import hcmute.puzzle.infrastructure.entities.Role;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.repository.RoleRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.utils.Provider;
 import hcmute.puzzle.utils.RedisUtils;
+import hcmute.puzzle.utils.login_google.GooglePojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -21,35 +23,47 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService implements UserDetailsService {
-  @Autowired private UserRepository userRepository;
+public class UserSecurityService implements UserDetailsService {
+  @Autowired
+  private UserRepository userRepository;
 
-  @Autowired private RoleRepository roleRepository;
+  @Autowired
+  private RoleRepository roleRepository;
 
-  @Autowired JwtTokenProvider tokenProvider;
+  @Autowired
+  JwtTokenProvider tokenProvider;
 
-  @Autowired RedisUtils redisUtils;
+  @Autowired
+  RedisUtils redisUtils;
 
-  @Autowired AuthenticationManager authenticationManager;
+  @Autowired
+  AuthenticationManager authenticationManager;
 
-  // @PersistenceContext public EntityManager em;
+  @PersistenceContext
+  public EntityManager em;
 
   @Override
   public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
     // Avoid ErrorDefine: failed to lazily initialize a collection of role:
     // hcmute.puzzle.entities.UserEntity.roles, could not initialize proxy - no Session
     // https://www.baeldung.com/hibernate-initialize-proxy-exception
-    UserEntity userEntity = userRepository.getUserByEmailJoinFetch(email);
+
+    User user = userRepository.getUserByEmailJoinFetch(email);
     // UserEntity userEntity = userRepository.getUserByEmailJoinFetch(email);
 
-    if (userEntity == null) {
+    //        EntityGraph graph = this.em.getEntityGraph("graph.User.roles");
+    //        Map hints = new HashMap();
+    //        hints.put("javax.persistence.fetchgraph", graph);
+    //        UserEntity user = this.em.(UserEntity.class, userId, hints);
+
+    if (user == null) {
       throw new UsernameNotFoundException("User not found");
     }
-    return new CustomUserDetails(userEntity);
+    return new CustomUserDetails(user);
   }
 
   public  Map<String, Object> processOAuthPostLogin(GooglePojo googlePojo) {
-    UserEntity existUser = userRepository.getUserByEmail(googlePojo.getEmail());
+    User existUser = userRepository.getUserByEmail(googlePojo.getEmail());
 
     if (existUser == null) {
       existUser = createNewAccountAfterOAuthGoogleLoginSuccess(googlePojo);
@@ -70,15 +84,16 @@ public class UserService implements UserDetailsService {
     return result;
   }
 
-  public UserEntity createNewAccountAfterOAuthGoogleLoginSuccess(GooglePojo googlePojo) {
-    UserEntity newUser = new UserEntity();
+  public User createNewAccountAfterOAuthGoogleLoginSuccess(GooglePojo googlePojo) {
+    User newUser = new User();
     newUser.setEmail(googlePojo.getEmail());
+    //    newUser.setFullName(googlePojo.getName());
     newUser.setFullName(googlePojo.getName());
     newUser.setAvatar(googlePojo.getPicture());
     newUser.setEmailVerified(googlePojo.isVerified_email());
     newUser.setLocale(googlePojo.getLocale());
     newUser.setProvider(Provider.GOOGLE);
-    Optional<RoleEntity> role = roleRepository.findById("user");
+    Optional<Role> role = roleRepository.findById("user");
     if (role.isEmpty()) {
       throw new CustomException("role user isn't exist");
     }
@@ -88,27 +103,27 @@ public class UserService implements UserDetailsService {
     return userRepository.save(newUser);
   }
 
-  public void updateCustomerAfterOAuthLoginSuccess(UserEntity userEntity, GooglePojo googlePojo) {
-    if (userEntity.getFullName() == null) {
-      userEntity.setFullName(googlePojo.getName());
+  public void updateCustomerAfterOAuthLoginSuccess(User user, GooglePojo googlePojo) {
+    if (user.getFullName() == null) {
+      user.setFullName(googlePojo.getName());
     }
 
-    if (userEntity.getAvatar() == null){
-      userEntity.setAvatar(googlePojo.getPicture());
+    if (user.getAvatar() == null){
+      user.setAvatar(googlePojo.getPicture());
     }
-    if (userEntity.getProvider() != Provider.GOOGLE) {
-      userEntity.setProvider(Provider.GOOGLE);
+    if (user.getProvider() != Provider.GOOGLE) {
+      user.setProvider(Provider.GOOGLE);
     }
 
-    if (userEntity.isEmailVerified() != true ) {
-      userEntity.setEmailVerified(true);
+    if (!user.isEmailVerified()) {
+      user.setEmailVerified(true);
     }
-    userRepository.save(userEntity);
+    userRepository.save(user);
   }
 
   public String generateTokenOAuth2(String email) {
     try {
-      UserEntity user = userRepository.getUserByEmailJoinFetch(email);
+      User user = userRepository.getUserByEmailJoinFetch(email);
       CustomUserDetails customUserDetails = new CustomUserDetails(user);
       if (user == null) {
         return null;

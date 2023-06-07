@@ -2,8 +2,8 @@ package hcmute.puzzle.infrastructure.mappers;
 
 import hcmute.puzzle.infrastructure.dtos.news.UpdateUserForAdminDto;
 import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
-import hcmute.puzzle.infrastructure.entities.RoleEntity;
-import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.Role;
+import hcmute.puzzle.infrastructure.entities.User;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -18,7 +18,7 @@ public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     @Mapping(target = "roleCodes", source = "roles")
-    UserPostDto userToUserPostDto(UserEntity entity);
+    UserPostDto userToUserPostDto(User entity);
 
 //    @Mapping(target = "username", source = "userName")
 //    @Mapping(target = "email", source = "email")
@@ -29,22 +29,28 @@ public interface UserMapper {
 //    UserPostDto mapToUserPostDto(Map<String, String> map);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-//    @Mapping(target = "roles", ignore = true)
-//    @Mapping(target = "updatedBy", ignore = true)
-//    @Mapping(target = "updatedAt", ignore = true)
-//    @Mapping(target = "id", ignore = true)
-//    @Mapping(target = "email", ignore = true)
-//    @Mapping(target = "locale", ignore = true)
-//    @Mapping(target = "delete", ignore = true)
-//    @Mapping(target = "employerEntity", ignore = true)
-//    @Mapping(target = "candidateEntity", ignore = true)
-//    @Mapping(target = "documentEntities", ignore = true)
-//    @Mapping(target = "notificationEntities", ignore = true)
-//    @Mapping(target = "viewJobPosts", ignore = true)
-//    @Mapping(target = "subscribeEntities", ignore = true)
-    void updateUserFromDto(UpdateUserForAdminDto dto, @MappingTarget UserEntity entity);
+    @Mapping(target = "roles", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedBy", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "email", ignore = true)
+    @Mapping(target = "locale", ignore = true)
+    @Mapping(target = "active", ignore = true)
+    @Mapping(target = "delete", ignore = true)
+    @Mapping(target = "lastLoginAt", ignore = true)
+    @Mapping(target = "employer", ignore = true)
+    @Mapping(target = "candidate", ignore = true)
+    @Mapping(target = "documentEntities", ignore = true)
+    @Mapping(target = "notificationEntities", ignore = true)
+    @Mapping(target = "viewJobPosts", ignore = true)
+    @Mapping(target = "subscribeEntities", ignore = true)
+    @Mapping(target = "tokens", ignore = true)
+    void updateUserFromDto(UpdateUserForAdminDto dto, @MappingTarget User entity);
 
-    UserEntity dtoToUser(UserPostDto userPostDTO);
+
+//    UserEntity dtoToUser(UserPostDto userPostDTO);
 
 //    @Named("RolesToStrings")
 //    default List<String> defaultRoleValueForQualifier(List<RoleEntity> roles) {
@@ -54,12 +60,12 @@ public interface UserMapper {
 //        return  roleCodes;
 //    }
 
-    default String roleToString(RoleEntity role) {
+    default String roleToString(Role role) {
         return role.getCode().toUpperCase();
     }
 
 
     @IterableMapping(elementTargetType = String.class)
-    List<String> roles(List<RoleEntity> roles);
+    List<String> roles(List<Role> roles);
 
 }

@@ -8,7 +8,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.configuration.security.UserService;
+import hcmute.puzzle.configuration.security.UserSecurityService;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 public class GoogleUtils {
   @Autowired private Environment env;
 
-  @Autowired private UserService userService;
+  @Autowired private UserSecurityService userService;
 
   public String getToken(final String code) throws ClientProtocolException, IOException {
     String link = env.getProperty("google.link.get.token");

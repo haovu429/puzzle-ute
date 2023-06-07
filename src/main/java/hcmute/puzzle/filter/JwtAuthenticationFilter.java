@@ -1,12 +1,12 @@
 package hcmute.puzzle.filter;
 
 import hcmute.puzzle.exception.UnauthorizedException;
-import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.configuration.security.JwtTokenProvider;
-import hcmute.puzzle.configuration.security.UserService;
+import hcmute.puzzle.configuration.security.UserSecurityService;
 import hcmute.puzzle.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ import java.util.Optional;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
   @Autowired UserRepository userRepository;
   @Autowired private JwtTokenProvider tokenProvider;
-  @Autowired private UserService customUserDetailsService;
+  @Autowired private UserSecurityService customUserDetailsService;
   @Autowired private RedisUtils redisUtils;
 
   private static final  String PREFIX ="Bearer ";
@@ -129,8 +129,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     return validUserEmail;
   }
 
-  public Optional<UserEntity> getUserEntityFromToken(String token) {
-    Optional<UserEntity> linkUser;
+  public Optional<User> getUserEntityFromToken(String token) {
+    Optional<User> linkUser;
     String validUserEmail;
 
     System.out.println(token);
@@ -144,8 +144,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     return linkUser;
   }
 
-  public Optional<UserEntity> getUserEntityFromRequest(HttpServletRequest request) {
-    Optional<UserEntity> linkUser;
+  public Optional<User> getUserEntityFromRequest(HttpServletRequest request) {
+    Optional<User> linkUser;
     String token = request.getHeader("Authorization");
     linkUser = getUserEntityFromToken(token);
     return linkUser;

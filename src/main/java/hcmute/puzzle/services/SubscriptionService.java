@@ -2,13 +2,13 @@ package hcmute.puzzle.services;
 
 import hcmute.puzzle.infrastructure.entities.InvoiceEntity;
 import hcmute.puzzle.infrastructure.entities.PackageEntity;
-import hcmute.puzzle.infrastructure.entities.SubscribeEntity;
+import hcmute.puzzle.infrastructure.entities.SubscriptionEntity;
 import hcmute.puzzle.infrastructure.entities.UserEntity;
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
 
 import java.util.List;
 
-public interface SubscribeService {
+public interface SubscriptionService {
   DataResponse subscribePackage(
       UserEntity user, PackageEntity packageEntity, InvoiceEntity invoiceEntity);
 
@@ -16,7 +16,7 @@ public interface SubscribeService {
 
   void checkSubscribed(long userId, long packId);
 
-  List<SubscribeEntity> getCurrentSubscribeByUserIdAndPackId(long userId, long packId);
+  List<SubscriptionEntity> getCurrentSubscribeByUserIdAndPackId(long userId, long packId);
 
   DataResponse getCurrentValidSubscriptions(long userId);
 

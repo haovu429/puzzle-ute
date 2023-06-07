@@ -12,7 +12,8 @@ import java.io.IOException;
 //@Component
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-  @Autowired UserService userService;
+  @Autowired
+  UserSecurityService userService;
 
   @Override
   public void onAuthenticationSuccess(

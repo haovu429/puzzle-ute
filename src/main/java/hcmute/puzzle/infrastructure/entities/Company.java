@@ -4,16 +4,18 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Builder
 @Table(name = "company")
-@AllArgsConstructor
 public class CompanyEntity extends Auditable implements Serializable {
 
   @Id
@@ -36,19 +38,19 @@ public class CompanyEntity extends Auditable implements Serializable {
   @Builder.Default
   private boolean isActive = false;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "created_employer_id")
   private EmployerEntity createdEmployer;
 
   @Builder.Default
-  @ManyToMany(mappedBy = "followingCompany", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  @ManyToMany(mappedBy = "followingCompany", fetch = FetchType.LAZY)
   private Set<CandidateEntity> followingCandidate = new HashSet<>();
 
   @Builder.Default
-  @OneToMany(mappedBy = "companyEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-  private Set<JobPostEntity> jobPostEntities = new HashSet<>();
+  @OneToMany(mappedBy = "companyEntity", fetch = FetchType.LAZY)
+  private List<JobPostEntity> jobPostEntities = new ArrayList<>();
 
-  //  @OneToMany(mappedBy = "companyEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+  //  @OneToMany(mappedBy = "companyEntity",, fetch = FetchType.LAZY)
   //  private List<NotificationEntity> notificationEntities = new ArrayList<>();
 
   @PreRemove

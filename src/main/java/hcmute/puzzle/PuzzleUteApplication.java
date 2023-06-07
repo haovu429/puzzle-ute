@@ -15,11 +15,11 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.annotation.PostConstruct;
 import java.util.TimeZone;
-
-// http://localhost:8080/api/swagger-ui/index.html?configUrl=api/api-docs -> search for "/api/api-docs"
+// http://localhost:8080/api/swagger-ui/index.html
 // http://localhost:8080/oauth2/authorization/google
 //@OpenAPIDefinition(info = @Info(title = "Puzzle API", version = "v1"))
 //@SecurityScheme(name = "puzzle", bearerFormat = "JWT", scheme = "bearer",

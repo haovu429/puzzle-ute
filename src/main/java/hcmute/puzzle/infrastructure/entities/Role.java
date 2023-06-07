@@ -2,11 +2,11 @@ package hcmute.puzzle.infrastructure.entities;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -17,15 +17,19 @@ import java.io.Serializable;
 @Table(name = "role")
 public class RoleEntity extends Auditable implements Serializable {
   @Id
-  @Column(name = "code")
+  @Column(name = "code", nullable = false)
   private String code;
 
-  @Column(name = "name")
+  @Column(name = "name", nullable = false)
   private String name;
 
   @Column(name = "is_deleted")
   @Builder.Default
   private boolean isDelete = false;
+
+  @ManyToMany(mappedBy = "roles")
+  @Builder.Default
+  private Set<UserEntity> users = new HashSet<>();
 
   public RoleEntity(String code) {
     this.code = code;

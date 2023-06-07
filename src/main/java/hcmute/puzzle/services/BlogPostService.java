@@ -5,6 +5,8 @@ import hcmute.puzzle.infrastructure.dtos.request.BlogPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostUpdateRequest;
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
 
+import java.util.List;
+
 public interface BlogPostService {
 
     DataResponse createBlogPost(BlogPostRequest blogPostRequest);
@@ -16,4 +18,6 @@ public interface BlogPostService {
     DataResponse getAll();
 
     DataResponse getOneById(long id);
+
+    List<BlogPostDto> getBlogPostByUser(long userId);
 }

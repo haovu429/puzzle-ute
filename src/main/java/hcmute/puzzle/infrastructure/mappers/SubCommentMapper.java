@@ -1,7 +1,7 @@
 package hcmute.puzzle.infrastructure.mappers;
 
 import hcmute.puzzle.infrastructure.dtos.olds.SubCommentDto;
-import hcmute.puzzle.infrastructure.entities.SubCommentEntity;
+import hcmute.puzzle.infrastructure.entities.SubComment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -16,7 +16,8 @@ public interface SubCommentMapper {
 	//@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "userId", source = "author.id")
 	@Mapping(target = "commentId", source = "comment.id")
-	SubCommentDto subCommentToSubCommentDto(SubCommentEntity entity);
+	@Mapping(target = "canEdit", ignore = true)
+	SubCommentDto subCommentToSubCommentDto(SubComment entity);
 
 //	@Mapping(target = "username", source = "username")
 //	@Mapping(target = "email", source = "email")

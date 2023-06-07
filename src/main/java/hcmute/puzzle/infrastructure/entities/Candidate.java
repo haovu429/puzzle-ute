@@ -1,10 +1,13 @@
 package hcmute.puzzle.infrastructure.entities;
 
+import hcmute.puzzle.configuration.SystemInfo;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -21,10 +24,10 @@ public class CandidateEntity extends Auditable implements Serializable {
   @Column(name = "user_id")
   private long id;
 
-  @Column(name = "first_name", columnDefinition = "VARCHAR(50)")
+  @Column(name = "first_name", columnDefinition = "VARCHAR(100)")
   private String firstName;
 
-  @Column(name = "last_name", columnDefinition = "VARCHAR(50)")
+  @Column(name = "last_name", columnDefinition = "VARCHAR(100)")
   private String lastName;
 
   @Column(name = "email_contact", nullable = false, columnDefinition = "VARCHAR(100)")
@@ -82,7 +85,7 @@ public class CandidateEntity extends Auditable implements Serializable {
 
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @Builder.Default
-  private Set<ApplicationEntity> applicationEntities = new HashSet<>();
+  private List<ApplicationEntity> applicationEntities = new ArrayList<>();
 
   //  @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   //  @JoinTable(
@@ -108,11 +111,11 @@ public class CandidateEntity extends Auditable implements Serializable {
 
   @Builder.Default
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private Set<ExperienceEntity> experienceEntities = new HashSet<>();
+  private List<ExperienceEntity> experienceEntities = new ArrayList<>();
 
   @Builder.Default
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<EvaluateEntity> evaluateEntities = new HashSet<>();
+  private List<EvaluateEntity> evaluateEntities = new ArrayList<>();
 
   @Builder.Default
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -124,9 +127,9 @@ public class CandidateEntity extends Auditable implements Serializable {
 
   @Builder.Default
   @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private Set<JobAlertEntity> jobAlertEntities = new HashSet<>();
+  private List<JobAlertEntity> jobAlertEntities = new ArrayList<>();
 
-  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.LAZY)
   @MapsId
   @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
   private UserEntity userEntity;

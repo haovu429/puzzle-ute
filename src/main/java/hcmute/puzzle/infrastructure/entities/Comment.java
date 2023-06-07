@@ -4,13 +4,14 @@ import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Builder
 @AllArgsConstructor
@@ -35,14 +36,15 @@ public class CommentEntity extends Auditable{
     @Column(name = "dis_like_num")
     private Integer disLikeNum;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blog_post_id")
     private BlogPostEntity blogPostEntity;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private UserEntity author;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<SubCommentEntity> subComments = new HashSet<>();
+    @Builder.Default
+    private List<SubCommentEntity> subComments = new ArrayList<>();
 }

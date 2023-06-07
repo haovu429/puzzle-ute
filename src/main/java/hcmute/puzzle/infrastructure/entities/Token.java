@@ -10,6 +10,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "token")
 public class TokenEntity extends Auditable implements Serializable {

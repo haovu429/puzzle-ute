@@ -1,17 +1,17 @@
 package hcmute.puzzle.infrastructure.dtos.news;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import hcmute.puzzle.infrastructure.entities.Auditable;
 import hcmute.puzzle.utils.Constant;
-import jdk.jfr.Timestamp;
 import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -44,7 +44,7 @@ public class UserPostDto extends Auditable {
   @JsonProperty("fullName")
   private String fullName;
 
-//  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm a z", timezone = "Asia/Ho_Chi_Minh")
+  //  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm a z", timezone = "Asia/Ho_Chi_Minh")
   @JsonProperty("lastLoginAt")
   private Date lastLoginAt;
 

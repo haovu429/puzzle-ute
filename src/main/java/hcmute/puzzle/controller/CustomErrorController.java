@@ -12,12 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
-@SecurityRequirement(name = "bearerAuth")
 public class CustomErrorController implements ErrorController {
 
   @RequestMapping("/error")
   @ResponseBody
-  String error(HttpServletRequest request) {
+  String error() {
     return "<h1>Error occurred</h1>";
   }
 }

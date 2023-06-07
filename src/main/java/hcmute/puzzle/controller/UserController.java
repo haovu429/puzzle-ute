@@ -4,16 +4,15 @@ import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.*;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.infrastructure.dtos.news.CreateCommentRequest;
 import hcmute.puzzle.infrastructure.dtos.news.UpdateUserDto;
 import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
-import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
-import hcmute.puzzle.infrastructure.dtos.olds.EmployerDto;
-import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.olds.*;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostUpdateRequest;
-import hcmute.puzzle.infrastructure.entities.BlogPostEntity;
-import hcmute.puzzle.infrastructure.entities.InvoiceEntity;
-import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.BlogPost;
+import hcmute.puzzle.infrastructure.entities.Invoice;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.mappers.UserMapper;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
@@ -22,11 +21,11 @@ import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.extern.slf4j.Slf4j;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -34,10 +33,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-
+@Slf4j
 @RestController
 @SecurityRequirement(name = "bearerAuth")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
@@ -72,7 +73,7 @@ public class UserController {
   InvoiceService invoiceService;
 
   @Autowired
-  SubscribeService subscribeService;
+  SubscriptionService subscriptionService;
 
   @Autowired
   BlogPostService blogPostService;
@@ -80,22 +81,36 @@ public class UserController {
   @Autowired
   BlogPostRepository blogPostRepository;
 
+  @Autowired
+  CommentService commentService;
+
   @GetMapping("/")
   public ResponseObject getAll() {
     return userService.getAll();
   }
 
   @GetMapping("/profile")
-  public ResponseObject getProfileAccount() {
-    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+  public ResponseObject<UserPostDto> getProfileAccount() {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
     UserPostDto userPostDTO = UserMapper.INSTANCE.userToUserPostDto(userDetails.getUser());
 
-    return new ResponseObject(200, "Profile info", userPostDTO);
+    return new ResponseObject<>(200, "Profile info", userPostDTO);
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseObject deleteAccount(@PathVariable Long id) {
-    return userService.delete(id);
+  @DeleteMapping("/")
+  public ResponseObject<String> deleteAccount() {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    try {
+      userService.delete(userDetails.getUser().getId());
+      return new ResponseObject<>(HttpStatus.OK.value(), "Delete user success", "");
+    } catch (NotFoundDataException e) {
+      log.error(e.getMessage(), e);
+      throw e;
+    }
   }
 
   @PutMapping("")
@@ -119,7 +134,7 @@ public class UserController {
   }
 
   @DeleteMapping("/delete-avatar")
-  public ResponseObject deleteAvatar()
+  public ResponseObject<String> deleteAvatar()
           throws ServerException, NotFoundException {
     CustomUserDetails userDetails =
             (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -139,11 +154,11 @@ public class UserController {
 
     userRepository.save(userDetails.getUser());
 
-    return new ResponseObject("Delete image success");
+    return new ResponseObject<>("Delete image success");
   }
 
   @PostMapping("/register-employer")
-  ResponseObject registerEmployer(
+  ResponseObject<EmployerDto> registerEmployer(
       @RequestBody @Validated EmployerDto employer,
       BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
@@ -152,11 +167,11 @@ public class UserController {
 
     CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-    if (userDetails.getUser().getCandidateEntity() != null) {
+    if (userDetails.getUser().getCandidate() != null) {
       throw new CustomException("This account is Candidate!");
     }
 
-    if (userDetails.getUser().getEmployerEntity() != null) {
+    if (userDetails.getUser().getEmployer() != null) {
       throw new CustomException("Info employer for this account was created!");
     }
 
@@ -164,7 +179,7 @@ public class UserController {
 
     Optional<EmployerDto> employerDTO = employerService.save(employer);
     if (employerDTO.isPresent()) {
-      return new ResponseObject(
+      return new ResponseObject<>(
           HttpStatus.OK.value(), "Create employer successfully", employerDTO.get());
     } else {
       throw new CustomException("Register employer failed");
@@ -172,7 +187,7 @@ public class UserController {
   }
 
   @PostMapping("/register-candidate")
-  ResponseObject registerCandidate(
+  ResponseObject<CandidateDto> registerCandidate(
       @RequestBody @Validated CandidateDto candidate,
       BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
@@ -181,11 +196,11 @@ public class UserController {
 
     CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-    if (userDetails.getUser().getEmployerEntity() != null) {
+    if (userDetails.getUser().getEmployer() != null) {
       throw new CustomException("This account is Employer!");
     }
 
-    if (userDetails.getUser().getCandidateEntity() != null) {
+    if (userDetails.getUser().getCandidate() != null) {
       throw new CustomException("Info candidate for this account was created!");
     }
     candidate.setUserId(userDetails.getUser().getId());
@@ -198,7 +213,7 @@ public class UserController {
 
     Optional<CandidateDto> candidateDTO = candidateService.save(candidate);
     if (candidateDTO.isPresent()) {
-      return new ResponseObject(
+      return new ResponseObject<>(
           HttpStatus.OK.value(), "Create candidate successfully", candidateDTO.get());
     } else {
       throw new RuntimeException("Add candidate failed");
@@ -225,7 +240,7 @@ public class UserController {
   DataResponse getViewJobPost(
       HttpServletRequest request, @PathVariable(value = "jobPostId") long jobPostId) {
 
-    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
+    Optional<User> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
 
     if (linkUser.isEmpty()) {
       throw new CustomException("Not found account");
@@ -241,20 +256,34 @@ public class UserController {
   }
 
   @GetMapping("/get-one-invoice/{invoiceId}")
-  public DataResponse getAllInvoice(@PathVariable(value = "invoiceId") long invoiceId) {
-    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    InvoiceEntity invoice = invoiceService.getOneInvoice(invoiceId);
+  public DataResponse<InvoiceDto> getAllInvoice(@PathVariable(value = "invoiceId") long invoiceId) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    Invoice invoice = invoiceService.getOneInvoice(invoiceId);
     if (!userDetails.getUser().getEmail().equals(invoice.getEmail())) {
       throw new CustomException("You don't have rights for this invoice");
     }
-    return new DataResponse(converter.toDTO(invoice));
+    return new DataResponse<>(converter.toDTO(invoice));
   }
 
   @GetMapping("/get-subscribed-package")
   public DataResponse getPackageSubscribe() {
-    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
 
-    return subscribeService.getAllSubscriptionsByUserId(userDetails.getUser().getId());
+    return subscriptionService.getAllSubscriptionsByUserId(userDetails.getUser().getId());
+  }
+
+  @RequestMapping(
+          path = "/my-blog-post",
+          method = RequestMethod.GET
+  )
+  public DataResponse<List<BlogPostDto>> getMyBlogPost() {
+    CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    long userId = customUserDetails.getUser().getId();
+    return new DataResponse<>(blogPostService.getBlogPostByUser(userId));
   }
 
   @RequestMapping(
@@ -295,7 +324,7 @@ public class UserController {
   public DataResponse deleteBlogPost(@PathVariable long blogPostId) {
     CustomUserDetails userDetails =
             (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    Optional<BlogPostEntity> blogPost = blogPostRepository.findById(blogPostId);
+    Optional<BlogPost> blogPost = blogPostRepository.findById(blogPostId);
     if (blogPost.get().getAuthor().getId() != userDetails.getUser().getId()) {
       throw new CustomException("You don't have rights for this blog post");
     }
@@ -303,14 +332,16 @@ public class UserController {
   }
 
   @PostMapping("/upload-blog-image")
-  public DataResponse<String> uploadBlogImage(
-          @RequestParam("file") MultipartFile file, Authentication authentication)
-          throws NotFoundException {
-    String fileName =
-            storageService
-                    .uploadFileWithFileTypeReturnUrl(
-                            file.getOriginalFilename(), file, FileCategory.IMAGE_BLOG, true)
-                    .orElseThrow(() -> new FileStorageException("UPLOAD_FILE_FAILURE"));
-    return new DataResponse(fileName);
+  public DataResponse<String> uploadBlogImage(@RequestParam("file") MultipartFile file) throws NotFoundException {
+    String fileName = storageService.uploadFileWithFileTypeReturnUrl(file.getOriginalFilename(), file, FileCategory.IMAGE_BLOG, true)
+                                    .orElseThrow(() -> new FileStorageException("UPLOAD_FILE_FAILURE"));
+    return new DataResponse<>(fileName);
+  }
+
+  @RequestMapping(path = "/add-comment/{blogPostId}", method = RequestMethod.POST)
+  public DataResponse<CommentDto> addComment(@Valid @RequestBody CreateCommentRequest createCommentRequest,
+          @RequestParam long blogPostId) {
+
+    return new DataResponse<>(commentService.addComment(createCommentRequest, blogPostId));
   }
 }

@@ -4,9 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -56,6 +54,6 @@ public class PackageEntity extends Auditable implements Serializable {
     private boolean isDelete = false;
 
     @Builder.Default
-    @OneToMany(mappedBy = "packageEntity", cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-    private Set<SubscribeEntity> subscribeEntities = new HashSet<>(); // Khi add, phải add từ 2 phía
+    @OneToMany(mappedBy = "packageEntity", fetch = FetchType.LAZY)
+    private List<SubscriptionEntity> subscribeEntities = new ArrayList<>(); // Khi add, phải add từ 2 phía
 }

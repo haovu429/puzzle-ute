@@ -7,7 +7,7 @@ import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.repository.PackageRepository;
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
-import hcmute.puzzle.services.SubscribeService;
+import hcmute.puzzle.services.SubscriptionService;
 import hcmute.puzzle.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class PaymentController {
     private PackageRepository packageRepository;
 
     @Autowired
-    SubscribeService subscribeService;
+    SubscriptionService subscriptionService;
 
     @GetMapping("/")
     public String index(){
@@ -52,7 +52,7 @@ public class PaymentController {
         String customParamRequest = "?userId=" + userDetails.getUser().getId() + "&packageCode=" + packageCode;
 
         // check Subscribed
-        subscribeService.checkSubscribed(userDetails.getUser().getId(), packageEntity.get().getId());
+        subscriptionService.checkSubscribed(userDetails.getUser().getId(), packageEntity.get().getId());
 
         String cancelUrl = Util.getBaseURL(request) + "/" + URL_PAYPAL_CANCEL + customParamRequest;
         String successUrl = Util.getBaseURL(request) + "/" + URL_PAYPAL_SUCCESS + customParamRequest;

@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static hcmute.puzzle.utils.Constant.ResponseCode.STATUS_FORBIDDEN;
+
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
   public static final Logger LOG =
       org.slf4j.LoggerFactory.getLogger(CustomAccessDeniedHandler.class);
@@ -28,7 +30,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
       throws IOException, ServletException {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     ResponseObject responseObject =
-        new ResponseObject("403", DataResponse.STATUS_FORBIDDEN, accessDeniedException.getMessage());
+        new ResponseObject("403", STATUS_FORBIDDEN, accessDeniedException.getMessage());
 
     if (auth != null) {
       LOG.warn(

@@ -1,11 +1,10 @@
 package hcmute.puzzle.infrastructure.mappers;
 
+import hcmute.puzzle.infrastructure.dtos.news.CreateCommentRequest;
 import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
-import hcmute.puzzle.infrastructure.entities.CommentEntity;
-import org.mapstruct.BeanMapping;
+import hcmute.puzzle.infrastructure.entities.Comment;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(
@@ -18,9 +17,17 @@ public interface CommentMapper {
 
 	//@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "userId", source = "author.id")
-	@Mapping(target = "blogPostId", source = "blogPostEntity.id")
-	CommentDto commentToCommentDto(CommentEntity entity);
+	@Mapping(target = "blogPostId", source = "blogPost.id")
+	@Mapping(target = "canEdit", ignore = true)
+	CommentDto commentToCommentDto(Comment entity);
 
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "likeNum", ignore = true)
+	@Mapping(target = "disLikeNum", ignore = true)
+	@Mapping(target = "blogPost", ignore = true)
+	@Mapping(target = "author", ignore = true)
+	@Mapping(target = "subComments", ignore = true)
+	Comment createCommentRequestToComment(CreateCommentRequest createCommentRequest);
 //	default CommentDto commentToCommentDto(CommentEntity entity) {
 //
 //		CommentDto commentDto = CommentDto.builder()

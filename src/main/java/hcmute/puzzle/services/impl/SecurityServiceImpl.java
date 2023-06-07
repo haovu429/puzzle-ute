@@ -2,27 +2,29 @@ package hcmute.puzzle.services.impl;
 
 import freemarker.template.TemplateException;
 import hcmute.puzzle.configuration.SystemInfo;
-import hcmute.puzzle.infrastructure.entities.TokenEntity;
-import hcmute.puzzle.infrastructure.entities.UserEntity;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.NotFoundDataException;
+import hcmute.puzzle.exception.UnauthorizedException;
+import hcmute.puzzle.infrastructure.entities.Token;
+import hcmute.puzzle.infrastructure.entities.User;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.TokenRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
-
 import hcmute.puzzle.services.SecurityService;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
-import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
-
 import hcmute.puzzle.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -53,21 +55,21 @@ public class SecurityServiceImpl implements SecurityService {
             IOException,
             ExecutionException,
             InterruptedException {
-        UserEntity foundUser = userRepository.getUserByEmail(email);
+        User foundUser = userRepository.getUserByEmail(email);
         if (foundUser == null) {
-            throw new RuntimeException("Can not found User Account with email " + email);
+            throw new NotFoundDataException("Can not found User Account with email " + email);
         }
 
         if (!foundUser.isEmailVerified()) {
-            throw new CustomException(
+            throw new UnauthorizedException(
                     "The account's email is not verified, try other ways or contact the Admin");
         }
 
-        List<TokenEntity> existedTokens =
+        List<Token> existedTokens =
                 tokenRepository.findTokensByUserAndType(foundUser.getId(), RESET_PASSWORD_TOKEN);
 
         if (!existedTokens.isEmpty()) {
-            List<TokenEntity> validTokens =
+            List<Token> validTokens =
                     existedTokens.stream().filter(token -> token.getExpiryTime().after(new Date())).collect(Collectors.toList());
             if (!validTokens.isEmpty())
                 throw new CustomException("You just requested change password, try again after 1 minutes");
@@ -76,7 +78,7 @@ public class SecurityServiceImpl implements SecurityService {
         Date nowTime = new Date();
         Date expiredTime = new Date(nowTime.getTime() + SystemInfo.TOKEN_RESET_PASSWORD_DURATION);
 
-        TokenEntity createToken = new TokenEntity();
+        Token createToken = new Token();
         createToken.setToken(tokenValue);
         createToken.setExpiryTime(expiredTime);
         createToken.setUser(foundUser);
@@ -97,7 +99,7 @@ public class SecurityServiceImpl implements SecurityService {
                    IOException,
                    ExecutionException,
                    InterruptedException {
-        UserEntity foundUser = userRepository.getUserByEmail(email);
+        User foundUser = userRepository.getUserByEmail(email);
         if (foundUser == null) {
             throw new RuntimeException("Can not found User Account with email " + email);
         }
@@ -111,7 +113,7 @@ public class SecurityServiceImpl implements SecurityService {
         Date nowTime = new Date();
         Date expiredTime = new Date(nowTime.getTime() + SystemInfo.TOKEN_VERIFY_ACCOUNT_DURATION);
 
-        TokenEntity createToken = new TokenEntity();
+        Token createToken = new Token();
         createToken.setToken(tokenValue);
         createToken.setExpiryTime(expiredTime);
         createToken.setUser(foundUser);
@@ -143,7 +145,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public DataResponse resetPassword(String token, String newPassword) {
-        TokenEntity foundToken = tokenRepository.findByToken(token);
+        Token foundToken = tokenRepository.findByToken(token);
         if (foundToken == null) {
             throw new CustomException("Token is invalid");
         }
@@ -151,7 +153,7 @@ public class SecurityServiceImpl implements SecurityService {
         if (foundToken.getExpiryTime().before(new Date())) {
             throw new CustomException("Token was expired");
         }
-        UserEntity user = tokenRepository.findUserByToken(token);
+        User user = tokenRepository.findUserByToken(token);
         if (user == null) {
             throw new CustomException("No user was found");
         }
@@ -167,8 +169,8 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public DataResponse verifyAccount(String token) {
-        TokenEntity foundToken = tokenRepository.findByToken(token);
+    public DataResponse verifyAccount(String token, String userEmail) {
+        Token foundToken = tokenRepository.findByToken(token);
         if (foundToken == null) {
             throw new CustomException("Token is invalid");
         }
@@ -176,7 +178,7 @@ public class SecurityServiceImpl implements SecurityService {
         if (foundToken.getExpiryTime().before(new Date())) {
             throw new CustomException("Token was expired");
         }
-        UserEntity user = tokenRepository.findUserByToken(token);
+        User user = tokenRepository.findUserByToken(token);
         if (user == null) {
             throw new CustomException("No user was found");
         }

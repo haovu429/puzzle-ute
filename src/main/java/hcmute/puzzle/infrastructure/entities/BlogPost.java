@@ -5,16 +5,17 @@ import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-@Entity
-@Builder
 @AllArgsConstructor
+@Builder
+@Entity
 @Table(name = "blog_post")
 public class BlogPostEntity extends Auditable{
     @Id
@@ -34,15 +35,16 @@ public class BlogPostEntity extends Auditable{
     private String tags;
 
     @JoinColumn(name = "category_blog_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY)
     private CategoryEntity category;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author", nullable = false)
     private UserEntity author;
 
     @OneToMany(mappedBy = "blogPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<CommentEntity> comments = new HashSet<>();
+    @Builder.Default
+    private List<CommentEntity> comments = new ArrayList<>();
 
     public void updateFromDTO(BlogPostDto dto) {
         this.title = dto.getTitle();

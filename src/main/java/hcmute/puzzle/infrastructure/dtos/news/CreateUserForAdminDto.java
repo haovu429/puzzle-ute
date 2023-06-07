@@ -2,9 +2,7 @@ package hcmute.puzzle.infrastructure.dtos.news;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import hcmute.puzzle.utils.Constant;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -16,6 +14,8 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class CreateUserForAdminDto {
 

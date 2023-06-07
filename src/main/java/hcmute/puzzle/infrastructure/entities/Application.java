@@ -1,8 +1,6 @@
 package hcmute.puzzle.infrastructure.entities;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,6 +8,8 @@ import java.io.Serializable;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "application")
 public class ApplicationEntity extends Auditable implements Serializable {
@@ -24,11 +24,11 @@ public class ApplicationEntity extends Auditable implements Serializable {
   @Column(name = "note", columnDefinition = "VARCHAR(200)")
   private String note;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "job_post_id", nullable = false)
   private JobPostEntity jobPostEntity;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "candidate_id", nullable = false)
   private CandidateEntity candidateEntity;
 

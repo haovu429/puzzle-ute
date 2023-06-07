@@ -1,8 +1,6 @@
 package hcmute.puzzle.infrastructure.entities;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,6 +9,8 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "experience")
 public class ExperienceEntity extends Auditable implements Serializable {
@@ -29,6 +29,7 @@ public class ExperienceEntity extends Auditable implements Serializable {
   private String company;
 
   @Column(name = "is_working")
+  @Builder.Default
   private boolean isWorking = false;
 
   @Column(name = "industry", columnDefinition = "VARCHAR(200)")

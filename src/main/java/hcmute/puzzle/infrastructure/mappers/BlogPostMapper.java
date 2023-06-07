@@ -1,9 +1,8 @@
 package hcmute.puzzle.infrastructure.mappers;
 
 import hcmute.puzzle.infrastructure.dtos.olds.BlogPostDto;
-import hcmute.puzzle.infrastructure.dtos.request.BlogPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostUpdateRequest;
-import hcmute.puzzle.infrastructure.entities.BlogPostEntity;
+import hcmute.puzzle.infrastructure.entities.BlogPost;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -34,7 +33,7 @@ public interface BlogPostMapper {
 
 	@Mapping(target = "categoryId", source = "category.id")
 	@Mapping(target = "userId", source = "author.id")
-	BlogPostDto blogPostToBlogPostDto(BlogPostEntity entity);
+	BlogPostDto blogPostToBlogPostDto(BlogPost entity);
 
 //	default BlogPostEntity blogPostDtoToBlogPost(BlogPostDto dto){
 //		BlogPostEntity blogPost= BlogPostEntity.builder()
@@ -50,13 +49,19 @@ public interface BlogPostMapper {
 
 	@Mapping(target = "category", ignore = true)
 	@Mapping(target = "comments", ignore = true)
-	BlogPostEntity blogPostRequestToBlogPost(BlogPostDto dto);
+	@Mapping(target = "author", ignore = true)
+	BlogPost blogPostRequestToBlogPost(BlogPostDto dto);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "createdBy", ignore = true)
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "updatedBy", ignore = true)
+	@Mapping(target = "updatedAt", ignore = true)
+	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "category", ignore = true)
 	@Mapping(target = "comments", ignore = true)
 	@Mapping(target = "author", ignore = true)
 	@Mapping(target = "thumbnail", ignore = true)
-	void updateBlogPostFromBlogPostRequestWithoutThumbnail(BlogPostUpdateRequest blogPostUpdateRequest, @MappingTarget BlogPostEntity entity);
+	void updateBlogPostFromBlogPostRequestWithoutThumbnail(BlogPostUpdateRequest blogPostUpdateRequest, @MappingTarget BlogPost entity);
 
 }

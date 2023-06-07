@@ -1,6 +1,6 @@
 package hcmute.puzzle.configuration.security;
 
-import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
-  UserEntity user;
+  User user;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    // Mặc định mình sẽ để tất cả là ROLE_USER. Để demo cho đơn giản.
+    // Mặc định sẽ để tất cả là ROLE_USER
 
     return user.getRoles().stream()
         .map(
@@ -44,7 +44,7 @@ public class CustomUserDetails implements UserDetails {
 
   @Override
   public boolean isAccountNonLocked() {
-    return true;
+    return user.isActive();
   }
 
   @Override
@@ -54,6 +54,6 @@ public class CustomUserDetails implements UserDetails {
 
   @Override
   public boolean isEnabled() {
-    return true;
+    return user.isActive();
   }
 }
