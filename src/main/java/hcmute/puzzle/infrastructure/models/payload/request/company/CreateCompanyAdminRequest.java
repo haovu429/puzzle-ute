@@ -8,11 +8,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CreateCompanyAdminDto {
+public class CreateCompanyAdminRequest {
     private String name;
     private String description;
-    private MultipartFile image;
+    private MultipartFile imageFile;
     private String website;
-    private boolean isActive = false;
-    private Long createdEmployerId = null;
+    private Boolean isPublic;
+    private Boolean isActive;
+    private Long createdEmployerId;
 }

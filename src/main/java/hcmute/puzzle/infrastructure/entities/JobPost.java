@@ -16,7 +16,7 @@ import java.util.*;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "job_post")
-public class JobPostEntity extends Auditable implements Serializable {
+public class JobPost extends Auditable implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +25,13 @@ public class JobPostEntity extends Auditable implements Serializable {
   @Column(name = "title", columnDefinition = "VARCHAR(200)")
   private String title;
 
-  @Column(name = "employment_type", nullable = false, columnDefinition = "VARCHAR(50)")
+  @Column(name = "position", columnDefinition = "VARCHAR(100)")
+  private String position;
+
+  @Column(name = "employment_type", nullable = false, columnDefinition = "VARCHAR(100)")
   private String employmentType;
 
-  @Column(name = "workplace_type", columnDefinition = "VARCHAR(50)")
+  @Column(name = "workplace_type", columnDefinition = "VARCHAR(100)")
   private String workplaceType;
 
   @Column(name = "description", columnDefinition = "TEXT")
@@ -46,6 +49,9 @@ public class JobPostEntity extends Auditable implements Serializable {
   @Column(name = "experience_year")
   private int experienceYear;
 
+  @Column(name = "level")
+  private String level;
+
   @Column(name = "quantity")
   private int quantity;
 
@@ -55,10 +61,10 @@ public class JobPostEntity extends Auditable implements Serializable {
   @Column(name = "max_budget", nullable = false)
   private long maxBudget;
 
-  @Column(name = "create_time")
-  @CreatedDate
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date createTime;
+//  @Column(name = "create_time")
+//  @CreatedDate
+//  @Temporal(TemporalType.TIMESTAMP)
+//  private Date createTime;
 
   @Column(name = "deadline")
   @Temporal(TemporalType.TIMESTAMP)
@@ -67,7 +73,6 @@ public class JobPostEntity extends Auditable implements Serializable {
   @Column(name = "expiry_date")
   @Temporal(TemporalType.TIMESTAMP)
   private Date expiryDate;
-
 
   @Column(name = "work_status", columnDefinition = "VARCHAR(20)")
   private String workStatus;
@@ -95,16 +100,22 @@ public class JobPostEntity extends Auditable implements Serializable {
   @Column(name = "skills", columnDefinition = "TEXT")
   private String skills;
 
-  @Column(name = "positions", columnDefinition = "TEXT")
-  private String positions;
+//  @Column(name = "position", columnDefinition = "TEXT")
+//  private String positions;
 
   @Column(name = "views")
   @Builder.Default
   private long views = 0;
 
+  @Column(name = "can_apply")
+  private Boolean canApply;
+
+  @Column(name = "is_public")
+  private Boolean isPublic;
+
   @Column(name = "is_active")
   @Builder.Default
-  private boolean isActive = false;
+  private boolean isActive = true;
 
   @Column(name = "is_deleted")
   @Builder.Default
@@ -113,9 +124,9 @@ public class JobPostEntity extends Auditable implements Serializable {
 //  @Column(name = "subscribe_id")
 //  private long subscribeId;
 
-  @OneToMany(mappedBy = "jobPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "jobPost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @Builder.Default
-  private List<ApplicationEntity> applicationEntities = new ArrayList<>();
+  private List<Application> applicationEntities = new ArrayList<>();
 
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
@@ -123,15 +134,15 @@ public class JobPostEntity extends Auditable implements Serializable {
           joinColumns = @JoinColumn(name = "job_post_id"),
           inverseJoinColumns = @JoinColumn(name = "user_id"))
   @Builder.Default
-  private Set<UserEntity> viewedUsers = new HashSet<>();
+  private Set<User> viewedUsers = new HashSet<>();
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "created_employer")
-  private EmployerEntity createdEmployer;
+  private Employer createdEmployer;
 
   @ManyToMany(mappedBy = "savedJobPost")
   @Builder.Default
-  private Set<CandidateEntity> savedCandidates = new HashSet<>();
+  private Set<Candidate> savedCandidates = new HashSet<>();
 
   //  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   //  @JoinTable(
@@ -142,13 +153,13 @@ public class JobPostEntity extends Auditable implements Serializable {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "company_id")
-  private CompanyEntity companyEntity;
+  private Company company;
 
   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "category_id", nullable = false)
-  private CategoryEntity categoryEntity;
+  private Category category;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-  @JoinColumn(name = "subscriber_id")
-  private SubscriptionEntity subscriber;
+//  @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+//  @JoinColumn(name = "subscriber_id")
+//  private Subscription subscriber;
 }

@@ -2,7 +2,7 @@ package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.olds.InvoiceDto;
-import hcmute.puzzle.infrastructure.entities.InvoiceEntity;
+import hcmute.puzzle.infrastructure.entities.Invoice;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.models.enums.InvoiceStatus;
 import hcmute.puzzle.infrastructure.repository.InvoiceRepository;
@@ -23,7 +23,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
   @Autowired Converter converter;
 
-  public InvoiceEntity saveInvoice(InvoiceEntity invoice) {
+  public Invoice saveInvoice(Invoice invoice) {
     return invoiceRepository.save(invoice);
   }
 
@@ -51,8 +51,8 @@ public class InvoiceServiceImpl implements InvoiceService {
     return new DataResponse(invoiceDtos);
   }
 
-  public InvoiceEntity getOneInvoice(long invoiceId) {
-    Optional<InvoiceEntity> invoice = invoiceRepository.findById(invoiceId);
+  public Invoice getOneInvoice(long invoiceId) {
+    Optional<Invoice> invoice = invoiceRepository.findById(invoiceId);
     if (invoice.isEmpty()) {
       throw new CustomException("Invoice not found");
     }

@@ -3,10 +3,10 @@ package hcmute.puzzle.services.impl;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.olds.ApplicationDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-import hcmute.puzzle.infrastructure.entities.ApplicationEntity;
-import hcmute.puzzle.infrastructure.entities.CandidateEntity;
-import hcmute.puzzle.infrastructure.entities.EmployerEntity;
-import hcmute.puzzle.infrastructure.entities.JobPostEntity;
+import hcmute.puzzle.infrastructure.entities.Application;
+import hcmute.puzzle.infrastructure.entities.Candidate;
+import hcmute.puzzle.infrastructure.entities.Employer;
+import hcmute.puzzle.infrastructure.entities.JobPost;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
 import hcmute.puzzle.infrastructure.repository.CandidateRepository;
@@ -40,7 +40,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
   @Override
   public ResponseObject findById(Long id) {
-    Optional<ApplicationEntity> dto = applicationRepository.findById(id);
+    Optional<Application> dto = applicationRepository.findById(id);
     if (!dto.isPresent()) {
       throw new CustomException("Can not found Address with id " + id);
     }
@@ -49,7 +49,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
   @Override
   public ResponseObject deleteById(Long id) {
-    Optional<ApplicationEntity> foundEntity = applicationRepository.findById(id);
+    Optional<Application> foundEntity = applicationRepository.findById(id);
     if (!foundEntity.isPresent()) {
       throw new RuntimeException("Can not found Application with id " + id);
     }
@@ -60,12 +60,12 @@ public class ApplicationServiceImpl implements ApplicationService {
   @Override
   public ResponseObject findAll(Pageable pageable) {
 
-    Page<ApplicationEntity> entities = applicationRepository.findAll(pageable);
+    Page<Application> entities = applicationRepository.findAll(pageable);
     Page<ApplicationDto> dtos =
         entities.map(
-            new Function<ApplicationEntity, ApplicationDto>() {
+            new Function<Application, ApplicationDto>() {
               @Override
-              public ApplicationDto apply(ApplicationEntity entity) {
+              public ApplicationDto apply(Application entity) {
                 return converter.toDTO(entity);
               }
             });
@@ -75,9 +75,9 @@ public class ApplicationServiceImpl implements ApplicationService {
   @Override
   // Candidate apply jobPost
   public ResponseObject applyJobPost(long candidateId, long jobPostId) {
-    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
-    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
-    ApplicationEntity application = new ApplicationEntity();
+    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
+    Optional<JobPost> jobPost = jobPostRepository.findById(jobPostId);
+    Application application = new Application();
 
     if (candidate.isEmpty()) {
       throw new NoSuchElementException("Candidate no value present");
@@ -87,8 +87,8 @@ public class ApplicationServiceImpl implements ApplicationService {
       throw new NoSuchElementException("Employer no value present");
     }
 
-    application.setCandidateEntity(candidate.get());
-    application.setJobPostEntity(jobPost.get());
+    application.setCandidate(candidate.get());
+    application.setJobPost(jobPost.get());
     applicationRepository.save(application);
 
     return new ResponseObject(200, " Apply success! ", converter.toDTO(application));
@@ -96,7 +96,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
   @Override
   public ResponseObject responseApplication(long applicationId, boolean isAccept, String note) {
-    Optional<ApplicationEntity> application = applicationRepository.findById(applicationId);
+    Optional<Application> application = applicationRepository.findById(applicationId);
     if (isAccept) {
       application.get().setResult("ACCEPT");
     } else {
@@ -110,7 +110,7 @@ public class ApplicationServiceImpl implements ApplicationService {
   @Override
   public ResponseObject responseApplicationByCandidateAndJobPost(
       long candidateId, long joPostId, boolean isAccept, String note) {
-    Optional<ApplicationEntity> application =
+    Optional<Application> application =
         applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, joPostId);
     if (isAccept) {
       application.get().setResult("ACCEPT");
@@ -132,7 +132,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             .map(
                 application -> {
                   ApplicationDto applicationDTO = converter.toDTO(application);
-                  Optional<CandidateEntity> candidate =
+                  Optional<Candidate> candidate =
                       candidateRepository.findById(applicationDTO.getCandidateId());
                   if (candidate.isEmpty()) {
                     throw new CustomException("Data candidate is wrong");
@@ -171,7 +171,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 //      candidateAndResult.put("application", converter.toDTO(application));
 //      response.add(candidateAndResult);
 //    }
-        Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+        Optional<JobPost> jobPost = jobPostRepository.findById(jobPostId);
         if (jobPost.isEmpty()) {
           throw new CustomException("Job Post isn't exists");
         }
@@ -181,7 +181,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             applicationRepository.findApplicationByJobPostId(jobPostId).stream()
                 .map(
                     application -> {
-                      CandidateEntity candidate = application.getCandidateEntity();
+                      Candidate candidate = application.getCandidate();
                       Map<String, Object> candidateAndResult = new HashMap<>();
                       candidateAndResult.put("position", position);
                       candidateAndResult.put("candidate", converter.toDTO(candidate));
@@ -197,9 +197,9 @@ public class ApplicationServiceImpl implements ApplicationService {
             applicationRepository.findApplicationByEmployerId(employerId).stream()
                     .map(
                             application -> {
-                              CandidateEntity candidate = application.getCandidateEntity();
+                              Candidate candidate = application.getCandidate();
                               Map<String, Object> candidateAndResult = new HashMap<>();
-                              candidateAndResult.put("position", application.getJobPostEntity().getTitle());
+                              candidateAndResult.put("position", application.getJobPost().getTitle());
                               candidateAndResult.put("candidate", converter.toDTO(candidate));
                               candidateAndResult.put("application", converter.toDTO(application));
                               return candidateAndResult;
@@ -214,7 +214,7 @@ public class ApplicationServiceImpl implements ApplicationService {
       throw new CustomException("Job Post isn't exists");
     }
 
-    Optional<ApplicationEntity> applicationEntity =
+    Optional<Application> applicationEntity =
         applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPostId);
     if (applicationEntity.isEmpty()) {
       throw new CustomException("You have not applied for this job ");
@@ -235,7 +235,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
   @Override
   public DataResponse getAmountApplicationToEmployer(long employerId) {
-    Optional<EmployerEntity> employerEntity = employerRepository.findById(employerId);
+    Optional<Employer> employerEntity = employerRepository.findById(employerId);
     if (employerEntity.isEmpty()) {
       throw new CustomException("Employer is not exists");
     }
@@ -244,7 +244,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
   @Override
   public DataResponse getAmountApplicationByJobPostId(long jobPostId) {
-    Optional<JobPostEntity> jobPostEntity = jobPostRepository.findById(jobPostId);
+    Optional<JobPost> jobPostEntity = jobPostRepository.findById(jobPostId);
     if (jobPostEntity.isEmpty()) {
       throw new CustomException("Job Post is not exists");
     }

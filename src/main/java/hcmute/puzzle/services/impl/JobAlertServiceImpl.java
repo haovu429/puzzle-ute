@@ -3,8 +3,8 @@ package hcmute.puzzle.services.impl;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.olds.JobAlertDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-import hcmute.puzzle.infrastructure.entities.CandidateEntity;
-import hcmute.puzzle.infrastructure.entities.JobAlertEntity;
+import hcmute.puzzle.infrastructure.entities.Candidate;
+import hcmute.puzzle.infrastructure.entities.JobAlert;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.repository.CandidateRepository;
 import hcmute.puzzle.infrastructure.repository.JobAlertRepository;
@@ -29,15 +29,15 @@ public class JobAlertServiceImpl implements JobAlertService {
   public ResponseObject save(long candidateId, JobAlertDto jobAlertDTO) {
     jobAlertDTO.setId(0);
 
-    JobAlertEntity jobAlert = converter.toEntity(jobAlertDTO);
+    JobAlert jobAlert = converter.toEntity(jobAlertDTO);
 
-    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
+    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
 
-    jobAlert.setCandidateEntity(candidate.get());
+    jobAlert.setCandidate(candidate.get());
 
     jobAlert = jobAlertRepository.save(jobAlert);
 
-    return new ResponseObject(200, "Save success", converter.toDTO(jobAlert));
+    return new ResponseObject<>(200, "Save success", converter.toDTO(jobAlert));
   }
 
   @Override
@@ -48,9 +48,9 @@ public class JobAlertServiceImpl implements JobAlertService {
       throw new CustomException("Job Alert isn't exists");
     }
 
-    JobAlertEntity jobAlert = converter.toEntity(jobAlertDTO);
+    JobAlert jobAlert = converter.toEntity(jobAlertDTO);
     jobAlert = jobAlertRepository.save(jobAlert);
-    return new ResponseObject(200, "Update successfully", converter.toDTO((jobAlert)));
+    return new ResponseObject<>(200, "Update successfully", converter.toDTO((jobAlert)));
   }
 
   @Override
@@ -75,22 +75,22 @@ public class JobAlertServiceImpl implements JobAlertService {
               jobAlertDtos.add(converter.toDTO(jobAlert));
             });
 
-    return new ResponseObject(200, "Info JobAlert", jobAlertDtos);
+    return new ResponseObject<>(200, "Info JobAlert", jobAlertDtos);
   }
 
   public ResponseObject getAllJobAlertByCandidateId(long jobAlertId) {
     Set<JobAlertDto> jobAlertDtos = new HashSet<>();
-    jobAlertRepository.findAllByCandidateEntity_Id(jobAlertId).stream()
-        .forEach(
+    jobAlertRepository.findAllByCandidate_Id(jobAlertId).stream()
+                      .forEach(
             jobAlert -> {
               jobAlertDtos.add(converter.toDTO(jobAlert));
             });
-    return new ResponseObject(200, "Info JobAlert by candidate", jobAlertDtos);
+    return new ResponseObject<>(200, "Info JobAlert by candidate", jobAlertDtos);
   }
 
   @Override
   public ResponseObject getOneById(long id) {
-    Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(id);
-    return new ResponseObject(200, "Info job alert", converter.toDTO(jobAlert.get()));
+    Optional<JobAlert> jobAlert = jobAlertRepository.findById(id);
+    return new ResponseObject<>(200, "Info job alert", converter.toDTO(jobAlert.get()));
   }
 }

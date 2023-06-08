@@ -11,7 +11,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(callSuper=false)
 @Entity
 @Table(name = "md_task_type")
-public class TaskTypeEntity extends Auditable{
+public class TaskType extends Auditable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

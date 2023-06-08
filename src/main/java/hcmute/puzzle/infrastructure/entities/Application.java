@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Builder
 @Entity
 @Table(name = "application")
-public class ApplicationEntity extends Auditable implements Serializable {
+public class Application extends Auditable implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,11 +26,11 @@ public class ApplicationEntity extends Auditable implements Serializable {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "job_post_id", nullable = false)
-  private JobPostEntity jobPostEntity;
+  private JobPost jobPost;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "candidate_id", nullable = false)
-  private CandidateEntity candidateEntity;
+  private Candidate candidate;
 
   @Override
   public String toString() {

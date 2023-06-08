@@ -3,9 +3,9 @@ package hcmute.puzzle.configuration;
 import hcmute.puzzle.infrastructure.dtos.olds.BlogPostDto;
 import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
 import hcmute.puzzle.infrastructure.dtos.olds.SubCommentDto;
-import hcmute.puzzle.infrastructure.entities.BlogPostEntity;
-import hcmute.puzzle.infrastructure.entities.CommentEntity;
-import hcmute.puzzle.infrastructure.entities.SubCommentEntity;
+import hcmute.puzzle.infrastructure.entities.BlogPost;
+import hcmute.puzzle.infrastructure.entities.Comment;
+import hcmute.puzzle.infrastructure.entities.SubComment;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
@@ -25,8 +25,8 @@ public class ModelMapperConfig {
 
     // setup
     // BlogPost
-    TypeMap<BlogPostEntity, BlogPostDto> blogEntityToDTO =
-        modelMapper.createTypeMap(BlogPostEntity.class, BlogPostDto.class);
+    TypeMap<BlogPost, BlogPostDto> blogEntityToDTO =
+        modelMapper.createTypeMap(BlogPost.class, BlogPostDto.class);
     // add deep mapping to flatten source's Player object into a single field in destination
     blogEntityToDTO.addMappings(
         mapper -> mapper.map(src -> src.getAuthor().getId(), BlogPostDto::setUserId));
@@ -38,18 +38,18 @@ public class ModelMapperConfig {
     //        mapper -> mapper.map(src -> src.getUserId(), BlogPostDto::setUserId));
 
     // Comment
-    TypeMap<CommentEntity, CommentDto> commentEntityToDTO =
-        modelMapper.createTypeMap(CommentEntity.class, CommentDto.class);
+    TypeMap<Comment, CommentDto> commentEntityToDTO =
+        modelMapper.createTypeMap(Comment.class, CommentDto.class);
     commentEntityToDTO.addMappings(
-        mapper -> mapper.map(src -> src.getBlogPostEntity().getId(), CommentDto::setBlogPostId));
+        mapper -> mapper.map(src -> src.getBlogPost().getId(), CommentDto::setBlogPostId));
 
-    TypeMap<CommentDto, CommentEntity> commentDTOtoEntity =
-        modelMapper.createTypeMap(CommentDto.class, CommentEntity.class);
-    commentDTOtoEntity.addMappings(mapper -> mapper.skip(CommentEntity::setLikeNum));
+    TypeMap<CommentDto, Comment> commentDTOtoEntity =
+        modelMapper.createTypeMap(CommentDto.class, Comment.class);
+    commentDTOtoEntity.addMappings(mapper -> mapper.skip(Comment::setLikeNum));
 
     // SubComment
-    TypeMap<SubCommentEntity, SubCommentDto> subCommentEntityToDTO =
-        modelMapper.createTypeMap(SubCommentEntity.class, SubCommentDto.class);
+    TypeMap<SubComment, SubCommentDto> subCommentEntityToDTO =
+        modelMapper.createTypeMap(SubComment.class, SubCommentDto.class);
     subCommentEntityToDTO.addMappings(
         mapper -> mapper.map(src -> src.getComment().getId(), SubCommentDto::setCommentId));
 

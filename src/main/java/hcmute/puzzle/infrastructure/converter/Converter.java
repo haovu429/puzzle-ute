@@ -3,8 +3,8 @@ package hcmute.puzzle.infrastructure.converter;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
 import hcmute.puzzle.infrastructure.dtos.olds.*;
-import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.entities.Package;
+import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.utils.Provider;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +18,6 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class Converter<T, D> {
-
-    @Autowired
-    private ApplicationRepository applicationRepository;
-
     @Autowired
     private RoleRepository roleRepository;
 
@@ -30,21 +26,7 @@ public class Converter<T, D> {
     @Autowired
     private CompanyRepository companyRepository;
     @Autowired
-    private DocumentRepository documentRepository;
-    @Autowired
     private EmployerRepository employerRepository;
-    @Autowired
-    private EvaluateRepository evaluateRepository;
-    @Autowired
-    private ExperienceRepository experienceRepository;
-    @Autowired
-    private FileRepository fileRepository;
-    @Autowired
-    private JobAlertRepository jobAlertRepository;
-    @Autowired
-    private JobPostRepository jobPostRepository;
-    @Autowired
-    private NotificationRepository notificationRepository;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -232,7 +214,7 @@ public class Converter<T, D> {
     public CompanyDto toDTO(Company entity) {
         CompanyDto dto =
                 CompanyDto.builder().id(entity.getId()).name(entity.getName()).image(entity.getImage()).description(entity.getDescription()).website(entity.getWebsite())
-                        .isActive(entity.isActive()).build();
+                        .isActive(entity.getIsActive()).build();
 
         if (!Objects.isNull(entity.getCreatedEmployer())) {
             dto.setCreatedEmployerId(entity.getCreatedEmployer().getId());
@@ -248,7 +230,7 @@ public class Converter<T, D> {
         entity.setImage(dto.getImage());
         entity.setDescription(dto.getDescription());
         entity.setWebsite(dto.getWebsite());
-        entity.setActive(dto.isActive());
+        entity.setIsActive(dto.getIsActive());
 
         if (dto.getCreatedEmployerId() != null) {
             Optional<Employer> employerEntity =
@@ -449,8 +431,8 @@ public class Converter<T, D> {
     }
 
     // JobPost
-    public JobPostDto toDTO(JobPost entity) {
-        JobPostDto dto = new JobPostDto();
+    public JobPostDtoOld toDTO(JobPost entity) {
+        JobPostDtoOld dto = new JobPostDtoOld();
         dto.setId(entity.getId());
         dto.setTitle(entity.getTitle());
         dto.setEmploymentType(entity.getEmploymentType());
@@ -490,7 +472,7 @@ public class Converter<T, D> {
         return dto;
     }
 
-    public JobPost toEntity(JobPostDto dto) {
+    public JobPost toEntity(JobPostDtoOld dto) {
         JobPost entity = new JobPost();
         entity.setId(dto.getId());
         entity.setTitle(dto.getTitle());

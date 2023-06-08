@@ -5,7 +5,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -15,7 +14,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "role")
-public class RoleEntity extends Auditable implements Serializable {
+public class Role extends Auditable implements Serializable {
   @Id
   @Column(name = "code", nullable = false)
   private String code;
@@ -29,9 +28,9 @@ public class RoleEntity extends Auditable implements Serializable {
 
   @ManyToMany(mappedBy = "roles")
   @Builder.Default
-  private Set<UserEntity> users = new HashSet<>();
+  private Set<User> users = new HashSet<>();
 
-  public RoleEntity(String code) {
+  public Role(String code) {
     this.code = code;
     this.setName(code.toLowerCase());
   }

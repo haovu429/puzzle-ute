@@ -1,7 +1,7 @@
 package hcmute.puzzle.services.impl;
 
-import hcmute.puzzle.infrastructure.entities.TokenEntity;
-import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.Token;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.infrastructure.repository.TokenRepository;
 import hcmute.puzzle.services.TokenService;
@@ -15,27 +15,27 @@ public class TokenServiceImpl implements TokenService {
   @Autowired UserRepository userRepository;
 
   @Override
-  public UserEntity findUSerByToken(String token) {
+  public User findUSerByToken(String token) {
     return tokenRepository.findUserByToken(token);
   }
 
   @Override
   public void saveToken(String tokenValue, String userMail) {
-    UserEntity user = userRepository.getByEmail(userMail).orElse(null);
+    User user = userRepository.getByEmail(userMail).orElse(null);
     if (user == null) {
       throw new RuntimeException("User was not found by email: " + userMail);
     }
-    TokenEntity tokenEntity = new TokenEntity();
-    tokenEntity.setUser(user);
-    tokenEntity.setToken(tokenValue);
+    Token token = new Token();
+    token.setUser(user);
+    token.setToken(tokenValue);
 
-    tokenRepository.save(tokenEntity);
+    tokenRepository.save(token);
   }
 
   @Override
   public void deleteToken(String tokenValue) {
-    TokenEntity tokenEntity = tokenRepository.findByToken(tokenValue);
-    if (tokenEntity == null) throw new RuntimeException("TokenEntity is not existed");
-    tokenRepository.delete(tokenEntity);
+    Token token = tokenRepository.findByToken(tokenValue);
+    if (token == null) throw new RuntimeException("TokenEntity is not existed");
+    tokenRepository.delete(token);
   }
 }

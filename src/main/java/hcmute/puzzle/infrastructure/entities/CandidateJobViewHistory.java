@@ -1,2 +1,4 @@
-package hcmute.puzzle.infrastructure.entities;public class CandidateJobViewHistory {
+package hcmute.puzzle.infrastructure.entities;
+
+public class CandidateJobViewHistory {
 }

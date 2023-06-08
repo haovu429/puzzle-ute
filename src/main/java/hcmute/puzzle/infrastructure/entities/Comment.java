@@ -1,13 +1,10 @@
 package hcmute.puzzle.infrastructure.entities;
 
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -16,7 +13,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @Table(name = "comment")
-public class CommentEntity extends Auditable{
+public class Comment extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -38,13 +35,13 @@ public class CommentEntity extends Auditable{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "blog_post_id")
-    private BlogPostEntity blogPostEntity;
+    private BlogPost blogPost;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UserEntity author;
+    private User author;
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
-    private List<SubCommentEntity> subComments = new ArrayList<>();
+    private List<SubComment> subComments = new ArrayList<>();
 }

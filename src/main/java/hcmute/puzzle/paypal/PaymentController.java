@@ -2,7 +2,7 @@ package hcmute.puzzle.paypal;
 
 import javax.servlet.http.HttpServletRequest;
 
-import hcmute.puzzle.infrastructure.entities.PackageEntity;
+import hcmute.puzzle.infrastructure.entities.Package;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.repository.PackageRepository;
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
@@ -43,7 +43,7 @@ public class PaymentController {
     @GetMapping("/pay")
     public DataResponse pay(HttpServletRequest request, @RequestParam("packageCode") String packageCode ){
         // Custom logic
-        Optional<PackageEntity> packageEntity = packageRepository.findByCode(packageCode);
+        Optional<Package> packageEntity = packageRepository.findByCode(packageCode);
         if (packageEntity.isEmpty()) {
             throw new CustomException("Package not found");
         }

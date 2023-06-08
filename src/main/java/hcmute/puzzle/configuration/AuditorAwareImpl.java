@@ -1,6 +1,6 @@
 package hcmute.puzzle.configuration;
 
-import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.utils.Constant;
 import java.util.Optional;
@@ -10,8 +10,6 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import static redis.clients.jedis.util.JedisURIHelper.getUser;
-
 @Component
 public class AuditorAwareImpl implements AuditorAware<String> {
 
@@ -19,7 +17,7 @@ public class AuditorAwareImpl implements AuditorAware<String> {
 
   @Override
   public Optional<String> getCurrentAuditor() {
-    UserEntity currentUser = null;
+    User currentUser = null;
     try {
       if (SecurityContextHolder.getContext().getAuthentication() != null
               && SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof CustomUserDetails) {

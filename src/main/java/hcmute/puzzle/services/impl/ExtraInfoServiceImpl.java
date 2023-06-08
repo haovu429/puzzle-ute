@@ -3,7 +3,7 @@ package hcmute.puzzle.services.impl;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.olds.ExtraInfoDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-import hcmute.puzzle.infrastructure.entities.ExtraInfoEntity;
+import hcmute.puzzle.infrastructure.entities.ExtraInfo;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.repository.ExtraInfoRepository;
 import hcmute.puzzle.services.ExtraInfoService;
@@ -27,10 +27,10 @@ public class ExtraInfoServiceImpl implements ExtraInfoService {
   public ResponseObject save(ExtraInfoDto extraInfoDTO) {
     extraInfoDTO.setType(Constant.validateTypeExtraInfo(extraInfoDTO.getType().toUpperCase()));
 
-    ExtraInfoEntity extraInfoEntity = converter.toEntity(extraInfoDTO);
-    extraInfoEntity = extraInfoRepository.save(extraInfoEntity);
+    ExtraInfo extraInfo = converter.toEntity(extraInfoDTO);
+    extraInfo = extraInfoRepository.save(extraInfo);
 
-    return new ResponseObject(200, "Save successfully", converter.toDTO(extraInfoEntity));
+    return new ResponseObject(200, "Save successfully", converter.toDTO(extraInfo));
   }
 
   @Override
@@ -42,9 +42,9 @@ public class ExtraInfoServiceImpl implements ExtraInfoService {
       throw new CustomException("ExtraInfo isn't exists");
     }
 
-    ExtraInfoEntity extraInfoEntity = converter.toEntity(extraInfoDTO);
-    extraInfoEntity = extraInfoRepository.save(extraInfoEntity);
-    return new ResponseObject(200, "Update successfully", extraInfoEntity);
+    ExtraInfo extraInfo = converter.toEntity(extraInfoDTO);
+    extraInfo = extraInfoRepository.save(extraInfo);
+    return new ResponseObject(200, "Update successfully", extraInfo);
   }
 
   @Override
@@ -62,7 +62,7 @@ public class ExtraInfoServiceImpl implements ExtraInfoService {
 
   @Override
   public ResponseObject getAll() {
-    Set<ExtraInfoEntity> extraInfoEntities = new HashSet<>();
+    Set<ExtraInfo> extraInfoEntities = new HashSet<>();
     extraInfoEntities.addAll(extraInfoRepository.findAll());
 
     return new ResponseObject(200, "ExtraInfo", extraInfoEntities);
@@ -70,7 +70,7 @@ public class ExtraInfoServiceImpl implements ExtraInfoService {
 
   @Override
   public ResponseObject getByType(String type) {
-    Set<ExtraInfoEntity> extraInfoEntities = new HashSet<>();
+    Set<ExtraInfo> extraInfoEntities = new HashSet<>();
     extraInfoEntities.addAll(extraInfoRepository.getExtraInfoEntitiesByType(type.toUpperCase()));
     Set<ExtraInfoDto> extraInfoDtos = extraInfoEntities.stream().map(ext -> converter.toDTO(ext)).collect(Collectors.toSet());
     return new ResponseObject(200, "ExtraInfo by type", extraInfoDtos);
@@ -78,7 +78,7 @@ public class ExtraInfoServiceImpl implements ExtraInfoService {
 
   @Override
   public ResponseObject getOneById(long id) {
-    Optional<ExtraInfoEntity> extraInfo = extraInfoRepository.findById(id);
+    Optional<ExtraInfo> extraInfo = extraInfoRepository.findById(id);
     if (extraInfo.isEmpty()) {
       throw new CustomException("Extra info isn't exists");
     }

@@ -16,7 +16,7 @@ import java.util.Set;
 @Entity
 @Builder
 @Table(name = "company")
-public class CompanyEntity extends Auditable implements Serializable {
+public class Company extends Auditable implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,29 +34,33 @@ public class CompanyEntity extends Auditable implements Serializable {
   @Column(name = "website", columnDefinition = "TEXT")
   private String website;
 
+  @Column(name = "is_public")
+  @Builder.Default
+  private Boolean isPublic = true;
+
   @Column(name = "is_active")
   @Builder.Default
-  private boolean isActive = false;
+  private Boolean isActive = true;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "created_employer_id")
-  private EmployerEntity createdEmployer;
+  private Employer createdEmployer;
 
   @Builder.Default
   @ManyToMany(mappedBy = "followingCompany", fetch = FetchType.LAZY)
-  private Set<CandidateEntity> followingCandidate = new HashSet<>();
+  private Set<Candidate> followingCandidate = new HashSet<>();
 
   @Builder.Default
-  @OneToMany(mappedBy = "companyEntity", fetch = FetchType.LAZY)
-  private List<JobPostEntity> jobPostEntities = new ArrayList<>();
+  @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+  private List<JobPost> jobPostEntities = new ArrayList<>();
 
   //  @OneToMany(mappedBy = "companyEntity",, fetch = FetchType.LAZY)
   //  private List<NotificationEntity> notificationEntities = new ArrayList<>();
 
   @PreRemove
   private void preRemove() {
-    for (JobPostEntity jobPost : jobPostEntities) {
-      jobPost.setCompanyEntity(null);
+    for (JobPost jobPost : jobPostEntities) {
+      jobPost.setCompany(null);
     }
   }
 }

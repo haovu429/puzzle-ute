@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "category")
-public class CategoryEntity extends Auditable{
+public class Category extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

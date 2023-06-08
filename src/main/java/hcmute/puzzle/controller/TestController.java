@@ -4,10 +4,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-import hcmute.puzzle.infrastructure.dtos.olds.SubCommentDto;
-import hcmute.puzzle.infrastructure.entities.BlogPostEntity;
-import hcmute.puzzle.infrastructure.entities.CommentEntity;
-import hcmute.puzzle.infrastructure.entities.SubCommentEntity;
+import hcmute.puzzle.infrastructure.entities.Comment;
 import hcmute.puzzle.infrastructure.mappers.CommentMapper;
 import hcmute.puzzle.infrastructure.mappers.SubCommentMapper;
 import hcmute.puzzle.infrastructure.models.payload.request.TokenObject;
@@ -27,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -73,7 +69,7 @@ public class TestController {
 	)
 	public ResponseEntity converterSubComment(@PathVariable long commentId) {
 
-		CommentEntity comment = commentRepository.findById(commentId).orElse(null);
+		Comment comment = commentRepository.findById(commentId).orElse(null);
 		CommentDto commentDto = commentMapper.commentToCommentDto(comment);
 		return ResponseEntity.ok().body(commentDto);
 	}

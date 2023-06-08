@@ -13,7 +13,7 @@ import java.util.Date;
 @Builder
 @Entity
 @Table(name = "token")
-public class TokenEntity extends Auditable implements Serializable {
+public class Token extends Auditable implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,6 +32,6 @@ public class TokenEntity extends Auditable implements Serializable {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
-  private UserEntity user;
+  private User user;
 
 }

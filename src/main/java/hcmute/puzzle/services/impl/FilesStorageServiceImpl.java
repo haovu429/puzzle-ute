@@ -7,9 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Files;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.*;
-import hcmute.puzzle.infrastructure.entities.FileEntity;
-import hcmute.puzzle.infrastructure.entities.FileTypeEntity;
-import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.File;
+import hcmute.puzzle.infrastructure.entities.FileType;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.models.CloudinaryUploadFileResponse;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
 import hcmute.puzzle.infrastructure.repository.FileRepository;
@@ -87,27 +87,27 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 
   @Override
   public boolean deleteFile(
-      String key, FileCategory category, UserEntity deleter, boolean deleteByUrl)
+      String key, FileCategory category, User deleter, boolean deleteByUrl)
       throws NotFoundException {
     // if deleteByUrl = true => key is url else key is public id
 
     // "puzzle_ute/user/avatar"
     Cloudinary cloudinary = cloudinaryUtil.getCloudinary();
 
-    FileEntity fileEntity;
+    File file;
     if (deleteByUrl) {
-      fileEntity =
+      file =
           fileRepository.findAllByUrlAndDeletedIs(key, false).orElseThrow(NotFoundException::new);
     } else {
-      fileEntity = fileRepository.findByCloudinaryPublicId(key).orElseThrow(NotFoundException::new);
+      file = fileRepository.findByCloudinaryPublicId(key).orElseThrow(NotFoundException::new);
     }
 
-    if (fileEntity == null) {
+    if (file == null) {
       logger.error("Can't delete file with key (deleteByUrl= " + deleteByUrl + ") :" + key);
       return false;
     }
 
-    FileTypeEntity fileType =
+    FileType fileType =
         fileTypeRepository.findByCategory(category).orElseThrow(NotFoundException::new);
 
     try {
@@ -123,16 +123,16 @@ public class FilesStorageServiceImpl implements FilesStorageService {
               "invalidate",
               true);
 
-      Map result = cloudinary.uploader().destroy(fileEntity.getCloudinaryPublicId(), params1);
+      Map result = cloudinary.uploader().destroy(file.getCloudinaryPublicId(), params1);
 
       if (result == null) {
         throw new CustomException("Upload image failure");
       }
 
-      fileEntity.setDeleted(true);
-      fileEntity.setUpdatedAt(new Date());
-      fileEntity.setUpdatedBy(deleter.getEmail());
-      fileRepository.save(fileEntity);
+      file.setDeleted(true);
+      file.setUpdatedAt(new Date());
+      file.setUpdatedBy(deleter.getEmail());
+      fileRepository.save(file);
       return true;
     } catch (Exception e) {
       e.printStackTrace();
@@ -141,12 +141,12 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   }
 
   // @Override
-  public boolean deleteMultiFile(List<String> publicIds, UserEntity deleter)
+  public boolean deleteMultiFile(List<String> publicIds, User deleter)
       throws PartialFailureException {
     // "puzzle_ute/user/avatar"
     Cloudinary cloudinary = cloudinaryUtil.getCloudinary();
     // Check public_id exists in db
-    List<FileEntity> fileInfoFromDB =
+    List<File> fileInfoFromDB =
         fileRepository.findAllByCloudinaryPublicIdInAndDeletedIs(publicIds, false);
 
     // checkNotExistsPublicIdsInDB(publicIds, publicIdsFromDB);
@@ -196,7 +196,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   public Optional<String> uploadFileWithFileTypeReturnUrl(
           String keyName, MultipartFile file, FileCategory fileCategory, boolean saveDB) throws NotFoundException {
 
-    FileTypeEntity fileType =
+    FileType fileType =
             fileTypeRepository.findByCategory(fileCategory).orElseThrow(NotFoundException::new);
 
     String fileName = processFileName(keyName, fileCategory);
@@ -210,16 +210,16 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 
     if (saveDB) {
       // Save file info to db.
-      FileEntity fileEntity =
-              FileEntity.builder()
-                      .name(fileName.replace(" ", ""))
-                      .category(fileCategory.getValue())
-                      .type(fileType.getType().getValue())
-                      .location(fileType.getLocation())
-                      .extension(Files.getFileExtension(Objects.requireNonNull(file.getOriginalFilename())))
-                      .url(fileUrl)
-                      .cloudinaryPublicId(response.getPublic_id())
-                      .build();
+      File fileEntity =
+              File.builder()
+                  .name(fileName.replace(" ", ""))
+                  .category(fileCategory.getValue())
+                  .type(fileType.getType().getValue())
+                  .location(fileType.getLocation())
+                  .extension(Files.getFileExtension(Objects.requireNonNull(file.getOriginalFilename())))
+                  .url(fileUrl)
+                  .cloudinaryPublicId(response.getPublic_id())
+                  .build();
       fileRepository.save(fileEntity);
     }
 
@@ -227,14 +227,14 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     return Optional.of(fileUrl);
   }
 
-  public Optional<FileEntity> uploadFileWithFileTypeReturnFileEntity(
+  public Optional<File> uploadFileWithFileTypeReturnFileEntity(
           String keyName, MultipartFile file, FileCategory fileCategory) throws NotFoundException {
 
-    UserEntity author =
+    User author =
             ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                     .getUser();
 
-    FileTypeEntity fileType =
+    FileType fileType =
             fileTypeRepository.findByCategory(fileCategory).orElseThrow(NotFoundException::new);
 
     String fileName = processFileName(keyName, fileCategory);
@@ -248,16 +248,16 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 
 
     // Save file info to db.
-    FileEntity fileEntity =
-            FileEntity.builder()
-                    .name(fileName.replace(" ", ""))
-                    .category(fileCategory.getValue())
-                    .type(fileType.getType().getValue())
-                    .location(fileType.getLocation())
-                    .extension(Files.getFileExtension(Objects.requireNonNull(file.getOriginalFilename())))
-                    .url(fileUrl)
-                    .cloudinaryPublicId(response.getPublic_id())
-                    .build();
+    File fileEntity =
+            File.builder()
+                .name(fileName.replace(" ", ""))
+                .category(fileCategory.getValue())
+                .type(fileType.getType().getValue())
+                .location(fileType.getLocation())
+                .extension(Files.getFileExtension(Objects.requireNonNull(file.getOriginalFilename())))
+                .url(fileUrl)
+                .cloudinaryPublicId(response.getPublic_id())
+                .build();
 
     fileEntity = fileRepository.save(fileEntity);
 

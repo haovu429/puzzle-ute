@@ -6,9 +6,9 @@ import hcmute.puzzle.exception.NotFoundDataException;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.news.CreateCommentRequest;
 import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
-import hcmute.puzzle.infrastructure.entities.BlogPostEntity;
-import hcmute.puzzle.infrastructure.entities.CommentEntity;
-import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.BlogPost;
+import hcmute.puzzle.infrastructure.entities.Comment;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.mappers.CommentMapper;
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.BlogPostRepository;
@@ -39,11 +39,11 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   public DataResponse save(CommentDto dto) {
-    CommentEntity entity = converter.toEntity(dto);
+    Comment entity = converter.toEntity(dto);
     try {
-      Optional<BlogPostEntity> blogPost = blogPostRepository.findById(dto.getBlogPostId());
+      Optional<BlogPost> blogPost = blogPostRepository.findById(dto.getBlogPostId());
       if (blogPost.isPresent()) {
-        entity.setBlogPostEntity(blogPost.get());
+        entity.setBlogPost(blogPost.get());
       } else {
         throw new CustomException("Blog post invalid");
       }
@@ -91,7 +91,7 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   public DataResponse likeComment(long id) {
-    Optional<CommentEntity> comment = commentRepository.findById(id);
+    Optional<Comment> comment = commentRepository.findById(id);
     if (comment.isEmpty()) {
       throw new CustomException("Comment invalid");
     }
@@ -108,7 +108,7 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   public DataResponse disLikeComment(long id) {
-    Optional<CommentEntity> comment = commentRepository.findById(id);
+    Optional<Comment> comment = commentRepository.findById(id);
     if (comment.isEmpty()) {
       throw new CustomException("Comment invalid");
     }
@@ -126,16 +126,16 @@ public class CommentServiceImpl implements CommentService {
   @Override
   public CommentDto addComment(CreateCommentRequest createCommentRequest, long blogPostId) {
 
-    BlogPostEntity blogPost = blogPostRepository.findById(blogPostId)
-                                                .orElseThrow(() -> new NotFoundDataException("NOT FOUND BLOG POST"));
+    BlogPost blogPost = blogPostRepository.findById(blogPostId)
+										  .orElseThrow(() -> new NotFoundDataException("NOT FOUND BLOG POST"));
 
-    CommentEntity comment = commentMapper.createCommentRequestToComment(createCommentRequest);
+    Comment comment = commentMapper.createCommentRequestToComment(createCommentRequest);
     CustomUserDetails customUserDetail = (CustomUserDetails) SecurityContextHolder.getContext()
                                                                                   .getAuthentication()
                                                                                   .getPrincipal();
-    UserEntity userEntity = customUserDetail.getUser();
-    comment.setAuthor(userEntity);
-    comment.setBlogPostEntity(blogPost);
+    User user = customUserDetail.getUser();
+    comment.setAuthor(user);
+    comment.setBlogPost(blogPost);
 
     commentRepository.save(comment);
     CommentDto commentDto = commentMapper.commentToCommentDto(comment);

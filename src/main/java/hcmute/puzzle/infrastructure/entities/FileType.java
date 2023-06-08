@@ -1,7 +1,6 @@
 package hcmute.puzzle.infrastructure.entities;
 
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
-import hcmute.puzzle.infrastructure.models.enums.FileType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,7 +12,7 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "md_file_type")
-public class FileTypeEntity extends Auditable{
+public class FileType extends Auditable{
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +22,7 @@ public class FileTypeEntity extends Auditable{
   private FileCategory category;
 
   @Column(name = "type", columnDefinition = "VARCHAR(50)")
-  private FileType type;
+  private hcmute.puzzle.infrastructure.models.enums.FileType type;
 
   @Column(name = "location", columnDefinition = "TEXT")
   @Builder.Default

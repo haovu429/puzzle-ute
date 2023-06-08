@@ -8,9 +8,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CreateCompanyDto {
+public class CreateCompanyRoleUserRequest {
     private String name;
     private String description;
-    private MultipartFile image = null;
+    private MultipartFile imageFile;
     private String website;
+    private Boolean isPublic;
 }

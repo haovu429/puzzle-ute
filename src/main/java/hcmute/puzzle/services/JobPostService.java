@@ -1,22 +1,26 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.infrastructure.dtos.olds.JobPostDto;
+import hcmute.puzzle.infrastructure.dtos.olds.JobPostDtoOld;
 
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.request.RequestPageable;
+import hcmute.puzzle.infrastructure.entities.JobPost;
+import hcmute.puzzle.infrastructure.models.JobPostFilterRequest;
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import org.springframework.data.domain.Page;
 
 public interface JobPostService {
-  ResponseObject add(JobPostDto jobPostDTO);
+  ResponseObject add(JobPostDtoOld jobPostDTO);
 
   ResponseObject delete(long id);
 
   DataResponse markJobPostWasDelete(long id);
 
-  ResponseObject update(JobPostDto jobPostDTO);
+  ResponseObject update(JobPostDtoOld jobPostDTO);
 
   ResponseObject getOne(long id);
 
-  void validateJobPost(JobPostDto jobPostDTO);
+  void validateJobPost(JobPostDtoOld jobPostDTO);
 
   ResponseObject getAll();
   ResponseObject getJobPostWithPage(int pageNum, int numOfRecord);
@@ -62,4 +66,6 @@ public interface JobPostService {
   long getTotalJobPostViewOfEmployer(long employerId);
 
   void checkCreatedJobPostLimit(long employerId);
+
+  Page<JobPost> filterJobPost(RequestPageable<JobPostFilterRequest> jobPostFilterRequest);
 }

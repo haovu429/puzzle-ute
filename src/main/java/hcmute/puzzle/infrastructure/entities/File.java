@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Builder
 @Entity
 @Table(name = "file")
-public class FileEntity extends Auditable implements Serializable {
+public class File extends Auditable implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,13 +2,10 @@ package hcmute.puzzle.infrastructure.entities;
 
 import hcmute.puzzle.infrastructure.dtos.olds.BlogPostDto;
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -17,7 +14,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "blog_post")
-public class BlogPostEntity extends Auditable{
+public class BlogPost extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -36,15 +33,15 @@ public class BlogPostEntity extends Auditable{
 
     @JoinColumn(name = "category_blog_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private CategoryEntity category;
+    private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author", nullable = false)
-    private UserEntity author;
+    private User author;
 
-    @OneToMany(mappedBy = "blogPostEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
-    private List<CommentEntity> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     public void updateFromDTO(BlogPostDto dto) {
         this.title = dto.getTitle();

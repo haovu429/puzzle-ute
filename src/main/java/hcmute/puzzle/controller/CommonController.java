@@ -8,15 +8,15 @@ import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.news.RegisterUserDto;
 import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
 import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
-import hcmute.puzzle.infrastructure.dtos.olds.JobPostDto;
+import hcmute.puzzle.infrastructure.dtos.olds.JobPostDtoOld;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-import hcmute.puzzle.infrastructure.entities.CandidateEntity;
-import hcmute.puzzle.infrastructure.entities.JobPostEntity;
-import hcmute.puzzle.infrastructure.entities.UserEntity;
-import hcmute.puzzle.infrastructure.models.CandidateFilter;
-import hcmute.puzzle.infrastructure.models.JobPostFilter;
-import hcmute.puzzle.infrastructure.models.ModelQuery;
-import hcmute.puzzle.infrastructure.models.SearchBetween;
+import hcmute.puzzle.infrastructure.dtos.request.RequestPageable;
+import hcmute.puzzle.infrastructure.dtos.response.JobPostDto;
+import hcmute.puzzle.infrastructure.entities.Candidate;
+import hcmute.puzzle.infrastructure.entities.JobPost;
+import hcmute.puzzle.infrastructure.entities.User;
+import hcmute.puzzle.infrastructure.mappers.JobPostMapper;
+import hcmute.puzzle.infrastructure.models.*;
 import hcmute.puzzle.infrastructure.models.payload.request.comment.CreateCommentPayload;
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
@@ -27,8 +27,10 @@ import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
@@ -51,27 +53,38 @@ public class CommonController {
 
   @Autowired JobPostService jobPostService;
 
-  @Autowired JobPostRepository jobPostRepository;
+  @Autowired
+  JobPostRepository jobPostRepository;
 
-  @Autowired CandidateRepository candidateRepository;
+  @Autowired
+  CandidateRepository candidateRepository;
 
-  @Autowired JwtAuthenticationFilter jwtAuthenticationFilter;
+  @Autowired
+  JwtAuthenticationFilter jwtAuthenticationFilter;
 
-  @Autowired ApplicationRepository applicationRepository;
+  @Autowired
+  ApplicationRepository applicationRepository;
 
-  @Autowired UserService userService;
+  @Autowired
+  UserService userService;
 
-  @Autowired Converter converter;
+  @Autowired
+  Converter converter;
 
-  @Autowired ExtraInfoService extraInfoService;
+  @Autowired
+  ExtraInfoService extraInfoService;
 
-  @Autowired CompanyService companyService;
+  @Autowired
+  CompanyService companyService;
 
-  @Autowired SearchService searchService;
+  @Autowired
+  SearchService searchService;
 
-  @Autowired ApplicationService applicationService;
+  @Autowired
+  ApplicationService applicationService;
 
-  @Autowired ExperienceService experienceService;
+  @Autowired
+  ExperienceService experienceService;
 
   @Autowired BlogPostService blogPostService;
 
@@ -82,6 +95,9 @@ public class CommonController {
   @Autowired SecurityService securityService;
 
   @Autowired CategoryService categoryService;
+
+  @Autowired
+  JobPostMapper jobPostMapper;
 
   @GetMapping("/job-post/get-all")
   ResponseObject getAllJobPost() {
@@ -95,7 +111,7 @@ public class CommonController {
     jobPostService.countJobPostView(jobPostId);
     try {
       if (token != null && !token.isEmpty() && !token.isBlank()) {
-        Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
+        Optional<User> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
         jobPostService.viewJobPost(linkUser.get().getId(), jobPostId);
       }
     } catch (Exception e) {
@@ -120,8 +136,22 @@ public class CommonController {
     return extraInfoService.getByType(type);
   }
 
+  @PostMapping("/job-post-filter-v2")
+  public ResponseObject<Page<JobPostDto>> filterJobPostV2(
+          @RequestBody(required = false) RequestPageable<JobPostFilterRequest> jobPostFilterRequest) {
+    try {
+      Page<JobPost> jobPosts = jobPostService.filterJobPost(jobPostFilterRequest);
+      Page<JobPostDto> jobPostDtos = jobPosts.map(jobPostMapper::jobPostToJobPostDto);
+      return new ResponseObject<>(200, "Result for filter job post", jobPostDtos);
+
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+    }
+    return new ResponseObject<>(ErrorDefine.ServerError.SERVER_ERROR, 500 , null );
+  }
+
   @PostMapping("/job-post-filter")
-  public ResponseObject filterJobPost(@RequestBody(required = false) JobPostFilter jobPostFilter) {
+  public ResponseObject<List<JobPostDtoOld>> filterJobPost(@RequestBody(required = false) JobPostFilter jobPostFilter) {
     Map<String, List<ModelQuery>> fieldSearchValue = new HashMap<>();
     Map<String, List<ModelQuery>> fieldSearchValueSpecial = new HashMap<>();
     List<SearchBetween> searchBetweenList = new ArrayList<>();
@@ -281,14 +311,11 @@ public class CommonController {
             .collect(Collectors.toList()));
 
     if (jobPostFilter.getCategoryIds() != null && !jobPostFilter.getCategoryIds().isEmpty()) {
-      fieldSearchValue.put(
-          "categoryEntity",
-          jobPostFilter.getCategoryIds().stream()
-              .map(
-                  id ->
-                      new ModelQuery(
-                          ModelQuery.TYPE_QUERY_EQUAL, ModelQuery.TYPE_ATTRIBUTE_NUMBER, id))
-              .collect(Collectors.toList()));
+      fieldSearchValue.put("category", jobPostFilter.getCategoryIds()
+                                                    .stream()
+                                                    .map(id -> new ModelQuery(ModelQuery.TYPE_QUERY_EQUAL,
+                                                                              ModelQuery.TYPE_ATTRIBUTE_NUMBER, id))
+                                                    .collect(Collectors.toList()));
     }
 
     List<String> commonFieldSearch = new ArrayList<>();
@@ -306,35 +333,25 @@ public class CommonController {
       commonFieldSearch.add("name");
     }
 
-    List<JobPostEntity> jobPostEntities =
-        searchService.filterObject(
-            "JobPostEntity",
-            searchBetweenList,
-            fieldSearchValue,
-            fieldSearchValueSpecial,
-            commonFieldSearch,
-            valueCommonFieldSearch,
-            jobPostFilter.getNoOfRecords(),
-            jobPostFilter.getPageIndex(),
-            jobPostFilter.isSortById());
+    List<JobPost> jobPostEntities = searchService.filterObject("JobPost", searchBetweenList, fieldSearchValue,
+                                                               fieldSearchValueSpecial, commonFieldSearch,
+                                                               valueCommonFieldSearch, jobPostFilter.getNoOfRecords(),
+                                                               jobPostFilter.getPageIndex(),
+                                                               jobPostFilter.isSortById());
 
-    List<JobPostDto> jobPostDtos =
-        jobPostEntities.stream()
-            .map(
-                jobPost -> {
-                  JobPostDto jobPostDTO = converter.toDTO(jobPost);
-                  jobPostDTO.setDescription(null);
-                  return jobPostDTO;
-                })
-            .collect(Collectors.toList());
+    List<JobPostDtoOld> jobPostDtos = jobPostEntities.stream().map(jobPost -> {
+      JobPostDtoOld jobPostDTO = converter.toDTO(jobPost);
+      jobPostDTO.setDescription(null);
+      return jobPostDTO;
+    }).collect(Collectors.toList());
 
     // JobPostFilter jobPostFilter1 = new JobPostFilter();
 
-    return new ResponseObject(200, "Result for filter job post", jobPostDtos);
+    return new ResponseObject<>(200, "Result for filter job post", jobPostDtos);
   }
 
   @PostMapping("/candidate-filter")
-  public ResponseObject filterCandidate(@RequestBody CandidateFilter candidateFilter) {
+  public ResponseObject<List<CandidateDto>> filterCandidate(@RequestBody CandidateFilter candidateFilter) {
 
     Map<String, List<ModelQuery>> fieldSearchValue = new HashMap<>();
     if (candidateFilter.getEducationLevels() != null
@@ -398,26 +415,19 @@ public class CommonController {
       commonFieldSearch.add("phoneNum");
     }
 
-    List<CandidateEntity> candidateEntity =
-        searchService.filterObject(
-            "CandidateEntity",
-            null,
-            fieldSearchValue,
-            null,
-            commonFieldSearch,
-            valueCommonFieldSearch,
-            candidateFilter.getNoOfRecords(),
-            candidateFilter.getPageIndex(),
-            candidateFilter.isSortById());
+    List<Candidate> candidates = searchService.filterObject("CandidateEntity", null, fieldSearchValue, null,
+                                                            commonFieldSearch, valueCommonFieldSearch,
+                                                            candidateFilter.getNoOfRecords(),
+                                                            candidateFilter.getPageIndex(),
+                                                            candidateFilter.isSortById());
 
-    List<CandidateDto> candidateDTOS =
-        candidateEntity.stream()
-            .map(candidate -> converter.toDTO(candidate))
-            .collect(Collectors.toList());
+    List<CandidateDto> candidateDTOS = candidates.stream()
+                                                 .map(candidate -> converter.toDTO(candidate))
+                                                 .collect(Collectors.toList());
 
     // CandidateFilter candidateFilter1 = new CandidateFilter();
 
-    return new ResponseObject(200, "Result for filter candidate", candidateDTOS);
+    return new ResponseObject<>(200, "Result for filter candidate", candidateDTOS);
   }
 
   @GetMapping("/get-all-extra-info")
@@ -434,10 +444,10 @@ public class CommonController {
   public DataResponse<String> registerAccount(@RequestBody RegisterUserDto user) {
 
     try {
-      UserEntity userEntity = userService.registerUser(user).orElse(null);
+      User userEntity = userService.registerUser(user).orElse(null);
       if (userEntity != null) {
         securityService.sendTokenVerifyAccount(userEntity.getEmail());
-        return new DataResponse("Create user " + user.getEmail() + " success");
+        return new DataResponse<>("Create user " + user.getEmail() + " success");
       }
     } catch (MessagingException | TemplateException | IOException | ExecutionException | InterruptedException e) {
       log.error(e.getMessage());
@@ -451,7 +461,7 @@ public class CommonController {
       log.error(e.getMessage(), e);
       return new DataResponse<>(ErrorDefine.ServerError.SERVER_ERROR);
     }
-    return new DataResponse("Error while sent mail verify");
+    return new DataResponse<>("Error while sent mail verify");
   }
 
   @GetMapping("/get-hot-job-post")

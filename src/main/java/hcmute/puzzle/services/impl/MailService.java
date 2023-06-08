@@ -4,7 +4,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import hcmute.puzzle.configuration.FreemarkerConfiguration;
-import hcmute.puzzle.infrastructure.entities.TokenEntity;
+import hcmute.puzzle.infrastructure.entities.Token;
 import hcmute.puzzle.utils.mail.MailUtil;
 import hcmute.puzzle.threads.ThreadService;
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class MailService {
 
   @Autowired ThreadService threadService1;
 
-  public void executeSendMailWithThread(String receiveMail, String urlResetPass, TokenEntity token)
+  public void executeSendMailWithThread(String receiveMail, String urlResetPass, Token token)
       throws InterruptedException,
           ExecutionException,
           MessagingException,
@@ -66,7 +66,7 @@ public class MailService {
     }
   }
 
-  public void executeSendMailVerifyAccountWithThread(String receiveMail, String verifyAccountUrl, TokenEntity token)
+  public void executeSendMailVerifyAccountWithThread(String receiveMail, String verifyAccountUrl, Token token)
           throws InterruptedException,
                  ExecutionException,
                  MessagingException,
@@ -88,7 +88,7 @@ public class MailService {
               }
             };
 
-    TokenEntity tokenEntity = token;
+    Token tokenEntity = token;
     ThreadService threadService = threadService1;
     threadService.execute(sendMail, ThreadService.MAIL_TASK, tokenEntity);
     ExecutorService executorService = threadService.executorService;

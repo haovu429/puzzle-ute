@@ -1,2 +1,4 @@
-package hcmute.puzzle.utils;public class FormatUtils {
+package hcmute.puzzle.utils;
+
+public class FormatUtils {
 }

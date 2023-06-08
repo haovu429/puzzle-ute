@@ -1,6 +1,5 @@
 package hcmute.puzzle.infrastructure.entities;
 
-import hcmute.puzzle.configuration.SystemInfo;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,7 +16,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "employer")
-public class EmployerEntity extends Auditable implements Serializable {
+public class Employer extends Auditable implements Serializable {
 
   @Id
   // @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,22 +37,22 @@ public class EmployerEntity extends Auditable implements Serializable {
 
   @ManyToMany(mappedBy = "followingEmployers", cascade = CascadeType.ALL)
   @Builder.Default
-  private Set<CandidateEntity> followCandidates = new HashSet<>();
+  private Set<Candidate> followCandidates = new HashSet<>();
 
   @OneToMany(mappedBy = "createdEmployer", cascade = CascadeType.ALL, orphanRemoval = true)
   @Builder.Default
-  private List<JobPostEntity> jobPostEntities = new ArrayList<>();
+  private List<JobPost> jobPostEntities = new ArrayList<>();
 
-  @OneToMany(mappedBy = "employerEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "employer", cascade = CascadeType.ALL, orphanRemoval = true)
   @Builder.Default
-  private List<EvaluateEntity> evaluateEntities = new ArrayList<>();
+  private List<Evaluate> evaluateEntities = new ArrayList<>();
 
   @OneToOne(fetch = FetchType.LAZY)
   @MapsId
   @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-  private UserEntity userEntity;
+  private User user;
 
   @OneToMany(mappedBy = "createdEmployer", fetch = FetchType.LAZY)
   @Builder.Default
-  private List<CompanyEntity> companyEntities = new ArrayList<>();
+  private List<Company> companyEntities = new ArrayList<>();
 }

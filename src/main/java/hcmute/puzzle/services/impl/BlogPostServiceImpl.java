@@ -6,10 +6,10 @@ import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.olds.BlogPostDto;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostUpdateRequest;
-import hcmute.puzzle.infrastructure.entities.BlogPostEntity;
-import hcmute.puzzle.infrastructure.entities.CategoryEntity;
-import hcmute.puzzle.infrastructure.entities.FileEntity;
-import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.BlogPost;
+import hcmute.puzzle.infrastructure.entities.Category;
+import hcmute.puzzle.infrastructure.entities.File;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.mappers.BlogPostMapper;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
@@ -55,18 +55,18 @@ public class BlogPostServiceImpl implements BlogPostService {
   public DataResponse createBlogPost(BlogPostRequest blogPostRequest) {
 
     CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    UserEntity author = customUserDetails.getUser();
+    User author = customUserDetails.getUser();
 
-    CategoryEntity category = categoryRepository.findById(blogPostRequest.getCategoryId())
-            .orElseThrow(() -> new NotFoundDataException("NOT_FOUND_CATEGORY"));
+    Category category = categoryRepository.findById(blogPostRequest.getCategoryId())
+                                          .orElseThrow(() -> new NotFoundDataException("NOT_FOUND_CATEGORY"));
 
-    BlogPostEntity blogPost = BlogPostEntity.builder()
-            .title(blogPostRequest.getTitle())
-            .body(blogPostRequest.getBody())
-            .tags(blogPostRequest.getTags())
-            .category(category)
-            .author(author)
-            .build();
+    BlogPost blogPost = BlogPost.builder()
+								.title(blogPostRequest.getTitle())
+								.body(blogPostRequest.getBody())
+								.tags(blogPostRequest.getTags())
+								.category(category)
+								.author(author)
+								.build();
     blogPost = blogPostRepository.save(blogPost);
     //BlogPostMapper.INSTANCE.blogPostDtoToBlogPost(dto);
 
@@ -80,7 +80,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     blogPost = blogPostRepository.save(blogPost);
     // process file (update blog id for file saved image)
     List<String> imageUrls = null;
-    List<FileEntity> savedImages = null;
+    List<File> savedImages = null;
 
     imageUrls = detectedImageSrcList(blogPost.getBody());
 
@@ -89,7 +89,7 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     if (savedImages != null && !savedImages.isEmpty()) {
-      BlogPostEntity finalBlogPost = blogPost;
+      BlogPost finalBlogPost = blogPost;
       savedImages.forEach(image -> image.setObjectId(finalBlogPost.getId()));
       fileRepository.saveAll(savedImages);
     }
@@ -142,20 +142,20 @@ public class BlogPostServiceImpl implements BlogPostService {
 
   @Override
   public DataResponse update(BlogPostUpdateRequest blogPostUpdateRequest, long id) {
-    BlogPostEntity blogPost = blogPostRepository.findById(id).orElseThrow(
+    BlogPost blogPost = blogPostRepository.findById(id).orElseThrow(
             () -> new CustomException("You don't have rights for this blog post")
     );
 
     if (Objects.nonNull(blogPostUpdateRequest.getCategoryId())) {
-      CategoryEntity category = categoryRepository.findById(blogPostUpdateRequest.getCategoryId())
-              .orElseThrow(() -> new NotFoundDataException("NOT_FOUND_CATEGORY"));
+      Category category = categoryRepository.findById(blogPostUpdateRequest.getCategoryId())
+                                            .orElseThrow(() -> new NotFoundDataException("NOT_FOUND_CATEGORY"));
       blogPost.setCategory(category);
     }
 
     CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
             .getAuthentication().getPrincipal();
-    UserEntity userEntity = customUserDetails.getUser();
-    if (userEntity.getId() != blogPost.getAuthor().getId()) {
+    User user = customUserDetails.getUser();
+    if (user.getId() != blogPost.getAuthor().getId()) {
       throw new UnauthorizedException("UNAUTHORIZED FOR THIS BLOG POST");
     }
     if (blogPost.getBody() != null && blogPostUpdateRequest.getBody() != null) {
@@ -188,16 +188,16 @@ public class BlogPostServiceImpl implements BlogPostService {
       blogPost.setThumbnail(imageUrl);
     }
     BlogPostDto blogPostDto = blogPostMapper.blogPostToBlogPostDto(blogPost);
-    resolveBlogPostDtoWithRightEditOfCommentSubComment(blogPostDto, userEntity.getId());
+    resolveBlogPostDtoWithRightEditOfCommentSubComment(blogPostDto, user.getId());
     return new DataResponse(blogPostDto);
 
   }
 
   private void updateBlogPostIdForSavedFile(List<String> fileSrcs, long blogPostId) {
-    List<FileEntity> savedImages = null;
+    List<File> savedImages = null;
 
     //get current user
-    UserEntity currentUser =
+    User currentUser =
             ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                     .getUser();
 
@@ -217,20 +217,20 @@ public class BlogPostServiceImpl implements BlogPostService {
 
   public void deleteMultiFileByUrlList(List<String> urls) {
     //get current user
-    UserEntity currentUser =
+    User currentUser =
             ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                     .getUser();
 
     List<String> publicIdsToDelete =
             fileRepository.findAllByUrlInAndDeletedIs(urls, false).stream()
-                    .map(FileEntity::getCloudinaryPublicId).collect(Collectors.toList());
+                          .map(File::getCloudinaryPublicId).collect(Collectors.toList());
     if (!publicIdsToDelete.isEmpty())
       filesStorageService.deleteMultiFile(publicIdsToDelete, currentUser);
   }
 
   @Override
   public DataResponse delete(long id) {
-    BlogPostEntity blogPost = blogPostRepository.findById(id).orElseThrow(() -> new NotFoundException("NOT_FOUND_BLOG_POST"));
+    BlogPost blogPost = blogPostRepository.findById(id).orElseThrow(() -> new NotFoundException("NOT_FOUND_BLOG_POST"));
     try {
       List<String> imageSrcs = detectedImageSrcList(blogPost.getBody());
 
@@ -245,7 +245,7 @@ public class BlogPostServiceImpl implements BlogPostService {
   @Override
   public DataResponse getAll() {
 
-    UserEntity currentUser;
+    User currentUser;
     if (SecurityContextHolder.getContext().getAuthentication() != null
             && SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof CustomUserDetails) {
       currentUser = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
@@ -277,7 +277,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 
   @Override
   public List<BlogPostDto> getBlogPostByUser(long userId) {
-    List<BlogPostEntity> blogPosts = blogPostRepository.findAllByAuthorId(userId);
+    List<BlogPost> blogPosts = blogPostRepository.findAllByAuthorId(userId);
     List<BlogPostDto> blogPostDtos = new ArrayList<>();
     if (blogPosts != null && !blogPosts.isEmpty()) {
       blogPostDtos = blogPosts .stream()

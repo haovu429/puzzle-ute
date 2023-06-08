@@ -42,7 +42,7 @@ public interface JobPostRepository extends JpaRepository<JobPost, Long>, JpaSpec
   @Query("SELECT jp FROM JobPost jp ORDER BY jp.deadline DESC NULLS LAST ")
   Set<JobPost> getJobPostDueSoon();
 
-  @Query("SELECT jp FROM JobPost jp ORDER BY jp.createTime ASC NULLS LAST")
+  @Query("SELECT jp FROM JobPost jp ORDER BY jp.createdAt ASC NULLS LAST")
   Set<JobPost> getHotJobPost();
 
   @Query("SELECT jp FROM JobPost jp WHERE jp.isActive = TRUE AND jp.isDeleted = FALSE")
@@ -67,7 +67,7 @@ public interface JobPostRepository extends JpaRepository<JobPost, Long>, JpaSpec
       @Param("isActive") boolean isActive, @Param("employerId") long employerId);
 
   @Query(
-      "SELECT jp.id FROM JobPost jp WHERE jp.isActive = :isActive AND jp.createTime >= :createTime AND jp.isDeleted=FALSE")
+      "SELECT jp.id FROM JobPost jp WHERE jp.isActive = :isActive AND jp.createdAt >= :createTime AND jp.isDeleted=FALSE")
   List<Long> getJobPostIdByActiveAndLessThenCreatedTime(
       @Param("isActive") boolean isActive, @Param("createTime") Date createTime);
 

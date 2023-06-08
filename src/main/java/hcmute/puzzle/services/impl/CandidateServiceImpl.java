@@ -38,29 +38,29 @@ public class CandidateServiceImpl implements CandidateService {
   @Override
   public Optional<CandidateDto> save(CandidateDto candidateDTO) {
     // casting provinceDTO to ProvinceEntity
-    CandidateEntity candidateEntity = converter.toEntity(candidateDTO);
+    Candidate candidate = converter.toEntity(candidateDTO);
 
     // set id
-    candidateEntity.setId(0);
+    candidate.setId(0);
 
-    if (candidateEntity.getUserEntity().getEmployerEntity() != null) {
+    if (candidate.getUser().getEmployer() != null) {
       throw new RuntimeException("This account for employer");
     }
 
-    candidateRepository.save(candidateEntity);
+    candidateRepository.save(candidate);
 
-    Optional<UserEntity> userEntity = userRepository.findById(candidateEntity.getId());
+    Optional<User> userEntity = userRepository.findById(candidate.getId());
     if (userEntity.isEmpty()) {
       throw new CustomException("Account isn't exist");
     }
-    Optional<RoleEntity> role = roleRepository.findById("candidate");
+    Optional<Role> role = roleRepository.findById("candidate");
     if (role.isEmpty()) {
       throw new CustomException("role candidate isn't exist");
     }
     userEntity.get().getRoles().add(role.get());
     userRepository.save(userEntity.get());
 
-    Optional<CandidateDto> result = Optional.of(converter.toDTO(candidateEntity));
+    Optional<CandidateDto> result = Optional.of(converter.toDTO(candidate));
 
     // return add Province success
     return result;
@@ -85,7 +85,7 @@ public class CandidateServiceImpl implements CandidateService {
       if (!(candidateDTO.getEmailContact() != null && !candidateDTO.getEmailContact().isEmpty() && !candidateDTO.getEmailContact().isBlank()) ) {
         throw new CustomException("Email contact invalid");
       }
-      CandidateEntity candidate = converter.toEntity(candidateDTO);
+      Candidate candidate = converter.toEntity(candidateDTO);
       // candidate.setId(candidate.getUserEntity().getId());
 
       candidateRepository.save(candidate);
@@ -100,7 +100,7 @@ public class CandidateServiceImpl implements CandidateService {
     boolean exists = candidateRepository.existsById(id);
 
     if (exists) {
-      CandidateEntity candidate = candidateRepository.getReferenceById(id);
+      Candidate candidate = candidateRepository.getReferenceById(id);
       CandidateDto candidateDTO = converter.toDTO(candidate);
 
       return new ResponseObject(200, "Info of candidate", candidateDTO);
@@ -111,8 +111,8 @@ public class CandidateServiceImpl implements CandidateService {
 
   @Override
   public ResponseObject followEmployer(long candidateId, long employerId) {
-    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
-    Optional<EmployerEntity> employer = employerRepository.findById(employerId);
+    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
+    Optional<Employer> employer = employerRepository.findById(employerId);
     if (candidate.isEmpty()) {
       throw new NoSuchElementException("Candidate no value present");
     }
@@ -133,8 +133,8 @@ public class CandidateServiceImpl implements CandidateService {
 
   @Override
   public ResponseObject cancelFollowedEmployer(long candidateId, long employerId) {
-    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
-    Optional<EmployerEntity> employer = employerRepository.findById(employerId);
+    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
+    Optional<Employer> employer = employerRepository.findById(employerId);
     if (candidate.isEmpty()) {
       throw new NoSuchElementException("Candidate no value present");
     }
@@ -155,8 +155,8 @@ public class CandidateServiceImpl implements CandidateService {
 
   @Override
   public ResponseObject followCompany(long candidateId, long companyId) {
-    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
-    Optional<CompanyEntity> company = companyRepository.findById(companyId);
+    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
+    Optional<Company> company = companyRepository.findById(companyId);
     if (candidate.isEmpty()) {
       throw new NoSuchElementException("Candidate no value present");
     }
@@ -176,8 +176,8 @@ public class CandidateServiceImpl implements CandidateService {
   }
 
   public ResponseObject cancelFollowedCompany(long candidateId, long companyId) {
-    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
-    Optional<CompanyEntity> company = companyRepository.findById(companyId);
+    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
+    Optional<Company> company = companyRepository.findById(companyId);
     if (candidate.isEmpty()) {
       throw new NoSuchElementException("Candidate no value present");
     }
@@ -198,8 +198,8 @@ public class CandidateServiceImpl implements CandidateService {
 
   @Override
   public ResponseObject saveJobPost(long candidateId, long jobPostId) {
-    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
-    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
+    Optional<JobPost> jobPost = jobPostRepository.findById(jobPostId);
     if (candidate.isEmpty()) {
       throw new NoSuchElementException("Candidate no value present");
     }
@@ -220,8 +220,8 @@ public class CandidateServiceImpl implements CandidateService {
 
   @Override
   public ResponseObject cancelSavedJobPost(long candidateId, long jobPostId) {
-    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
-    Optional<JobPostEntity> jobPost = jobPostRepository.findById(jobPostId);
+    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
+    Optional<JobPost> jobPost = jobPostRepository.findById(jobPostId);
     if (candidate.isEmpty()) {
       throw new NoSuchElementException("Candidate no value present");
     }

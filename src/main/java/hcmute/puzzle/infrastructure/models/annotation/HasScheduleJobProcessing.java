@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class HasScheduleJobProcessing {
-
     private static final String packageName = "hcmute.puzzle";
 
     public static List<Class<?>> getAnnotatedClass() {

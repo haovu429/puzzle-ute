@@ -1,8 +1,8 @@
 package hcmute.puzzle.infrastructure.models;
 
-import hcmute.puzzle.infrastructure.entities.TokenEntity;
+import hcmute.puzzle.infrastructure.entities.Token;
 
 public class TaskSupport {
     private String type;
-    private TokenEntity tokenEntity;
+    private Token token;
 }

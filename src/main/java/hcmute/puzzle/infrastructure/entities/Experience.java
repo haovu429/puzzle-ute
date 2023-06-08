@@ -13,7 +13,7 @@ import java.util.Date;
 @Builder
 @Entity
 @Table(name = "experience")
-public class ExperienceEntity extends Auditable implements Serializable {
+public class Experience extends Auditable implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,7 +51,7 @@ public class ExperienceEntity extends Auditable implements Serializable {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "candidate_id", nullable = false)
-  private CandidateEntity candidateEntity;
+  private Candidate candidate;
 
   //  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   //  @JoinTable(

@@ -1,21 +1,21 @@
 package hcmute.puzzle.services.impl;
 
+import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
-import hcmute.puzzle.infrastructure.dtos.olds.JobPostDto;
+import hcmute.puzzle.infrastructure.dtos.olds.JobPostDtoOld;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 import hcmute.puzzle.infrastructure.dtos.request.RequestPageable;
 import hcmute.puzzle.infrastructure.entities.Candidate;
 import hcmute.puzzle.infrastructure.entities.Category;
 import hcmute.puzzle.infrastructure.entities.JobPost;
 import hcmute.puzzle.infrastructure.entities.User;
-import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.models.JobPostFilterRequest;
+import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
 import hcmute.puzzle.infrastructure.repository.CandidateRepository;
 import hcmute.puzzle.infrastructure.repository.JobPostRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.services.JobPostService;
 import hcmute.puzzle.utils.CustomNullsFirstInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,13 +51,13 @@ public class JobPostServiceImpl implements JobPostService {
 
   @Autowired UserRepository userRepository;
 
-  public ResponseObject add(JobPostDto jobPostDTO) {
+  public ResponseObject add(JobPostDtoOld jobPostDTO) {
     validateJobPost(jobPostDTO);
     JobPost jobPost = converter.toEntity(jobPostDTO);
 
     // set id
     jobPost.setId(0);
-//    jobPost.setCreateTime(new Date());
+    //    jobPost.setCreateTime(new Date());
 
     jobPost = jobPostRepository.save(jobPost);
 
@@ -85,7 +85,7 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   @Override
-  public ResponseObject update(JobPostDto JobPostDTO) {
+  public ResponseObject update(JobPostDtoOld JobPostDTO) {
 
     boolean exists = jobPostRepository.existsById(JobPostDTO.getId());
 
@@ -118,13 +118,9 @@ public class JobPostServiceImpl implements JobPostService {
 
     jobPostEntities = jobPostRepository.findAll();
 
-    List<JobPostDto> jobPostDtos =
-        jobPostEntities.stream()
-            .map(
-                entity -> {
-                  return converter.toDTO(entity);
-                })
-            .collect(Collectors.toList());
+    List<JobPostDtoOld> jobPostDtos = jobPostEntities.stream().map(entity -> {
+      return converter.toDTO(entity);
+    }).collect(Collectors.toList());
 
     return new ResponseObject<>(200, "Info of job post", jobPostDtos);
   }
@@ -164,10 +160,10 @@ public class JobPostServiceImpl implements JobPostService {
 
   @Override
   public ResponseObject getJobPostAppliedByCandidateId(long candidateId) {
-    Set<JobPostDto> jobPostDtos =
-        jobPostRepository.findAllByAppliedCandidateId(candidateId).stream()
-            .map(jobPostEntity -> converter.toDTO(jobPostEntity))
-            .collect(Collectors.toSet());
+    Set<JobPostDtoOld> jobPostDtos = jobPostRepository.findAllByAppliedCandidateId(candidateId)
+                                                      .stream()
+                                                      .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+                                                      .collect(Collectors.toSet());
     processListJobPost(jobPostDtos);
 
     return new ResponseObject<>(200, "Job Post applied", jobPostDtos);
@@ -193,43 +189,40 @@ public class JobPostServiceImpl implements JobPostService {
 
   @Override
   public ResponseObject getActiveJobPost() {
-    Set<JobPostDto> jobPostDtos =
-        jobPostRepository.findAllByActiveIsTrue().stream()
-            .map(jobPostEntity -> {
-              JobPostDto jobPostDTO = converter.toDTO(jobPostEntity);
-              jobPostDTO.setDescription(null);
-              return jobPostDTO;
-            })
-            .collect(Collectors.toSet());
+    Set<JobPostDtoOld> jobPostDtos = jobPostRepository.findAllByActiveIsTrue().stream().map(jobPostEntity -> {
+      JobPostDtoOld jobPostDTO = converter.toDTO(jobPostEntity);
+      jobPostDTO.setDescription(null);
+      return jobPostDTO;
+    }).collect(Collectors.toSet());
 
     return new ResponseObject<>(200, "Job Post active", jobPostDtos);
   }
 
   @Override
   public ResponseObject getInactiveJobPost() {
-    Set<JobPostDto> jobPostDtos =
-        jobPostRepository.findAllByActiveIsFalse().stream()
-            .map(jobPostEntity -> converter.toDTO(jobPostEntity))
-            .collect(Collectors.toSet());
+    Set<JobPostDtoOld> jobPostDtos = jobPostRepository.findAllByActiveIsFalse()
+                                                      .stream()
+                                                      .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+                                                      .collect(Collectors.toSet());
 
     return new ResponseObject<>(200, "Job Post inactive", jobPostDtos);
   }
 
   public ResponseObject getActiveJobPostByCreateEmployerId(long employerId) {
-    Set<JobPostDto> jobPostDtos =
-        jobPostRepository.findAllByActiveAndCreatedEmployerId(true, employerId).stream()
-            .map(jobPostEntity -> converter.toDTO(jobPostEntity))
-            .collect(Collectors.toSet());
+    Set<JobPostDtoOld> jobPostDtos = jobPostRepository.findAllByActiveAndCreatedEmployerId(true, employerId)
+                                                      .stream()
+                                                      .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+                                                      .collect(Collectors.toSet());
 
     return new ResponseObject<>(200, "Job Post active", jobPostDtos);
   }
 
   @Override
   public ResponseObject getInactiveJobPostByCreateEmployerId(long employerId) {
-    Set<JobPostDto> jobPostDtos =
-        jobPostRepository.findAllByActiveAndCreatedEmployerId(false, employerId).stream()
-            .map(jobPostEntity -> converter.toDTO(jobPostEntity))
-            .collect(Collectors.toSet());
+    Set<JobPostDtoOld> jobPostDtos = jobPostRepository.findAllByActiveAndCreatedEmployerId(false, employerId)
+                                                      .stream()
+                                                      .map(jobPostEntity -> converter.toDTO(jobPostEntity))
+                                                      .collect(Collectors.toSet());
 
     return new ResponseObject<>(200, "Job Post inactive", jobPostDtos);
   }
@@ -242,10 +235,11 @@ public class JobPostServiceImpl implements JobPostService {
       throw new CustomException("Candidate isn't exist");
     }
 
-    Set<JobPostDto> jobPostDtos =
-        candidate.get().getSavedJobPost().stream()
-            .map(jobPost -> converter.toDTO(jobPost))
-            .collect(Collectors.toSet());
+    Set<JobPostDtoOld> jobPostDtos = candidate.get()
+                                              .getSavedJobPost()
+                                              .stream()
+                                              .map(jobPost -> converter.toDTO(jobPost))
+                                              .collect(Collectors.toSet());
     processListJobPost(jobPostDtos);
 
     return new ResponseObject<>(200, "Job Posts is saved", jobPostDtos);
@@ -265,13 +259,13 @@ public class JobPostServiceImpl implements JobPostService {
     return new ResponseObject(200, "Deactivate success", null);
   }
 
-  public void validateJobPost(JobPostDto jobPostDTO) {
+  public void validateJobPost(JobPostDtoOld jobPostDTO) {
     // check budget
     if (jobPostDTO.getMinBudget() > jobPostDTO.getMaxBudget()) {
       throw new CustomException("Min budget can't be greater than max budget");
     }
 
-    if ( jobPostDTO.getDueTime()!=null && jobPostDTO.getDueTime().before(new Date())) {
+    if (jobPostDTO.getDueTime() != null && jobPostDTO.getDueTime().before(new Date())) {
       throw new CustomException("Due time invalid");
     }
   }
@@ -280,13 +274,11 @@ public class JobPostServiceImpl implements JobPostService {
     String strQuery = "SELECT jp FROM JobPost jp ORDER BY jp.deadline ASC";
     CustomNullsFirstInterceptor firstInterceptor = new CustomNullsFirstInterceptor();
     strQuery = firstInterceptor.onPrepareStatement(strQuery);
-    List<JobPost> jobPostEntities =
-        em.createQuery(strQuery).setMaxResults(15).getResultList();
+    List<JobPost> jobPostEntities = em.createQuery(strQuery).setMaxResults(15).getResultList();
 
-    List<JobPostDto> jobPostDto0s =
-        jobPostEntities.stream()
-            .map(jobPost -> converter.toDTO(jobPost))
-            .collect(Collectors.toList());
+    List<JobPostDtoOld> jobPostDto0s = jobPostEntities.stream()
+                                                      .map(jobPost -> converter.toDTO(jobPost))
+                                                      .collect(Collectors.toList());
     return new ResponseObject<>(200, "Job Posts due soon", jobPostDto0s);
   }
 
@@ -296,13 +288,11 @@ public class JobPostServiceImpl implements JobPostService {
     strQuery = firstInterceptor.onPrepareStatement(strQuery);
     // TypedQuery q = em.createQuery(strQuery, JobPostEntity.class);
 
-    List<JobPost> jobPostEntities =
-        em.createQuery(strQuery).setMaxResults(15).getResultList();
+    List<JobPost> jobPostEntities = em.createQuery(strQuery).setMaxResults(15).getResultList();
 
-    List<JobPostDto> jobPostDto0s =
-        jobPostEntities.stream()
-            .map(jobPost -> converter.toDTO(jobPost))
-            .collect(Collectors.toList());
+    List<JobPostDtoOld> jobPostDto0s = jobPostEntities.stream()
+                                                      .map(jobPost -> converter.toDTO(jobPost))
+                                                      .collect(Collectors.toList());
     return new ResponseObject<>(200, " Hot Job Posts", jobPostDto0s);
   }
 
@@ -430,7 +420,7 @@ public class JobPostServiceImpl implements JobPostService {
     }
   }
 
-  public static void processListJobPost(Collection<JobPostDto> jobPostDtos){
+  public static void processListJobPost(Collection<JobPostDtoOld> jobPostDtos) {
     jobPostDtos.forEach(jobPostDTO -> {
       jobPostDTO.setDescription(null);
     });
@@ -438,8 +428,12 @@ public class JobPostServiceImpl implements JobPostService {
 
   public Page<JobPost> filterJobPost(RequestPageable<JobPostFilterRequest> jobPostFilterRequest) {
     JobPostFilterRequest jobPostFilter = jobPostFilterRequest.getBody();
+    jobPostFilter.setIsActive(true);
     Specification<JobPost> jobPostSpecification = doPredicate(jobPostFilter);
-    Page<JobPost> jobPostPage = jobPostRepository.findAll(jobPostSpecification, jobPostFilterRequest.getPage());
+    Pageable pageable = PageRequest.of(jobPostFilterRequest.getPagination().getPage(),
+                                       jobPostFilterRequest.getPagination().getSize());
+    Page<JobPost> jobPostPage = jobPostRepository.findAll(jobPostSpecification, pageable);
+
     return jobPostPage;
   }
 
@@ -457,7 +451,7 @@ public class JobPostServiceImpl implements JobPostService {
       // Category
       if (jobPostFilter.getCategoryIds() != null && !jobPostFilter.getCategoryIds().isEmpty()) {
         Join<JobPost, Category> categoryJoin = root.join("category", JoinType.INNER);
-        predicates.add(categoryJoin.get("categoryId").in(jobPostFilter.getCategoryIds()));
+        predicates.add(categoryJoin.get("id").in(jobPostFilter.getCategoryIds()));
       }
 
       // EmployerType
@@ -470,7 +464,8 @@ public class JobPostServiceImpl implements JobPostService {
       if (jobPostFilter.getExperienceYear() != null) {
         Predicate lessExperienceYear = criteriaBuilder.lessThanOrEqualTo(root.get("experienceYear"),
                                                                          jobPostFilter.getExperienceYear());
-        predicates.add(criteriaBuilder.and(lessExperienceYear));
+        Predicate withExperienceYearNull = criteriaBuilder.isNull(root.get("experienceYear"));
+        predicates.add(criteriaBuilder.or(lessExperienceYear, withExperienceYearNull));
       }
 
       // Min budget
@@ -505,7 +500,7 @@ public class JobPostServiceImpl implements JobPostService {
       if (jobPostFilter.getSkills() != null && !jobPostFilter.getSkills().isEmpty()) {
         List<Predicate> or = new ArrayList<>();
         for (String skill : jobPostFilter.getSkills()) {
-          Predicate orSkill = criteriaBuilder.like(criteriaBuilder.lower(root.get("skill")), "%" + skill + "%");
+          Predicate orSkill = criteriaBuilder.like(criteriaBuilder.lower(root.get("skills")), "%" + skill + "%");
           or.add(orSkill);
         }
         predicates.add(criteriaBuilder.or(or.toArray(new Predicate[0])));
@@ -515,7 +510,7 @@ public class JobPostServiceImpl implements JobPostService {
       if (jobPostFilter.getSearchKeys() != null && !jobPostFilter.getSearchKeys().isEmpty()) {
         List<Predicate> or = new ArrayList<>();
         for (String keyword : jobPostFilter.getSearchKeys()) {
-          Predicate orInTitle = criteriaBuilder.like(criteriaBuilder.lower(root.get("description")),
+          Predicate orInTitle = criteriaBuilder.like(criteriaBuilder.lower(root.get("title")),
                                                      "%" + keyword + "%");
           Predicate orInDescription = criteriaBuilder.like(criteriaBuilder.lower(root.get("description")),
                                                            "%" + keyword + "%");
@@ -531,16 +526,19 @@ public class JobPostServiceImpl implements JobPostService {
         Timestamp ts = new Timestamp(date.getTime());
 
         Predicate withCheckEnableApply = criteriaBuilder.equal(root.get("canApply"), jobPostFilter.getCanApply());
-        Predicate withCheckDeadline = criteriaBuilder.greaterThanOrEqualTo(root.get("deadline"), ts);
 
-        Predicate finalPredicate = criteriaBuilder.and(withCheckEnableApply, withCheckDeadline);
+        Predicate orPredicate;
+        Predicate withCheckDeadlineGreater = criteriaBuilder.greaterThanOrEqualTo(root.get("deadline"), ts);
+        Predicate withCheckDeadlineNull = criteriaBuilder.isNull(root.get("deadline"));
+        orPredicate = criteriaBuilder.or(withCheckDeadlineGreater, withCheckDeadlineNull);
+        Predicate finalPredicate = criteriaBuilder.and(withCheckEnableApply, orPredicate);
         predicates.add(criteriaBuilder.and(finalPredicate));
       }
 
       //Create Time
       if (jobPostFilter.getCreatedAtFrom() != null) {
         Timestamp tsCreatedAtFrom = new Timestamp(jobPostFilter.getCreatedAtFrom().getTime());
-        Predicate withCreatedAtFrom = criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), tsCreatedAtFrom);
+        Predicate withCreatedAtFrom = criteriaBuilder.greaterThanOrEqualTo(root.get("createdAt"), tsCreatedAtFrom);
         predicates.add(criteriaBuilder.and(withCreatedAtFrom));
       }
 
@@ -553,7 +551,7 @@ public class JobPostServiceImpl implements JobPostService {
       // Update time
       if (jobPostFilter.getUpdatedAtFrom() != null) {
         Timestamp tsUpdatedAtFrom = new Timestamp(jobPostFilter.getUpdatedAtFrom().getTime());
-        Predicate withUpdatedAtFrom = criteriaBuilder.lessThanOrEqualTo(root.get("updatedAt"), tsUpdatedAtFrom);
+        Predicate withUpdatedAtFrom = criteriaBuilder.greaterThanOrEqualTo(root.get("updatedAt"), tsUpdatedAtFrom);
         predicates.add(criteriaBuilder.and(withUpdatedAtFrom));
       }
 

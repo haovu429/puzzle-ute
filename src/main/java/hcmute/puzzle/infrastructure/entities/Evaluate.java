@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Builder
 @Entity
 @Table(name = "evaluate")
-public class EvaluateEntity extends Auditable implements Serializable {
+public class Evaluate extends Auditable implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,9 +27,9 @@ public class EvaluateEntity extends Auditable implements Serializable {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "employer_id", nullable = false)
-  private EmployerEntity employerEntity;
+  private Employer employer;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "candidate_id", nullable = false)
-  private CandidateEntity candidateEntity;
+  private Candidate candidate;
 }

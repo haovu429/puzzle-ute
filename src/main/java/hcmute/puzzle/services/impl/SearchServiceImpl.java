@@ -1,18 +1,28 @@
 package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.infrastructure.entities.Category;
+import hcmute.puzzle.infrastructure.entities.JobPost;
+import hcmute.puzzle.infrastructure.models.JobPostFilterRequest;
 import hcmute.puzzle.infrastructure.models.ModelQuery;
 import hcmute.puzzle.infrastructure.models.SearchBetween;
 import hcmute.puzzle.infrastructure.models.TableQuery;
 import hcmute.puzzle.services.SearchService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.util.*;
 
+@Slf4j
 @Service
 public class SearchServiceImpl implements SearchService {
 
@@ -46,12 +56,11 @@ public class SearchServiceImpl implements SearchService {
   private String buildCondition(String tableName, String fieldName, ModelQuery modelQuery) {
     if (modelQuery.getQueryType().equals(ModelQuery.TYPE_QUERY_LIKE)) {
       if (modelQuery.getAttributeType().equals(ModelQuery.TYPE_ATTRIBUTE_STRING)) {
-        return containmentCondition(
-            tableName, fieldName, String.valueOf(modelQuery.getCompareValue()));
+        return containmentCondition(tableName, fieldName, String.valueOf(modelQuery.getCompareValue()));
       }
     } else if (modelQuery.getQueryType().equals(ModelQuery.TYPE_QUERY_EQUAL)) {
-      if (modelQuery.getAttributeType().equals(ModelQuery.TYPE_ATTRIBUTE_NUMBER)
-          || modelQuery.getAttributeType().equals(ModelQuery.TYPE_ATTRIBUTE_BOOLEAN)) {
+      if (modelQuery.getAttributeType().equals(ModelQuery.TYPE_ATTRIBUTE_NUMBER) || modelQuery.getAttributeType()
+                                                                                              .equals(ModelQuery.TYPE_ATTRIBUTE_BOOLEAN)) {
         return equalCondition(tableName, fieldName, modelQuery.getCompareValue());
       }
     }
@@ -95,12 +104,8 @@ public class SearchServiceImpl implements SearchService {
   }
 
   // Filter in one table with key of Other
-  private String filterContainOtherOneTable(
-      String tableName, List<String> fieldNames, List<ModelQuery> modelQueries) {
-    if (modelQueries == null
-        || modelQueries.isEmpty()
-        || fieldNames == null
-        || fieldNames.isEmpty()) {
+  private String filterContainOtherOneTable(String tableName, List<String> fieldNames, List<ModelQuery> modelQueries) {
+    if (modelQueries == null || modelQueries.isEmpty() || fieldNames == null || fieldNames.isEmpty()) {
       return "";
     }
 
@@ -123,28 +128,19 @@ public class SearchServiceImpl implements SearchService {
   }
 
   // Filter in multi table with key of Other
-  private String filterContainOther(
-      List<TableQuery> tableQueryList, List<ModelQuery> modelQueries) {
-    if (tableQueryList == null
-        || tableQueryList.isEmpty()
-        || modelQueries == null
-        || modelQueries.isEmpty()) {
+  private String filterContainOther(List<TableQuery> tableQueryList, List<ModelQuery> modelQueries) {
+    if (tableQueryList == null || tableQueryList.isEmpty() || modelQueries == null || modelQueries.isEmpty()) {
       return "";
     }
 
     StringBuilder query = new StringBuilder(" AND ( ");
     // first field not " OR "
-    query.append(
-        filterContainOtherOneTable(
-            tableQueryList.get(0).getName(), tableQueryList.get(0).getFieldQuery(), modelQueries));
+    query.append(filterContainOtherOneTable(tableQueryList.get(0).getName(), tableQueryList.get(0).getFieldQuery(),
+                                            modelQueries));
 
     for (int i = 1; i < tableQueryList.size(); i++) {
-      query.append(
-          " OR "
-              + filterContainOtherOneTable(
-                  tableQueryList.get(i).getName(),
-                  tableQueryList.get(i).getFieldQuery(),
-                  modelQueries));
+      query.append(" OR " + filterContainOtherOneTable(tableQueryList.get(i).getName(),
+                                                       tableQueryList.get(i).getFieldQuery(), modelQueries));
     }
 
     query.append(" ) ");
@@ -152,35 +148,19 @@ public class SearchServiceImpl implements SearchService {
     return query.toString();
   }
 
-  private String filterBetweenValue(
-      String objectAlias, String fieldName, ModelQuery min, ModelQuery max) {
+  private String filterBetweenValue(String objectAlias, String fieldName, ModelQuery min, ModelQuery max) {
     String filter = "";
 
     if (min != null) {
-      filter =
-          filter
-              + " AND "
-              + objectAlias
-              + "."
-              + fieldName
-              + " >= "
-              + String.valueOf(min.getCompareValue())
-              + " ";
+      filter = filter + " AND " + objectAlias + "." + fieldName + " >= " + String.valueOf(min.getCompareValue()) + " ";
     }
 
     if (max != null) {
       if (max.getAttributeType().equals(ModelQuery.TYPE_ATTRIBUTE_DATE)) {
 
       } else {
-        filter =
-            filter
-                + " AND "
-                + objectAlias
-                + "."
-                + fieldName
-                + " <= "
-                + String.valueOf(max.getCompareValue())
-                + " ";
+        filter = filter + " AND " + objectAlias + "." + fieldName + " <= " + String.valueOf(
+                max.getCompareValue()) + " ";
       }
     }
     return filter;
@@ -201,8 +181,8 @@ public class SearchServiceImpl implements SearchService {
     return str;
   }
 
-  public String selectInListValueSpecialAttribute(
-      String objectAlias, String fieldName, List<ModelQuery> valueOfSpecialAttribute) {
+  public String selectInListValueSpecialAttribute(String objectAlias, String fieldName,
+          List<ModelQuery> valueOfSpecialAttribute) {
     String query = "";
     if (fieldName != null && !fieldName.isEmpty()) {
       query = " AND " + objectAlias + "." + fieldName + " IN (";
@@ -222,58 +202,36 @@ public class SearchServiceImpl implements SearchService {
   }
 
   @Override
-  public List filterObject(
-      String objectName,
-      // List<Long> manufacturer,
-      List<SearchBetween> searchBetweens,
-      Map<String, List<ModelQuery>> fieldSearchValue,
-      Map<String, List<ModelQuery>> valueSpecialAttributes,
-      List<String> commonFieldSearch,
-      List<ModelQuery> valueCommonFieldSearch,
-      int noOfRecords,
-      int pageIndex,
-      boolean sortById) {
+  public List filterObject(String objectName,
+          // List<Long> manufacturer,
+          List<SearchBetween> searchBetweens, Map<String, List<ModelQuery>> fieldSearchValue,
+          Map<String, List<ModelQuery>> valueSpecialAttributes, List<String> commonFieldSearch,
+          List<ModelQuery> valueCommonFieldSearch, int noOfRecords, int pageIndex, boolean sortById) {
     String objectAlias = objectName.substring(0, 3).toLowerCase();
     // add condition id > 0 to fix error miss WHERE
-    StringBuilder strQuery =
-        new StringBuilder(
-            "SELECT "
-                + objectAlias
-                + " FROM "
-                + objectName
-                + " "
-                + objectAlias
-                + " WHERE "
-                + objectAlias
-                + ".id > 0 ");
+    StringBuilder strQuery = new StringBuilder(
+            "SELECT " + objectAlias + " FROM " + objectName + " " + objectAlias + " WHERE " + objectAlias + ".id > 0 ");
     // String filterManufacturer = filterManufacturer(manufacturer);
     // strQuery.append(filterManufacturer);
 
     if (searchBetweens != null) {
-      searchBetweens.forEach(
-          searchBetween -> {
-            if (searchBetween != null) {
-              strQuery.append(
-                  filterBetweenValue(
-                      objectAlias,
-                      searchBetween.getFieldSearch(),
-                      searchBetween.getMin(),
-                      searchBetween.getMax()));
-            }
-          });
+      searchBetweens.forEach(searchBetween -> {
+        if (searchBetween != null) {
+          strQuery.append(filterBetweenValue(objectAlias, searchBetween.getFieldSearch(), searchBetween.getMin(),
+                                             searchBetween.getMax()));
+        }
+      });
     }
 
     if (fieldSearchValue != null) {
-      fieldSearchValue.forEach(
-          (key, value) -> {
-            strQuery.append(filterContain(objectAlias, key, value));
-          });
+      fieldSearchValue.forEach((key, value) -> {
+        strQuery.append(filterContain(objectAlias, key, value));
+      });
     }
     if (valueSpecialAttributes != null) {
-      valueSpecialAttributes.forEach(
-          (key, value) -> {
-            strQuery.append(selectInListValueSpecialAttribute(objectAlias, key, value));
-          });
+      valueSpecialAttributes.forEach((key, value) -> {
+        strQuery.append(selectInListValueSpecialAttribute(objectAlias, key, value));
+      });
     }
 
     //    strQuery.append(filterContain(objectAlias, "screen", screen));
@@ -286,10 +244,7 @@ public class SearchServiceImpl implements SearchService {
     //    fieldOthersForProduct.add("description");
     //    fieldOthersForProduct.add("category");
 
-    if (commonFieldSearch != null
-        && valueCommonFieldSearch != null
-        && !commonFieldSearch.isEmpty()
-        && !valueCommonFieldSearch.isEmpty()) {
+    if (commonFieldSearch != null && valueCommonFieldSearch != null && !commonFieldSearch.isEmpty() && !valueCommonFieldSearch.isEmpty()) {
       TableQuery objectTb = new TableQuery(objectAlias, commonFieldSearch);
 
       //    List<String> fieldOthersForLaptop = new ArrayList<>();
@@ -308,12 +263,13 @@ public class SearchServiceImpl implements SearchService {
       strQuery.append("ORDER BY " + objectAlias + ".id ASC NULLS LAST");
     }
 
-    List result =
-        em.createQuery(strQuery.toString())
-            .setMaxResults(noOfRecords)
-            .setFirstResult(pageIndex * noOfRecords)
-            .getResultList();
+    List result = em.createQuery(strQuery.toString())
+                    .setMaxResults(noOfRecords)
+                    .setFirstResult(pageIndex * noOfRecords)
+                    .getResultList();
 
     return result;
   }
+
+
 }

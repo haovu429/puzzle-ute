@@ -5,8 +5,8 @@ import java.util.UUID;
 import java.util.concurrent.*;
 
 import hcmute.puzzle.configuration.SystemInfo;
-import hcmute.puzzle.infrastructure.entities.TokenEntity;
-import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.Token;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.repository.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,10 +24,10 @@ public class ThreadService {
 //  @Qualifier("fixedThreadPool")
   public ExecutorService executorService;
 
-  public <T> Future<T> execute(Callable<T> callable, String taskType, TokenEntity token)
+  public <T> Future<T> execute(Callable<T> callable, String taskType, Token token)
       throws InterruptedException, ExecutionException {
     executorService = Executors.newFixedThreadPool(2);
-    TokenEntity savedToken = tokenRepository.save(token);
+    Token savedToken = tokenRepository.save(token);
     Future<T> future = executorService.submit(callable);
     executorService.shutdown();
     while (!future.isDone() && !future.isCancelled()) {
@@ -59,12 +59,12 @@ public class ThreadService {
     return future;
   }
 
-  private TokenEntity createTokenForgotPassword(UserEntity foundUser) {
+  private Token createTokenForgotPassword(User foundUser) {
     String tokenValue = UUID.randomUUID().toString();
     Date nowTime = new Date();
     Date expiredTime = new Date(nowTime.getTime() + SystemInfo.TOKEN_RESET_PASSWORD_DURATION);
 
-    TokenEntity createToken = new TokenEntity();
+    Token createToken = new Token();
     createToken.setToken(tokenValue);
     createToken.setExpiryTime(expiredTime);
     createToken.setUser(foundUser);

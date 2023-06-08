@@ -13,7 +13,7 @@ import java.util.Date;
 @Builder
 @Entity
 @Table(name = "notification")
-public class NotificationEntity extends Auditable implements Serializable {
+public class Notification extends Auditable implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
@@ -37,9 +37,9 @@ public class NotificationEntity extends Auditable implements Serializable {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")
-  private UserEntity userEntity;
+  private User user;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "company_id")
-  private CompanyEntity companyEntity;
+  private Company company;
 }

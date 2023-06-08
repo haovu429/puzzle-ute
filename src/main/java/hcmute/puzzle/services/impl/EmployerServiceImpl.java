@@ -5,10 +5,10 @@ import hcmute.puzzle.infrastructure.dtos.olds.EmployerDto;
 
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-import hcmute.puzzle.infrastructure.entities.CandidateEntity;
-import hcmute.puzzle.infrastructure.entities.EmployerEntity;
-import hcmute.puzzle.infrastructure.entities.RoleEntity;
-import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.Candidate;
+import hcmute.puzzle.infrastructure.entities.Employer;
+import hcmute.puzzle.infrastructure.entities.Role;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.repository.*;
 
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
@@ -51,29 +51,29 @@ public class EmployerServiceImpl implements EmployerService {
   @Override
   public Optional<EmployerDto> save(EmployerDto employerDTO) {
     // casting provinceDTO to ProvinceEntity
-    EmployerEntity employerEntity = converter.toEntity(employerDTO);
+    Employer employer = converter.toEntity(employerDTO);
 
     // save province
-    employerEntity.setId(0);
+    employer.setId(0);
 
-    if (employerEntity.getUserEntity().getCandidateEntity() != null) {
+    if (employer.getUser().getCandidate() != null) {
       throw new RuntimeException("This account for candidate");
     }
 
-    employerRepository.save(employerEntity);
+    employerRepository.save(employer);
 
-    Optional<UserEntity> userEntity = userRepository.findById(employerEntity.getId());
+    Optional<User> userEntity = userRepository.findById(employer.getId());
     if (userEntity.isEmpty()) {
       throw new CustomException("Account isn't exist");
     }
-    Optional<RoleEntity> role = roleRepository.findById("employer");
+    Optional<Role> role = roleRepository.findById("employer");
     if (role.isEmpty()) {
       throw new CustomException("role candidate isn't exist");
     }
     userEntity.get().getRoles().add(role.get());
     userRepository.save(userEntity.get());
 
-    Optional<EmployerDto> result = Optional.of(converter.toDTO(employerEntity));
+    Optional<EmployerDto> result = Optional.of(converter.toDTO(employer));
 
     return result;
   }
@@ -94,7 +94,7 @@ public class EmployerServiceImpl implements EmployerService {
     boolean exists = employerRepository.existsById(employerDTO.getId());
 
     if (exists) {
-      EmployerEntity employer = converter.toEntity(employerDTO);
+      Employer employer = converter.toEntity(employerDTO);
       // employer.setId(employer.getUserEntity().getId());
 
       employerRepository.save(employer);
@@ -109,7 +109,7 @@ public class EmployerServiceImpl implements EmployerService {
     boolean exists = employerRepository.existsById(id);
 
     if (exists) {
-      EmployerEntity employer = employerRepository.getReferenceById(id);
+      Employer employer = employerRepository.getReferenceById(id);
 
       return new ResponseObject(200, "Info of employer", converter.toDTO(employer));
     }
@@ -119,7 +119,7 @@ public class EmployerServiceImpl implements EmployerService {
 
   @Override
   public ResponseObject getEmployerFollowedByCandidateId(long candidateId) {
-    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
+    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
 
     if (candidate.isEmpty()) {
       throw new CustomException("Candidate isn't exist");
@@ -137,7 +137,7 @@ public class EmployerServiceImpl implements EmployerService {
 
   @Override
   public DataResponse getApplicationRateEmployerId(long employerId) {
-    Optional<EmployerEntity> employer = employerRepository.findById(employerId);
+    Optional<Employer> employer = employerRepository.findById(employerId);
     if (employer.isEmpty()) {
       throw new CustomException("Cannot find employer with id = " + employerId);
     }
@@ -160,7 +160,7 @@ public class EmployerServiceImpl implements EmployerService {
     long amount = 0;
     // check subscribes of employer
     String sql =
-            "SELECT COUNT(u.id) FROM JobPostEntity jp INNER JOIN jp.viewedUsers u WHERE jp.createdEmployer.id =:employerId AND u.candidateEntity.id IS NOT NULL AND jp.isDeleted=FALSE";
+            "SELECT COUNT(u.id) FROM JobPost jp INNER JOIN jp.viewedUsers u WHERE jp.createdEmployer.id =:employerId AND u.candidateEntity.id IS NOT NULL AND jp.isDeleted=FALSE";
     try {
       amount =
               (long) em.createQuery(sql).setParameter("employerId", employerId).getSingleResult();

@@ -13,9 +13,8 @@ public class EmployerDto {
   private String lastname;
   private String recruitmentEmail;
   private String recruitmentPhone;
-
+  private long userId;
   //  private List<Long> followCandidateIds = new ArrayList<>();
   //  private List<Long> jobPostIds = new ArrayList<>();
   //  private List<Long> evaluateIds = new ArrayList<>();
-  private long userId;
 }

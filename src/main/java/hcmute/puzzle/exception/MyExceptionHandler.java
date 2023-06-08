@@ -2,10 +2,12 @@ package hcmute.puzzle.exception;
 
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import static hcmute.puzzle.utils.Constant.ResponseCode.*;
 import static hcmute.puzzle.utils.Constant.ResponseMessage.MSG_ERROR_SERVER;
@@ -14,22 +16,32 @@ import static hcmute.puzzle.utils.Constant.ResponseMessage.MSG_ERROR_SERVER;
 @ControllerAdvice
 public class MyExceptionHandler {
 
+  @Value("${spring.servlet.multipart.max-file-size}")
+  String fileSizeLimit;
+
   int error;
 
   @ExceptionHandler(RuntimeException.class)
   @ResponseBody
   public DataResponse handleRuntimeException(RuntimeException e) {
     log.error(e.getMessage(), e);
-    return new DataResponse(
-        MSG_ERROR_SERVER, e.getMessage(), STATUS_RUNTIME_EXCEPTION);
+    return new DataResponse(MSG_ERROR_SERVER, e.getMessage(), STATUS_RUNTIME_EXCEPTION);
+  }
+
+  @ExceptionHandler(MaxUploadSizeExceededException.class)
+  @ResponseBody
+  public DataResponse handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
+    log.error(e.getMessage(), e);
+
+    String mess = String.format("File size exceeds the limit (%s)", fileSizeLimit);
+    return new DataResponse(MSG_ERROR_SERVER, mess , STATUS_RUNTIME_EXCEPTION);
   }
 
   @ExceptionHandler(UnauthorizedException.class)
   @ResponseBody
   public DataResponse handleRuntimeException(UnauthorizedException e) {
     log.error(e.getMessage(), e);
-    return new DataResponse(
-            "401", e.getMessage(), STATUS_UNAUTHORIZED);
+    return new DataResponse("401", e.getMessage(), STATUS_UNAUTHORIZED);
   }
 
 

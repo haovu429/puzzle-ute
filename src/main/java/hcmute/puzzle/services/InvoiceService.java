@@ -1,13 +1,13 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.infrastructure.entities.InvoiceEntity;
+import hcmute.puzzle.infrastructure.entities.Invoice;
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
 
 import java.util.Date;
 
 public interface InvoiceService {
 
-    InvoiceEntity saveInvoice(InvoiceEntity invoice);
+    Invoice saveInvoice(Invoice invoice);
 
     DataResponse getInvoiceByEmailUser(String email);
 
@@ -15,7 +15,7 @@ public interface InvoiceService {
 
     DataResponse getAllInvoiceByTimeFrame(Date startTime, Date endTime);
 
-    InvoiceEntity getOneInvoice(long invoiceId);
+    Invoice getOneInvoice(long invoiceId);
 
     long getTotalRevenue();
 

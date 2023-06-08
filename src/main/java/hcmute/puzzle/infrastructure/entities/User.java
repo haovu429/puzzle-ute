@@ -2,7 +2,10 @@ package hcmute.puzzle.infrastructure.entities;
 
 import hcmute.puzzle.configuration.SystemInfo;
 import hcmute.puzzle.utils.Provider;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -16,8 +19,7 @@ import java.util.*;
 @Entity
 @AllArgsConstructor
 //@EqualsAndHashCode(callSuper = true)
-@NamedEntityGraph(name = "graph.User.roles",
-        attributeNodes = @NamedAttributeNode("roles"))
+@NamedEntityGraph(name = "graph.User.roles", attributeNodes = @NamedAttributeNode("roles"))
 // Avoid ErrorDefine table name is "user" in database
 @Table(name = SystemInfo.DatabaseTable.USER)
 public class User extends Auditable implements Serializable {
@@ -71,25 +73,23 @@ public class User extends Auditable implements Serializable {
   // @Fetch(FetchMode.JOIN)
   @ManyToMany(fetch = FetchType.LAZY)
   @Fetch(FetchMode.SUBSELECT)
-  @JoinTable(name = "user_role"
-          , joinColumns = @JoinColumn(name = "user_id")
-          , inverseJoinColumns = @JoinColumn(name = "role_id"))
+  @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
   @Builder.Default
   private Set<Role> roles = new HashSet<>();
 
-  @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @PrimaryKeyJoinColumn
   private Employer employer;
 
-  @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @PrimaryKeyJoinColumn
   private Candidate candidate;
 
-  @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
   @Builder.Default
   private List<Document> documentEntities = new ArrayList<>();
 
-  @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
   @Builder.Default
   private List<Notification> notificationEntities = new ArrayList<>();
 
@@ -100,6 +100,7 @@ public class User extends Auditable implements Serializable {
   @OneToMany(mappedBy = "regUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @Builder.Default
   private List<Subscription> subscribeEntities = new ArrayList<>();
+
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @Builder.Default

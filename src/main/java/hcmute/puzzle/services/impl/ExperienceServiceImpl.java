@@ -3,8 +3,8 @@ package hcmute.puzzle.services.impl;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.olds.ExperienceDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-import hcmute.puzzle.infrastructure.entities.CandidateEntity;
-import hcmute.puzzle.infrastructure.entities.ExperienceEntity;
+import hcmute.puzzle.infrastructure.entities.Candidate;
+import hcmute.puzzle.infrastructure.entities.Experience;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.repository.CandidateRepository;
 import hcmute.puzzle.infrastructure.repository.ExperienceRepository;
@@ -29,11 +29,11 @@ public class ExperienceServiceImpl implements ExperienceService {
   public ResponseObject save(long candidateId, ExperienceDto experienceDTO) {
     experienceDTO.setId(0);
 
-    ExperienceEntity experience = converter.toEntity(experienceDTO);
+    Experience experience = converter.toEntity(experienceDTO);
 
-    Optional<CandidateEntity> candidate = candidateRepository.findById(candidateId);
+    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
 
-    experience.setCandidateEntity(candidate.get());
+    experience.setCandidate(candidate.get());
 
     experience = experienceRepository.save(experience);
 
@@ -48,7 +48,7 @@ public class ExperienceServiceImpl implements ExperienceService {
       throw new CustomException("Experience isn't exists");
     }
 
-    ExperienceEntity experience = converter.toEntity(experienceDTO);
+    Experience experience = converter.toEntity(experienceDTO);
     experience = experienceRepository.save(experience);
     return new ResponseObject(200, "Update successfully", converter.toDTO((experience)));
   }
@@ -81,8 +81,8 @@ public class ExperienceServiceImpl implements ExperienceService {
   @Override
   public ResponseObject getAllExperienceByCandidateId(long experienceId) {
     Set<ExperienceDto> experienceDtos = new HashSet<>();
-    experienceRepository.findAllByCandidateEntity_Id(experienceId).stream()
-        .forEach(
+    experienceRepository.findAllByCandidate_Id(experienceId).stream()
+						.forEach(
             experience -> {
               experienceDtos.add(converter.toDTO(experience));
             });
@@ -91,7 +91,7 @@ public class ExperienceServiceImpl implements ExperienceService {
 
   @Override
   public ResponseObject getOneById(long id) {
-    Optional<ExperienceEntity> experience = experienceRepository.findById(id);
+    Optional<Experience> experience = experienceRepository.findById(id);
     return new ResponseObject(200, "Info experience", converter.toDTO(experience.get()));
   }
 }

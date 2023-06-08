@@ -2,7 +2,7 @@ package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.olds.CategoryDto;
-import hcmute.puzzle.infrastructure.entities.CategoryEntity;
+import hcmute.puzzle.infrastructure.entities.Category;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.repository.CategoryRepository;
 import hcmute.puzzle.infrastructure.models.response.DataResponse;
@@ -25,8 +25,8 @@ public class CategoryServiceImpl implements CategoryService {
   public DataResponse save(CategoryDto dto) {
     dto.setId(0);
 
-    CategoryEntity categoryEntity = categoryRepository.save(converter.toEntity(dto));
-    return new DataResponse(converter.toDTO(categoryEntity));
+    Category category = categoryRepository.save(converter.toEntity(dto));
+    return new DataResponse(converter.toDTO(category));
   }
 
   @Override
@@ -34,7 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
     if (!categoryRepository.existsById(id)) {
       throw new CustomException("Category not found!");
     }
-    CategoryEntity newCategory = converter.toEntity(dto);
+    Category newCategory = converter.toEntity(dto);
     newCategory.setId(id);
     categoryRepository.save(newCategory);
 
@@ -62,7 +62,7 @@ public class CategoryServiceImpl implements CategoryService {
 
   @Override
   public DataResponse getOneById(long id) {
-    Optional<CategoryEntity> categoryEntity = categoryRepository.findById(id);
+    Optional<Category> categoryEntity = categoryRepository.findById(id);
     if (categoryEntity.isEmpty()) {
       throw new CustomException("Category not found!");
     }

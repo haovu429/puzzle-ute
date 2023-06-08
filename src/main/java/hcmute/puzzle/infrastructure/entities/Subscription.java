@@ -13,7 +13,7 @@ import java.util.Date;
 @Builder
 @Entity
 @Table(name = "subscription")
-public class SubscriptionEntity extends Auditable implements Serializable {
+public class Subscription extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -34,11 +34,11 @@ public class SubscriptionEntity extends Auditable implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reg_user_email", referencedColumnName = "email")
-    private UserEntity regUser; // Có thể tạo đăng ký gói trước
+    private User regUser; // Có thể tạo đăng ký gói trước
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "package_id", nullable = false)
-    private PackageEntity packageEntity;
+    private Package aPackage;
 
     @Column(name = "is_deleted")
     @Builder.Default
@@ -54,7 +54,7 @@ public class SubscriptionEntity extends Auditable implements Serializable {
                 ", startTime=" + startTime +
                 ", expirationTime=" + expirationTime +
                 ", regUser=" + regUser.getEmail() +
-                ", packageEntity=" + packageEntity.getName() +
+                ", packageEntity=" + aPackage.getName() +
                 ", invoiceEntity=" + paymentTransactionCode +
                 '}';
     }

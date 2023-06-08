@@ -2,10 +2,8 @@ package hcmute.puzzle.test;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 import hcmute.puzzle.configuration.FreemarkerConfiguration;
-import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.services.FilesStorageService;
 
 import java.io.IOException;
@@ -41,7 +39,7 @@ public class TestCloudinary {
     deteleFilePublicIds.add("puzzle_ute/user/blog/KhiDenTrang.jpg2023-04-16T23:53:55_blog_image");
     deteleFilePublicIds.add("puzzle_ute/user/blog/KhiDenTrang.jpg2023-04-16T23:53:57_blog_image");
     filesStorageService.deleteMultiFile(
-        deteleFilePublicIds, UserEntity.builder().email("haodeptry@gmail.com").build());
+			deteleFilePublicIds, User.builder().email("haodeptry@gmail.com").build());
   }
 
   static void testDetectDeletedSrc() {

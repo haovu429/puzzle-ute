@@ -1,17 +1,17 @@
 package hcmute.puzzle.infrastructure.mappers;
 
+import hcmute.puzzle.infrastructure.dtos.olds.EmployerDto;
 import hcmute.puzzle.infrastructure.dtos.response.JobPostDto;
+import hcmute.puzzle.infrastructure.entities.Employer;
 import hcmute.puzzle.infrastructure.entities.JobPost;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(uses = {EmployerMapper.class, CompanyMapper.class}, componentModel = "spring")
-public interface JobPostMapper {
-
+@Mapper(componentModel = "spring")
+public interface EmployerMapper {
 	JobPostMapper INSTANCE = Mappers.getMapper(JobPostMapper.class);
 
-	//@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-	@Mapping(target = "categoryName", source = "category.name")
-	JobPostDto jobPostToJobPostDto(JobPost jobPost);
+	@Mapping(target = "userId", source = "user.id")
+	EmployerDto EmployerToEmployerDto(Employer employer);
 }

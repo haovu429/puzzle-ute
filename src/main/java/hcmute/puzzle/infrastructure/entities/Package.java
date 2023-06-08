@@ -13,7 +13,7 @@ import java.util.*;
 @Builder
 @Entity
 @Table(name = "package")
-public class PackageEntity extends Auditable implements Serializable {
+public class Package extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -54,6 +54,6 @@ public class PackageEntity extends Auditable implements Serializable {
     private boolean isDelete = false;
 
     @Builder.Default
-    @OneToMany(mappedBy = "packageEntity", fetch = FetchType.LAZY)
-    private List<SubscriptionEntity> subscribeEntities = new ArrayList<>(); // Khi add, phải add từ 2 phía
+    @OneToMany(mappedBy = "aPackage", fetch = FetchType.LAZY)
+    private List<Subscription> subscribeEntities = new ArrayList<>(); // Khi add, phải add từ 2 phía
 }

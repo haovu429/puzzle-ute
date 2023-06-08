@@ -1,10 +1,10 @@
 package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.infrastructure.converter.Converter;
-import hcmute.puzzle.infrastructure.entities.InvoiceEntity;
-import hcmute.puzzle.infrastructure.entities.PackageEntity;
-import hcmute.puzzle.infrastructure.entities.SubscriptionEntity;
-import hcmute.puzzle.infrastructure.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.Invoice;
+import hcmute.puzzle.infrastructure.entities.Package;
+import hcmute.puzzle.infrastructure.entities.Subscription;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.repository.EmployerRepository;
 import hcmute.puzzle.infrastructure.repository.PackageRepository;
@@ -36,19 +36,19 @@ public class SubscriptionServiceImpl implements SubscriptionService {
   @PersistenceContext public EntityManager em;
 
   public DataResponse subscribePackage(
-      UserEntity user, PackageEntity packageEntity, InvoiceEntity invoiceEntity) {
+      User user, Package aPackage, Invoice invoice) {
 
-    checkSubscribed(user.getId(), packageEntity.getId());
+    checkSubscribed(user.getId(), aPackage.getId());
     Date nowTime = new Date();
-    SubscriptionEntity subscribe = new SubscriptionEntity();
+    Subscription subscribe = new Subscription();
     subscribe.setStartTime(nowTime);
-    subscribe.setExpirationTime(new Date(nowTime.getTime() + packageEntity.getDuration()));
-    subscribe.setPackageEntity(packageEntity);
+    subscribe.setExpirationTime(new Date(nowTime.getTime() + aPackage.getDuration()));
+    subscribe.setAPackage(aPackage);
     subscribe.setRegUser(user);
 
     // Hoá đơn đã lưu trong db rồi thì mới set
     // Lưu hai chiều vì để cascade là DETACH
-    subscribe.setPaymentTransactionCode(invoiceEntity.getTransactionCode());
+    subscribe.setPaymentTransactionCode(invoice.getTransactionCode());
 
     subscribeRepository.save(subscribe);
 
@@ -56,22 +56,22 @@ public class SubscriptionServiceImpl implements SubscriptionService {
   }
 
   public DataResponse subscribePackage(
-      long userId, String packageCode, InvoiceEntity invoiceEntity) {
-    Optional<UserEntity> user = userRepository.findById(userId);
+      long userId, String packageCode, Invoice invoice) {
+    Optional<User> user = userRepository.findById(userId);
     if (user.isEmpty()) {
       throw new CustomException("Employer isn't exists");
     }
 
-    Optional<PackageEntity> packageEntity = packageRepository.findByCode(packageCode.toLowerCase());
+    Optional<Package> packageEntity = packageRepository.findByCode(packageCode.toLowerCase());
     if (packageEntity.isEmpty()) {
       throw new CustomException("Employer isn't exists");
     }
 
-    return subscribePackage(user.get(), packageEntity.get(), invoiceEntity);
+    return subscribePackage(user.get(), packageEntity.get(), invoice);
   }
 
   public void checkSubscribed(long userId, long packId) {
-    List<SubscriptionEntity> subscribes =
+    List<Subscription> subscribes =
             getCurrentSubscribeByUserIdAndPackId(userId, packId);
     if (subscribes != null && !subscribes.isEmpty()) {
       throw new CustomException(
@@ -82,8 +82,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
   }
 
   // Lấy đối tượng đăng ký dịch vụ chỉ định đang có hiện tại (chưa hết hạn)
-  public List<SubscriptionEntity> getCurrentSubscribeByUserIdAndPackId(long userId, long packId) {
-    List<SubscriptionEntity> subscribeEntities = new ArrayList<>();
+  public List<Subscription> getCurrentSubscribeByUserIdAndPackId(long userId, long packId) {
+    List<Subscription> subscribeEntities = new ArrayList<>();
     try {
       StringBuilder sql =
           new StringBuilder(
@@ -119,7 +119,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
   // Lấy các đối tượng đăng ký các dịch vụ đang có hiện tại (chưa hết hạn)
   public DataResponse getCurrentValidSubscriptions(long userId) {
     String sql =
-        "SELECT sub, pack FROM SubscriptionEntity sub, PackageEntity pack, UserEntity u WHERE sub.packageEntity.id = pack.id"
+        "SELECT sub, pack FROM Subscription sub, Package pack, User u WHERE sub.packageEntity.id = pack.id"
             + " AND sub.regUser.id = u.id AND u.id=:userId AND sub.expirationTime > :nowTime";
     // Join example with addEntity and addJoin
     List<Object[]> rows =
@@ -131,12 +131,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     List<Map<String, Object>> response = new ArrayList<>();
     for (Object[] row : rows) {
       Map<String, Object> subAndPack = new HashMap<>();
-      SubscriptionEntity subscribe = (SubscriptionEntity) row[0];
+      Subscription subscribe = (Subscription) row[0];
       System.out.println("Application Info::" + subscribe);
-      PackageEntity packageEntity = (PackageEntity) row[1];
-      System.out.println("Candidate Info::" + packageEntity);
+      Package aPackage = (Package) row[1];
+      System.out.println("Candidate Info::" + aPackage);
       subAndPack.put("subscribe", converter.toDTO(subscribe));
-      subAndPack.put("package", converter.toDTO(packageEntity));
+      subAndPack.put("package", converter.toDTO(aPackage));
       response.add(subAndPack);
     }
     return new DataResponse(response);
@@ -144,7 +144,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
   public DataResponse getAllSubscriptionsByUserId(long userId) {
     String sql =
-            "SELECT sub, pack FROM SubscriptionEntity sub, PackageEntity pack, UserEntity u WHERE sub.packageEntity.id = pack.id"
+            "SELECT sub, pack FROM Subscription sub, Package pack, User u WHERE sub.packageEntity.id = pack.id"
                     + " AND sub.regUser.id = u.id AND u.id=:userId";
     // Join example with addEntity and addJoin
     List<Object[]> rows =
@@ -155,12 +155,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     List<Map<String, Object>> response = new ArrayList<>();
     for (Object[] row : rows) {
       Map<String, Object> subAndPack = new HashMap<>();
-      SubscriptionEntity subscribe = (SubscriptionEntity) row[0];
+      Subscription subscribe = (Subscription) row[0];
       //System.out.println("subscribe Info::" + subscribe);
-      PackageEntity packageEntity = (PackageEntity) row[1];
+      Package aPackage = (Package) row[1];
       //System.out.println("packageEntity Info::" + packageEntity);
       subAndPack.put("subscribe", converter.toDTO(subscribe));
-      subAndPack.put("package", converter.toDTO(packageEntity));
+      subAndPack.put("package", converter.toDTO(aPackage));
       if (subscribe.getExpirationTime().getTime() > nowTime.getTime()){
         subAndPack.put("is_expired", false);
       } else {

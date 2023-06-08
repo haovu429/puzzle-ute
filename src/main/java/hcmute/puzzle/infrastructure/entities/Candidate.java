@@ -1,6 +1,5 @@
 package hcmute.puzzle.infrastructure.entities;
 
-import hcmute.puzzle.configuration.SystemInfo;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,7 +16,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "candidate")
-public class CandidateEntity extends Auditable implements Serializable {
+public class Candidate extends Auditable implements Serializable {
 
   @Id
   // @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -81,11 +80,11 @@ public class CandidateEntity extends Auditable implements Serializable {
       joinColumns = @JoinColumn(name = "candidate_id"),
       inverseJoinColumns = @JoinColumn(name = "employer_id"))
   @Builder.Default
-  private Set<EmployerEntity> followingEmployers = new HashSet<>();
+  private Set<Employer> followingEmployers = new HashSet<>();
 
-  @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @Builder.Default
-  private List<ApplicationEntity> applicationEntities = new ArrayList<>();
+  private List<Application> applicationEntities = new ArrayList<>();
 
   //  @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
   //  @JoinTable(
@@ -107,15 +106,15 @@ public class CandidateEntity extends Auditable implements Serializable {
       name = "following_company",
       joinColumns = @JoinColumn(name = "candidate_id"),
       inverseJoinColumns = @JoinColumn(name = "company_id"))
-  private Set<CompanyEntity> followingCompany = new HashSet<>();
+  private Set<Company> followingCompany = new HashSet<>();
 
   @Builder.Default
-  @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<ExperienceEntity> experienceEntities = new ArrayList<>();
+  @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<Experience> experienceEntities = new ArrayList<>();
 
   @Builder.Default
-  @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<EvaluateEntity> evaluateEntities = new ArrayList<>();
+  @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Evaluate> evaluateEntities = new ArrayList<>();
 
   @Builder.Default
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -123,16 +122,16 @@ public class CandidateEntity extends Auditable implements Serializable {
       name = "saved_job_post",
       joinColumns = @JoinColumn(name = "candidate_id"),
       inverseJoinColumns = @JoinColumn(name = "job_post_id"))
-  private Set<JobPostEntity> savedJobPost = new HashSet<>();
+  private Set<JobPost> savedJobPost = new HashSet<>();
 
   @Builder.Default
-  @OneToMany(mappedBy = "candidateEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  private List<JobAlertEntity> jobAlertEntities = new ArrayList<>();
+  @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<JobAlert> jobAlertEntities = new ArrayList<>();
 
   @OneToOne(fetch = FetchType.LAZY)
   @MapsId
   @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-  private UserEntity userEntity;
+  private User user;
 
   @Override
   public String toString() {

@@ -1,10 +1,10 @@
 package hcmute.puzzle.infrastructure.repository;
 
-import hcmute.puzzle.infrastructure.entities.JobAlertEntity;
+import hcmute.puzzle.infrastructure.entities.JobAlert;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Set;
 
-public interface JobAlertRepository extends JpaRepository<JobAlertEntity, Long> {
-  Set<JobAlertEntity> findAllByCandidateEntity_Id(long candidateId);
+public interface JobAlertRepository extends JpaRepository<JobAlert, Long> {
+  Set<JobAlert> findAllByCandidate_Id(long candidateId);
 }
