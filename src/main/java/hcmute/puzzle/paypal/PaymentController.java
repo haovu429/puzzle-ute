@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import hcmute.puzzle.infrastructure.entities.Package;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.repository.PackageRepository;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.services.SubscriptionService;
 import hcmute.puzzle.utils.Util;

@@ -2,7 +2,7 @@ package hcmute.puzzle.services;
 
 import hcmute.puzzle.infrastructure.dtos.news.CreateCommentRequest;
 import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 
 public interface CommentService {
     DataResponse save(CommentDto dto);

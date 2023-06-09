@@ -1,4 +1,4 @@
-package hcmute.puzzle.infrastructure.models.response;
+package hcmute.puzzle.infrastructure.dtos.response;
 
 import lombok.Data;
 import lombok.Getter;

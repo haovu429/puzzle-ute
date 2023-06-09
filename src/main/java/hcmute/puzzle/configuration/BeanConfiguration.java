@@ -34,105 +34,104 @@ import java.util.*;
 @Configuration
 public class BeanConfiguration {
 
-//    @Autowired
-//    DataSource dataSource;
+	//    @Autowired
+	//    DataSource dataSource;
 
-    @Value("${spring.liquibase.enabled}")
-    boolean shouldRun;
-
-
-    @Value("${spring.liquibase.change-log}")
-    String changeLogPath;
-
-    @Autowired
-    Environment environment;
-
-    //https://www.devglan.com/online-tools/jasypt-online-encryption-decryption
-    @Bean(name = "jasyptStringEncryptor")
-    public StringEncryptor stringEncryptor() {
-        PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
-        SimpleStringPBEConfig config = new SimpleStringPBEConfig();
-        config.setPassword(environment.getProperty("jasypt.encryptor.password"));
-        config.setAlgorithm("PBEWithMD5AndDES");
-        config.setKeyObtentionIterations("1000");
-        config.setPoolSize("1");
-        config.setProviderName("SunJCE");
-        config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
-        config.setStringOutputType("base64");
-        encryptor.setConfig(config);
-        return encryptor;
-    }
-    @Bean
-    public SpringLiquibase liquibase(DataSource dataSource) {
-        log.info("--------Configuring Liquibase----------");
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("overwrite-output-file", "true");
-        SpringLiquibase liquibase = new SpringLiquibase();
-        liquibase.setChangeLog(changeLogPath);
-        liquibase.setDataSource(dataSource);
-        liquibase.setShouldRun(shouldRun);
-        liquibase.setChangeLogParameters(parameters);
-        return liquibase;
-    }
-
-    @Bean
-    public WebMvcEndpointHandlerMapping webEndpointServletHandlerMapping(WebEndpointsSupplier webEndpointsSupplier,
-                                                                         ServletEndpointsSupplier servletEndpointsSupplier, ControllerEndpointsSupplier controllerEndpointsSupplier,
-                                                                         EndpointMediaTypes endpointMediaTypes, CorsEndpointProperties corsProperties,
-                                                                         WebEndpointProperties webEndpointProperties, Environment environment) {
-        List<ExposableEndpoint<?>> allEndpoints = new ArrayList<>();
-        Collection<ExposableWebEndpoint> webEndpoints = webEndpointsSupplier.getEndpoints();
-        allEndpoints.addAll(webEndpoints);
-        allEndpoints.addAll(servletEndpointsSupplier.getEndpoints());
-        allEndpoints.addAll(controllerEndpointsSupplier.getEndpoints());
-        String basePath = webEndpointProperties.getBasePath();
-        EndpointMapping endpointMapping = new EndpointMapping(basePath);
-        boolean shouldRegisterLinksMapping = this.shouldRegisterLinksMapping(webEndpointProperties, environment,
-                basePath);
-        return new WebMvcEndpointHandlerMapping(endpointMapping, webEndpoints, endpointMediaTypes,
-                corsProperties.toCorsConfiguration(), new EndpointLinksResolver(allEndpoints, basePath),
-                shouldRegisterLinksMapping, null);
-    }
-
-    private boolean shouldRegisterLinksMapping(WebEndpointProperties webEndpointProperties, Environment environment,
-                                               String basePath) {
-        return webEndpointProperties.getDiscovery().isEnabled() && (StringUtils.hasText(basePath)
-                || ManagementPortType.get(environment).equals(ManagementPortType.DIFFERENT));
-    }
-
-    @Bean
-    FirebaseMessaging firebaseMessaging() throws IOException {
-        GoogleCredentials googleCredentials =
-                GoogleCredentials.fromStream(
-                        new ClassPathResource("firebase-service-account.json").getInputStream());
-        FirebaseOptions firebaseOptions =
-                FirebaseOptions.builder().setCredentials(googleCredentials).build();
-        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "puzzle-ute");
-        return FirebaseMessaging.getInstance(app);
-    }
-
-//    @Bean(name = "multipartResolver")
-//    public CommonsMultipartResolver commonsMultipartResolver() {
-//        return new CommonsMultipartResolver();
-//    }
+	@Value("${spring.liquibase.enabled}")
+	boolean shouldRun;
 
 
+	@Value("${spring.liquibase.change-log}")
+	String changeLogPath;
 
-//    @Bean
-//    public UserDetailsService users() {
-//        // The builder will ensure the passwords are encoded before saving in memory
-//        User.UserBuilder users = User.withDefaultPasswordEncoder();
-//        UserDetails user = users
-//                .username("user")
-//                .password("password")
-//                .roles("USER")
-//                .build();
-//        UserDetails admin = users
-//                .username("admin")
-//                .password("password")
-//                .roles("USER", "ADMIN")
-//                .build();
-//        return new InMemoryUserDetailsManager(user, admin);
-//    }
+	@Autowired
+	Environment environment;
+
+	//https://www.devglan.com/online-tools/jasypt-online-encryption-decryption
+	@Bean(name = "jasyptStringEncryptor")
+	public StringEncryptor stringEncryptor() {
+		PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
+		SimpleStringPBEConfig config = new SimpleStringPBEConfig();
+		config.setPassword(environment.getProperty("jasypt.encryptor.password"));
+		config.setAlgorithm("PBEWithMD5AndDES");
+		config.setKeyObtentionIterations("1000");
+		config.setPoolSize("1");
+		config.setProviderName("SunJCE");
+		config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator");
+		config.setStringOutputType("base64");
+		encryptor.setConfig(config);
+		return encryptor;
+	}
+
+	@Bean
+	public SpringLiquibase liquibase(DataSource dataSource) {
+		log.info("--------Configuring Liquibase----------");
+		Map<String, String> parameters = new HashMap<>();
+		parameters.put("overwrite-output-file", "true");
+		SpringLiquibase liquibase = new SpringLiquibase();
+		liquibase.setChangeLog(changeLogPath);
+		liquibase.setDataSource(dataSource);
+		liquibase.setShouldRun(shouldRun);
+		liquibase.setChangeLogParameters(parameters);
+		return liquibase;
+	}
+
+	@Bean
+	public WebMvcEndpointHandlerMapping webEndpointServletHandlerMapping(WebEndpointsSupplier webEndpointsSupplier,
+			ServletEndpointsSupplier servletEndpointsSupplier, ControllerEndpointsSupplier controllerEndpointsSupplier,
+			EndpointMediaTypes endpointMediaTypes, CorsEndpointProperties corsProperties,
+			WebEndpointProperties webEndpointProperties, Environment environment) {
+		List<ExposableEndpoint<?>> allEndpoints = new ArrayList<>();
+		Collection<ExposableWebEndpoint> webEndpoints = webEndpointsSupplier.getEndpoints();
+		allEndpoints.addAll(webEndpoints);
+		allEndpoints.addAll(servletEndpointsSupplier.getEndpoints());
+		allEndpoints.addAll(controllerEndpointsSupplier.getEndpoints());
+		String basePath = webEndpointProperties.getBasePath();
+		EndpointMapping endpointMapping = new EndpointMapping(basePath);
+		boolean shouldRegisterLinksMapping = this.shouldRegisterLinksMapping(webEndpointProperties, environment,
+																			 basePath);
+		return new WebMvcEndpointHandlerMapping(endpointMapping, webEndpoints, endpointMediaTypes,
+												corsProperties.toCorsConfiguration(),
+												new EndpointLinksResolver(allEndpoints, basePath),
+												shouldRegisterLinksMapping, null);
+	}
+
+	private boolean shouldRegisterLinksMapping(WebEndpointProperties webEndpointProperties, Environment environment,
+			String basePath) {
+		return webEndpointProperties.getDiscovery().isEnabled() && (StringUtils.hasText(
+				basePath) || ManagementPortType.get(environment).equals(ManagementPortType.DIFFERENT));
+	}
+
+	@Bean
+	FirebaseMessaging firebaseMessaging() throws IOException {
+		GoogleCredentials googleCredentials = GoogleCredentials.fromStream(
+				new ClassPathResource("firebase-service-account.json").getInputStream());
+		FirebaseOptions firebaseOptions = FirebaseOptions.builder().setCredentials(googleCredentials).build();
+		FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "puzzle-ute");
+		return FirebaseMessaging.getInstance(app);
+	}
+
+	//    @Bean(name = "multipartResolver")
+	//    public CommonsMultipartResolver commonsMultipartResolver() {
+	//        return new CommonsMultipartResolver();
+	//    }
+
+
+	//    @Bean
+	//    public UserDetailsService users() {
+	//        // The builder will ensure the passwords are encoded before saving in memory
+	//        User.UserBuilder users = User.withDefaultPasswordEncoder();
+	//        UserDetails user = users
+	//                .username("user")
+	//                .password("password")
+	//                .roles("USER")
+	//                .build();
+	//        UserDetails admin = users
+	//                .username("admin")
+	//                .password("password")
+	//                .roles("USER", "ADMIN")
+	//                .build();
+	//        return new InMemoryUserDetailsManager(user, admin);
+	//    }
 
 }

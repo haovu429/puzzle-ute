@@ -6,8 +6,10 @@ import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 import hcmute.puzzle.infrastructure.dtos.request.RequestPageable;
 import hcmute.puzzle.infrastructure.entities.JobPost;
 import hcmute.puzzle.infrastructure.models.JobPostFilterRequest;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.models.JobPostWithApplicationAmount;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface JobPostService {
   ResponseObject add(JobPostDtoOld jobPostDTO);
@@ -29,7 +31,7 @@ public interface JobPostService {
 
   ResponseObject getJobPostAppliedByCandidateId(long candidateId);
 
-  ResponseObject getJobPostCreatedByEmployerId(long employerId);
+  Page<JobPostWithApplicationAmount> getJobPostCreatedByEmployerId(long employerId, Pageable pageable);
 
   ResponseObject getJobPostSavedByCandidateId(long candidateId);
 

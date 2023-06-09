@@ -190,13 +190,13 @@ public class Converter<T, D> {
         entity.setIntroduction(dto.getIntroduction());
         entity.setEducationLevel(dto.getEducationLevel());
         entity.setWorkStatus(dto.getWorkStatus());
-        entity.setBlind(dto.isBlind());
-        entity.setDeaf(dto.isDeaf());
-        entity.setCommunicationDis(dto.isCommunicationDis());
-        entity.setHandDis(dto.isHandDis());
-        entity.setLabor(dto.isLabor());
+        entity.setBlind(dto.getBlind());
+        entity.setDeaf(dto.getDeaf());
+        entity.setCommunicationDis(dto.getCommunicationDis());
+        entity.setHandDis(dto.getHandDis());
+        entity.setLabor(dto.getLabor());
         entity.setDetailDis(dto.getDetailDis());
-        entity.setVerifiedDis(dto.isVerifiedDis());
+        entity.setVerifiedDis(dto.getVerifiedDis());
         entity.setSkills(dto.getSkills());
         entity.setServices(dto.getServices());
         entity.setPosition(dto.getPosition());
@@ -269,8 +269,8 @@ public class Converter<T, D> {
     public EmployerDto toDTO(Employer entity) {
         EmployerDto dto = new EmployerDto();
         dto.setId(entity.getId());
-        dto.setFirstname(entity.getFirstName());
-        dto.setLastname(entity.getLastName());
+        dto.setFirstName(entity.getFirstName());
+        dto.setLastName(entity.getLastName());
         dto.setRecruitmentEmail(entity.getRecruitmentEmail());
         dto.setRecruitmentPhone(entity.getRecruitmentPhone());
 
@@ -284,8 +284,8 @@ public class Converter<T, D> {
     public Employer toEntity(EmployerDto dto) {
         Employer entity = new Employer();
         entity.setId(dto.getId());
-        entity.setFirstName(dto.getFirstname());
-        entity.setLastName(dto.getLastname());
+        entity.setFirstName(dto.getFirstName());
+        entity.setLastName(dto.getLastName());
         entity.setRecruitmentEmail(dto.getRecruitmentEmail());
         entity.setRecruitmentPhone(dto.getRecruitmentPhone());
 

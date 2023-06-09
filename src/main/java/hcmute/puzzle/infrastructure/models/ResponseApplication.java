@@ -4,13 +4,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
 @NoArgsConstructor
 public class ResponseApplication {
-    long candidateId = -1;
-    long jobPostId = -1;
-    long applicationId = -1;
+    Long candidateId;
+    Long jobPostId;
+    Long applicationId;
     String email;
     String subject;
     boolean result = true;

@@ -19,11 +19,11 @@ import java.util.TimeZone;
 
 @EnableEncryptableProperties
 @EnableTransactionManagement
-@SpringBootApplication
 @EnableScheduling
-@EnableWebMvc
+//@EnableWebMvc --> error parse time format json
 @EnableAsync(proxyTargetClass = true)
 // @EnableAutoConfiguration
+@SpringBootApplication
 public class PuzzleUteApplication {
 
 	@PostConstruct

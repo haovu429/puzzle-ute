@@ -10,7 +10,7 @@ import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.mappers.CompanyMapper;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
 import hcmute.puzzle.infrastructure.models.enums.Roles;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.CompanyService;
 import hcmute.puzzle.services.FilesStorageService;
@@ -77,7 +77,7 @@ public class CompanyServiceImpl implements CompanyService {
                              .createdEmployer(currentEmployer)
                              .isPublic(companyDto.getIsPublic())
                              .build();
-    if (currentUser.getRoles().stream().anyMatch(role -> role.getCode().equalsIgnoreCase(Roles.ADMIN.value))) {
+    if (currentUser.getRoles().stream().anyMatch(role -> role.getCode().equalsIgnoreCase(Roles.ADMIN.getValue()))) {
       if (companyDto.getIsActive() != null) {
         company.setIsActive(companyDto.getIsActive());
       }

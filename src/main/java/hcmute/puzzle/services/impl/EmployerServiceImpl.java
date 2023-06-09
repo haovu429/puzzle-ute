@@ -11,7 +11,7 @@ import hcmute.puzzle.infrastructure.entities.Role;
 import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.repository.*;
 
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.services.EmployerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

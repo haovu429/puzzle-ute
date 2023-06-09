@@ -1,7 +1,7 @@
 package hcmute.puzzle.services;
 
 import freemarker.template.TemplateException;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;

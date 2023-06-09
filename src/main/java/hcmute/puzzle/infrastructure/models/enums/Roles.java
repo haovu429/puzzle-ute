@@ -7,8 +7,11 @@ public enum Roles {
   CANDIDATE("CANDIDATE"),
   EMPLOYER("EMPLOYER");
 
-  public final String value;
+  private final String value;
 
+  public String getValue() {
+    return value;
+  }
   Roles(String value) {
     this.value = value;
   }

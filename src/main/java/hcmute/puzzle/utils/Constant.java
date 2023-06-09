@@ -38,7 +38,7 @@ public class Constant {
   public static final String SUFFIX_COMPANY_IMAGE_FILE_NAME = "_company_image"; // id_company_image
 
   public static final String SUFFIX_BLOG_POST_THUMBNAIL = "_blogpost_thumbnail"; // id_company_image
-  public static final String SYSTEM_MAIL = "puzzle429@gmail.com";
+  public static final String SYSTEM_MAIL = "puzzleute@gmail.com";
 
   public static String validateTypeExtraInfo(String type) {
     if (type.equals(POSITION)) return POSITION;

@@ -13,27 +13,24 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class CandidateDto {
   private long id;
-
-  @NotBlank
+//  @NotBlank
   private String firstName;
   private String lastName;
-
   @NotBlank
   private String emailContact;
   private String phoneNum;
   private String introduction;
   private String educationLevel;
   private String workStatus;
-  private boolean blind;
-  private boolean deaf;
-  private boolean communicationDis;
-  private boolean handDis;
-  private boolean labor;
+  private Boolean blind;
+  private Boolean deaf;
+  private Boolean communicationDis;
+  private Boolean handDis;
+  private Boolean labor;
   private String detailDis;
-  private boolean verifiedDis;
+  private Boolean verifiedDis;
   private String skills;
   private String services;
   private String position;
-
-  private long userId;
+  private Long userId;
 }

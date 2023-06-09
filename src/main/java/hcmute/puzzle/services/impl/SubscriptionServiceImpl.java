@@ -10,7 +10,7 @@ import hcmute.puzzle.infrastructure.repository.EmployerRepository;
 import hcmute.puzzle.infrastructure.repository.PackageRepository;
 import hcmute.puzzle.infrastructure.repository.SubscribeRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.services.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

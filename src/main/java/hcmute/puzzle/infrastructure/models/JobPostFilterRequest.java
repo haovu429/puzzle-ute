@@ -4,13 +4,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class JobPostFilterRequest {
+public class JobPostFilterRequest implements Serializable {
 	Long minBudget;
 	Long maxBudget;
 	Integer experienceYear;

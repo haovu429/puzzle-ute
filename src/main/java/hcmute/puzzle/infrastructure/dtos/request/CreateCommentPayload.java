@@ -1,4 +1,4 @@
-package hcmute.puzzle.infrastructure.models.payload.request.comment;
+package hcmute.puzzle.infrastructure.dtos.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

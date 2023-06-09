@@ -2,7 +2,6 @@ package hcmute.puzzle.configuration.accessHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import org.slf4j.Logger;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;

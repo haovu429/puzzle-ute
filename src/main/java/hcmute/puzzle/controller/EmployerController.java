@@ -6,28 +6,27 @@ import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
-import hcmute.puzzle.infrastructure.dtos.olds.CompanyDto;
-import hcmute.puzzle.infrastructure.dtos.olds.EmployerDto;
-import hcmute.puzzle.infrastructure.dtos.olds.JobPostDtoOld;
-import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-import hcmute.puzzle.infrastructure.entities.Application;
+import hcmute.puzzle.infrastructure.dtos.olds.*;
+import hcmute.puzzle.infrastructure.dtos.request.CreateCompanyRoleUserRequest;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.entities.Company;
 import hcmute.puzzle.infrastructure.entities.JobPost;
 import hcmute.puzzle.infrastructure.mappers.CompanyMapper;
+import hcmute.puzzle.infrastructure.models.ApplicationResult;
+import hcmute.puzzle.infrastructure.models.CandidateAppliedAndResult;
+import hcmute.puzzle.infrastructure.models.JobPostWithApplicationAmount;
 import hcmute.puzzle.infrastructure.models.ResponseApplication;
-import hcmute.puzzle.infrastructure.models.payload.request.company.CreateCompanyRoleUserRequest;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
 import hcmute.puzzle.infrastructure.repository.CompanyRepository;
 import hcmute.puzzle.infrastructure.repository.JobPostRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
-import hcmute.puzzle.utils.mail.MailObject;
-import hcmute.puzzle.utils.mail.SendMail;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -114,7 +113,8 @@ public class EmployerController {
 	}
 
 	@PostMapping("/post-job")
-	ResponseObject createJobPost(@RequestBody @Validated JobPostDtoOld jobPostDTO, Authentication authentication) {
+	ResponseObject<ResponseObject> createJobPost(@RequestBody @Validated JobPostDtoOld jobPostDTO,
+			Authentication authentication) {
 
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		// Validate JobPost
@@ -124,7 +124,7 @@ public class EmployerController {
 		// Set default createEmployer is Employer create first (this valid user requesting)
 		jobPostDTO.setCreatedEmployerId(userDetails.getUser().getId());
 
-		return new ResponseObject(HttpStatus.OK.value(), "Post job success.", jobPostService.add(jobPostDTO));
+		return new ResponseObject<>(HttpStatus.OK.value(), "Post job success.", jobPostService.add(jobPostDTO));
 	}
 
 	@DeleteMapping("/delete-job-post/{id}")
@@ -143,7 +143,8 @@ public class EmployerController {
 	}
 
 	@PutMapping("/update-job-post")
-	ResponseObject updateJobPost(@RequestBody @Validated JobPostDtoOld jobPostDTO, Authentication authentication) {
+	ResponseObject<ResponseObject> updateJobPost(@RequestBody @Validated JobPostDtoOld jobPostDTO,
+			Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
 		// Validate JobPost
@@ -159,7 +160,7 @@ public class EmployerController {
 		// Set default createEmployer is Employer create first (this valid user requesting)
 		jobPostDTO.setCreatedEmployerId(userDetails.getUser().getId());
 
-		return new ResponseObject(HttpStatus.OK.value(), "Post job success.", jobPostService.update(jobPostDTO));
+		return new ResponseObject<>(HttpStatus.OK.value(), "Post job success.", jobPostService.update(jobPostDTO));
 	}
 
 	//  void pipelineCheckRights(long jobPostId, Optional<UserEntity> linkUser) {
@@ -210,80 +211,36 @@ public class EmployerController {
 		return jobPostService.getCandidatesApplyJobPost(jobPostId);
 	}
 
-	@GetMapping("/response-application")
-	ResponseObject responseApplication(@RequestParam long applicationId, @RequestParam boolean result,
-			@RequestParam String note, Authentication authentication) {
-
-		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
-		Optional<Application> application = applicationRepository.findById(applicationId);
-
-		if (application.isEmpty()) {
-			throw new CustomException("Application isn't exist");
-		}
-
-		if (application.get().getJobPost().getCreatedEmployer().getId() != userDetails.getUser().getId()) {
-			throw new CustomException("You don't have rights for this application");
-		}
-
-		return applicationService.responseApplication(applicationId, result, note);
+	@PostMapping("/response-application/{applicationId}")
+	DataResponse<String> responseApplication(@PathVariable long applicationId,
+			@RequestBody ApplicationResult applicationResult) {
+		applicationService.responseApplication(applicationId, applicationResult);
+		return new DataResponse<>("Success");
 	}
 
 	@PostMapping("/response-application-by-candidate-and-job-post")
-	ResponseObject responseApplicationByCandidateIdAndJobPostId(@RequestBody ResponseApplication responseApplication,
-			Authentication authentication) {
-
-		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
-		Optional<Application> application = applicationRepository.findApplicationByCanIdAndJobPostId(
-				responseApplication.getCandidateId(), responseApplication.getJobPostId());
-
-		if (application.isEmpty()) {
-			throw new CustomException("Application isn't exist");
-		}
-
-		if (application.get().getJobPost().getCreatedEmployer().getId() != userDetails.getUser().getId()) {
-			throw new CustomException("You don't have rights for this application");
-		}
-
-		application.get().setNote(responseApplication.getNote());
-
-		String strResult = "ACCEPT";
-		if (!responseApplication.isResult()) {
-			strResult = "REJECT";
-		}
-
-		String contentMail = "Result: " + strResult + "\nEmail HR contact: " + responseApplication.getEmail() + "\n" + responseApplication.getNote();
-
-		MailObject mailObject = new MailObject(application.get().getCandidate().getEmailContact(),
-											   responseApplication.getSubject(), contentMail, null);
-
-		Runnable myRunnable = new Runnable() {
-			public void run() {
-				SendMail.sendMail(mailObject);
-			}
-		};
-
-		Thread thread = new Thread(myRunnable);
-		thread.start();
-
+	DataResponse<String> responseApplicationByCandidateIdAndJobPostId(
+			@RequestBody ResponseApplication responseApplication) {
 		// return new ResponseObject(200, "Response success", new ResponseApplication());
-
-		return applicationService.responseApplicationByCandidateAndJobPost(responseApplication.getCandidateId(),
-																		   responseApplication.getJobPostId(),
-																		   responseApplication.isResult(),
-																		   responseApplication.getNote());
+		applicationService.responseApplicationByCandidateAndJobPost(responseApplication);
+		return new DataResponse<>("Success");
 	}
 
 	@GetMapping("/get-all-job-post-created")
-	ResponseObject getJobPostCreated(Authentication authentication) {
-		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-		return jobPostService.getJobPostCreatedByEmployerId(userDetails.getUser().getId());
+	DataResponse<Page<JobPostWithApplicationAmount>> getJobPostCreated(Pageable pageable) {
+		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+																				 .getAuthentication()
+																				 .getPrincipal();
+		Page<JobPostWithApplicationAmount> jobPostWithApplicationAmounts = jobPostService.getJobPostCreatedByEmployerId(
+				userDetails.getUser().getId(), pageable);
+		return new DataResponse<>(jobPostWithApplicationAmounts);
 	}
 
 	@GetMapping("/get-all-job-post-created-active")
-	ResponseObject getJobPostCreatedActive(Authentication authentication) {
-		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+	ResponseObject getJobPostCreatedActive() {
+		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+																				 .getAuthentication()
+																				 .getPrincipal();
 		return jobPostService.getActiveJobPostByCreateEmployerId(userDetails.getUser().getId());
 	}
 
@@ -294,37 +251,23 @@ public class EmployerController {
 	}
 
 	@GetMapping("/get-application-by-job-post/{jobPostId}")
-	ResponseObject getApplicationByJobPost(@PathVariable long jobPostId) {
-		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
-																				 .getAuthentication()
-																				 .getPrincipal();
-		Optional<JobPost> jobPost = jobPostRepository.findById(jobPostId);
-		if (jobPost.isEmpty()) {
-			throw new CustomException("Job post isn't exists");
+	ResponseObject<Page<ApplicationDto>> getApplicationByJobPost(@PathVariable long jobPostId, Pageable pageable) {
+		try {
+			Page<ApplicationDto> applications = applicationService.getApplicationByJobPostId(jobPostId, pageable);
+			return new ResponseObject<>(applications);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw e;
 		}
-
-		if (jobPost.get().getCreatedEmployer().getId() != userDetails.getUser().getId()) {
-			throw new CustomException("You don't have rights for this job post");
-		}
-
-		return applicationService.getApplicationByJobPostId(jobPostId);
+		//return new ResponseObject<>(ErrorDefine.ServerError.SERVER_ERROR, ErrorDefine.SERVER_ERROR_CODE, null);
 	}
 
 	@GetMapping("/get-candidate-and-result-by-job-post/{jobPostId}")
-	DataResponse getCandidateAndApplicationResultByJobPost(@PathVariable long jobPostId) {
-		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
-																				 .getAuthentication()
-																				 .getPrincipal();
-		Optional<JobPost> jobPost = jobPostRepository.findById(jobPostId);
-		if (jobPost.isEmpty()) {
-			throw new CustomException("Job post isn't exists");
-		}
+	DataResponse getCandidateAndApplicationResultByJobPost(@PathVariable long jobPostId, Pageable pageable) {
 
-		if (jobPost.get().getCreatedEmployer().getId() != userDetails.getUser().getId()) {
-			throw new CustomException("You don't have rights for this job post");
-		}
-
-		return applicationService.getCandidateAppliedToJobPostIdAndResult(jobPostId);
+		Page<CandidateAppliedAndResult> candidateAppliedAndResults = applicationService.getCandidateAppliedToJobPostIdAndResult(
+				jobPostId, pageable);
+		return new DataResponse(candidateAppliedAndResults);
 	}
 
 	@GetMapping("/get-all-candidate-and-result-to-employer")
@@ -366,17 +309,17 @@ public class EmployerController {
 	}
 
 	@GetMapping("/get-total-job-post-view-of-employer")
-	DataResponse getTotalJobPostViewOfEmployer(Authentication authentication) {
+	DataResponse<Long> getTotalJobPostViewOfEmployer(Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		long total = jobPostService.getTotalJobPostViewOfEmployer(userDetails.getUser().getId());
-		return new DataResponse(total);
+		return new DataResponse<>(total);
 	}
 
 	@GetMapping("/get-limit-num-of-job-post-created")
-	DataResponse getLimitNumOfJobPostCreated(Authentication authentication) {
+	DataResponse<Long> getLimitNumOfJobPostCreated(Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		long limit = jobPostService.getLimitNumberOfJobPostsCreatedForEmployer(userDetails.getUser().getId());
-		return new DataResponse(limit);
+		return new DataResponse<>(limit);
 	}
 
 	@GetMapping("/get-created-company")

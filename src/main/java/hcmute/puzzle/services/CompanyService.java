@@ -4,7 +4,7 @@ import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.infrastructure.dtos.olds.CompanyDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 import hcmute.puzzle.infrastructure.entities.Employer;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface CompanyService {

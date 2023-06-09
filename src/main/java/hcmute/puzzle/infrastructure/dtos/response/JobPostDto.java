@@ -6,10 +6,11 @@ import hcmute.puzzle.infrastructure.entities.Employer;
 import io.swagger.models.auth.In;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class JobPostDto {
+public class JobPostDto implements Serializable {
 	private long id;
 	private String title;
 	private String position;

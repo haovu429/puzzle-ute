@@ -68,6 +68,9 @@ public class User extends Auditable implements Serializable {
   @Temporal(TemporalType.TIMESTAMP)
   private Date lastLoginAt;
 
+  @Column(insertable = false)
+  private Boolean isAdmin;
+
   // https://shareprogramming.net/phan-biet-fetchmode-va-fetchtype-trong-jpa-hibernate/
   // https://viblo.asia/p/van-de-n1-cau-truy-van-trong-hibernate-bWrZn00b5xw
   // @Fetch(FetchMode.JOIN)

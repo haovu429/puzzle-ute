@@ -3,7 +3,7 @@ package hcmute.puzzle.services;
 import hcmute.puzzle.infrastructure.dtos.olds.BlogPostDto;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostUpdateRequest;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 
 import java.util.List;
 

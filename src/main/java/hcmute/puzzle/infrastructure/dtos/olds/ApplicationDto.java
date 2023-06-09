@@ -10,11 +10,12 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 public class ApplicationDto {
-  private long id;
+  private Long id;
   private String result;
   private String note;
-  private long jobPostId;
-  private long candidateId;
-  private Date createTime;
+  private Long jobPostId;
+  private Long candidateId;
+  private Date createdAt;
+  private Date updatedAt;
   private CandidateDto candidateDTO;
 }

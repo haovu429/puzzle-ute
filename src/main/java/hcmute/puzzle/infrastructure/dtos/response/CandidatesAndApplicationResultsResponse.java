@@ -1,4 +1,4 @@
-package hcmute.puzzle.infrastructure.models.payload.response;
+package hcmute.puzzle.infrastructure.dtos.response;
 
 import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
 import lombok.AllArgsConstructor;

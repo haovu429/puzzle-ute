@@ -2,6 +2,8 @@ package hcmute.puzzle.infrastructure.repository;
 
 import hcmute.puzzle.infrastructure.entities.Application;
 import hcmute.puzzle.infrastructure.entities.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,9 +20,8 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
             "SELECT a FROM Application a WHERE a.candidate.id = :candidateId AND a.jobPost.id = :jobPostId")
     Optional<Application> findApplicationByCanIdAndJobPostId(
             @Param("candidateId") long candidateId, @Param("jobPostId") long jobPostId);
-
     @Query("SELECT a FROM Application a WHERE a.jobPost.id = :jobPostId")
-    Set<Application> findApplicationByJobPostId(@Param("jobPostId") long jobPostId);
+    Page<Application> findApplicationByJobPostId(@Param("jobPostId") long jobPostId, Pageable pageable);
 
     @Query("SELECT a FROM Application a WHERE a.jobPost.createdEmployer.id = :employerId")
     Set<Application> findApplicationByEmployerId(@Param("employerId") long employerId);

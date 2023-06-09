@@ -6,13 +6,13 @@ import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.olds.BlogPostDto;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostUpdateRequest;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.entities.BlogPost;
 import hcmute.puzzle.infrastructure.entities.Category;
 import hcmute.puzzle.infrastructure.entities.File;
 import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.mappers.BlogPostMapper;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.BlogPostRepository;
 import hcmute.puzzle.infrastructure.repository.CategoryRepository;
 import hcmute.puzzle.infrastructure.repository.FileRepository;
@@ -34,8 +34,6 @@ import java.util.stream.Collectors;
 @Service
 public class BlogPostServiceImpl implements BlogPostService {
 
-  @Autowired
-  Converter converter;
 
   @Autowired
   BlogPostRepository blogPostRepository;
@@ -270,8 +268,8 @@ public class BlogPostServiceImpl implements BlogPostService {
 
   @Override
   public DataResponse getOneById(long id) {
-    BlogPostDto dto = converter.toDTO(blogPostRepository.findById(id)
-                                                        .orElseThrow(() -> new NotFoundException("NOT_FOUND_BLOG_POST")));
+    BlogPostDto dto = blogPostMapper.blogPostToBlogPostDto(
+            blogPostRepository.findById(id).orElseThrow(() -> new NotFoundException("NOT_FOUND_BLOG_POST")));
     return new DataResponse(dto);
   }
 

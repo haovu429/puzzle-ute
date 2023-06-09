@@ -16,7 +16,8 @@ public class MailUtil {
   @Value("${mail.service.pass}")
   String mailPass;
 
-  public static final String SYS_MAIL = "caihoncuagiamnguc@gmail.com";
+  @Value("${support.email}")
+  public String sysMail = "puzzleute@gmail.com";
 
   public Session getSessionMail() {
 
@@ -26,17 +27,17 @@ public class MailUtil {
       props.put("mail.smtp.starttls.enable", "true");
       props.put("mail.smtp.host", HOST);
       props.put("mail.smtp.auth", "true");
+      props.put("mail.smtp.port", "465");
+      props.put("mail.smtp.ssl.enable", "true");
       props.put("mail.smtp.connection-timeout", 1200);
       props.put("mail.smtp.timeout", 1000);
-
-
 
       session =
           Session.getDefaultInstance(
               props,
               new javax.mail.Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
-                  return new PasswordAuthentication(SYS_MAIL, "vsmvowpjkamspict");
+                  return new PasswordAuthentication(sysMail, "jfxlmaqxrjlreimo");
                 }
               });
     }

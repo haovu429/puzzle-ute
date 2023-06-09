@@ -1,25 +1,30 @@
 package hcmute.puzzle.services;
 
+import hcmute.puzzle.infrastructure.dtos.olds.ApplicationDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.models.ApplicationResult;
+import hcmute.puzzle.infrastructure.models.CandidateAppliedAndResult;
+import hcmute.puzzle.infrastructure.models.ResponseApplication;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ApplicationService {
-  ResponseObject findById(Long id);
+  ApplicationDto findById(Long id);
 
-  ResponseObject deleteById(Long id);
+  void deleteById(Long id);
 
-  ResponseObject findAll(Pageable pageable);
+  Page<ApplicationDto> findAll(Pageable pageable);
 
-  ResponseObject applyJobPost(long candidateId, long jobPostId);
+  void applyJobPost(long candidateId, long jobPostId);
 
-  ResponseObject responseApplication(long applicationId, boolean isAccept, String note);
+  void responseApplication(long applicationId, ApplicationResult applicationResult);
 
-  ResponseObject getApplicationByJobPostId(long jobPostId);
+  Page<ApplicationDto> getApplicationByJobPostId(long jobPostId, Pageable pageable);
 
   ResponseObject getApplicationByJobPostIdAndCandidateId(long jobPostId, long candidateId);
 
-  ResponseObject responseApplicationByCandidateAndJobPost(long candidateId, long joPostId, boolean isAccept, String note);
+  void responseApplicationByCandidateAndJobPost(ResponseApplication responseApplication);
 
   ResponseObject getApplicationAmount();
 
@@ -27,7 +32,7 @@ public interface ApplicationService {
 
   DataResponse getAmountApplicationByJobPostId(long jobPostId);
 
-  DataResponse getCandidateAppliedToJobPostIdAndResult(long jobPostId);
+  Page<CandidateAppliedAndResult> getCandidateAppliedToJobPostIdAndResult(long jobPostId, Pageable pageable);
 
   DataResponse getCandidateAppliedToEmployerAndResult(long employerId);
 }

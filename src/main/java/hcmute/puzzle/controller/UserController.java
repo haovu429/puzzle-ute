@@ -10,12 +10,12 @@ import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
 import hcmute.puzzle.infrastructure.dtos.olds.*;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostUpdateRequest;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.entities.BlogPost;
 import hcmute.puzzle.infrastructure.entities.Invoice;
 import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.mappers.UserMapper;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.BlogPostRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.*;
@@ -205,19 +205,14 @@ public class UserController {
     }
     candidate.setUserId(userDetails.getUser().getId());
 
-    if (!(candidate.getEmailContact() != null
-        && !candidate.getEmailContact().isEmpty()
-        && !candidate.getEmailContact().isBlank())) {
+    if (!(candidate.getEmailContact() != null && !candidate.getEmailContact().isEmpty() && !candidate.getEmailContact()
+                                                                                                     .isBlank())) {
       throw new CustomException("Email contact invalid");
     }
 
-    Optional<CandidateDto> candidateDTO = candidateService.save(candidate);
-    if (candidateDTO.isPresent()) {
-      return new ResponseObject<>(
-          HttpStatus.OK.value(), "Create candidate successfully", candidateDTO.get());
-    } else {
-      throw new RuntimeException("Add candidate failed");
-    }
+    CandidateDto candidateDto = candidateService.save(candidate);
+    return new ResponseObject<>(candidateDto);
+
 
     //        return new ResponseObject(
     //                HttpStatus.OK.value(), "Create candidate successfully", new CandidateDto());

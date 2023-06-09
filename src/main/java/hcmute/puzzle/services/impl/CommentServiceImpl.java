@@ -10,7 +10,7 @@ import hcmute.puzzle.infrastructure.entities.BlogPost;
 import hcmute.puzzle.infrastructure.entities.Comment;
 import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.mappers.CommentMapper;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.BlogPostRepository;
 import hcmute.puzzle.infrastructure.repository.CommentRepository;
 import hcmute.puzzle.services.CommentService;

@@ -4,7 +4,7 @@ import hcmute.puzzle.infrastructure.entities.Invoice;
 import hcmute.puzzle.infrastructure.entities.Package;
 import hcmute.puzzle.infrastructure.entities.Subscription;
 import hcmute.puzzle.infrastructure.entities.User;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 
 import java.util.List;
 

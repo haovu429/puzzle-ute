@@ -1,4 +1,4 @@
-package hcmute.puzzle.infrastructure.models.payload.request.company;
+package hcmute.puzzle.infrastructure.dtos.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

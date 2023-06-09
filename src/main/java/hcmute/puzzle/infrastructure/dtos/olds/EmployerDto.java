@@ -9,8 +9,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class EmployerDto {
   private long id;
-  private String firstname;
-  private String lastname;
+  private String firstName;
+  private String lastName;
   private String recruitmentEmail;
   private String recruitmentPhone;
   private long userId;

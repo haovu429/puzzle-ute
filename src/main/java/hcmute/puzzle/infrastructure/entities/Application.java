@@ -24,6 +24,10 @@ public class Application extends Auditable implements Serializable {
   @Column(name = "note", columnDefinition = "VARCHAR(200)")
   private String note;
 
+  // cv file url
+  @Column(name = "cv", columnDefinition = "TEXT")
+  private String cv;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "job_post_id", nullable = false)
   private JobPost jobPost;

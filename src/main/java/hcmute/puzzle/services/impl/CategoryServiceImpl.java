@@ -5,7 +5,7 @@ import hcmute.puzzle.infrastructure.dtos.olds.CategoryDto;
 import hcmute.puzzle.infrastructure.entities.Category;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.repository.CategoryRepository;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

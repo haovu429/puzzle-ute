@@ -6,12 +6,15 @@ import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
 import hcmute.puzzle.infrastructure.dtos.olds.JobPostDtoOld;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 import hcmute.puzzle.infrastructure.dtos.request.RequestPageable;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.JobPostDto;
 import hcmute.puzzle.infrastructure.entities.Candidate;
 import hcmute.puzzle.infrastructure.entities.Category;
 import hcmute.puzzle.infrastructure.entities.JobPost;
 import hcmute.puzzle.infrastructure.entities.User;
+import hcmute.puzzle.infrastructure.mappers.JobPostMapper;
 import hcmute.puzzle.infrastructure.models.JobPostFilterRequest;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.models.JobPostWithApplicationAmount;
 import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
 import hcmute.puzzle.infrastructure.repository.CandidateRepository;
 import hcmute.puzzle.infrastructure.repository.JobPostRepository;
@@ -39,17 +42,26 @@ public class JobPostServiceImpl implements JobPostService {
 
   public static int LIMITED_NUMBER_OF_JOB_POSTS_CREATED_DEFAULT = 2;
 
-  @PersistenceContext public EntityManager em;
+  @PersistenceContext
+  public EntityManager em;
 
-  @Autowired Converter converter;
+  @Autowired
+  Converter converter;
 
-  @Autowired JobPostRepository jobPostRepository;
+  @Autowired
+  JobPostRepository jobPostRepository;
 
-  @Autowired CandidateRepository candidateRepository;
+  @Autowired
+  CandidateRepository candidateRepository;
 
-  @Autowired ApplicationRepository applicationRepository;
+  @Autowired
+  ApplicationRepository applicationRepository;
 
-  @Autowired UserRepository userRepository;
+  @Autowired
+  UserRepository userRepository;
+
+  @Autowired
+  JobPostMapper jobPostMapper;
 
   public ResponseObject add(JobPostDtoOld jobPostDTO) {
     validateJobPost(jobPostDTO);
@@ -60,7 +72,6 @@ public class JobPostServiceImpl implements JobPostService {
     //    jobPost.setCreateTime(new Date());
 
     jobPost = jobPostRepository.save(jobPost);
-
     return new ResponseObject<>(200, "Save job post Successfully", converter.toDTO(jobPost));
   }
 
@@ -139,10 +150,9 @@ public class JobPostServiceImpl implements JobPostService {
 
   public ResponseObject getCandidatesApplyJobPost(long jobPostId) {
     Set<Candidate> candidateApply = jobPostRepository.getCandidateApplyJobPost(jobPostId);
-    Set<CandidateDto> candidateDTOS =
-        candidateApply.stream()
-            .map(candidate -> converter.toDTO(candidate))
-            .collect(Collectors.toSet());
+    Set<CandidateDto> candidateDTOS = candidateApply.stream()
+                                                    .map(candidate -> converter.toDTO(candidate))
+                                                    .collect(Collectors.toSet());
 
     return new ResponseObject<>(200, "Candidate applied", candidateDTOS);
   }
@@ -170,21 +180,22 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   @Override
-  public ResponseObject getJobPostCreatedByEmployerId(long employerId) {
-    List<Map<String, Object>> response = new ArrayList<>();
-    // Set<JobPostDto> jobPostDTOS =
-    jobPostRepository.findAllByCreatedEmployerId(employerId)
-        .forEach(
-            jobPostEntity -> {
-              Map<String, Object> items = new HashMap<>();
-              items.put("job_post", converter.toDTO(jobPostEntity));
-              items.put(
-                  "application_amount",
-                  applicationRepository.getAmountApplicationByJobPostId(jobPostEntity.getId()));
-              response.add(items);
+  public Page<JobPostWithApplicationAmount> getJobPostCreatedByEmployerId(long employerId, Pageable pageable) {
+    Page<JobPostWithApplicationAmount> response =
+            // Set<JobPostDto> jobPostDTOS =
+            jobPostRepository.findAllByCreatedEmployerId(employerId, pageable).map(jobPostEntity -> {
+              Long applicationAmount = applicationRepository.getAmountApplicationByJobPostId(jobPostEntity.getId());
+              JobPostWithApplicationAmount jobPostWithApplicationAmount = JobPostWithApplicationAmount.builder()
+                                                                                                      .jobPost(
+                                                                                                              jobPostMapper.jobPostToJobPostDto(
+                                                                                                                      jobPostEntity))
+                                                                                                      .applicationAmount(
+                                                                                                              applicationAmount)
+                                                                                                      .build();
+              return jobPostWithApplicationAmount;
             });
 
-    return new ResponseObject<>(200, "Job Post created", response);
+    return response;
   }
 
   @Override
@@ -209,10 +220,11 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   public ResponseObject getActiveJobPostByCreateEmployerId(long employerId) {
-    Set<JobPostDtoOld> jobPostDtos = jobPostRepository.findAllByActiveAndCreatedEmployerId(true, employerId)
-                                                      .stream()
-                                                      .map(jobPostEntity -> converter.toDTO(jobPostEntity))
-                                                      .collect(Collectors.toSet());
+    Set<JobPostDto> jobPostDtos = jobPostRepository.findAllByActiveAndCreatedEmployerId(true, employerId)
+                                                   .stream()
+                                                   .map(jobPostEntity -> jobPostMapper.jobPostToJobPostDto(
+                                                           jobPostEntity))
+                                                   .collect(Collectors.toSet());
 
     return new ResponseObject<>(200, "Job Post active", jobPostDtos);
   }
@@ -352,8 +364,7 @@ public class JobPostServiceImpl implements JobPostService {
 
     double rate = 0; // mac dinh, hoi sai neu view = 0 và application > 0
     long viewOfCandidateAmount = jobPostRepository.getViewedCandidateAmountByJobPostId(jobPostId);
-    long applicationOfCandidateAmount =
-        applicationRepository.getAmountApplicationByJobPostId(jobPostId);
+    long applicationOfCandidateAmount = applicationRepository.getAmountApplicationByJobPostId(jobPostId);
 
     if (viewOfCandidateAmount != 0 && viewOfCandidateAmount >= applicationOfCandidateAmount) {
       rate = Double.valueOf(applicationOfCandidateAmount) / viewOfCandidateAmount;
@@ -368,23 +379,18 @@ public class JobPostServiceImpl implements JobPostService {
   public long getLimitNumberOfJobPostsCreatedForEmployer(long employerId) {
     long limitNum = 0;
     // check subscribes of employer
-    String sql =
-        "SELECT SUM(pack.numOfJobPost) FROM Subscription sub, Package pack, User u WHERE sub.aPackage.id = pack.id "
-            + "AND sub.regUser.id = u.id AND u.id=:userId AND sub.expirationTime > :nowTime ";
+    String sql = "SELECT SUM(pack.numOfJobPost) FROM Subscription sub, Package pack, User u WHERE sub.aPackage.id = pack.id " + "AND sub.regUser.id = u.id AND u.id=:userId AND sub.expirationTime > :nowTime ";
     try {
-      limitNum =
-          (long)
-              em.createQuery(sql)
-                  .setParameter("userId", employerId)
-                  .setParameter("nowTime", new Date())
-                  .getSingleResult();
+      limitNum = (long) em.createQuery(sql)
+                          .setParameter("userId", employerId)
+                          .setParameter("nowTime", new Date())
+                          .getSingleResult();
     } catch (Exception e) {
       e.printStackTrace();
     }
 
     return LIMITED_NUMBER_OF_JOB_POSTS_CREATED_DEFAULT + limitNum;
   }
-
 
 
   @Override
@@ -395,8 +401,7 @@ public class JobPostServiceImpl implements JobPostService {
   public long getCurrentNumberOfJobPostsCreatedByEmployer(long employerId) {
     long count = 0;
     // check subscribes of employer
-    String sql =
-        "SELECT COUNT(jp) FROM JobPost jp WHERE jp.createdEmployer.id = :employerId AND jp.isDeleted = FALSE";
+    String sql = "SELECT COUNT(jp) FROM JobPost jp WHERE jp.createdEmployer.id = :employerId AND jp.isDeleted = FALSE";
     try {
       count = (long) em.createQuery(sql).setParameter("employerId", employerId).getSingleResult();
 
@@ -413,10 +418,7 @@ public class JobPostServiceImpl implements JobPostService {
 
     if (current > limit) {
       throw new CustomException(
-          "Your current number of created jobs is"
-              + current
-              + ", which has exceeded the limit of "
-              + limit);
+              "Your current number of created jobs is" + current + ", which has exceeded the limit of " + limit);
     }
   }
 
@@ -510,8 +512,7 @@ public class JobPostServiceImpl implements JobPostService {
       if (jobPostFilter.getSearchKeys() != null && !jobPostFilter.getSearchKeys().isEmpty()) {
         List<Predicate> or = new ArrayList<>();
         for (String keyword : jobPostFilter.getSearchKeys()) {
-          Predicate orInTitle = criteriaBuilder.like(criteriaBuilder.lower(root.get("title")),
-                                                     "%" + keyword + "%");
+          Predicate orInTitle = criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + keyword + "%");
           Predicate orInDescription = criteriaBuilder.like(criteriaBuilder.lower(root.get("description")),
                                                            "%" + keyword + "%");
           or.add(orInTitle);
@@ -563,7 +564,8 @@ public class JobPostServiceImpl implements JobPostService {
 
       // Sort
       if (Objects.nonNull(jobPostFilter.getIsAscSort()) && jobPostFilter.getIsAscSort()
-                                                                        .equals(true) && jobPostFilter.getSortColumn() != null && !jobPostFilter.getSortColumn().isBlank()) {
+                                                                        .equals(true) && jobPostFilter.getSortColumn() != null && !jobPostFilter.getSortColumn()
+                                                                                                                                                .isBlank()) {
         switch (jobPostFilter.getSortColumn()) {
           case "createdAt":
             jobPostFilter.setSortColumn("createdAt");
@@ -589,7 +591,8 @@ public class JobPostServiceImpl implements JobPostService {
             query.orderBy(criteriaBuilder.asc(root.get(jobPostFilter.getSortColumn())));
         }
       } else if (Objects.nonNull(jobPostFilter.getIsAscSort()) && jobPostFilter.getIsAscSort()
-                                                                               .equals(true) && jobPostFilter.getSortColumn() != null && !jobPostFilter.getSortColumn().isBlank()) {
+                                                                               .equals(true) && jobPostFilter.getSortColumn() != null && !jobPostFilter.getSortColumn()
+                                                                                                                                                       .isBlank()) {
         switch (jobPostFilter.getSortColumn()) {
           case "createdAt":
             jobPostFilter.setSortColumn("createdAt");

@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.*;
 import static hcmute.puzzle.utils.Constant.LIST_HOST_FRONT_END;
 
 @Configuration
-@EnableWebMvc
+//@EnableWebMvc
 public class WebMcvConfig implements WebMvcConfigurer {
 
   @Autowired CommonInterceptor commonInterceptor;

@@ -9,7 +9,7 @@ import hcmute.puzzle.exception.UnauthorizedException;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 import hcmute.puzzle.infrastructure.dtos.request.LoginRequest;
 import hcmute.puzzle.infrastructure.entities.User;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.SecurityService;
 import hcmute.puzzle.services.UserService;

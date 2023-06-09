@@ -1,14 +1,15 @@
 package hcmute.puzzle.configuration;
 
-import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.utils.Constant;
-import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 public class AuditorAwareImpl implements AuditorAware<String> {

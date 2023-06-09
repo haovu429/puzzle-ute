@@ -1,10 +1,12 @@
 package hcmute.puzzle.services.impl;
 
+import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
-import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.request.PostCandidateRequest;
 import hcmute.puzzle.infrastructure.entities.*;
+import hcmute.puzzle.infrastructure.mappers.CandidateMapper;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +33,16 @@ public class CandidateServiceImpl implements CandidateService {
   @Autowired
   RoleRepository roleRepository;
 
-  @Autowired Converter converter;
+  @Autowired
+  CompanyRepository companyRepository;
 
-  @Autowired CompanyRepository companyRepository;
+  @Autowired
+  CandidateMapper candidateMapper;
 
   @Override
-  public Optional<CandidateDto> save(CandidateDto candidateDTO) {
+  public CandidateDto save(CandidateDto candidateDto) {
     // casting provinceDTO to ProvinceEntity
-    Candidate candidate = converter.toEntity(candidateDTO);
+    Candidate candidate = candidateMapper.candidateDtoToCandidate(candidateDto);
 
     // set id
     candidate.setId(0);
@@ -60,10 +64,8 @@ public class CandidateServiceImpl implements CandidateService {
     userEntity.get().getRoles().add(role.get());
     userRepository.save(userEntity.get());
 
-    Optional<CandidateDto> result = Optional.of(converter.toDTO(candidate));
-
     // return add Province success
-    return result;
+    return candidateMapper.candidateToCandidateDto(candidate);
   }
 
   @Override
@@ -77,22 +79,22 @@ public class CandidateServiceImpl implements CandidateService {
   }
 
   @Override
-  public ResponseObject update(CandidateDto candidateDTO) {
-
-    boolean exists = candidateRepository.existsById(candidateDTO.getId());
-
-    if (exists) {
-      if (!(candidateDTO.getEmailContact() != null && !candidateDTO.getEmailContact().isEmpty() && !candidateDTO.getEmailContact().isBlank()) ) {
-        throw new CustomException("Email contact invalid");
-      }
-      Candidate candidate = converter.toEntity(candidateDTO);
-      // candidate.setId(candidate.getUserEntity().getId());
-
-      candidateRepository.save(candidate);
-      return new ResponseObject(converter.toDTO(candidate));
+  public CandidateDto update(long candidateId, PostCandidateRequest postCandidateRequest) {
+    Candidate candidate = candidateRepository.findById(candidateId)
+                                             .orElseThrow(() -> new CustomException(
+                                                     "Cannot find candidate with id = " + candidateId));
+    if (!(postCandidateRequest.getEmailContact() != null && !postCandidateRequest.getEmailContact()
+                                                                                 .isEmpty() && !postCandidateRequest.getEmailContact()
+                                                                                                                    .isBlank())) {
+      throw new CustomException("Email contact invalid");
     }
+    //converter.toEntity(candidateDTO);
+    // candidate.setId(candidate.getUserEntity().getId());
+    candidateMapper.updateCandidateFromPostCandidateRequest(postCandidateRequest, candidate);
+    candidateRepository.save(candidate);
+    CandidateDto candidateDto = candidateMapper.candidateToCandidateDto(candidate);
+    return candidateDto;
 
-    throw new CustomException("Cannot find candidate with id = " + candidateDTO.getId());
   }
 
   @Override
@@ -101,7 +103,7 @@ public class CandidateServiceImpl implements CandidateService {
 
     if (exists) {
       Candidate candidate = candidateRepository.getReferenceById(id);
-      CandidateDto candidateDTO = converter.toDTO(candidate);
+      CandidateDto candidateDTO = candidateMapper.candidateToCandidateDto(candidate);
 
       return new ResponseObject(200, "Info of candidate", candidateDTO);
     }

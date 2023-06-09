@@ -1,5 +1,7 @@
 package hcmute.puzzle.infrastructure.dtos.olds;
 
+import java.io.Serializable;
+
 public class ResponseObject<T> {
   private String errorCode;
   private String message;

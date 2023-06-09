@@ -6,7 +6,7 @@ import hcmute.puzzle.infrastructure.entities.Invoice;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.models.enums.InvoiceStatus;
 import hcmute.puzzle.infrastructure.repository.InvoiceRepository;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.services.InvoiceService;
 import org.springframework.aop.AopInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;

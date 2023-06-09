@@ -5,15 +5,16 @@ import hcmute.puzzle.configuration.SystemInfo;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.exception.NotFoundDataException;
 import hcmute.puzzle.exception.UnauthorizedException;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.entities.Token;
 import hcmute.puzzle.infrastructure.entities.User;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.TokenRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.SecurityService;
 import hcmute.puzzle.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,9 +41,6 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Autowired
     MailService mailService;
-
-    @Autowired
-    UserService userService;
 
     public static final String RESET_PASSWORD_TOKEN = "RESET_PASSWORD_TOKEN";
 
@@ -86,27 +84,29 @@ public class SecurityServiceImpl implements SecurityService {
 
         String urlFrontEnd = "https://keen-semifreddo-66d931.netlify.app/reset-password";
         String finalUrlFrontEnd = urlFrontEnd + "?token=" + tokenValue;
-        this.userService.sendMailForgotPwd(foundUser.getEmail(), finalUrlFrontEnd, createToken);
+        this.sendMailForgotPwd(foundUser.getEmail(), finalUrlFrontEnd, createToken);
 
         log.info("Responseeeeeeeeeeee");
         return new DataResponse("Mail is sent, please check!");
     }
 
+    @Async
+    public void sendMailForgotPwd(String receiveMail, String urlResetPass, Token token) throws InterruptedException,
+            MessagingException, TemplateException, IOException, ExecutionException {
+        //MailService mailService = new MailService();
+        mailService.executeSendMailWithThread(receiveMail, urlResetPass, token);
+    }
+
     @Override
-    public DataResponse sendTokenVerifyAccount(String email)
-            throws MessagingException,
-                   TemplateException,
-                   IOException,
-                   ExecutionException,
-                   InterruptedException {
+    public DataResponse sendTokenVerifyAccount(String email) throws MessagingException, TemplateException, IOException,
+            ExecutionException, InterruptedException {
         User foundUser = userRepository.getUserByEmail(email);
         if (foundUser == null) {
             throw new RuntimeException("Can not found User Account with email " + email);
         }
 
         if (foundUser.isEmailVerified()) {
-            throw new CustomException(
-                    "The account's email is verified, No need to repeat");
+            throw new CustomException("The account's email is verified, No need to repeat");
         }
 
         String tokenValue = UUID.randomUUID().toString();
@@ -121,9 +121,16 @@ public class SecurityServiceImpl implements SecurityService {
 
         String urlFrontEnd = "https://keen-semifreddo-66d931.netlify.app/verify_account";
         String finalUrlFrontEnd = urlFrontEnd + "?token=" + tokenValue;
-        this.userService.sendMailVerifyAccount(foundUser.getEmail(), finalUrlFrontEnd, createToken);
+        this.sendMailVerifyAccount(foundUser.getEmail(), finalUrlFrontEnd, createToken);
 
         return new DataResponse("Mail verify account is sent, please check!");
+    }
+
+    @Async
+    public void sendMailVerifyAccount(String receiveMail, String verifyUrl, Token token) throws InterruptedException,
+            MessagingException, TemplateException, IOException, ExecutionException {
+        //MailService mailService = new MailService();
+        mailService.executeSendMailVerifyAccountWithThread(receiveMail, verifyUrl, token);
     }
 
 

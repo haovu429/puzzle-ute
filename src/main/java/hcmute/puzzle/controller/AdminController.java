@@ -1,6 +1,5 @@
 package hcmute.puzzle.controller;
 
-import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.infrastructure.converter.Converter;
@@ -13,9 +12,9 @@ import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 import hcmute.puzzle.infrastructure.entities.Employer;
 import hcmute.puzzle.infrastructure.entities.Invoice;
 import hcmute.puzzle.infrastructure.mappers.CompanyMapper;
-import hcmute.puzzle.infrastructure.models.payload.request.company.CreateCompanyAdminRequest;
-import hcmute.puzzle.infrastructure.models.payload.request.other.TimeFramePayLoad;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.request.CreateCompanyAdminRequest;
+import hcmute.puzzle.infrastructure.dtos.request.TimeFramePayLoad;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.EmployerRepository;
 import hcmute.puzzle.infrastructure.repository.JobPostRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
@@ -23,8 +22,6 @@ import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/admin")

@@ -2,7 +2,7 @@ package hcmute.puzzle.services;
 
 import hcmute.puzzle.infrastructure.dtos.olds.EmployerDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 
 import java.util.Optional;
 

@@ -2,6 +2,8 @@ package hcmute.puzzle.infrastructure.repository;
 
 import hcmute.puzzle.infrastructure.entities.Candidate;
 import hcmute.puzzle.infrastructure.entities.JobPost;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -37,7 +39,7 @@ public interface JobPostRepository extends JpaRepository<JobPost, Long>, JpaSpec
   Set<JobPost> findAllByAppliedCandidateId(@Param("candidateId") long candidateId);
 
   @Query("SELECT jp FROM JobPost jp WHERE jp.createdEmployer.id = :employerId AND jp.isDeleted=FALSE ")
-  Set<JobPost> findAllByCreatedEmployerId(@Param("employerId") long employerId);
+  Page<JobPost> findAllByCreatedEmployerId(@Param("employerId") long employerId, Pageable pageable);
 
   @Query("SELECT jp FROM JobPost jp ORDER BY jp.deadline DESC NULLS LAST ")
   Set<JobPost> getJobPostDueSoon();

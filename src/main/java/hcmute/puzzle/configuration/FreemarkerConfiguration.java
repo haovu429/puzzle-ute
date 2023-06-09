@@ -18,7 +18,7 @@ import java.io.File;
 import java.io.IOException;
 
 @Configuration
-@EnableWebMvc
+//@EnableWebMvc
 public class FreemarkerConfiguration {
     @Bean
     public FreeMarkerConfigurer freemarkerConfig() throws IOException {

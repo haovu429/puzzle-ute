@@ -5,15 +5,16 @@ import hcmute.puzzle.exception.*;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.news.*;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.mappers.UserMapper;
 import hcmute.puzzle.infrastructure.models.DataStaticJoinAccount;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
 import hcmute.puzzle.infrastructure.models.enums.Roles;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.RoleRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.FilesStorageService;
+import hcmute.puzzle.services.SecurityService;
 import hcmute.puzzle.services.UserService;
 import hcmute.puzzle.utils.Provider;
 import hcmute.puzzle.utils.RedisUtils;
@@ -47,15 +48,23 @@ public class UserServiceImpl implements UserService {
   @Autowired private Converter converter;
   @Autowired private UserRepository userRepository;
 
-  @Autowired private PasswordEncoder passwordEncoder;
+  @Autowired
+  private PasswordEncoder passwordEncoder;
 
-  @Autowired FilesStorageService storageService;
+  @Autowired
+  FilesStorageService storageService;
 
-  @Autowired private RoleRepository roleRepository;
+  @Autowired
+  private RoleRepository roleRepository;
 
-  @Autowired private RedisUtils redisUtils;
+  @Autowired
+  private RedisUtils redisUtils;
 
-  @Autowired private MailService mailService;
+  @Autowired
+  private MailService mailService;
+
+  @Autowired
+  private SecurityService securityService;
 
   public boolean checkEmailExists(String email) {
     User user = userRepository.getUserByEmail(email);
@@ -121,8 +130,12 @@ public class UserServiceImpl implements UserService {
     setRoleWithCreateAccountTypeUser(rolesFromDb.stream().map(Role::getCode).collect(Collectors.toList()), user);
     // Save to DB
     user = userRepository.save(user);
-
-
+    try {
+      securityService.sendTokenVerifyAccount(user.getEmail());
+    } catch (MessagingException | ExecutionException | IOException | TemplateException | InterruptedException e) {
+      log.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
     return user;
   }
 
@@ -204,17 +217,12 @@ public class UserServiceImpl implements UserService {
       for (String code : roleCodes) {
         Role role = roleRepository.findByCode(code)
                                   .orElseThrow(() -> new NotFoundException("NOT_FOUND_ROLE: + " + code));
-        if (role.getCode().equalsIgnoreCase(Roles.CANDIDATE.value)) {
-          Candidate candidate = Candidate.builder()
-                                         .emailContact(user.getEmail())
-                                         .firstName(user.getFullName())
-                                         .build();
+        if (role.getCode().equalsIgnoreCase(Roles.CANDIDATE.getValue())) {
+          Candidate candidate = Candidate.builder().emailContact(user.getEmail()).firstName(user.getFullName()).build();
           candidate.setUser(user);
           user.setCandidate(candidate);
-        } else if (role.getName().equalsIgnoreCase(Roles.EMPLOYER.value)) {
-          Employer employer = Employer.builder()
-                                      .firstName(user.getFullName())
-                                      .build();
+        } else if (role.getName().equalsIgnoreCase(Roles.EMPLOYER.getValue())) {
+          Employer employer = Employer.builder().firstName(user.getFullName()).build();
           employer.setUser(user);
           user.setEmployer(employer);
         }
@@ -230,11 +238,11 @@ public class UserServiceImpl implements UserService {
       return;
     }
     user.getRoles().forEach(role -> {
-      if (role.getCode().equalsIgnoreCase(Roles.CANDIDATE.value)) {
+      if (role.getCode().equalsIgnoreCase(Roles.CANDIDATE.getValue())) {
         Candidate candidate = Candidate.builder().emailContact(user.getEmail()).build();
         candidate.setUser(user);
         user.setCandidate(candidate);
-      } else if (role.getName().equalsIgnoreCase(Roles.EMPLOYER.value)) {
+      } else if (role.getName().equalsIgnoreCase(Roles.EMPLOYER.getValue())) {
         Employer employer = Employer.builder().build();
         employer.setUser(user);
         user.setEmployer(employer);
@@ -274,12 +282,12 @@ public class UserServiceImpl implements UserService {
       Set<Role> roleEntities = new HashSet<>();
       for (String code : userPayload.getRoleCodes()) {
         Role role = roleRepository.findOneByCode(code);
-        if (role.getName().equals(Roles.CANDIDATE.value)) {
+        if (role.getName().equals(Roles.CANDIDATE.getValue())) {
           Candidate candidate = new Candidate();
           oldUser.get().setCandidate(candidate);
         }
 
-        if (role.getName().equals(Roles.EMPLOYER.value)) {
+        if (role.getName().equals(Roles.EMPLOYER.getValue())) {
           Employer employer = new Employer();
           oldUser.get().setEmployer(employer);
         }
@@ -398,25 +406,4 @@ public class UserServiceImpl implements UserService {
         data);
   }
 
-  @Async
-  public void sendMailForgotPwd(String receiveMail, String urlResetPass, Token token)
-      throws InterruptedException,
-          MessagingException,
-          TemplateException,
-          IOException,
-          ExecutionException {
-    //MailService mailService = new MailService();
-    mailService.executeSendMailWithThread(receiveMail, urlResetPass, token);
-  }
-
-  @Async
-  public void sendMailVerifyAccount(String receiveMail, String verifyUrl, Token token)
-          throws InterruptedException,
-                 MessagingException,
-                 TemplateException,
-                 IOException,
-                 ExecutionException {
-    //MailService mailService = new MailService();
-    mailService.executeSendMailVerifyAccountWithThread(receiveMail, verifyUrl, token);
-  }
 }

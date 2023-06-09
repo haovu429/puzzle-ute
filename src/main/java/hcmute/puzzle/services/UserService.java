@@ -7,7 +7,7 @@ import hcmute.puzzle.infrastructure.entities.Token;
 import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
@@ -43,13 +43,4 @@ public interface UserService {
   DataResponse updateAvatarForUser(
       User user, MultipartFile file, FileCategory fileCategory)
       throws NotFoundException;
-
-  // void processOAuthPostLogin(String username);
-
-  // UserDetails loadUserByUsername(String email);
-  void sendMailForgotPwd(String receiveMail, String urlResetPass, Token token)
-      throws InterruptedException, MessagingException, TemplateException, IOException, ExecutionException;
-
-  void sendMailVerifyAccount(String receiveMail, String verifyAccountUrl, Token token)
-          throws InterruptedException, MessagingException, TemplateException, IOException, ExecutionException;
 }

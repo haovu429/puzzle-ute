@@ -2,7 +2,7 @@ package hcmute.puzzle.configuration.accessHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 

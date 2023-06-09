@@ -8,8 +8,12 @@ import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ExperienceDto;
 import hcmute.puzzle.infrastructure.dtos.olds.JobAlertDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
-import hcmute.puzzle.infrastructure.entities.*;
-import hcmute.puzzle.infrastructure.models.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.request.PostCandidateRequest;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
+import hcmute.puzzle.infrastructure.entities.Application;
+import hcmute.puzzle.infrastructure.entities.Experience;
+import hcmute.puzzle.infrastructure.entities.JobAlert;
+import hcmute.puzzle.infrastructure.entities.JobPost;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
@@ -25,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.Valid;
 import java.util.*;
 
 import static hcmute.puzzle.utils.Constant.ResponseCode.STATUS_CUSTOM_EXCEPTION;
@@ -93,13 +98,8 @@ public class CandidateController {
     }
     candidate.setUserId(userDetails.getUser().getId());
 
-    Optional<CandidateDto> candidateDTO = candidateService.save(candidate);
-    if (candidateDTO.isPresent()) {
-      return new ResponseObject<>(HttpStatus.OK.value(), "Create candidate successfully", candidateDTO.get());
-    } else {
-      throw new RuntimeException("Add candidate failed");
-    }
-
+    CandidateDto candidateDto = candidateService.save(candidate);
+      return new ResponseObject<>(candidateDto);
     //        return new ResponseObject(
     //                HttpStatus.OK.value(), "Create candidate successfully", new CandidateDto());
   }
@@ -112,17 +112,13 @@ public class CandidateController {
   //    return candidateService.delete(userDetails.getUser().getId());
   //  }
 
-  @PutMapping("/update")
-  ResponseObject updateCandidate(@RequestBody @Validated CandidateDto candidate, BindingResult bindingResult,
-          Authentication authentication) {
-    if (bindingResult.hasErrors()) {
-      throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
-    }
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
-    candidate.setUserId(userDetails.getUser().getId());
-    candidate.setId(userDetails.getUser().getId());
-    return candidateService.update(candidate);
+  @PutMapping("/update/{candidateId}")
+  DataResponse<CandidateDto> updateCandidate(@PathVariable Long candidateId, @RequestBody @Valid PostCandidateRequest candidate,
+          BindingResult bindingResult, Authentication authentication) {
+    //    if (bindingResult.hasErrors()) {
+    //      throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
+    //    }
+    return new DataResponse<>(candidateService.update(candidateId, candidate));
   }
 
   // public

@@ -2,6 +2,7 @@ package hcmute.puzzle.infrastructure.mappers;
 
 import hcmute.puzzle.infrastructure.dtos.news.UpdateUserForAdminDto;
 import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
+import hcmute.puzzle.infrastructure.dtos.request.PostCandidateRequest;
 import hcmute.puzzle.infrastructure.entities.Role;
 import hcmute.puzzle.infrastructure.entities.User;
 import org.mapstruct.*;
@@ -47,6 +48,7 @@ public interface UserMapper {
     @Mapping(target = "viewJobPosts", ignore = true)
     @Mapping(target = "subscribeEntities", ignore = true)
     @Mapping(target = "tokens", ignore = true)
+    @Mapping(target = "isAdmin", ignore = true)
     void updateUserFromDto(UpdateUserForAdminDto dto, @MappingTarget User entity);
 
 
