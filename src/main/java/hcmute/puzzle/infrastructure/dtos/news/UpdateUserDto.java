@@ -16,8 +16,8 @@ import java.io.Serializable;
 @Builder
 public class UpdateUserDto implements Serializable {
     @JsonProperty("username")
-    @NotBlank(message = "Don't blank")
-    @Size(min = 8, message = "username is not too short (8)")
+//    @NotBlank(message = "Don't blank")
+//    @Size(min = 8, message = "username is not too short (8)")
     private String username;
 
     @JsonProperty("phone")

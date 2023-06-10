@@ -238,7 +238,7 @@ public class SetUpDB {
         jobPost1.setQuantity(3);
         jobPost1.setMinBudget(800);
         jobPost1.setMaxBudget(1000);
-        jobPost1.setActive(true);
+        jobPost1.setIsActive(true);
         jobPost1.setCreatedEmployer(employer1);
         jobPost1.setCategory(category1);
 
@@ -254,7 +254,7 @@ public class SetUpDB {
         jobPost2.setQuantity(3);
         jobPost2.setMinBudget(800);
         jobPost2.setMaxBudget(1000);
-        jobPost2.setActive(true);
+        jobPost2.setIsActive(true);
         jobPost2.setCreatedEmployer(employer2);
         jobPost2.setCategory(category2);
 

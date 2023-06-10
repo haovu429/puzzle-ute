@@ -22,4 +22,5 @@ public class BlogPostUpdateRequest {
 	private Long categoryId;
 
 	private String tags;
+	private Boolean isPublic;
 }

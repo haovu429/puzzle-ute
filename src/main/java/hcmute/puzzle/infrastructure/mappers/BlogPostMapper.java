@@ -31,7 +31,7 @@ public interface BlogPostMapper {
 //	}
 
 
-	@Mapping(target = "categoryId", source = "category.id")
+	@Mapping(target = "blogCategoryId", source = "blogCategory.id")
 	@Mapping(target = "userId", source = "author.id")
 	BlogPostDto blogPostToBlogPostDto(BlogPost entity);
 
@@ -47,9 +47,10 @@ public interface BlogPostMapper {
 //	}
 
 
-	@Mapping(target = "category", ignore = true)
+	@Mapping(target = "blogCategory", ignore = true)
 	@Mapping(target = "comments", ignore = true)
 	@Mapping(target = "author", ignore = true)
+	@Mapping(target = "isActive", ignore = true)
 	BlogPost blogPostRequestToBlogPost(BlogPostDto dto);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -58,10 +59,11 @@ public interface BlogPostMapper {
 	@Mapping(target = "updatedBy", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "category", ignore = true)
+	@Mapping(target = "blogCategory", ignore = true)
 	@Mapping(target = "comments", ignore = true)
 	@Mapping(target = "author", ignore = true)
 	@Mapping(target = "thumbnail", ignore = true)
+	@Mapping(target = "isActive", ignore = true)
 	void updateBlogPostFromBlogPostRequestWithoutThumbnail(BlogPostUpdateRequest blogPostUpdateRequest, @MappingTarget BlogPost entity);
 
 }

@@ -155,7 +155,7 @@ public class EmployerController {
 		if (oldJobPost.isEmpty()) {
 			throw new CustomException("Job post isn't exists");
 		}
-		jobPostDTO.setActive(oldJobPost.get().isActive());
+		jobPostDTO.setActive(oldJobPost.get().getIsActive());
 
 		// Set default createEmployer is Employer create first (this valid user requesting)
 		jobPostDTO.setCreatedEmployerId(userDetails.getUser().getId());

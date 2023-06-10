@@ -2,17 +2,15 @@ package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.*;
-import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.olds.BlogPostDto;
+import hcmute.puzzle.infrastructure.dtos.request.BlogPostFilterRequest;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostUpdateRequest;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
-import hcmute.puzzle.infrastructure.entities.BlogPost;
-import hcmute.puzzle.infrastructure.entities.Category;
-import hcmute.puzzle.infrastructure.entities.File;
-import hcmute.puzzle.infrastructure.entities.User;
+import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.mappers.BlogPostMapper;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
+import hcmute.puzzle.infrastructure.repository.BlogCategoryRepository;
 import hcmute.puzzle.infrastructure.repository.BlogPostRepository;
 import hcmute.puzzle.infrastructure.repository.CategoryRepository;
 import hcmute.puzzle.infrastructure.repository.FileRepository;
@@ -20,13 +18,17 @@ import hcmute.puzzle.services.BlogPostService;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import java.sql.Timestamp;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -50,21 +52,27 @@ public class BlogPostServiceImpl implements BlogPostService {
   @Autowired
   BlogPostMapper blogPostMapper;
 
+  @Autowired
+  BlogCategoryRepository blogCategoryRepository;
+
   public DataResponse createBlogPost(BlogPostRequest blogPostRequest) {
 
-    CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                                   .getAuthentication()
+                                                                                   .getPrincipal();
     User author = customUserDetails.getUser();
 
-    Category category = categoryRepository.findById(blogPostRequest.getCategoryId())
-                                          .orElseThrow(() -> new NotFoundDataException("NOT_FOUND_CATEGORY"));
+    BlogCategory blogCategory = blogCategoryRepository.findById(blogPostRequest.getCategoryId())
+                                                      .orElseThrow(() -> new NotFoundDataException(
+                                                              "Not found blog category"));
 
     BlogPost blogPost = BlogPost.builder()
-								.title(blogPostRequest.getTitle())
-								.body(blogPostRequest.getBody())
-								.tags(blogPostRequest.getTags())
-								.category(category)
-								.author(author)
-								.build();
+                                .title(blogPostRequest.getTitle())
+                                .body(blogPostRequest.getBody())
+                                .tags(blogPostRequest.getTags())
+                                .blogCategory(blogCategory)
+                                .author(author)
+                                .build();
     blogPost = blogPostRepository.save(blogPost);
     //BlogPostMapper.INSTANCE.blogPostDtoToBlogPost(dto);
 
@@ -99,43 +107,40 @@ public class BlogPostServiceImpl implements BlogPostService {
   private void resolveBlogPostDtoWithRightEditOfCommentSubComment(BlogPostDto blogPostDto, long currentUserId) {
     blogPostDto.getComments().forEach(
             commentDto -> {
-              commentDto.getSubComments()
-                      .forEach(subCommentDto -> {
-                                if (Objects.equals(subCommentDto.getUserId(), currentUserId)) {
-                                  subCommentDto.setCanEdit(true);
-                                } else {
-                                  subCommentDto.setCanEdit(false);
-                                }
-                              }
-                      );
+              commentDto.getSubComments().forEach(subCommentDto -> {
+                if (Objects.equals(subCommentDto.getUserId(), currentUserId)) {
+                  subCommentDto.setCanEdit(true);
+                } else {
+                  subCommentDto.setCanEdit(false);
+                }
+              });
               if (Objects.equals(commentDto.getUserId(), currentUserId)) {
                 commentDto.setCanEdit(true);
               } else {
                 commentDto.setCanEdit(false);
               }
-            }
-    );
-//    List<CommentDto> commentDtos = blogPostDto.getComments();
-//    if (commentDtos != null && !commentDtos.isEmpty()) {
-//      commentDtos.forEach(commentDto -> {
-//                commentDto.getSubComments()
-//                        .forEach(subCommentDto -> {
-//                                  if (Objects.equals(subCommentDto.getUserId(), currentUserId)) {
-//                                    subCommentDto.setCanEdit(true);
-//                                  } else {
-//                                    subCommentDto.setCanEdit(false);
-//                                  }
-//                                }
-//                        );
-//                if (Objects.equals(commentDto.getUserId(), currentUserId)) {
-//                  commentDto.setCanEdit(true);
-//                } else {
-//                  commentDto.setCanEdit(false);
-//                }
-//              }
-//      );
-//    }
-//    blogPostDto.setComments(commentDtos);
+            });
+    //    List<CommentDto> commentDtos = blogPostDto.getComments();
+    //    if (commentDtos != null && !commentDtos.isEmpty()) {
+    //      commentDtos.forEach(commentDto -> {
+    //                commentDto.getSubComments()
+    //                        .forEach(subCommentDto -> {
+    //                                  if (Objects.equals(subCommentDto.getUserId(), currentUserId)) {
+    //                                    subCommentDto.setCanEdit(true);
+    //                                  } else {
+    //                                    subCommentDto.setCanEdit(false);
+    //                                  }
+    //                                }
+    //                        );
+    //                if (Objects.equals(commentDto.getUserId(), currentUserId)) {
+    //                  commentDto.setCanEdit(true);
+    //                } else {
+    //                  commentDto.setCanEdit(false);
+    //                }
+    //              }
+    //      );
+    //    }
+    //    blogPostDto.setComments(commentDtos);
   }
 
   @Override
@@ -145,9 +150,10 @@ public class BlogPostServiceImpl implements BlogPostService {
     );
 
     if (Objects.nonNull(blogPostUpdateRequest.getCategoryId())) {
-      Category category = categoryRepository.findById(blogPostUpdateRequest.getCategoryId())
-                                            .orElseThrow(() -> new NotFoundDataException("NOT_FOUND_CATEGORY"));
-      blogPost.setCategory(category);
+      BlogCategory blogCategory = blogCategoryRepository.findById(blogPostUpdateRequest.getCategoryId())
+                                                        .orElseThrow(() -> new NotFoundDataException(
+                                                                "not found blog category"));
+      blogPost.setBlogCategory(blogCategory);
     }
 
     CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
@@ -308,5 +314,110 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     return imageSrcList;
+  }
+
+  public Page<BlogPost> filterBlogPost(BlogPostFilterRequest blogPostFilterRequest, Pageable pageable) {
+    Specification<BlogPost> blogPostSpecification = doPredicate(blogPostFilterRequest);
+    Page<BlogPost> blogPosts = blogPostRepository.findAll(blogPostSpecification, pageable);
+    return blogPosts;
+  }
+
+  private Specification<BlogPost> doPredicate(BlogPostFilterRequest blogPostFilter) {
+
+    return ((root, query, criteriaBuilder) -> {
+      List<Predicate> predicates = new LinkedList<>();
+
+      // Is Active
+      if (blogPostFilter.getIsActive() != null) {
+        Predicate withCheckActiveFromSystem = criteriaBuilder.equal(root.get("isActive"), blogPostFilter.getIsActive());
+        predicates.add(withCheckActiveFromSystem);
+      }
+
+      // Is Public
+      if (blogPostFilter.getIsActive() != null) {
+        Predicate withCheckActiveFromSystem = criteriaBuilder.equal(root.get("isPublic"), blogPostFilter.getIsPublic());
+        predicates.add(withCheckActiveFromSystem);
+      }
+
+      // Category
+      if (blogPostFilter.getCategoryId() != null) {
+        Join<JobPost, Category> categoryJoin = root.join("blogCategory", JoinType.INNER);
+        predicates.add(criteriaBuilder.equal(categoryJoin.get("id"), blogPostFilter.getCategoryId()));
+      }
+
+      // Search Key
+      if (blogPostFilter.getSearchKey() != null && !blogPostFilter.getSearchKey().isEmpty()) {
+        List<Predicate> or = new ArrayList<>();
+        String keyword = blogPostFilter.getSearchKey();
+        Predicate orInTitle = criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + keyword + "%");
+        Predicate orInDescription = criteriaBuilder.like(criteriaBuilder.lower(root.get("body")), "%" + keyword + "%");
+        Predicate orInTags = criteriaBuilder.like(criteriaBuilder.lower(root.get("tags")), "%" + keyword + "%");
+        or.add(orInTitle);
+        or.add(orInDescription);
+        or.add(orInTags);
+
+        predicates.add(criteriaBuilder.or(or.toArray(new Predicate[0])));
+      }
+
+      //Create Time
+      if (blogPostFilter.getCreatedAtFrom() != null) {
+        Timestamp tsCreatedAtFrom = new Timestamp(blogPostFilter.getCreatedAtFrom().getTime());
+        Predicate withCreatedAtFrom = criteriaBuilder.greaterThanOrEqualTo(root.get("createdAt"), tsCreatedAtFrom);
+        predicates.add(criteriaBuilder.and(withCreatedAtFrom));
+      }
+
+      if (blogPostFilter.getCreatedAtTo() != null) {
+        Timestamp tsCreatedAtTo = new Timestamp(blogPostFilter.getCreatedAtTo().getTime());
+        Predicate withCreatedAtTo = criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), tsCreatedAtTo);
+        predicates.add(criteriaBuilder.and(withCreatedAtTo));
+      }
+
+      // Update time
+      if (blogPostFilter.getUpdatedAtFrom() != null) {
+        Timestamp tsUpdatedAtFrom = new Timestamp(blogPostFilter.getUpdatedAtFrom().getTime());
+        Predicate withUpdatedAtFrom = criteriaBuilder.greaterThanOrEqualTo(root.get("updatedAt"), tsUpdatedAtFrom);
+        predicates.add(criteriaBuilder.and(withUpdatedAtFrom));
+      }
+
+      if (blogPostFilter.getUpdatedAtTo() != null) {
+        Timestamp tsUpdatedAtTo = new Timestamp(blogPostFilter.getUpdatedAtTo().getTime());
+        Predicate withUpdatedAtTo = criteriaBuilder.lessThanOrEqualTo(root.get("updatedAt"), tsUpdatedAtTo);
+        predicates.add(criteriaBuilder.and(withUpdatedAtTo));
+      }
+
+      // Sort
+      if (Objects.nonNull(blogPostFilter.getIsAscSort()) && blogPostFilter.getIsAscSort()
+                                                                          .equals(true) && blogPostFilter.getSortColumn() != null && !blogPostFilter.getSortColumn()
+                                                                                                                                                    .isBlank()) {
+        switch (blogPostFilter.getSortColumn()) {
+          case "createdAt":
+            blogPostFilter.setSortColumn("createdAt");
+            query.orderBy(criteriaBuilder.asc(root.get(blogPostFilter.getSortColumn())));
+            break;
+          case "updatedAt":
+            blogPostFilter.setSortColumn("updatedAt");
+            query.orderBy(criteriaBuilder.asc(root.get(blogPostFilter.getSortColumn())));
+            break;
+          default:
+            query.orderBy(criteriaBuilder.asc(root.get(blogPostFilter.getSortColumn())));
+        }
+      } else if (Objects.nonNull(blogPostFilter.getIsAscSort()) && blogPostFilter.getIsAscSort()
+                                                                                 .equals(true) && blogPostFilter.getSortColumn() != null && !blogPostFilter.getSortColumn()
+                                                                                                                                                           .isBlank()) {
+        switch (blogPostFilter.getSortColumn()) {
+          case "createdAt":
+            blogPostFilter.setSortColumn("createdAt");
+            query.orderBy(criteriaBuilder.desc(root.get(blogPostFilter.getSortColumn())));
+            break;
+          case "updatedAt":
+            blogPostFilter.setSortColumn("updatedAt");
+            query.orderBy(criteriaBuilder.desc(root.get(blogPostFilter.getSortColumn())));
+            break;
+          default:
+            query.orderBy(criteriaBuilder.desc(root.get(blogPostFilter.getSortColumn())));
+        }
+      }
+      return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
+    });
   }
 }

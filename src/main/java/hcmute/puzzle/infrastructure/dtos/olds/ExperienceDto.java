@@ -20,7 +20,6 @@ public class ExperienceDto {
   private Date endDate;
   private String description;
   private String skills;
-
   private long candidateId;
   // private List<Long> skillIds;
 }

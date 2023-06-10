@@ -177,7 +177,7 @@ public class CandidateController {
                                        .orElseThrow(() -> new NotFoundDataException("JobPost no value present"));
 
 
-    if (!jobPost.isActive()) {
+    if (!jobPost.getIsActive()) {
       // throw new CustomException("You can't apply this jobPost. It isn't active");
       return new DataResponse<String>(CODE_ERROR_INACTIVE, "You can't apply this jobPost. It isn't active",
                                       STATUS_CUSTOM_EXCEPTION);

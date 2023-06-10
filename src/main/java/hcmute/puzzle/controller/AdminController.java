@@ -20,8 +20,11 @@ import hcmute.puzzle.infrastructure.repository.JobPostRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
+import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/admin")
@@ -122,7 +125,7 @@ public class AdminController {
 
 	// Account
 	@PostMapping("/add-account")
-	public DataResponse<String> saveAccount(@RequestBody CreateUserForAdminDto user) {
+	public DataResponse<String> saveAccount(@RequestBody @Valid CreateUserForAdminDto user) {
 		userService.registerUserForAdmin(user, true);
 		return new DataResponse<>("Add user " + user.getEmail() + " success.");
 	}

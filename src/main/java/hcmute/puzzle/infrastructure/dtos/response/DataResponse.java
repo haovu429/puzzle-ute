@@ -7,6 +7,9 @@ import static hcmute.puzzle.utils.Constant.ResponseCode.STATUS_OK;
 //@Builder
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class DataResponse<T> {
   private String errCode;
   private String errMsg;

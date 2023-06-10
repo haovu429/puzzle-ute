@@ -31,13 +31,21 @@ public class BlogPost extends Auditable{
     @Column(name = "tags", columnDefinition = "VARCHAR(200)")
     private String tags;
 
-    @JoinColumn(name = "category_blog_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Category category;
+    @JoinColumn(name = "blog_category_id")
+    @ManyToOne()
+    private BlogCategory blogCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author", nullable = false)
     private User author;
+
+    @Column(name = "is_public", nullable = false)
+    @Builder.Default
+    private Boolean isPublic = true;
+
+    @Column(name = "is_active", nullable = false)
+    @Builder.Default
+    private Boolean isActive = true;
 
     @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default

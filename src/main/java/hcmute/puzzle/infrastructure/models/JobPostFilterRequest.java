@@ -22,6 +22,7 @@ public class JobPostFilterRequest implements Serializable {
 	List<String> skills;
 	List<Long> categoryIds;
 	Boolean canApply;
+	Boolean isPublic;
 	Boolean isActive;
 	Integer numDayAgo;
 	Boolean isAscSort = true;

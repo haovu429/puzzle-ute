@@ -6,19 +6,18 @@ import hcmute.puzzle.exception.ErrorDefine;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.news.RegisterUserDto;
-import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
-import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
-import hcmute.puzzle.infrastructure.dtos.olds.JobPostDtoOld;
-import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.olds.*;
+import hcmute.puzzle.infrastructure.dtos.request.BlogPostFilterRequest;
+import hcmute.puzzle.infrastructure.dtos.request.CreateCommentPayload;
 import hcmute.puzzle.infrastructure.dtos.request.RequestPageable;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.dtos.response.JobPostDto;
 import hcmute.puzzle.infrastructure.entities.Candidate;
 import hcmute.puzzle.infrastructure.entities.JobPost;
 import hcmute.puzzle.infrastructure.entities.User;
+import hcmute.puzzle.infrastructure.mappers.BlogPostMapper;
 import hcmute.puzzle.infrastructure.mappers.JobPostMapper;
 import hcmute.puzzle.infrastructure.models.*;
-import hcmute.puzzle.infrastructure.dtos.request.CreateCommentPayload;
-import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
 import hcmute.puzzle.infrastructure.repository.CandidateRepository;
 import hcmute.puzzle.infrastructure.repository.JobPostRepository;
@@ -30,6 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
@@ -85,18 +86,26 @@ public class CommonController {
   @Autowired
   ExperienceService experienceService;
 
-  @Autowired BlogPostService blogPostService;
+  @Autowired
+  BlogPostService blogPostService;
 
-  @Autowired CommentService commentService;
+  @Autowired
+  CommentService commentService;
 
-  @Autowired ModelMapper modelMapper;
+  @Autowired
+  ModelMapper modelMapper;
 
-  @Autowired SecurityService securityService;
+  @Autowired
+  SecurityService securityService;
 
-  @Autowired CategoryService categoryService;
+  @Autowired
+  CategoryService categoryService;
 
   @Autowired
   JobPostMapper jobPostMapper;
+
+  @Autowired
+  BlogPostMapper blogPostMapper;
 
   @GetMapping("/job-post/get-all")
   ResponseObject getAllJobPost() {
@@ -104,9 +113,8 @@ public class CommonController {
   }
 
   @GetMapping("/job-post/get-one/{jobPostId}")
-  ResponseObject getJobPostById(
-      @RequestHeader(value = "Authorization", required = false) String token,
-      @PathVariable(value = "jobPostId") long jobPostId) {
+  ResponseObject getJobPostById(@RequestHeader(value = "Authorization", required = false) String token,
+          @PathVariable(value = "jobPostId") long jobPostId) {
     jobPostService.countJobPostView(jobPostId);
     try {
       if (token != null && !token.isEmpty() && !token.isBlank()) {
@@ -142,11 +150,10 @@ public class CommonController {
       Page<JobPost> jobPosts = jobPostService.filterJobPost(jobPostFilterRequest);
       Page<JobPostDto> jobPostDtos = jobPosts.map(jobPostMapper::jobPostToJobPostDto);
       return new ResponseObject<>(200, "Result for filter job post", jobPostDtos);
-
     } catch (Exception e) {
       log.error(e.getMessage(), e);
+      throw e;
     }
-    return new ResponseObject<>(ErrorDefine.ServerError.SERVER_ERROR, 500 , null );
   }
 
   @PostMapping("/job-post-filter")
@@ -538,8 +545,22 @@ public class CommonController {
   }
 
   @GetMapping("/blog-post")
-  public DataResponse getAllBlogPost() {
-    return blogPostService.getAll();
+  public DataResponse getAllBlogPost(@RequestParam(required = false) Long categoryId,
+          @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
+    Pageable pageable = Pageable.unpaged();
+    if (page != null && size != null) {
+      pageable = PageRequest.of(page, size);
+    }
+    BlogPostFilterRequest blogPostFilterRequest = BlogPostFilterRequest.builder()
+                                                                       .categoryId(categoryId)
+                                                                       .isActive(true)
+                                                                       .isPublic(true)
+                                                                       .isAscSort(false)
+                                                                       .sortColumn("createdAt")
+                                                                       .build();
+    Page<BlogPostDto> blogPostDtos = blogPostService.filterBlogPost(blogPostFilterRequest, pageable)
+                                                    .map(blogPostMapper::blogPostToBlogPostDto);
+    return DataResponse.builder().data(blogPostDtos).build();
   }
 
   @GetMapping("/get-all-category")

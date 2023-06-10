@@ -10,8 +10,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "category")
-public class Category extends Auditable{
+@Table(name = "Blog_category")
+public class BlogCategory extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -19,12 +19,10 @@ public class Category extends Auditable{
     @Column(name = "name", columnDefinition = "VARCHAR(200)", unique = true)
     private String name;
 
-//    @Column(name = "code", columnDefinition = "VARCHAR(10)")
-//    private String code;
+    //    @Column(name = "code", columnDefinition = "VARCHAR(10)")
+    //    private String code;
 
     @Column(name = "is_active")
     private boolean isActive;
-
-
 
 }

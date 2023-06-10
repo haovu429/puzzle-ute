@@ -1,9 +1,13 @@
 package hcmute.puzzle.services;
 
 import hcmute.puzzle.infrastructure.dtos.olds.BlogPostDto;
+import hcmute.puzzle.infrastructure.dtos.request.BlogPostFilterRequest;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostUpdateRequest;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
+import hcmute.puzzle.infrastructure.entities.BlogPost;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -20,4 +24,6 @@ public interface BlogPostService {
     DataResponse getOneById(long id);
 
     List<BlogPostDto> getBlogPostByUser(long userId);
+
+    Page<BlogPost> filterBlogPost(BlogPostFilterRequest blogPostFilterRequest, Pageable pageable);
 }

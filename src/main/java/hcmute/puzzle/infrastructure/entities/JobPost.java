@@ -114,11 +114,11 @@ public class JobPost extends Auditable implements Serializable {
 
   @Column(name = "is_active")
   @Builder.Default
-  private boolean isActive = true;
+  private Boolean isActive = true;
 
   @Column(name = "is_deleted")
   @Builder.Default
-  private boolean isDeleted = false;
+  private Boolean isDeleted = false;
 
 //  @Column(name = "subscribe_id")
 //  private long subscribeId;

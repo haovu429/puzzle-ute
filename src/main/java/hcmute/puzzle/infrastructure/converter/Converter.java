@@ -373,7 +373,7 @@ public class Converter<T, D> {
         dto.setObjectId(entity.getObjectId());
         //dto.setAuthor(entity.getCreated_by());
         dto.setCloudinaryPublicId(entity.getCloudinaryPublicId());
-        dto.setCreateAt(entity.getCreatedAt());
+        dto.setCreatedAt(entity.getCreatedAt());
 
         return dto;
     }
@@ -387,7 +387,7 @@ public class Converter<T, D> {
         entity.setObjectId(dto.getObjectId());
         //entity.setCreated_by(dto.getAuthor());
         entity.setCloudinaryPublicId(dto.getCloudinaryPublicId());
-        entity.setCreatedAt(dto.getCreateAt());
+        entity.setCreatedAt(dto.getCreatedAt());
 
         return entity;
     }
@@ -456,8 +456,8 @@ public class Converter<T, D> {
         dto.setSkills(entity.getSkills());
 //        dto.setPositions(entity.getPositions());
         dto.setViews(entity.getViews());
-        dto.setActive(entity.isActive());
-        dto.setDeleted(entity.isDeleted());
+        dto.setActive(entity.getIsActive());
+        dto.setDeleted(entity.getIsDeleted());
 
         if (entity.getCompany() != null) {
             dto.setLogo(entity.getCompany().getImage());
@@ -497,7 +497,7 @@ public class Converter<T, D> {
         entity.setSkills(dto.getSkills());
         entity.setViews(dto.getViews());
 //        entity.setPositions(dto.getPositions());
-        entity.setActive(dto.isActive());
+        entity.setIsActive(dto.isActive());
 
         Optional<Employer> createEmployer =
                 employerRepository.findById(dto.getCreatedEmployerId());

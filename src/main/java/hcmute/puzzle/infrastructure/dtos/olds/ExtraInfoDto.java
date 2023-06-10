@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ExtraInfoDto {
+  private Long id;
   private String name;
   private String type;
   private boolean isActive;

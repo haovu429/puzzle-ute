@@ -1,6 +1,7 @@
 package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.NotFoundDataException;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
 import hcmute.puzzle.infrastructure.dtos.olds.JobPostDtoOld;
@@ -258,15 +259,16 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   public ResponseObject activateJobPost(long jobPostId) {
-    Optional<JobPost> jobPost = jobPostRepository.findById(jobPostId);
-    jobPost.get().setActive(true);
-    jobPostRepository.save(jobPost.get());
+    JobPost jobPost = jobPostRepository.findById(jobPostId)
+            .orElseThrow(() -> new NotFoundDataException("Not found job post"));
+    jobPost.setIsActive(true);
+    jobPostRepository.save(jobPost);
     return new ResponseObject(200, "Activate success", null);
   }
 
   public ResponseObject deactivateJobPost(long jobPostId) {
     Optional<JobPost> jobPost = jobPostRepository.findById(jobPostId);
-    jobPost.get().setActive(false);
+    jobPost.get().setIsActive(false);
     jobPostRepository.save(jobPost.get());
     return new ResponseObject(200, "Deactivate success", null);
   }
@@ -324,7 +326,7 @@ public class JobPostServiceImpl implements JobPostService {
 
   @Override
   public DataResponse countJobPostViewReturnDataResponse(long jobPostId) {
-    return new DataResponse<>("Current view: " + countJobPostView(jobPostId));
+    return new DataResponse<>(countJobPostView(jobPostId));
   }
 
   public long countJobPostView(long jobPostId) {
@@ -439,6 +441,8 @@ public class JobPostServiceImpl implements JobPostService {
     return jobPostPage;
   }
 
+
+
   public Specification<JobPost> doPredicate(JobPostFilterRequest jobPostFilter) {
 
     return ((root, query, criteriaBuilder) -> {
@@ -447,6 +451,12 @@ public class JobPostServiceImpl implements JobPostService {
       // Is Active
       if (jobPostFilter.getIsActive() != null) {
         Predicate withCheckActiveFromSystem = criteriaBuilder.equal(root.get("isActive"), jobPostFilter.getIsActive());
+        predicates.add(withCheckActiveFromSystem);
+      }
+
+      // Is Public
+      if (jobPostFilter.getIsActive() != null) {
+        Predicate withCheckActiveFromSystem = criteriaBuilder.equal(root.get("isPublic"), jobPostFilter.getIsPublic());
         predicates.add(withCheckActiveFromSystem);
       }
 
@@ -621,4 +631,6 @@ public class JobPostServiceImpl implements JobPostService {
       return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
     });
   }
+
+
 }

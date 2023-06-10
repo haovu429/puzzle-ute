@@ -16,10 +16,12 @@ public class BlogPostDto {
     private String title;
     private String body;
     private String thumbnail;
-    private long categoryId;
+    private Long blogCategoryId;
     private String tags;
     private Date createdAt;
     private Date updatedAt;
-    private long userId;
+    private Long userId;
     private List<CommentDto> comments;
+    private Boolean isActive;
+    private Boolean isPublic;
 }
