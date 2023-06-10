@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,9 +26,12 @@ public class HomeController {
 	}
 
 	@GetMapping("/doc")
-	public RedirectView redirectWithUsingRedirectView(RedirectAttributes attributes) {
+	public RedirectView redirectWithUsingRedirectView(HttpServletRequest request, RedirectAttributes attributes) {
 		//    attributes.addFlashAttribute("flashAttribute", "redirectWithRedirectView");
 		//    attributes.addAttribute("attribute", "redirectWithRedirectView");
-		return new RedirectView("http://localhost:8080/api/swagger-ui/index.html");
+		String baseUrl = ServletUriComponentsBuilder.fromRequestUri(request).replacePath(null).build().toUriString();
+		String contextUrl = baseUrl.concat(request.getContextPath());
+		String docUrl = contextUrl.concat("/swagger-ui/index.html");
+		return new RedirectView(docUrl);
 	}
 }
