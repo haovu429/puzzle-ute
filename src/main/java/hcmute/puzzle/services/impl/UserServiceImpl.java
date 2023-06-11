@@ -31,7 +31,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.MessagingException;
+//import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -115,13 +116,13 @@ public class UserServiceImpl implements UserService {
 			user.setAvatar(userDto.getAvatar());
 			//      user.setFullName(userDto.getFullName());
 			user.setPhone(userDto.getPhone());
-			user.setActive(userDto.isActive());
+			user.setIsActive(userDto.isActive());
 			user.setLocale(user.getLocale());
 			user.setProvider(Provider.LOCAL);
-			user.setEmailVerified(user.isEmailVerified());
+			user.setEmailVerified(user.getEmailVerified());
 			roleCodes.addAll(userDto.getRoleCodes());
 		} else {
-			user.setActive(false);
+			user.setIsActive(false);
 			roleCodes.add("user");
 		}
 		user = userRepository.save(user);
@@ -272,13 +273,13 @@ public class UserServiceImpl implements UserService {
 			//      oldUser.get().setFullName(userPayload.getFullName());
 		}
 
-		if (userPayload.isEmailVerified() != oldUser.isEmailVerified()) {
+		if (userPayload.isEmailVerified() != oldUser.getEmailVerified()) {
 			oldUser.setEmailVerified(userPayload.isEmailVerified());
 		}
 
 		// oldUser.get().setAvatar(userPayload.getAvatar());
 		// oldUser.get().setAvatar(updateAvatarReturnUrl(oldUser.get().getEmail(), file));
-		oldUser.setActive(userPayload.isActive());
+		oldUser.setIsActive(userPayload.isActive());
 
 		if (userPayload.getRoleCodes() != null && !userPayload.getRoleCodes().isEmpty()) {
 			Set<Role> roleEntities = new HashSet<>();

@@ -20,11 +20,11 @@ import hcmute.puzzle.infrastructure.repository.JobPostRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
-import lombok.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+//import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/admin")
@@ -259,13 +259,15 @@ public class AdminController {
 	}
 
 	@PostMapping("/add-category")
-	public DataResponse addCategory(@RequestBody CategoryDto categoryDTO) {
-		return categoryService.save(categoryDTO);
+	public DataResponse<CategoryDto> addCategory(@RequestBody CategoryDto categoryDTO) {
+		CategoryDto categoryDto = categoryService.save(categoryDTO);
+		return new DataResponse<>(categoryDto);
 	}
 
 	@PutMapping("/update-category/{categoryId}")
-	public DataResponse updateCategory(@PathVariable long categoryId, @RequestBody CategoryDto categoryDTO) {
-		return categoryService.update(categoryDTO, categoryId);
+	public DataResponse<String> updateCategory(@PathVariable long categoryId, @RequestBody CategoryDto categoryDTO) {
+		categoryService.update(categoryDTO, categoryId);
+		return new DataResponse<>("Success");
 	}
 
 	@DeleteMapping("/delete-category/{categoryId}")

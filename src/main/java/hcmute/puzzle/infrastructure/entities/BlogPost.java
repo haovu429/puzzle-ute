@@ -3,7 +3,7 @@ package hcmute.puzzle.infrastructure.entities;
 import hcmute.puzzle.infrastructure.dtos.olds.BlogPostDto;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,10 +51,4 @@ public class BlogPost extends Auditable{
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
-    public void updateFromDTO(BlogPostDto dto) {
-        this.title = dto.getTitle();
-        this.body = dto.getBody();
-        this.tags = dto.getTags();
-        this.thumbnail = dto.getThumbnail();
-    }
 }

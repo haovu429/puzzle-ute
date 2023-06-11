@@ -9,7 +9,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.*;
 
@@ -51,18 +51,18 @@ public class User extends Auditable implements Serializable {
 
   @Column(name = "email_verified")
   @Builder.Default
-  private boolean emailVerified = false;
+  private Boolean emailVerified = false;
 
   @Column(name = "locale", columnDefinition = "VARCHAR(10)")
   private String locale;
 
   @Column(name = "is_active")
   @Builder.Default
-  private boolean isActive = true;
+  private Boolean isActive = true;
 
   @Column(name = "is_deleted")
   @Builder.Default
-  private boolean isDelete = false;
+  private Boolean isDelete = false;
 
   @Column(name = "last_login_at")
   @Temporal(TemporalType.TIMESTAMP)

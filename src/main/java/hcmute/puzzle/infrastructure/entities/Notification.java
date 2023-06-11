@@ -2,7 +2,7 @@ package hcmute.puzzle.infrastructure.entities;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -33,7 +33,7 @@ public class Notification extends Auditable implements Serializable {
 
   @Column(name = "is_deleted")
   @Builder.Default
-  private boolean isDelete = false;
+  private Boolean isDelete = false;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")

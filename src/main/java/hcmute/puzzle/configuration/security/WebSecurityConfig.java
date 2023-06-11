@@ -24,14 +24,20 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 // @EnableJpaRepositories(basePackages="java")
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class WebSecurityConfig {
-	private static final String[] AUTH_WHITE_LIST = {"/v3-docs/**", "/swagger-ui/**", "/v2-docs/**",
+	private static final String[] AUTH_WHITE_LIST_DOC_RESOURCE = {"/v3-docs/**", "/swagger-ui/**", "/v2-docs/**",
 			"/swagger-resources/**", "/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-ui/index.html",
-			"/v3/api-docs/**", "/doc"};
+			"/v3/api-docs/**", "/doc", "/static/images/**"};
+
+	private static final String[] AUTH_WHITE_LIST_BUSINESS = {"/common/**", "/schedule-config/**", "/test/**",
+			"/init-db", "/oauth2/**", "/api-docs", "/actuator/**", "/login/**", "/auth/**", "/login-google/**",
+			"/forgot-password", "/reset-password", "/", "/login-google", "/oauth/**", "/pay-result/**"};
 
 	//    @Autowired
 	//    private AuthEntryPointJwt unauthorizedHandler;
@@ -84,42 +90,36 @@ public class WebSecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-		http.cors()
-			.disable()
-			.csrf()
-			.disable()
-			.exceptionHandling()
-			.authenticationEntryPoint(authenticationEntryPoint())
-			.accessDeniedHandler(accessDeniedHandler())
-			.and()
-			.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			.and()
-			.authorizeRequests()
-			.antMatchers("/common/**", "/schedule-config/**", "/test/**", "/init-db", "/oauth2/**", "/api-docs",
-						 "/actuator/**", "/login/**", "/auth/**", "/login-google/**", "/forgot-password",
-						 "/reset-password", "/", "/login-google", "/oauth/**", "/pay-result/**")
-			.permitAll()
-			.antMatchers("/static/images/**")
-			.permitAll()
-			.antMatchers(AUTH_WHITE_LIST)
-			.permitAll()
-			.antMatchers("/user/**")
-			.hasAuthority(Roles.USER.getValue())
-			.antMatchers("/role/admin", "/admin/**")
-			.hasAnyAuthority(Roles.ADMIN.getValue())
-			.antMatchers("/candidate/**")
-			.hasAuthority(Roles.CANDIDATE.getValue())
-			.antMatchers("/employer/**", "/pay/**")
-			.hasAuthority(Roles.EMPLOYER.getValue())
-			.anyRequest()
-			.authenticated()
-			.and()
-			.httpBasic()
-			.and()
-			.rememberMe()
-			.key(java.util.UUID.randomUUID().toString())
-			.tokenValiditySeconds(1209600);
+		http.cors((cors) -> cors.disable())
+			.csrf((csrf) -> csrf.disable())
+			.exceptionHandling(
+					(exceptionHandling) -> exceptionHandling.authenticationEntryPoint(authenticationEntryPoint())
+															.accessDeniedHandler(accessDeniedHandler()))
+			.sessionManagement((sessionManagement) -> sessionManagement.sessionConcurrency(
+																			   (sessionConcurrency) -> sessionConcurrency.maximumSessions(1).expiredUrl("/login?expired"))
+																	   .sessionCreationPolicy(
+																			   SessionCreationPolicy.STATELESS))
+			.authorizeHttpRequests(
+					(authorizeHttpRequests) -> authorizeHttpRequests.requestMatchers(AUTH_WHITE_LIST_BUSINESS)
+																	.permitAll()
+																	.requestMatchers(AUTH_WHITE_LIST_DOC_RESOURCE)
+																	.permitAll()
+																	.requestMatchers("/user/**")
+																	.hasAnyAuthority(Roles.USER.getValue(),
+																					 Roles.ADMIN.getValue())
+																	.requestMatchers("/role/admin", "/admin/**")
+																	.hasAnyAuthority(Roles.ADMIN.getValue())
+																	.requestMatchers("/candidate/**")
+																	.hasAnyAuthority(Roles.CANDIDATE.getValue(),
+																					 Roles.ADMIN.getValue())
+																	.requestMatchers("/employer/**", "/pay/**")
+																	.hasAnyAuthority(Roles.EMPLOYER.getValue(),
+																					 Roles.ADMIN.getValue())
+																	.anyRequest()
+																	.authenticated())
+			.httpBasic(withDefaults())
+			.rememberMe((rememberMe) -> rememberMe.key(java.util.UUID.randomUUID().toString())
+												  .tokenValiditySeconds(1209600));
 		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}

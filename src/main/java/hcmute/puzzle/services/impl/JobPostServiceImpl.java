@@ -21,7 +21,7 @@ import hcmute.puzzle.infrastructure.repository.CandidateRepository;
 import hcmute.puzzle.infrastructure.repository.JobPostRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.JobPostService;
-import hcmute.puzzle.utils.CustomNullsFirstInterceptor;
+//import hcmute.puzzle.utils.CustomNullsFirstInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,11 +29,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
+//import javax.persistence.EntityManager;
+//import javax.persistence.PersistenceContext;
+//import javax.persistence.criteria.Join;
+//import javax.persistence.criteria.JoinType;
+//import javax.persistence.criteria.Predicate;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -285,29 +291,32 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   public ResponseObject getJobPostDueSoon() {
-    String strQuery = "SELECT jp FROM JobPost jp ORDER BY jp.deadline ASC";
-    CustomNullsFirstInterceptor firstInterceptor = new CustomNullsFirstInterceptor();
-    strQuery = firstInterceptor.onPrepareStatement(strQuery);
-    List<JobPost> jobPostEntities = em.createQuery(strQuery).setMaxResults(15).getResultList();
-
-    List<JobPostDtoOld> jobPostDto0s = jobPostEntities.stream()
-                                                      .map(jobPost -> converter.toDTO(jobPost))
-                                                      .collect(Collectors.toList());
-    return new ResponseObject<>(200, "Job Posts due soon", jobPostDto0s);
+//    String strQuery = "SELECT jp FROM JobPost jp ORDER BY jp.deadline ASC";
+//    CustomNullsFirstInterceptor firstInterceptor = new CustomNullsFirstInterceptor();
+//    strQuery = firstInterceptor.onPrepareStatement(strQuery);
+//    List<JobPost> jobPostEntities = em.createQuery(strQuery).setMaxResults(15).getResultList();
+//
+//
+//    List<JobPostDtoOld> jobPostDto0s = jobPostEntities.stream()
+//                                                      .map(jobPost -> converter.toDTO(jobPost))
+//                                                      .collect(Collectors.toList());
+//    return new ResponseObject<>(200, "Job Posts due soon", jobPostDto0s);
+    return null;
   }
 
   public ResponseObject getHotJobPost() {
-    String strQuery = "SELECT jp FROM JobPost jp ORDER BY jp.createdAt DESC";
-    CustomNullsFirstInterceptor firstInterceptor = new CustomNullsFirstInterceptor();
-    strQuery = firstInterceptor.onPrepareStatement(strQuery);
-    // TypedQuery q = em.createQuery(strQuery, JobPostEntity.class);
-
-    List<JobPost> jobPostEntities = em.createQuery(strQuery).setMaxResults(15).getResultList();
-
-    List<JobPostDtoOld> jobPostDto0s = jobPostEntities.stream()
-                                                      .map(jobPost -> converter.toDTO(jobPost))
-                                                      .collect(Collectors.toList());
-    return new ResponseObject<>(200, " Hot Job Posts", jobPostDto0s);
+//    String strQuery = "SELECT jp FROM JobPost jp ORDER BY jp.createdAt DESC";
+//    CustomNullsFirstInterceptor firstInterceptor = new CustomNullsFirstInterceptor();
+//    strQuery = firstInterceptor.onPrepareStatement(strQuery);
+//    // TypedQuery q = em.createQuery(strQuery, JobPostEntity.class);
+//
+//    List<JobPost> jobPostEntities = em.createQuery(strQuery).setMaxResults(15).getResultList();
+//
+//    List<JobPostDtoOld> jobPostDto0s = jobPostEntities.stream()
+//                                                      .map(jobPost -> converter.toDTO(jobPost))
+//                                                      .collect(Collectors.toList());
+//    return new ResponseObject<>(200, " Hot Job Posts", jobPostDto0s);
+    return null;
   }
 
   @Override

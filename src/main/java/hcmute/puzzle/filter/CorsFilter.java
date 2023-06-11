@@ -1,8 +1,13 @@
 package hcmute.puzzle.filter;
 
-import javax.servlet.*;
-import javax.servlet.annotation.*;
-import javax.servlet.http.HttpServletResponse;
+//import javax.servlet.*;
+//import javax.servlet.annotation.*;
+//import javax.servlet.http.HttpServletResponse;
+
+import jakarta.servlet.*;
+import jakarta.servlet.annotation.*;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 @WebFilter(filterName = "CorsFilter")

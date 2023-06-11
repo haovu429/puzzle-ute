@@ -26,10 +26,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.validation.Valid;
+//import javax.persistence.EntityGraph;
+//import javax.persistence.EntityManager;
+//import javax.persistence.PersistenceContext;
+//import javax.validation.Valid;
+
+import jakarta.persistence.EntityGraph;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.validation.Valid;
 import java.util.*;
 
 import static hcmute.puzzle.utils.Constant.ResponseCode.STATUS_CUSTOM_EXCEPTION;

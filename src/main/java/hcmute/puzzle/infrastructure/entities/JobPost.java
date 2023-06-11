@@ -3,7 +3,7 @@ package hcmute.puzzle.infrastructure.entities;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.*;
 
@@ -104,7 +104,7 @@ public class JobPost extends Auditable implements Serializable {
 
   @Column(name = "views")
   @Builder.Default
-  private long views = 0;
+  private Long views = 0L;
 
   @Column(name = "can_apply")
   private Boolean canApply;

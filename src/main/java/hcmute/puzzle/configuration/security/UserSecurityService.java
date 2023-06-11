@@ -14,8 +14,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+//import javax.persistence.EntityManager;
+//import javax.persistence.PersistenceContext;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -98,7 +101,7 @@ public class UserSecurityService implements UserDetailsService {
       throw new CustomException("role user isn't exist");
     }
     newUser.getRoles().add(role.get());
-    newUser.setActive(true);
+    newUser.setIsActive(true);
 
     return userRepository.save(newUser);
   }
@@ -115,7 +118,7 @@ public class UserSecurityService implements UserDetailsService {
       user.setProvider(Provider.GOOGLE);
     }
 
-    if (!user.isEmailVerified()) {
+    if (!user.getEmailVerified()) {
       user.setEmailVerified(true);
     }
     userRepository.save(user);

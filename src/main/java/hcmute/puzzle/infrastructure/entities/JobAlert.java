@@ -2,7 +2,7 @@ package hcmute.puzzle.infrastructure.entities;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Getter
@@ -35,11 +35,11 @@ public class JobAlert extends Auditable implements Serializable {
 
   @Builder.Default
   @Column(name = "min_budget")
-  private long minBudget = 0;
+  private Long minBudget = 0L;
 
   @Column(name = "is_deleted")
   @Builder.Default
-  private boolean isDelete = false;
+  private Boolean isDelete = false;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "candidate_id", nullable = false)

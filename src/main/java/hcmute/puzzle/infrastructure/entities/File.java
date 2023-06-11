@@ -2,7 +2,7 @@ package hcmute.puzzle.infrastructure.entities;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Data
@@ -45,6 +45,6 @@ public class File extends Auditable implements Serializable {
 
   @Column(name = "is_deleted")
   @Builder.Default
-  private boolean isDeleted = false;
+  private Boolean isDeleted = false;
 
 }

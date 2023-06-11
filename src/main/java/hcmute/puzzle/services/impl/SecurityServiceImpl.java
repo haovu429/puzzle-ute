@@ -18,8 +18,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
+//import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
+//import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -58,7 +60,7 @@ public class SecurityServiceImpl implements SecurityService {
             throw new NotFoundDataException("Can not found User Account with email " + email);
         }
 
-        if (!foundUser.isEmailVerified()) {
+        if (!foundUser.getEmailVerified()) {
             throw new UnauthorizedException(
                     "The account's email is not verified, try other ways or contact the Admin");
         }
@@ -102,11 +104,11 @@ public class SecurityServiceImpl implements SecurityService {
             ExecutionException, InterruptedException {
         User foundUser = userRepository.getUserByEmail(email);
         if (foundUser == null) {
-            throw new RuntimeException("Can not found User Account with email " + email);
+            throw new NotFoundDataException("Can not found User Account with email " + email);
         }
 
-        if (foundUser.isEmailVerified()) {
-            throw new CustomException("The account's email is verified, No need to repeat");
+        if (foundUser.getEmailVerified()) {
+            throw new UnauthorizedException("The account's email is verified, No need to repeat");
         }
 
         String tokenValue = UUID.randomUUID().toString();

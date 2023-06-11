@@ -15,9 +15,12 @@ import hcmute.puzzle.services.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
+//import javax.persistence.EntityManager;
+//import javax.persistence.NoResultException;
+//import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceContext;
 import java.util.*;
 
 @Service
@@ -119,7 +122,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
   // Lấy các đối tượng đăng ký các dịch vụ đang có hiện tại (chưa hết hạn)
   public DataResponse getCurrentValidSubscriptions(long userId) {
     String sql =
-        "SELECT sub, pack FROM Subscription sub, Package pack, User u WHERE sub.packageEntity.id = pack.id"
+        "SELECT sub, pack FROM Subscription sub, Package pack, User u WHERE sub.aPackage.id = pack.id"
             + " AND sub.regUser.id = u.id AND u.id=:userId AND sub.expirationTime > :nowTime";
     // Join example with addEntity and addJoin
     List<Object[]> rows =
@@ -144,7 +147,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
   public DataResponse getAllSubscriptionsByUserId(long userId) {
     String sql =
-            "SELECT sub, pack FROM Subscription sub, Package pack, User u WHERE sub.packageEntity.id = pack.id"
+            "SELECT sub, pack FROM Subscription sub, Package pack, User u WHERE sub.aPackage.id = pack.id"
                     + " AND sub.regUser.id = u.id AND u.id=:userId";
     // Join example with addEntity and addJoin
     List<Object[]> rows =

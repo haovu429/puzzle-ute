@@ -2,7 +2,7 @@ package hcmute.puzzle.infrastructure.entities;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Getter
 @Setter
@@ -17,7 +17,7 @@ public class SystemConfiguration extends Auditable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "key", unique = true, columnDefinition = "TEXT")
+	@Column(name = "key",nullable = false, unique = true, columnDefinition = "TEXT")
 	private String key;
 
 	@Column(name = "value", columnDefinition = "TEXT")

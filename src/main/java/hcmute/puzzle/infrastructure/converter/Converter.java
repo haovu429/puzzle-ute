@@ -52,12 +52,12 @@ public class Converter<T, D> {
         userPostDTO.setAvatar(entity.getAvatar());
         // userPostDTO.setJoinDate(entity.getCreatedAt());
         userPostDTO.setLastLoginAt(entity.getLastLoginAt());
-        userPostDTO.setActive(entity.isActive());
+        userPostDTO.setActive(entity.getIsActive());
         if (entity.getProvider() != null) {
             userPostDTO.setProvider(entity.getProvider().toString());
         }
         userPostDTO.setFullName(entity.getFullName());
-        userPostDTO.setEmailVerified(entity.isEmailVerified());
+        userPostDTO.setEmailVerified(entity.getEmailVerified());
         userPostDTO.setLocale(entity.getLocale());
 
         if (!entity.getRoles().isEmpty()) {
@@ -76,7 +76,7 @@ public class Converter<T, D> {
         user.setPhone(dto.getPhone());
         user.setAvatar(dto.getAvatar());
         user.setLastLoginAt(dto.getLastLoginAt());
-        user.setActive(dto.isActive());
+        user.setIsActive(dto.isActive());
         user.setProvider(Provider.asProvider(dto.getProvider()));
         user.setFullName(dto.getFullName());
         user.setEmailVerified(dto.isEmailVerified());
@@ -160,13 +160,13 @@ public class Converter<T, D> {
         dto.setIntroduction(entity.getIntroduction());
         dto.setEducationLevel(entity.getEducationLevel());
         dto.setWorkStatus(entity.getWorkStatus());
-        dto.setBlind(entity.isBlind());
-        dto.setDeaf(entity.isDeaf());
-        dto.setCommunicationDis(entity.isCommunicationDis());
-        dto.setHandDis(entity.isHandDis());
-        dto.setLabor(entity.isLabor());
+        dto.setBlind(entity.getBlind());
+        dto.setDeaf(entity.getDeaf());
+        dto.setCommunicationDis(entity.getCommunicationDis());
+        dto.setHandDis(entity.getHandDis());
+        dto.setLabor(entity.getLabor());
         dto.setDetailDis(entity.getDetailDis());
-        dto.setVerifiedDis(entity.isVerifiedDis());
+        dto.setVerifiedDis(entity.getVerifiedDis());
         dto.setSkills(entity.getSkills());
         dto.setServices(entity.getServices());
         dto.setPosition(entity.getPosition());
@@ -326,7 +326,7 @@ public class Converter<T, D> {
         dto.setTitle(entity.getTitle());
         dto.setEmploymentType(entity.getEmploymentType());
         dto.setCompany(entity.getCompany());
-        dto.setWorking(entity.isWorking());
+        dto.setWorking(entity.getIsWorking());
         dto.setIndustry(entity.getIndustry());
         dto.setStartDate(entity.getStartDate());
         dto.setEndDate(entity.getEndDate());
@@ -347,7 +347,7 @@ public class Converter<T, D> {
         entity.setTitle(dto.getTitle());
         entity.setEmploymentType(dto.getEmploymentType());
         entity.setCompany(dto.getCompany());
-        entity.setWorking(dto.isWorking());
+        entity.setIsWorking(dto.isWorking());
         entity.setIndustry(dto.getIndustry());
         entity.setStartDate(dto.getStartDate());
         entity.setEndDate(dto.getEndDate());
@@ -553,7 +553,7 @@ public class Converter<T, D> {
         ExtraInfoDto dto = new ExtraInfoDto();
         dto.setName(entity.getName());
         dto.setType(entity.getType());
-        dto.setActive(entity.isActive());
+        dto.setActive(entity.getIsActive());
 
         return dto;
     }
@@ -562,7 +562,7 @@ public class Converter<T, D> {
         ExtraInfo entity = new ExtraInfo();
         entity.setName(dto.getName());
         entity.setType(dto.getType());
-        entity.setActive(dto.isActive());
+        entity.setIsActive(dto.isActive());
 
         return entity;
     }
@@ -653,7 +653,7 @@ public class Converter<T, D> {
         CategoryDto dto = new CategoryDto();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
-        dto.setActive(entity.isActive());
+        dto.setActive(entity.getIsActive());
         return dto;
     }
 
@@ -661,7 +661,7 @@ public class Converter<T, D> {
         Category entity = new Category();
         entity.setId(dto.getId());
         entity.setName(dto.getName());
-        entity.setActive(dto.isActive());
+        entity.setIsActive(dto.isActive());
         return entity;
     }
 

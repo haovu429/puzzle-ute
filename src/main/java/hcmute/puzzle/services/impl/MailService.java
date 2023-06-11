@@ -8,6 +8,9 @@ import hcmute.puzzle.infrastructure.entities.Token;
 import hcmute.puzzle.threads.ThreadService;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.mail.MailUtil;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +19,13 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.mail.MessagingException;
-import javax.mail.Transport;
-import javax.mail.internet.MimeMessage;
+//import javax.mail.MessagingException;
+//import javax.mail.Transport;
+//import javax.mail.internet.MimeMessage;
+
+//import jakarta.mail.MessagingException;
+//import jakarta.mail.Transport;
+//import jakarta.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;

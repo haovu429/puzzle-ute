@@ -3,7 +3,8 @@ package hcmute.puzzle.infrastructure.dtos.response;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotEmpty;
+//import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 
 @Data
 public class CompanyResponse {

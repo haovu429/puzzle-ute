@@ -2,7 +2,7 @@ package hcmute.puzzle.infrastructure.entities;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -30,7 +30,7 @@ public class Experience extends Auditable implements Serializable {
 
   @Column(name = "is_working")
   @Builder.Default
-  private boolean isWorking = false;
+  private Boolean isWorking = false;
 
   @Column(name = "industry", columnDefinition = "VARCHAR(200)")
   private String industry;

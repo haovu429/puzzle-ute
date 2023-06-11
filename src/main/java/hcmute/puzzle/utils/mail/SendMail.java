@@ -4,9 +4,12 @@ package hcmute.puzzle.utils.mail;
 
 import hcmute.puzzle.exception.CustomException;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+//import javax.mail.*;
+//import javax.mail.internet.InternetAddress;
+//import javax.mail.internet.MimeMessage;
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import java.util.Properties;
 
 public class SendMail {
@@ -42,7 +45,7 @@ public class SendMail {
         ///System.getenv("EMAIL");
 
         // Get the Session object.// and pass username and password
-        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+        Session session = Session.getInstance(properties, new jakarta.mail.Authenticator() {
 
             protected PasswordAuthentication getPasswordAuthentication() {
                  //setup app password reference https://support.google.com/accounts/answer/185833?hl=en

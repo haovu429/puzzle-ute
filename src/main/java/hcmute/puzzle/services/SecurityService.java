@@ -3,8 +3,10 @@ package hcmute.puzzle.services;
 import freemarker.template.TemplateException;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 
-import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
+//import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
+//import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 

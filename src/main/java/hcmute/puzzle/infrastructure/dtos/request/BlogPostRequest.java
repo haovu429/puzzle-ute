@@ -1,11 +1,13 @@
 package hcmute.puzzle.infrastructure.dtos.request;
 
-import com.sun.istack.NotNull;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+//import javax.validation.constraints.NotBlank;
+//import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Data
 public class BlogPostRequest {

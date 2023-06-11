@@ -2,8 +2,8 @@ package hcmute.puzzle.infrastructure.dtos.request;
 
 import lombok.*;
 
-import javax.validation.constraints.NotEmpty;
-
+//import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 @Getter
 @Setter
 @Builder

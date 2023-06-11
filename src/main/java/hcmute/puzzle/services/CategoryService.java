@@ -5,9 +5,9 @@ import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 
 
 public interface CategoryService {
-    DataResponse save(CategoryDto dto);
+    CategoryDto save(CategoryDto dto);
 
-    DataResponse update(CategoryDto dto, long id);
+    void update(CategoryDto dto, long id);
 
     DataResponse delete(long id);
 

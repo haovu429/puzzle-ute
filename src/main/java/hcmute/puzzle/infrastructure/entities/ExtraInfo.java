@@ -2,7 +2,7 @@ package hcmute.puzzle.infrastructure.entities;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Getter
@@ -24,5 +24,5 @@ public class ExtraInfo extends Auditable implements Serializable {
   private String type;
 
   @Column(name = "is_active")
-  private boolean isActive;
+  private Boolean isActive;
 }

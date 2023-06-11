@@ -8,9 +8,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+//import javax.servlet.ServletException;
+//import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletResponse;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static hcmute.puzzle.utils.Constant.ResponseCode.STATUS_FORBIDDEN;
@@ -48,4 +52,10 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     response.setContentType("application/json");
     response.getWriter().write(objectMapper.writeValueAsString(responseObject));
   }
+
+//  @Override
+//  public void handle(jakarta.servlet.http.HttpServletRequest request, jakarta.servlet.http.HttpServletResponse response,
+//          AccessDeniedException accessDeniedException) throws IOException, jakarta.servlet.ServletException {
+//    
+//  }
 }

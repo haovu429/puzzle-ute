@@ -47,6 +47,12 @@ public class SetUpDB {
     @Autowired
     CategoryRepository categoryRepository;
 
+    @Autowired
+    BlogCategoryRepository blogCategoryRepository;
+
+    @Autowired
+    BlogPostRepository blogPostRepository;
+
     public void preStart() {
 
         List<Role> roles = new ArrayList<>();
@@ -214,16 +220,48 @@ public class SetUpDB {
         companyList.add(company1);
         companyList.add(company2);
         companyList.add(company3);
+        companyRepository.saveAll(companyList);
 
         Category category1 = Category.builder().name("IT").isActive(true).build();
         Category category2 = Category.builder().name("Marketing").isActive(true).build();
         Category category3 = Category.builder().name("Education").isActive(true).build();
         List<Category> categories = new ArrayList<>(List.of(category1, category2, category3));
-
         categoryRepository.saveAll(categories);
 
-        companyRepository.saveAll(companyList);
+        BlogCategory blogCategory1 = BlogCategory.builder().name("It story").isActive(true).build();
+        BlogCategory blogCategory2 = BlogCategory.builder().name("Interview skill").isActive(true).build();
+        BlogCategory blogCategory3 = BlogCategory.builder().name("AI").isActive(true).build();
+        List<BlogCategory> blogCategories = new ArrayList<>(List.of(blogCategory1, blogCategory2, blogCategory3));
+        blogCategoryRepository.saveAll(blogCategories);
 
+        BlogPost blogPost1 = BlogPost.builder()
+                                     .title("Learn dsl in spring boot")
+                                     .body("This is content about dsl, jpa spring boot")
+                                     .tags("#jpa, #dsl")
+                                     .thumbnail(
+                                             "https://res.cloudinary.com/drwwfkcmg/image/upload/v1686509234/puzzle_ute/user/blog/z2716433391602_947c1acfa0646b29cb08c4e0a02b3d33.jpg2023-06-12T01:47:09_blog_image.jpg")
+                                     .blogCategory(blogCategory1)
+                                     .build();
+
+        BlogPost blogPost2 = BlogPost.builder()
+                                     .title("Test test is beautiful girl")
+                                     .body("This post view a beautiful girl who is tester")
+                                     .tags("#tester, #girl")
+                                     .thumbnail(
+                                             "https://res.cloudinary.com/drwwfkcmg/image/upload/v1686509234/puzzle_ute/user/blog/z2716433391602_947c1acfa0646b29cb08c4e0a02b3d33.jpg2023-06-12T01:47:09_blog_image.jpg")
+                                     .blogCategory(blogCategory2)
+                                     .build();
+
+        BlogPost blogPost3 = BlogPost.builder()
+                                     .title("How to master backend java")
+                                     .body("This post list skills needed for a backend java dev")
+                                     .tags("#java, #backend, #master, #dev")
+                                     .thumbnail(
+                                             "https://plopdo.com/wp-content/uploads/2021/10/What-is-back-end-development-2.jpg")
+                                     .blogCategory(blogCategory1)
+                                     .build();
+        List<BlogPost> blogPosts = new ArrayList<>(List.of(blogPost1, blogPost2, blogPost3));
+        blogPostRepository.saveAll(blogPosts);
         // Job post
         Set<JobPost> jobPostList = new HashSet<>();
         JobPost jobPost1 = new JobPost();
@@ -299,22 +337,22 @@ public class SetUpDB {
         ExtraInfo service1 = new ExtraInfo();
         service1.setName("Java Develop");
         service1.setType("SERVICE");
-        service1.setActive(true);
+        service1.setIsActive(true);
 
         ExtraInfo service2 = new ExtraInfo();
         service2.setName("Mobile Develop");
         service1.setType("SERVICE");
-        service2.setActive(true);
+        service2.setIsActive(true);
 
         ExtraInfo service3 = new ExtraInfo();
         service3.setName("dot Net Develop");
         service1.setType("SERVICE");
-        service3.setActive(true);
+        service3.setIsActive(true);
 
         ExtraInfo service4 = new ExtraInfo();
         service4.setName("Flutter Develop");
         service1.setType("SERVICE");
-        service4.setActive(true);
+        service4.setIsActive(true);
 
         extraInfos.add(service1);
         extraInfos.add(service2);
@@ -324,22 +362,22 @@ public class SetUpDB {
         ExtraInfo skill1 = new ExtraInfo();
         skill1.setName("Java");
         skill1.setType("SKILL");
-        skill1.setActive(true);
+        skill1.setIsActive(true);
 
         ExtraInfo skill2 = new ExtraInfo();
         skill2.setName("Mobile Develop");
         skill1.setType("SKILL");
-        skill2.setActive(true);
+        skill2.setIsActive(true);
 
         ExtraInfo skill3 = new ExtraInfo();
         skill2.setName("dot Net Develop");
         skill1.setType("SKILL");
-        skill2.setActive(true);
+        skill2.setIsActive(true);
 
         ExtraInfo skill4 = new ExtraInfo();
         skill2.setName("Flutter Develop");
         skill1.setType("SKILL");
-        skill2.setActive(true);
+        skill2.setIsActive(true);
 
         extraInfos.add(skill1);
         extraInfos.add(skill2);
@@ -349,22 +387,22 @@ public class SetUpDB {
         ExtraInfo position1 = new ExtraInfo();
         position1.setName("Java Develop");
         position1.setType("POSITION");
-        position1.setActive(true);
+        position1.setIsActive(true);
 
         ExtraInfo position2 = new ExtraInfo();
         position2.setName("Mobile Develop");
         position2.setType("POSITION");
-        position2.setActive(true);
+        position2.setIsActive(true);
 
         ExtraInfo position3 = new ExtraInfo();
         position3.setName("Dot Net Develop");
         position3.setType("POSITION");
-        position3.setActive(true);
+        position3.setIsActive(true);
 
         ExtraInfo position4 = new ExtraInfo();
         position4.setName("Java Develop");
         position4.setType("POSITION");
-        position4.setActive(true);
+        position4.setIsActive(true);
 
         extraInfos.add(position1);
         extraInfos.add(position2);

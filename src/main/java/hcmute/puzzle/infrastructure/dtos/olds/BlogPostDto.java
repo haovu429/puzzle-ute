@@ -1,6 +1,5 @@
 package hcmute.puzzle.infrastructure.dtos.olds;
 
-import com.sun.istack.NotNull;
 import lombok.*;
 
 import java.util.Date;

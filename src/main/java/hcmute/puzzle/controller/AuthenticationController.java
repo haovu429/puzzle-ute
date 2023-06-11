@@ -29,8 +29,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
+//import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
+//import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.*;
@@ -82,11 +84,11 @@ public class AuthenticationController {
       //                                      .orElseThrow(() -> new NotFoundDataException("EMAIL ISN'T EXISTS"));
       CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
       User user = customUserDetails.getUser();
-      if (!user.isActive()) {
+      if (!user.getIsActive()) {
         throw new UnauthorizedException("THIS ACCOUNT ISN'T ACTIVE");
       }
 
-      if (!user.isEmailVerified()) {
+      if (!user.getEmailVerified()) {
         throw new UnauthorizedException("THIS ACCOUNT ISN'T VERIFY");
       }
 

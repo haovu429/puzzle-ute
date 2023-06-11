@@ -10,7 +10,8 @@ import hcmute.puzzle.infrastructure.models.enums.FileCategory;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.MessagingException;
+//import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;

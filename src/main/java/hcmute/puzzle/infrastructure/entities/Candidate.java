@@ -2,7 +2,7 @@ package hcmute.puzzle.infrastructure.entities;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,25 +45,25 @@ public class Candidate extends Auditable implements Serializable {
   private String workStatus;
 
   @Column(name = "blind")
-  private boolean blind;
+  private Boolean blind;
 
   @Column(name = "deaf")
-  private boolean deaf;
+  private Boolean deaf;
 
   @Column(name = "communication_dis")
-  private boolean communicationDis;
+  private Boolean communicationDis;
 
   @Column(name = "hand_dis")
-  private boolean handDis;
+  private Boolean handDis;
 
   @Column(name = "labor")
-  private boolean labor;
+  private Boolean labor;
 
   @Column(name = "detail_dis", columnDefinition = "TEXT")
   private String detailDis;
 
   @Column(name = "verified_dis")
-  private boolean verifiedDis;
+  private Boolean verifiedDis;
 
   @Column(name = "skills", columnDefinition = "TEXT")
   private String skills;

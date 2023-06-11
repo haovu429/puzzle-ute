@@ -1,11 +1,13 @@
 package hcmute.puzzle.utils.mail;
 
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Properties;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
+//import javax.mail.PasswordAuthentication;
+//import javax.mail.Session;
 
 @Slf4j
 public class MailUtil {
@@ -34,12 +36,11 @@ public class MailUtil {
 
       session =
           Session.getDefaultInstance(
-              props,
-              new javax.mail.Authenticator() {
-                protected PasswordAuthentication getPasswordAuthentication() {
-                  return new PasswordAuthentication(sysMail, "jfxlmaqxrjlreimo");
-                }
-              });
+                  props, new jakarta.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                      return new PasswordAuthentication(sysMail, "jfxlmaqxrjlreimo");
+                    }
+                  });
     }
     return session;
   }

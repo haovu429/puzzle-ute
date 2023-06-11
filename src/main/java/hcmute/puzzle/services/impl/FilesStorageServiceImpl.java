@@ -50,7 +50,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     Cloudinary cloudinary = cloudinaryUtil.getCloudinary();
 
     try {
-      byte[] image = Base64.encodeBase64(file.getBytes());
+      byte[] image = Base64.encodeBase64(file.getBytes(), false);
       String encodedString = new String(image);
 
       // Upload the image
@@ -129,7 +129,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
         throw new CustomException("Upload image failure");
       }
 
-      file.setDeleted(true);
+      file.setIsDeleted(true);
       file.setUpdatedAt(new Date());
       file.setUpdatedBy(deleter.getEmail());
       fileRepository.save(file);
@@ -160,7 +160,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 
       fileInfoFromDB.forEach(
           fileEntity -> {
-            fileEntity.setDeleted(true);
+            fileEntity.setIsDeleted(true);
             fileEntity.setUpdatedAt(new Date());
             fileEntity.setUpdatedBy(deleter.getEmail());
           });

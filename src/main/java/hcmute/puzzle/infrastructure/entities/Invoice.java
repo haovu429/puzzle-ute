@@ -3,7 +3,7 @@ package hcmute.puzzle.infrastructure.entities;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -29,7 +29,7 @@ public class Invoice extends Auditable implements Serializable {
     private String serviceType;
 
     @Column(name = "price")
-    private long price; // giá bán
+    private Long price; // giá bán
 
     @Column(name = "transaction_code", columnDefinition = "VARCHAR(30)")
     private String transactionCode;
@@ -47,7 +47,7 @@ public class Invoice extends Auditable implements Serializable {
 
     @Column(name = "is_deleted")
     @Builder.Default
-    private boolean isDelete = false;
+    private Boolean isDelete = false;
 
 //    @OneToOne(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
 //    @JoinColumn(name = "subscribe_id")

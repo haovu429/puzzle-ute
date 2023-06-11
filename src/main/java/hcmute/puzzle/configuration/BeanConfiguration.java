@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 
 import java.io.IOException;
 import java.util.*;
@@ -93,7 +93,7 @@ public class BeanConfiguration {
 		return new WebMvcEndpointHandlerMapping(endpointMapping, webEndpoints, endpointMediaTypes,
 												corsProperties.toCorsConfiguration(),
 												new EndpointLinksResolver(allEndpoints, basePath),
-												shouldRegisterLinksMapping, null);
+												shouldRegisterLinksMapping);
 	}
 
 	private boolean shouldRegisterLinksMapping(WebEndpointProperties webEndpointProperties, Environment environment,
@@ -111,10 +111,18 @@ public class BeanConfiguration {
 		return FirebaseMessaging.getInstance(app);
 	}
 
-	//    @Bean(name = "multipartResolver")
-	//    public CommonsMultipartResolver commonsMultipartResolver() {
-	//        return new CommonsMultipartResolver();
-	//    }
+	    @Bean(name = "multipartResolver")
+	    public StandardServletMultipartResolver standardServletMultipartResolver() {
+	        return new StandardServletMultipartResolver ();
+	    }
+
+//	@Bean
+////	@Order(0)
+//	public MultipartFilter multipartFilter() {
+//		MultipartFilter multipartFilter = new MultipartFilter();
+//		multipartFilter.setMultipartResolverBeanName("multipartResolver");
+//		return multipartFilter;
+//	}
 
 
 	//    @Bean

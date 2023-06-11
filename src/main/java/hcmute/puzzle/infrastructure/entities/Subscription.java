@@ -2,7 +2,7 @@ package hcmute.puzzle.infrastructure.entities;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -30,7 +30,7 @@ public class Subscription extends Auditable implements Serializable {
     private String paymentTransactionCode;
 
     @Column(name = "remaining_slot")
-    private int remainingSlot;
+    private Integer remainingSlot;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reg_user_email", referencedColumnName = "email")
@@ -42,7 +42,7 @@ public class Subscription extends Auditable implements Serializable {
 
     @Column(name = "is_deleted")
     @Builder.Default
-    private boolean isDelete = false;
+    private Boolean isDelete = false;
 
 //    @OneToOne(mappedBy = "subscribeEntity",, fetch = FetchType.LAZY)
 //    private InvoiceEntity invoiceEntity;

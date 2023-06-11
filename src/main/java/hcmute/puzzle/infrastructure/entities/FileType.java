@@ -3,7 +3,7 @@ package hcmute.puzzle.infrastructure.entities;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Data
 @AllArgsConstructor
@@ -36,5 +36,5 @@ public class FileType extends Auditable{
 
   @Column(name = "is_deleted")
   @Builder.Default
-  private boolean isDelete = false;
+  private Boolean isDelete = false;
 }

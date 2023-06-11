@@ -2,7 +2,7 @@ package hcmute.puzzle.infrastructure.entities;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Getter
 @Setter
@@ -23,6 +23,6 @@ public class BlogCategory extends Auditable {
     //    private String code;
 
     @Column(name = "is_active")
-    private boolean isActive;
+    private Boolean isActive;
 
 }

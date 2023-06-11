@@ -2,7 +2,7 @@ package hcmute.puzzle.infrastructure.entities;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.*;
 
@@ -28,13 +28,13 @@ public class Package extends Auditable implements Serializable {
     private Long price; // giá bán, không lưu vào db
 
     @Column(name = "cost", nullable = false)
-    private long cost; // giá gốc
+    private Long cost; // giá gốc
 
     @Column(name = "duration", nullable = false)
-    private long duration; // tính theo giây
+    private Long duration; // tính theo giây
 
     @Column(name = "num_of_job_post", nullable = false)
-    private int numOfJobPost; // só job post mua thêm
+    private Integer numOfJobPost; // só job post mua thêm
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
@@ -51,7 +51,7 @@ public class Package extends Auditable implements Serializable {
 
     @Column(name = "is_deleted")
     @Builder.Default
-    private boolean isDelete = false;
+    private Boolean isDelete = false;
 
     @Builder.Default
     @OneToMany(mappedBy = "aPackage", fetch = FetchType.LAZY)

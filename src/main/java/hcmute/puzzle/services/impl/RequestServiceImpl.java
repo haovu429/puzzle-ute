@@ -3,7 +3,8 @@ package hcmute.puzzle.services.impl;
 import hcmute.puzzle.services.RequestService;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 

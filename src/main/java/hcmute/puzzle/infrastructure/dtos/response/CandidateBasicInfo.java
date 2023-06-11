@@ -1,6 +1,7 @@
 package hcmute.puzzle.infrastructure.dtos.response;
 
-import javax.validation.constraints.NotBlank;
+//import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 public class CandidateBasicInfo {
 	private long id;
