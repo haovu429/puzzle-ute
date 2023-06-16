@@ -543,14 +543,14 @@ public class CommonController {
 	}
 
 	@GetMapping("/blog-post")
-	public DataResponse getAllBlogPost(@RequestParam(required = false) Long categoryId,
+	public DataResponse getAllBlogPost(@RequestParam(required = false) Long blogCategoryId,
 			@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
 		Pageable pageable = Pageable.unpaged();
 		if (page != null && size != null) {
 			pageable = PageRequest.of(page, size);
 		}
 		BlogPostFilterRequest blogPostFilterRequest = BlogPostFilterRequest.builder()
-																		   .categoryId(categoryId)
+																		   .categoryId(blogCategoryId)
 																		   .isActive(true)
 																		   .isPublic(true)
 																		   .isAscSort(false)
