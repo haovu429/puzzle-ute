@@ -27,7 +27,6 @@ import hcmute.puzzle.services.impl.CurrentUserService;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.TimeUtil;
 import jakarta.mail.MessagingException;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,11 +119,11 @@ public class CommonController {
 	CurrentUserService currentUserService;
 
 	@GetMapping("/job-post/get-all")
-	DataResponse getAllJobPost(@RequestParam(value = "page", required = false) Integer page,
+	DataResponse<Page<JobPostDto>> getAllJobPost(@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(required = false) Integer size) {
 		Pageable pageable = this.getPageable(page, size);
 		Page<JobPostDto> jobPostDtos = jobPostService.getAll(pageable);
-		return new DataResponse(jobPostDtos);
+		return new DataResponse<>(jobPostDtos);
 	}
 
 	@GetMapping("/job-post/get-one/{jobPostId}")
@@ -531,19 +530,19 @@ public class CommonController {
 	//  }
 
 	@GetMapping("/like-comment/{commentId}")
-	public DataResponse likeComment(@PathVariable long commentId) {
+	public DataResponse<String> likeComment(@PathVariable long commentId) {
 		commentService.likeComment(commentId);
-		return new DataResponse("Success");
+		return new DataResponse<>("Success");
 	}
 
 	@GetMapping("/dis-like-comment/{commentId}")
-	public DataResponse disLikeComment(@PathVariable long commentId) {
+	public DataResponse<String> disLikeComment(@PathVariable long commentId) {
 		commentService.disLikeComment(commentId);
-		return new DataResponse("Success");
+		return new DataResponse<>("Success");
 	}
 
 	@GetMapping("/blog-post")
-	public DataResponse getAllBlogPost(@RequestParam(required = false) Long blogCategoryId,
+	public DataResponse<Page<BlogPostDto>> getAllBlogPost(@RequestParam(required = false) Long blogCategoryId,
 			@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
 		Pageable pageable = Pageable.unpaged();
 		if (page != null && size != null) {
@@ -558,13 +557,13 @@ public class CommonController {
 																		   .build();
 		Page<BlogPostDto> blogPostDtos = blogPostService.filterBlogPost(blogPostFilterRequest, pageable)
 														.map(blogPostMapper::blogPostToBlogPostDto);
-		return DataResponse.builder().data(blogPostDtos).build();
+		return new DataResponse<>(blogPostDtos);
 	}
 
 	@GetMapping("/blog-post/blog-category-with-post-amount")
-	public DataResponse getBlogCateWithPostAmount() {
+	public DataResponse<List<BlogCategoryResponseWithBlogPostAmount>> getBlogCateWithPostAmount() {
 		List<BlogCategoryResponseWithBlogPostAmount> blogCateWithPostAmounts = blogPostService.getBlogCategoryWithBlogPostAmount();
-		return new DataResponse(blogCateWithPostAmounts);
+		return new DataResponse<>(blogCateWithPostAmounts);
 	}
 
 	@GetMapping("/get-all-category")
