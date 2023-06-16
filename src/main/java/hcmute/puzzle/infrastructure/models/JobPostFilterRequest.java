@@ -1,8 +1,6 @@
 package hcmute.puzzle.infrastructure.models;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -11,6 +9,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class JobPostFilterRequest implements Serializable {
 	Long minBudget;
 	Long maxBudget;
@@ -28,7 +28,7 @@ public class JobPostFilterRequest implements Serializable {
 	Boolean isAscSort = true;
 	String sortColumn;
 	Date createdAtFrom;
-	Date createdAtTo;
+	Date createdAtTo = new Date();
 	Date updatedAtFrom;
-	Date updatedAtTo;
+	Date updatedAtTo = new Date();
 }

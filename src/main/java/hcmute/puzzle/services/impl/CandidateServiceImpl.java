@@ -1,7 +1,8 @@
 package hcmute.puzzle.services.impl;
 
+import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.exception.NotFoundDataException;
 import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 import hcmute.puzzle.infrastructure.dtos.request.PostCandidateRequest;
@@ -10,10 +11,8 @@ import hcmute.puzzle.infrastructure.mappers.CandidateMapper;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class CandidateServiceImpl implements CandidateService {
@@ -43,7 +42,9 @@ public class CandidateServiceImpl implements CandidateService {
   public CandidateDto save(CandidateDto candidateDto) {
     // casting provinceDTO to ProvinceEntity
     Candidate candidate = candidateMapper.candidateDtoToCandidate(candidateDto);
-
+    CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    User currentUser = customUserDetails.getUser();
+    candidate.setUser(currentUser);
     // set id
     candidate.setId(0);
 
@@ -53,29 +54,24 @@ public class CandidateServiceImpl implements CandidateService {
 
     candidateRepository.save(candidate);
 
-    Optional<User> userEntity = userRepository.findById(candidate.getId());
-    if (userEntity.isEmpty()) {
-      throw new CustomException("Account isn't exist");
-    }
-    Optional<Role> role = roleRepository.findById("candidate");
-    if (role.isEmpty()) {
-      throw new CustomException("role candidate isn't exist");
-    }
-    userEntity.get().getRoles().add(role.get());
-    userRepository.save(userEntity.get());
+    User userEntity = userRepository.findById(candidate.getId())
+                                    .orElseThrow(() -> new NotFoundDataException("Account isn't exist"));
+    Role role = roleRepository.findById("candidate")
+                              .orElseThrow(() -> new NotFoundDataException("role candidate isn't exist"));
+
+    userEntity.getRoles().add(role);
+    userRepository.save(userEntity);
 
     // return add Province success
     return candidateMapper.candidateToCandidateDto(candidate);
   }
 
   @Override
-  public ResponseObject delete(long id) {
-    boolean exists = candidateRepository.existsById(id);
-    if (exists) {
-      candidateRepository.deleteById(id);
-      return new ResponseObject(200, "Delete candidate Successfully", null);
-    }
-    throw new CustomException("Cannot find candidate with id =" + id);
+  public void delete(long id) {
+    Candidate candidate = candidateRepository.findById(id)
+                                             .orElseThrow(() -> new NotFoundDataException(
+                                                     "Cannot find candidate with id =" + id));
+    candidateRepository.delete(candidate);
   }
 
   @Override
@@ -98,147 +94,111 @@ public class CandidateServiceImpl implements CandidateService {
   }
 
   @Override
-  public ResponseObject getOne(long id) {
-    boolean exists = candidateRepository.existsById(id);
+  public CandidateDto getOne(long id) {
+    Candidate candidate = candidateRepository.findById(id)
+                                             .orElseThrow(() -> new NotFoundDataException(
+                                                     "Cannot find candidate with id = " + id));
 
-    if (exists) {
-      Candidate candidate = candidateRepository.getReferenceById(id);
-      CandidateDto candidateDTO = candidateMapper.candidateToCandidateDto(candidate);
 
-      return new ResponseObject(200, "Info of candidate", candidateDTO);
-    }
+    CandidateDto candidateDTO = candidateMapper.candidateToCandidateDto(candidate);
 
-    throw new CustomException("Cannot find candidate with id = " + id);
+    return candidateDTO;
   }
 
   @Override
-  public ResponseObject followEmployer(long candidateId, long employerId) {
-    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
-    Optional<Employer> employer = employerRepository.findById(employerId);
-    if (candidate.isEmpty()) {
-      throw new NoSuchElementException("Candidate no value present");
-    }
+  public void followEmployer(long candidateId, long employerId) {
+    Candidate candidate = candidateRepository.findById(candidateId)
+                                             .orElseThrow(
+                                                     () -> new NotFoundDataException("Candidate no value present"));
+    Employer employer = employerRepository.findById(employerId)
+                                          .orElseThrow(() -> new NotFoundDataException("Employer no value present"));
 
-    if (employer.isEmpty()) {
-      throw new NoSuchElementException("Employer no value present");
-    }
-
-    if (candidate.get().getFollowingEmployers().contains(employer.get())) {
+    if (candidate.getFollowingEmployers().contains(employer)) {
       throw new CustomException("You already follow this employer");
     }
 
-    candidate.get().getFollowingEmployers().add(employer.get());
-    candidateRepository.save(candidate.get());
+    candidate.getFollowingEmployers().add(employer);
+    candidateRepository.save(candidate);
 
-    return new ResponseObject(200, "Follow success", null);
   }
 
   @Override
-  public ResponseObject cancelFollowedEmployer(long candidateId, long employerId) {
-    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
-    Optional<Employer> employer = employerRepository.findById(employerId);
-    if (candidate.isEmpty()) {
-      throw new NoSuchElementException("Candidate no value present");
-    }
+  public void cancelFollowedEmployer(long candidateId, long employerId) {
+    Candidate candidate = candidateRepository.findById(candidateId)
+                                             .orElseThrow(
+                                                     () -> new NotFoundDataException("Candidate no value present"));
+    Employer employer = employerRepository.findById(employerId)
+                                          .orElseThrow(() -> new NotFoundDataException("Employer no value present"));
 
-    if (employer.isEmpty()) {
-      throw new NoSuchElementException("Employer no value present");
-    }
-
-    if (!candidate.get().getFollowingEmployers().contains(employer.get())) {
+    if (!candidate.getFollowingEmployers().contains(employer)) {
       throw new CustomException("You haven't followed this employer yet");
     }
 
-    candidate.get().getFollowingEmployers().remove(employer.get());
-    candidateRepository.save(candidate.get());
-
-    return new ResponseObject(200, "Cancel follow success", null);
+    candidate.getFollowingEmployers().remove(employer);
+    candidateRepository.save(candidate);
   }
 
   @Override
-  public ResponseObject followCompany(long candidateId, long companyId) {
-    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
-    Optional<Company> company = companyRepository.findById(companyId);
-    if (candidate.isEmpty()) {
-      throw new NoSuchElementException("Candidate no value present");
-    }
+  public void followCompany(long candidateId, long companyId) {
+    Candidate candidate = candidateRepository.findById(candidateId)
+                                             .orElseThrow(
+                                                     (() -> new NotFoundDataException("Candidate no value present")));
+    Company company = companyRepository.findById(companyId)
+                                       .orElseThrow(() -> new NotFoundDataException("Company no value present"));
 
-    if (company.isEmpty()) {
-      throw new NoSuchElementException("Company no value present");
-    }
 
-    if (candidate.get().getFollowingCompany().contains(company.get())) {
+    if (candidate.getFollowingCompany().contains(company)) {
       throw new CustomException("You already follow this company");
     }
 
-    candidate.get().getFollowingCompany().add(company.get());
-    candidateRepository.save(candidate.get());
-
-    return new ResponseObject(200, "Follow success", null);
+    candidate.getFollowingCompany().add(company);
+    candidateRepository.save(candidate);
   }
 
-  public ResponseObject cancelFollowedCompany(long candidateId, long companyId) {
-    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
-    Optional<Company> company = companyRepository.findById(companyId);
-    if (candidate.isEmpty()) {
-      throw new NoSuchElementException("Candidate no value present");
-    }
+  public void cancelFollowedCompany(long candidateId, long companyId) {
+    Candidate candidate = candidateRepository.findById(candidateId)
+                                             .orElseThrow(
+                                                     (() -> new NotFoundDataException("Candidate no value present")));
+    Company company = companyRepository.findById(companyId)
+                                       .orElseThrow(() -> new NotFoundDataException("Company no value present"));
 
-    if (company.isEmpty()) {
-      throw new NoSuchElementException("Company no value present");
-    }
 
-    if (!candidate.get().getFollowingCompany().contains(company.get())) {
+    if (!candidate.getFollowingCompany().contains(company)) {
       throw new CustomException("You haven't followed this company yet");
     }
 
-    candidate.get().getFollowingCompany().remove(company.get());
-    candidateRepository.save(candidate.get());
-
-    return new ResponseObject(200, "Cancel follow success", null);
+    candidate.getFollowingCompany().remove(company);
+    candidateRepository.save(candidate);
   }
 
   @Override
-  public ResponseObject saveJobPost(long candidateId, long jobPostId) {
-    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
-    Optional<JobPost> jobPost = jobPostRepository.findById(jobPostId);
-    if (candidate.isEmpty()) {
-      throw new NoSuchElementException("Candidate no value present");
-    }
+  public void saveJobPost(long candidateId, long jobPostId) {
+    Candidate candidate = candidateRepository.findById(candidateId)
+                                             .orElseThrow(
+                                                     () -> new NotFoundDataException("Candidate no value present"));
+    JobPost jobPost = jobPostRepository.findById(jobPostId)
+                                       .orElseThrow(() -> new NotFoundDataException("JobPost no value present"));
 
-    if (jobPost.isEmpty()) {
-      throw new NoSuchElementException("JobPost no value present");
-    }
-
-    if (candidate.get().getSavedJobPost().contains(jobPost.get())) {
+    if (candidate.getSavedJobPost().contains(jobPost)) {
       throw new CustomException("You already save this Job Post");
     }
 
-    candidate.get().getSavedJobPost().add(jobPost.get());
-    candidateRepository.save(candidate.get());
-
-    return new ResponseObject(200, "Save success", null);
+    candidate.getSavedJobPost().add(jobPost);
+    candidateRepository.save(candidate);
   }
 
   @Override
-  public ResponseObject cancelSavedJobPost(long candidateId, long jobPostId) {
-    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
-    Optional<JobPost> jobPost = jobPostRepository.findById(jobPostId);
-    if (candidate.isEmpty()) {
-      throw new NoSuchElementException("Candidate no value present");
-    }
-
-    if (jobPost.isEmpty()) {
-      throw new NoSuchElementException("JobPost no value present");
-    }
-
-    if (!candidate.get().getSavedJobPost().contains(jobPost.get())) {
+  public void cancelSavedJobPost(long candidateId, long jobPostId) {
+    Candidate candidate = candidateRepository.findById(candidateId)
+                                             .orElseThrow(
+                                                     () -> new NotFoundDataException("Candidate no value present"));
+    JobPost jobPost = jobPostRepository.findById(jobPostId)
+                                       .orElseThrow(() -> new NotFoundDataException("JobPost no value present"));
+    if (!candidate.getSavedJobPost().contains(jobPost)) {
       throw new CustomException("You haven't saved this Job Post yet");
     }
 
-    candidate.get().getSavedJobPost().remove(jobPost.get());
-    candidateRepository.save(candidate.get());
-
-    return new ResponseObject(200, "Cancel saved Job Post success", null);
+    candidate.getSavedJobPost().remove(jobPost);
+    candidateRepository.save(candidate);
   }
 }

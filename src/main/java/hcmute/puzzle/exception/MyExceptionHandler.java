@@ -1,7 +1,9 @@
 package hcmute.puzzle.exception;
 
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
+import jakarta.xml.bind.ValidationException;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -9,7 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
-import static hcmute.puzzle.utils.Constant.ResponseCode.*;
+import static hcmute.puzzle.utils.Constant.ResponseCode.STATUS_CUSTOM_EXCEPTION;
+import static hcmute.puzzle.utils.Constant.ResponseCode.STATUS_RUNTIME_EXCEPTION;
 import static hcmute.puzzle.utils.Constant.ResponseMessage.MSG_ERROR_SERVER;
 
 @Slf4j
@@ -25,14 +28,15 @@ public class MyExceptionHandler {
   @ResponseBody
   public DataResponse handleRuntimeException(RuntimeException e) {
     log.error(e.getMessage(), e);
-    return new DataResponse(MSG_ERROR_SERVER, e.getMessage(), STATUS_RUNTIME_EXCEPTION);
+    DataResponse dataResponse = new DataResponse(ErrorResponse.SERVER_ERROR);
+    dataResponse.setErrMsg(e.getMessage());
+    return dataResponse;
   }
 
   @ExceptionHandler(MaxUploadSizeExceededException.class)
   @ResponseBody
   public DataResponse handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
     log.error(e.getMessage(), e);
-
     String mess = String.format("File size exceeds the limit (%s)", fileSizeLimit);
     return new DataResponse(MSG_ERROR_SERVER, mess , STATUS_RUNTIME_EXCEPTION);
   }
@@ -41,7 +45,9 @@ public class MyExceptionHandler {
   @ResponseBody
   public DataResponse handleRuntimeException(UnauthorizedException e) {
     log.error(e.getMessage(), e);
-    return new DataResponse("401", e.getMessage(), STATUS_UNAUTHORIZED);
+    DataResponse dataResponse = new DataResponse(ErrorResponse.UNAUTHORIZED_ERROR);
+    dataResponse.setErrMsg(e.getMessage());
+    return dataResponse;
   }
 
 
@@ -57,8 +63,9 @@ public class MyExceptionHandler {
   @ResponseBody
   public DataResponse handleNullPointerException(NullPointerException e) {
     log.error(e.getMessage(), e);
-    return new DataResponse(
-             "500", e.getMessage(), 500);
+    DataResponse dataResponse = new DataResponse(ErrorResponse.SERVER_ERROR);
+    dataResponse.setErrMsg(e.getMessage());
+    return dataResponse;
   }
 
   @ExceptionHandler(PartialFailureException.class)
@@ -66,7 +73,9 @@ public class MyExceptionHandler {
   public DataResponse handlePartialFailureException(PartialFailureException e) {
     log.error(e.getMessage(), e);
     error = e.getStatus();
-    return new DataResponse(String.valueOf(error), e.getMessage(), error);
+    DataResponse dataResponse = new DataResponse(ErrorResponse.PARTIAL_FAILURE_ERROR);
+    dataResponse.setErrMsg(e.getMessage());
+    return dataResponse;
   }
 
 
@@ -75,8 +84,6 @@ public class MyExceptionHandler {
   public DataResponse handleMissingParams(MissingServletRequestParameterException e) {
     log.error(e.getMessage(), e);
     String name = e.getParameterName();
-    // System.out.println(name + " parameter is missing");
-    // Actual exception handling
     error = STATUS_CUSTOM_EXCEPTION;
     return new DataResponse(String.valueOf(error), name + " parameter is missing", error);
   }
@@ -85,8 +92,82 @@ public class MyExceptionHandler {
   @ResponseBody
   public DataResponse handleBadRequestException(BadRequestException e) {
     log.error(e.getMessage(), e);
-    return new DataResponse(
-            ErrorDefine.ClientError.BAD_REQUEST_ERROR, e.getDetail(), 400);
+    DataResponse dataResponse = new DataResponse(ErrorResponse.BAD_REQUEST_ERROR);
+    dataResponse.setErrMsg(e.getMessage());
+    return dataResponse;
   }
+
+  @ExceptionHandler(AlreadyExistsException.class)
+  @ResponseBody
+  public DataResponse handleBadRequestException(AlreadyExistsException e) {
+    log.error(e.getMessage(), e);
+    DataResponse dataResponse = new DataResponse(ErrorResponse.ALREADY_EXISTS_ERROR);
+    dataResponse.setErrMsg(e.getMessage());
+    return dataResponse;
+  }
+
+  @ExceptionHandler(FileStorageException.class)
+  @ResponseBody
+  public DataResponse handleBadRequestException(FileStorageException e) {
+    log.error(e.getMessage(), e);
+    DataResponse dataResponse = new DataResponse(ErrorResponse.FILE_STORAGE_ERROR);
+    dataResponse.setErrMsg(e.getMessage());
+    return dataResponse;
+  }
+
+  @ExceptionHandler(InvalidDataException.class)
+  @ResponseBody
+  public DataResponse handleBadRequestException(InvalidDataException e) {
+    log.error(e.getMessage(), e);
+    DataResponse dataResponse = new DataResponse(ErrorResponse.INVALID_DATA_ERROR);
+    dataResponse.setErrMsg(e.getMessage());
+    return dataResponse;
+  }
+
+  @ExceptionHandler(NotFoundDataException.class)
+  @ResponseBody
+  public DataResponse handleBadRequestException(NotFoundDataException e) {
+    log.error(e.getMessage(), e);
+    DataResponse dataResponse = new DataResponse(ErrorResponse.NOT_FOUND_DATA_ERROR);
+    dataResponse.setErrMsg(e.getMessage());
+    return dataResponse;
+  }
+
+  @ExceptionHandler(NotFoundException.class)
+  @ResponseBody
+  public DataResponse handleBadRequestException(NotFoundException e) {
+    log.error(e.getMessage(), e);
+    DataResponse dataResponse = new DataResponse(ErrorResponse.NOT_FOUND_ERROR);
+    dataResponse.setErrMsg(e.getMessage());
+    return dataResponse;
+  }
+
+  @ExceptionHandler(ServerException.class)
+  @ResponseBody
+  public DataResponse handleBadRequestException(ServerException e) {
+    log.error(e.getMessage(), e);
+    DataResponse dataResponse = new DataResponse(ErrorResponse.SERVER_ERROR);
+    dataResponse.setErrMsg(e.getMessage());
+    return dataResponse;
+  }
+
+  @ExceptionHandler(UploadFailureException.class)
+  @ResponseBody
+  public DataResponse handleBadRequestException(UploadFailureException e) {
+    log.error(e.getMessage(), e);
+    DataResponse dataResponse = new DataResponse(ErrorResponse.UPLOAD_FAILURE_ERROR);
+    dataResponse.setErrMsg(e.getMessage());
+    return dataResponse;
+  }
+
+  @ExceptionHandler(ValidationException.class)
+  @ResponseBody
+  public DataResponse handleBadRequestException(ValidationException e) {
+    log.error(e.getMessage(), e);
+    DataResponse dataResponse = new DataResponse(ErrorResponse.VALIDATION_ERROR);
+    dataResponse.setErrMsg(e.getMessage());
+    return dataResponse;
+  }
+
 
 }

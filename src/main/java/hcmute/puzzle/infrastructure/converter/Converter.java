@@ -653,7 +653,7 @@ public class Converter<T, D> {
         CategoryDto dto = new CategoryDto();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
-        dto.setActive(entity.getIsActive());
+        dto.setIsActive(entity.getIsActive());
         return dto;
     }
 
@@ -661,7 +661,7 @@ public class Converter<T, D> {
         Category entity = new Category();
         entity.setId(dto.getId());
         entity.setName(dto.getName());
-        entity.setIsActive(dto.isActive());
+        entity.setIsActive(dto.getIsActive());
         return entity;
     }
 

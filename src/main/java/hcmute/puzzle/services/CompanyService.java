@@ -3,28 +3,34 @@ package hcmute.puzzle.services;
 import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.infrastructure.dtos.olds.CompanyDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.response.CompanyResponse;
 import hcmute.puzzle.infrastructure.entities.Employer;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
+import hcmute.puzzle.infrastructure.models.CompanyFilter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface CompanyService {
 
-	DataResponse save(CompanyDto CompanyDto) throws NotFoundException;
+	CompanyResponse save(CompanyDto CompanyDto) throws NotFoundException;
 
 	//  DataResponse createCompanyForAdmin(CreateCompanyAdminRequest companyAdminDto);
 
-	DataResponse update(long companyId, CompanyDto companyPayload, MultipartFile imageFile,
+	CompanyResponse update(long companyId, CompanyDto companyPayload, MultipartFile imageFile,
 			Employer createEmployer) throws NotFoundException;
 
-	ResponseObject delete(long id);
+	void delete(long id);
 
-	ResponseObject getAll();
+	Page<CompanyResponse> getAll(Pageable pageable);
 
-	ResponseObject getAllCompanyInActive();
+	Page<CompanyResponse> filterCompany(CompanyFilter companyFilter, Pageable pageable);
 
-	ResponseObject getOneById(long id);
+	CompanyResponse getOneById(long id);
 
-	ResponseObject getCompanyFollowedByCandidateId(long candidateId);
+	List<CompanyResponse> getCompanyFollowedByCandidateId(long candidateId);
 
-	DataResponse getCreatedCompanyByEmployerId(long employerId);
+	List<CompanyResponse> getCreatedCompanyByEmployerId(long employerId);
 }

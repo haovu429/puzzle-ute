@@ -125,7 +125,7 @@ public class JobPost extends Auditable implements Serializable {
 
   @OneToMany(mappedBy = "jobPost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @Builder.Default
-  private List<Application> applicationEntities = new ArrayList<>();
+  private List<Application> applications = new ArrayList<>();
 
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(

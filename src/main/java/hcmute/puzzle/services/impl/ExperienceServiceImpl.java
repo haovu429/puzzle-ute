@@ -1,32 +1,38 @@
 package hcmute.puzzle.services.impl;
 
+import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.NotFoundDataException;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.olds.ExperienceDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 import hcmute.puzzle.infrastructure.entities.Candidate;
 import hcmute.puzzle.infrastructure.entities.Experience;
-import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.infrastructure.mappers.ExperienceMapper;
 import hcmute.puzzle.infrastructure.repository.CandidateRepository;
 import hcmute.puzzle.infrastructure.repository.ExperienceRepository;
 import hcmute.puzzle.services.ExperienceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ExperienceServiceImpl implements ExperienceService {
 
-  @Autowired Converter converter;
+  @Autowired
+  Converter converter;
 
-  @Autowired ExperienceRepository experienceRepository;
+  @Autowired
+  ExperienceRepository experienceRepository;
 
-  @Autowired CandidateRepository candidateRepository;
+  @Autowired
+  CandidateRepository candidateRepository;
+
+  @Autowired
+  ExperienceMapper experienceMapper;
 
   @Override
-  public ResponseObject save(long candidateId, ExperienceDto experienceDTO) {
+  public ExperienceDto save(long candidateId, ExperienceDto experienceDTO) {
     experienceDTO.setId(0);
 
     Experience experience = converter.toEntity(experienceDTO);
@@ -37,11 +43,11 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     experience = experienceRepository.save(experience);
 
-    return new ResponseObject(200, "Save success", converter.toDTO(experience));
+    return experienceMapper.evaluateToEvaluateDto(experience);
   }
 
   @Override
-  public ResponseObject update(ExperienceDto experienceDTO) {
+  public ExperienceDto update(ExperienceDto experienceDTO) {
     boolean exists = experienceRepository.existsById(experienceDTO.getId());
 
     if (!exists) {
@@ -50,20 +56,17 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     Experience experience = converter.toEntity(experienceDTO);
     experience = experienceRepository.save(experience);
-    return new ResponseObject(200, "Update successfully", converter.toDTO((experience)));
+    ExperienceDto experienceDto = experienceMapper.evaluateToEvaluateDto(experience);
+    return experienceDto;
   }
 
   @Override
-  public ResponseObject delete(long id) {
+  public void delete(long id) {
     boolean exists = experienceRepository.existsById(id);
-
     if (!exists) {
       throw new CustomException("Experience isn't exists");
     }
-
     experienceRepository.deleteById(id);
-
-    return new ResponseObject(200, "Delete successfully", null);
   }
 
   @Override
@@ -79,19 +82,20 @@ public class ExperienceServiceImpl implements ExperienceService {
   }
 
   @Override
-  public ResponseObject getAllExperienceByCandidateId(long experienceId) {
-    Set<ExperienceDto> experienceDtos = new HashSet<>();
-    experienceRepository.findAllByCandidate_Id(experienceId).stream()
+  public List<ExperienceDto> getAllExperienceByCandidateId(long experienceId) {
+    List<ExperienceDto> experienceDtos = new ArrayList<>();
+    experienceRepository.findAllByCandidate_Id(experienceId)
 						.forEach(
             experience -> {
               experienceDtos.add(converter.toDTO(experience));
             });
-    return new ResponseObject(200, "Info experience by candidate", experienceDtos);
+    return experienceDtos;
   }
 
   @Override
-  public ResponseObject getOneById(long id) {
-    Optional<Experience> experience = experienceRepository.findById(id);
-    return new ResponseObject(200, "Info experience", converter.toDTO(experience.get()));
+  public ExperienceDto getOneById(long id) {
+    Experience experience = experienceRepository.findById(id)
+                                                .orElseThrow(() -> new NotFoundDataException("Not found experience"));
+    return experienceMapper.evaluateToEvaluateDto(experience);
   }
 }

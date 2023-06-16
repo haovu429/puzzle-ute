@@ -1,5 +1,6 @@
 package hcmute.puzzle.infrastructure.entities;
 
+import hcmute.puzzle.infrastructure.models.enums.ExtraInfoType;
 import lombok.*;
 
 import jakarta.persistence.*;
@@ -17,11 +18,11 @@ public class ExtraInfo extends Auditable implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @Column(name = "name", columnDefinition = "VARCHAR(200)")
+  @Column(name = "name", columnDefinition = "VARCHAR(200)", nullable = false)
   private String name;
 
-  @Column(name = "type", columnDefinition = "VARCHAR(100)")
-  private String type;
+  @Column(name = "type", columnDefinition = "VARCHAR(100)", nullable = false)
+  private ExtraInfoType type;
 
   @Column(name = "is_active")
   private Boolean isActive;

@@ -19,12 +19,13 @@ public class Category extends Auditable{
     @Column(name = "name", columnDefinition = "VARCHAR(200)", unique = true)
     private String name;
 
+    @Column(name = "image", columnDefinition = "TEXT")
+    private String image;
+
 //    @Column(name = "code", columnDefinition = "VARCHAR(10)")
 //    private String code;
 
     @Column(name = "is_active")
     private Boolean isActive;
-
-
 
 }

@@ -12,7 +12,6 @@ import hcmute.puzzle.infrastructure.dtos.request.BlogPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostUpdateRequest;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.entities.BlogPost;
-import hcmute.puzzle.infrastructure.entities.Invoice;
 import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.mappers.UserMapper;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
@@ -21,10 +20,12 @@ import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springdoc.api.annotations.ParameterObject;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
@@ -32,10 +33,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-//import javax.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequest;
-//import javax.validation.Valid;
-import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -86,41 +83,37 @@ public class UserController {
   @Autowired
   CommentService commentService;
 
-  @GetMapping("/")
-  public ResponseObject getAll() {
-    return userService.getAll();
-  }
+  //  @GetMapping("/")
+  //  public DataResponse getAll(Pageable pageable) {
+  //    List<UserPostDto> userPostDtos = userService.getAll();
+  //    return new DataResponse(userPostDtos);
+  //  }
 
   @GetMapping("/profile")
-  public ResponseObject<UserPostDto> getProfileAccount() {
+  public DataResponse<UserPostDto> getProfileAccount() {
     CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                                                                              .getAuthentication()
                                                                              .getPrincipal();
     UserPostDto userPostDTO = UserMapper.INSTANCE.userToUserPostDto(userDetails.getUser());
-
-    return new ResponseObject<>(200, "Profile info", userPostDTO);
+    return new DataResponse<>(userPostDTO);
   }
 
-  @DeleteMapping("/")
-  public ResponseObject<String> deleteAccount() {
+  @DeleteMapping("")
+  public DataResponse<String> deleteAccount() {
     CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                                                                              .getAuthentication()
                                                                              .getPrincipal();
-    try {
-      userService.delete(userDetails.getUser().getId());
-      return new ResponseObject<>(HttpStatus.OK.value(), "Delete user success", "");
-    } catch (NotFoundDataException e) {
-      log.error(e.getMessage(), e);
-      throw e;
-    }
+    userService.delete(userDetails.getUser().getId());
+    return new DataResponse<>("Success");
   }
 
   @PutMapping("")
-  public DataResponse updateAccount(@RequestBody UpdateUserDto user) {
+  public DataResponse<UserPostDto> updateAccount(@RequestBody UpdateUserDto user) {
 
     // Optional<UserEntity>
     CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    return userService.update(userDetails.getUser().getId(), user);
+    UserPostDto userPostDto = userService.update(userDetails.getUser().getId(), user);
+    return new DataResponse<>(userPostDto);
   }
 
   //  @GetMapping("/test")
@@ -129,46 +122,41 @@ public class UserController {
   //  }
 
   @PostMapping("/upload-avatar")
-  public DataResponse uploadAvatar(@RequestParam("file") MultipartFile file) throws NotFoundException {
-    CustomUserDetails userDetails =
-            (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    return userService.updateAvatarForUser(userDetails.getUser(), file, FileCategory.IMAGE_AVATAR);
+  public DataResponse<UserPostDto> uploadAvatar(@RequestParam("file") MultipartFile file) throws NotFoundException {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    UserPostDto userPostDto = userService.updateAvatarForUser(userDetails.getUser(), file, FileCategory.IMAGE_AVATAR);
+    return new DataResponse<>(userPostDto);
   }
 
   @DeleteMapping("/delete-avatar")
-  public ResponseObject<String> deleteAvatar()
-          throws ServerException, NotFoundException {
-    CustomUserDetails userDetails =
-            (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+  public DataResponse<String> deleteAvatar() throws ServerException, NotFoundException {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
     String avatarUrl = userDetails.getUser().getAvatar();
-
-    boolean result =
-            storageService.deleteFile(
-                    avatarUrl, FileCategory.IMAGE_AVATAR, userDetails.getUser(), true);
+    boolean result = storageService.deleteFile(avatarUrl, FileCategory.IMAGE_AVATAR, true);
 
     if (!result) {
       throw new ServerException(ErrorDefine.ServerError.STORAGE_ERROR);
       // throw new CustomException("Delete image failure, response isn't ok");
     }
-
     userDetails.getUser().setAvatar(null);
-
     userRepository.save(userDetails.getUser());
-
-    return new ResponseObject<>("Delete image success");
+    return new DataResponse<>("Delete image success");
   }
 
   @PostMapping("/register-employer")
-  ResponseObject<EmployerDto> registerEmployer(
-      @RequestBody @Validated EmployerDto employer,
-      BindingResult bindingResult) {
+  DataResponse<EmployerDto> registerEmployer(@RequestBody @Validated EmployerDto employer,
+          BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
-      throw new CustomException(bindingResult.getFieldError().toString());
+      throw new CustomException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
 
-    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
     if (userDetails.getUser().getCandidate() != null) {
       throw new CustomException("This account is Candidate!");
     }
@@ -176,27 +164,22 @@ public class UserController {
     if (userDetails.getUser().getEmployer() != null) {
       throw new CustomException("Info employer for this account was created!");
     }
-
     employer.setUserId(userDetails.getUser().getId());
 
-    Optional<EmployerDto> employerDTO = employerService.save(employer);
-    if (employerDTO.isPresent()) {
-      return new ResponseObject<>(
-          HttpStatus.OK.value(), "Create employer successfully", employerDTO.get());
-    } else {
-      throw new CustomException("Register employer failed");
-    }
+    EmployerDto employerDto = employerService.save(employer);
+    return new DataResponse<>(employerDto);
   }
 
   @PostMapping("/register-candidate")
-  ResponseObject<CandidateDto> registerCandidate(
-      @RequestBody @Validated CandidateDto candidate,
-      BindingResult bindingResult) {
+  DataResponse<CandidateDto> registerCandidate(@RequestBody @Validated CandidateDto candidate,
+          BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
 
-    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
 
     if (userDetails.getUser().getEmployer() != null) {
       throw new CustomException("This account is Employer!");
@@ -213,43 +196,47 @@ public class UserController {
     }
 
     CandidateDto candidateDto = candidateService.save(candidate);
-    return new ResponseObject<>(candidateDto);
+    return new DataResponse<>(candidateDto);
 
 
-    //        return new ResponseObject(
+    //        return new DataResponse(
     //                HttpStatus.OK.value(), "Create candidate successfully", new CandidateDto());
   }
 
   @GetMapping("/get-viewed-job-post-amount")
-  DataResponse getAmountApplicationToEmployer() {
+  DataResponse<Long> getAmountApplicationToEmployer() {
 
-    CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                                   .getAuthentication()
+                                                                                   .getPrincipal();
 
     if (customUserDetails.getUser() == null) {
       throw new CustomException("Not found account");
     }
-
-    return jobPostService.getViewedJobPostAmountByUserId(customUserDetails.getUser().getId());
+    long amount = jobPostService.getViewedJobPostAmountByUserId(customUserDetails.getUser().getId());
+    return new DataResponse<>(amount);
   }
 
   // log history viewed Job Post
   @GetMapping("/view-job-post/{jobPostId}")
-  DataResponse getViewJobPost(
-      HttpServletRequest request, @PathVariable(value = "jobPostId") long jobPostId) {
+  DataResponse<String> getViewJobPost(HttpServletRequest request, @PathVariable(value = "jobPostId") long jobPostId) {
 
     Optional<User> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
 
     if (linkUser.isEmpty()) {
       throw new CustomException("Not found account");
     }
-
-    return jobPostService.viewJobPost(linkUser.get().getId(), jobPostId);
+    jobPostService.viewJobPost(linkUser.get().getId(), jobPostId);
+    return new DataResponse<>("Success");
   }
 
   @GetMapping("/get-invoice")
-  public DataResponse getInvoiceForUser() {
-    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    return invoiceService.getInvoiceByEmailUser(userDetails.getUser().getEmail());
+  public DataResponse<List<InvoiceDto>> getInvoiceForUser() {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    List<InvoiceDto> invoiceDtos = invoiceService.getInvoiceByEmailUser(userDetails.getUser().getEmail());
+    return new DataResponse<>(invoiceDtos);
   }
 
   @GetMapping("/get-one-invoice/{invoiceId}")
@@ -257,11 +244,11 @@ public class UserController {
     CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                                                                              .getAuthentication()
                                                                              .getPrincipal();
-    Invoice invoice = invoiceService.getOneInvoice(invoiceId);
-    if (!userDetails.getUser().getEmail().equals(invoice.getEmail())) {
+    InvoiceDto invoiceDto = invoiceService.getOneInvoice(invoiceId);
+    if (!userDetails.getUser().getEmail().equals(invoiceDto.getEmail())) {
       throw new CustomException("You don't have rights for this invoice");
     }
-    return new DataResponse<>(converter.toDTO(invoice));
+    return new DataResponse<>(invoiceDto);
   }
 
   @GetMapping("/get-subscribed-package")
@@ -340,5 +327,13 @@ public class UserController {
           @RequestParam long blogPostId) {
 
     return new DataResponse<>(commentService.addComment(createCommentRequest, blogPostId));
+  }
+
+  private Pageable getPageable(Integer page, Integer size) {
+    Pageable pageable = Pageable.unpaged();
+    if (page != null && size != null) {
+      pageable = Pageable.ofSize(size).withPage(page);
+    }
+    return pageable;
   }
 }

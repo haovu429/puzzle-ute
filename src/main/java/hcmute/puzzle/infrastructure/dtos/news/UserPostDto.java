@@ -56,6 +56,8 @@ public class UserPostDto extends Auditable {
   @JsonProperty("emailVerified")
   private boolean emailVerified;
 
+  private Long balance;
+
   @JsonProperty("locale")
   private String locale;
 
@@ -63,6 +65,7 @@ public class UserPostDto extends Auditable {
   private boolean isActive = true;
 
   private String provider;
+
 
   @JsonProperty("roleCodes")
   private List<String> roleCodes = new ArrayList<>();

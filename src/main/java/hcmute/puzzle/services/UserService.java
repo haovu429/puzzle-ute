@@ -6,13 +6,17 @@ import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 import hcmute.puzzle.infrastructure.entities.Token;
 import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.exception.NotFoundException;
+import hcmute.puzzle.infrastructure.models.DataStaticJoinAccount;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 //import javax.mail.MessagingException;
 import jakarta.mail.MessagingException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
@@ -21,27 +25,27 @@ public interface UserService {
 
   User registerUserForAdmin(CreateUserForAdminDto userForAdminDto, boolean admin);
 
-  DataResponse update(long id, UpdateUserDto user);
+  UserPostDto update(long id, UpdateUserDto user);
 
-  DataResponse updateUserForAdmin(long id, UpdateUserForAdminDto user);
+  UserPostDto updateUserForAdmin(long id, UpdateUserForAdminDto user);
 
-  ResponseObject delete(long id);
+  void delete(long id);
 
-  ResponseObject getAll();
+  Page<UserPostDto> getAll(Pageable pageable);
 
-  ResponseObject getOne(long id);
+  UserPostDto getOne(long id);
 
-  ResponseObject getUserByAccount(String email, String password);
+  UserPostDto getUserByAccount(String email, String password);
 
-  ResponseObject getAccountAmount();
+  long getAccountAmount();
 
-  ResponseObject getListDataUserJoinLastNumWeeks(long numWeek);
+  List<DataStaticJoinAccount> getListDataUserJoinLastNumWeeks(long numWeek);
 
-  DataResponse updateForAdmin(long id, UserPostDto userPayload);
+  UserPostDto updateForAdmin(long id, UserPostDto userPayload);
 
   public void prepareForRole(User user);
 
-  DataResponse updateAvatarForUser(
+  UserPostDto updateAvatarForUser(
       User user, MultipartFile file, FileCategory fileCategory)
       throws NotFoundException;
 }

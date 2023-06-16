@@ -1,9 +1,13 @@
 package hcmute.puzzle.services;
 
+import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
 import hcmute.puzzle.infrastructure.dtos.olds.JobPostDtoOld;
 
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.request.JobPostAdminPostRequest;
+import hcmute.puzzle.infrastructure.dtos.request.JobPostUserPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.RequestPageable;
+import hcmute.puzzle.infrastructure.dtos.response.JobPostDto;
 import hcmute.puzzle.infrastructure.entities.JobPost;
 import hcmute.puzzle.infrastructure.models.JobPostFilterRequest;
 import hcmute.puzzle.infrastructure.models.JobPostWithApplicationAmount;
@@ -11,57 +15,58 @@ import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface JobPostService {
-  ResponseObject add(JobPostDtoOld jobPostDTO);
+  JobPostDto add(JobPostUserPostRequest createJobPostRequest);
 
-  ResponseObject delete(long id);
+  void delete(long id);
 
-  DataResponse markJobPostWasDelete(long id);
+  void markJobPostWasDelete(long id);
 
-  ResponseObject update(JobPostDtoOld jobPostDTO);
+  JobPostDto updateJobPostWithRoleUser(long jobPostId, JobPostUserPostRequest jobPostUserPostRequest);
 
-  ResponseObject getOne(long id);
+  JobPostDto updateJobPostWithRoleAdmin(long jobPostId, JobPostAdminPostRequest jobPostAdminPostRequest);
+  JobPostDto getOne(long id);
 
-  void validateJobPost(JobPostDtoOld jobPostDTO);
+  void validateJobPost(JobPostUserPostRequest jobPostUserPostRequest);
 
-  ResponseObject getAll();
-  ResponseObject getJobPostWithPage(int pageNum, int numOfRecord);
+  Page<JobPostDto> getAll(Pageable pageable);
 
-  ResponseObject getCandidatesApplyJobPost(long jobPostId);
+  List<CandidateDto> getCandidatesApplyJobPost(long jobPostId);
 
-  ResponseObject getJobPostAppliedByCandidateId(long candidateId);
+  List<JobPostDto> getJobPostAppliedByCandidateId(long candidateId);
 
   Page<JobPostWithApplicationAmount> getJobPostCreatedByEmployerId(long employerId, Pageable pageable);
 
-  ResponseObject getJobPostSavedByCandidateId(long candidateId);
+  List<JobPostDto> getJobPostSavedByCandidateId(long candidateId);
 
-  ResponseObject getActiveJobPost();
+  List<JobPostDto> getActiveJobPost();
 
-  ResponseObject getInactiveJobPost();
+  List<JobPostDto> getInactiveJobPost();
 
-  ResponseObject getActiveJobPostByCreateEmployerId(long employerId);
 
-  ResponseObject getInactiveJobPostByCreateEmployerId(long employerId);
+  List<JobPostDto> getJobPostByCreateEmployerId(long employerId, boolean isActive);
 
-  ResponseObject activateJobPost(long jobPostId);
+  void activateJobPost(long jobPostId);
 
-  ResponseObject deactivateJobPost(long jobPostId);
+  void deactivateJobPost(long jobPostId);
 
-  ResponseObject getJobPostDueSoon();
+  List<JobPostDto> getJobPostDueSoon();
 
-  ResponseObject getHotJobPost();
+  List<JobPostDto> getHotJobPost();
 
-  ResponseObject getJobPostAmount();
+  long getJobPostAmount();
 
-  DataResponse getViewedJobPostAmountByUserId(long userId);
+  long getViewedJobPostAmountByUserId(long userId);
 
-  DataResponse countJobPostViewReturnDataResponse(long jobPostId);
+  long countJobPostViewReturnDataResponse(long jobPostId);
 
   long countJobPostView(long jobPostId);
 
-  DataResponse viewJobPost(long userId, long jobPostId);
+  void viewJobPost(long userId, long jobPostId);
 
-  DataResponse getApplicationRateByJobPostId(long jobPostId);
+  double getApplicationRateByJobPostId(long jobPostId);
 
   long getLimitNumberOfJobPostsCreatedForEmployer(long employerId);
 

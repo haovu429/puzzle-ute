@@ -1,45 +1,35 @@
 package hcmute.puzzle.services.impl;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.exception.NotFoundDataException;
-import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.exception.UnauthorizedException;
 import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
-import hcmute.puzzle.infrastructure.dtos.olds.JobPostDtoOld;
-import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.request.JobPostAdminPostRequest;
+import hcmute.puzzle.infrastructure.dtos.request.JobPostUserPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.RequestPageable;
-import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.dtos.response.JobPostDto;
-import hcmute.puzzle.infrastructure.entities.Candidate;
-import hcmute.puzzle.infrastructure.entities.Category;
-import hcmute.puzzle.infrastructure.entities.JobPost;
-import hcmute.puzzle.infrastructure.entities.User;
+import hcmute.puzzle.infrastructure.entities.*;
+import hcmute.puzzle.infrastructure.mappers.CandidateMapper;
 import hcmute.puzzle.infrastructure.mappers.JobPostMapper;
 import hcmute.puzzle.infrastructure.models.JobPostFilterRequest;
 import hcmute.puzzle.infrastructure.models.JobPostWithApplicationAmount;
-import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
-import hcmute.puzzle.infrastructure.repository.CandidateRepository;
-import hcmute.puzzle.infrastructure.repository.JobPostRepository;
-import hcmute.puzzle.infrastructure.repository.UserRepository;
+import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.JobPostService;
-//import hcmute.puzzle.utils.CustomNullsFirstInterceptor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
-
-//import javax.persistence.EntityManager;
-//import javax.persistence.PersistenceContext;
-//import javax.persistence.criteria.Join;
-//import javax.persistence.criteria.JoinType;
-//import javax.persistence.criteria.Predicate;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,8 +42,8 @@ public class JobPostServiceImpl implements JobPostService {
   @PersistenceContext
   public EntityManager em;
 
-  @Autowired
-  Converter converter;
+  //  @Autowired
+  //  Converter converter;
 
   @Autowired
   JobPostRepository jobPostRepository;
@@ -70,101 +60,146 @@ public class JobPostServiceImpl implements JobPostService {
   @Autowired
   JobPostMapper jobPostMapper;
 
-  public ResponseObject add(JobPostDtoOld jobPostDTO) {
-    validateJobPost(jobPostDTO);
-    JobPost jobPost = converter.toEntity(jobPostDTO);
+  @Autowired
+  CandidateMapper candidateMapper;
+
+  @Autowired
+  CompanyRepository companyRepository;
+
+  @Autowired
+  CategoryRepository categoryRepository;
+
+  public JobPostDto add(JobPostUserPostRequest createJobPostRequest) {
+    //validateJobPost(jobPostDTO);
+    //    JobPost jobPost = JobPost.builder()
+    //                             .title(createJobPostRequest.getTitle())
+    //                             .position(createJobPostRequest.getPosition())
+    //                             .employmentType(createJobPostRequest.getEmploymentType())
+    //                             .workplaceType(createJobPostRequest.getWorkplaceType())
+    //                             .description(createJobPostRequest.getDescription())
+    //                             .city(createJobPostRequest.getCity())
+    //                             .address(createJobPostRequest.getAddress())
+    //                             .educationLevel(createJobPostRequest.getEducationLevel())
+    //                             .experienceYear(createJobPostRequest.getExperienceYear())
+    //                             .quantity(createJobPostRequest.getQuantity())
+    //                             .minBudget(createJobPostRequest.getMinBudget())
+    //                             .maxBudget(createJobPostRequest.getMaxBudget())
+    //                             .deadline(createJobPostRequest.getDeadline())
+    //                             .workStatus(createJobPostRequest.getWorkStatus())
+    //                             .blind(createJobPostRequest.getBlind())
+    //                             .deaf(createJobPostRequest.getDeaf())
+    //                             .communicationDis(createJobPostRequest.getCommunicationDis())
+    //                             .handDis(createJobPostRequest.getHandDis())
+    //                             .labor(createJobPostRequest.getLabor())
+    //                             .skills(createJobPostRequest.getSkills())
+    //                             .isPublic(createJobPostRequest.getIsPublic())
+    //                             .canApply(createJobPostRequest.getCanApply())
+    //                             .build();
+    JobPost jobPost = jobPostMapper.jobPostUserPostRequestToJobPost(createJobPostRequest);
+    if (createJobPostRequest.getCompanyId() != null) {
+      Company company = companyRepository.findById(createJobPostRequest.getCompanyId())
+                                         .orElseThrow(() -> new NotFoundDataException("Not found company"));
+      jobPost.setCompany(company);
+    }
+
+    if (createJobPostRequest.getCategoryId() != null) {
+      Category category = categoryRepository.findById(createJobPostRequest.getCategoryId())
+                                            .orElseThrow(() -> new NotFoundDataException("Not found category"));
+      jobPost.setCategory(category);
+    }
 
     // set id
     jobPost.setId(0);
     //    jobPost.setCreateTime(new Date());
 
     jobPost = jobPostRepository.save(jobPost);
-    return new ResponseObject<>(200, "Save job post Successfully", converter.toDTO(jobPost));
+    return jobPostMapper.jobPostToJobPostDto(jobPost);
   }
 
   @Override
-  public ResponseObject delete(long id) {
-    boolean exists = jobPostRepository.existsById(id);
-    if (exists) {
-      jobPostRepository.deleteById(id);
-      return new ResponseObject(200, "Delete job post Successfully", null);
+  public void delete(long id) {
+    JobPost jobPost = jobPostRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not found job post"));
+    jobPostRepository.delete(jobPost);
+  }
+
+  @Override
+  public void markJobPostWasDelete(long id) {
+    JobPost jobPost = jobPostRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not found data"));
+    jobPost.setIsDeleted(true);
+    jobPostRepository.markJobPostWasDelete(id);
+
+  }
+
+  @Override
+  public JobPostDto updateJobPostWithRoleUser(long jobPostId, JobPostUserPostRequest jobPostUserPostRequest) {
+
+    JobPost jobPost = jobPostRepository.findById(jobPostId)
+                                       .orElseThrow(() -> new NotFoundDataException("Not found job post"));
+    CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                                   .getAuthentication()
+                                                                                   .getPrincipal();
+    User currentUser = customUserDetails.getUser();
+    if (currentUser.getId() != jobPost.getCreatedEmployer().getId()) {
+      throw new UnauthorizedException("You don't have rights for this job post");
     }
-    throw new CustomException("Cannot find job post with id =" + id);
+    jobPostMapper.updateJobPostFromJobPostUserPostRequest(jobPostUserPostRequest, jobPost);
+    jobPostRepository.save(jobPost);
+    return jobPostMapper.jobPostToJobPostDto(jobPost);
   }
 
   @Override
-  public DataResponse markJobPostWasDelete(long id) {
-    boolean exists = jobPostRepository.existsById(id);
-    if (exists) {
-      jobPostRepository.markJobPostWasDelete(id);
-      return new DataResponse<>("Delete job post Successfully");
+  public JobPostDto updateJobPostWithRoleAdmin(long jobPostId, JobPostAdminPostRequest jobPostAdminPostRequest) {
+
+    JobPost jobPost = jobPostRepository.findById(jobPostId)
+                                       .orElseThrow(() -> new NotFoundDataException("Not found job post"));
+    CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                                   .getAuthentication()
+                                                                                   .getPrincipal();
+    User currentUser = customUserDetails.getUser();
+    if (currentUser.getIsAdmin() && currentUser.getId() != jobPost.getCreatedEmployer().getId()) {
+      throw new UnauthorizedException("You don't have rights for this job post");
     }
-    throw new CustomException("Cannot find job post with id =" + id);
+    jobPostMapper.updateJobPostFromJobPostAdminPostRequest(jobPostAdminPostRequest, jobPost);
+    jobPostRepository.save(jobPost);
+    return jobPostMapper.jobPostToJobPostDto(jobPost);
   }
 
   @Override
-  public ResponseObject update(JobPostDtoOld JobPostDTO) {
-
-    boolean exists = jobPostRepository.existsById(JobPostDTO.getId());
-
-    if (exists) {
-      JobPost jobPost = converter.toEntity(JobPostDTO);
-      // candidate.setId(candidate.getUserEntity().getId());
-
-      jobPostRepository.save(jobPost);
-      return new ResponseObject<>(converter.toDTO(jobPost));
-    }
-
-    throw new CustomException("Cannot find job post with id = " + JobPostDTO.getId());
+  public JobPostDto getOne(long id) {
+    JobPost jobPost = jobPostRepository.findById(id)
+                                       .orElseThrow(
+                                               () -> new NotFoundDataException("Cannot find job post with id = " + id));
+    return jobPostMapper.jobPostToJobPostDto(jobPost);
   }
 
   @Override
-  public ResponseObject getOne(long id) {
-    boolean exists = jobPostRepository.existsById(id);
+  public Page<JobPostDto> getAll(Pageable pageable) {
+    Page<JobPost> jobPosts = jobPostRepository.findAll(pageable);
 
-    if (exists) {
-      JobPost candidate = jobPostRepository.getReferenceById(id);
-      return new ResponseObject<>(200, "Info of job post", converter.toDTO(candidate));
-    }
+    Page<JobPostDto> jobPostDtos = jobPosts.map(jobPostMapper::jobPostToJobPostDto);
 
-    throw new CustomException("Cannot find job post with id = " + id);
+    return jobPostDtos;
   }
 
-  @Override
-  public ResponseObject getAll() {
-    List<JobPost> jobPostEntities = new ArrayList<>();
+  //  @Override
+  //  public List<JobPostDto> getJobPostWithPage(int pageNum, int numOfRecord) {
+  //
+  //    Pageable pageable = PageRequest.of(pageNum, numOfRecord);
+  //
+  //    Page<JobPost> jobPostEntities = jobPostRepository.findAll(pageable);
+  //
+  //    Page<Object> jobPostDTOS = jobPostEntities.map(entity -> converter.toDTO(entity));
+  //
+  //    return jobPostDTOS;
+  //  }
 
-    jobPostEntities = jobPostRepository.findAll();
-
-    List<JobPostDtoOld> jobPostDtos = jobPostEntities.stream().map(entity -> {
-      return converter.toDTO(entity);
-    }).collect(Collectors.toList());
-
-    return new ResponseObject<>(200, "Info of job post", jobPostDtos);
+  public List<CandidateDto> getCandidatesApplyJobPost(long jobPostId) {
+    List<Candidate> candidateApply = jobPostRepository.getCandidateApplyJobPost(jobPostId);
+    List<CandidateDto> candidateDTOS = candidateApply.stream().map(candidateMapper::candidateToCandidateDto).toList();
+    return candidateDTOS;
   }
 
-  @Override
-  public ResponseObject getJobPostWithPage(int pageNum, int numOfRecord) {
-
-    Pageable pageable = PageRequest.of(pageNum, numOfRecord);
-
-    Page<JobPost> jobPostEntities = jobPostRepository.findAll(pageable);
-
-    Page<Object> jobPostDTOS = jobPostEntities.map(entity -> converter.toDTO(entity));
-
-    return new ResponseObject<>(200, "Info of job post", jobPostDTOS);
-  }
-
-  public ResponseObject getCandidatesApplyJobPost(long jobPostId) {
-    Set<Candidate> candidateApply = jobPostRepository.getCandidateApplyJobPost(jobPostId);
-    Set<CandidateDto> candidateDTOS = candidateApply.stream()
-                                                    .map(candidate -> converter.toDTO(candidate))
-                                                    .collect(Collectors.toSet());
-
-    return new ResponseObject<>(200, "Candidate applied", candidateDTOS);
-  }
-
-  //  public ResponseObject getJobPostCandidateApplied(long candidateId) {
+  //  public DataResponse getJobPostCandidateApplied(long candidateId) {
   //    Set<JobPostEntity> jobPostApplied =
   // jobPostRepository.getJobPostCandidateApplied(candidateId);
   //    Set<JobPostDto> jobPostDTOS =
@@ -172,18 +207,18 @@ public class JobPostServiceImpl implements JobPostService {
   //                    .map(jobPost -> converter.toDTO(jobPost))
   //                    .collect(Collectors.toSet());
   //
-  //    return new ResponseObject(200, "Job Post applied", jobPostDTOS);
+  //    return new DataResponse(200, "Job Post applied", jobPostDTOS);
   //  }
 
   @Override
-  public ResponseObject getJobPostAppliedByCandidateId(long candidateId) {
-    Set<JobPostDtoOld> jobPostDtos = jobPostRepository.findAllByAppliedCandidateId(candidateId)
-                                                      .stream()
-                                                      .map(jobPostEntity -> converter.toDTO(jobPostEntity))
-                                                      .collect(Collectors.toSet());
+  public List<JobPostDto> getJobPostAppliedByCandidateId(long candidateId) {
+    List<JobPostDto> jobPostDtos = jobPostRepository.findAllByAppliedCandidateId(candidateId)
+                                                    .stream()
+                                                    .map(jobPostMapper::jobPostToJobPostDto)
+                                                    .toList();
     processListJobPost(jobPostDtos);
 
-    return new ResponseObject<>(200, "Job Post applied", jobPostDtos);
+    return jobPostDtos;
   }
 
   @Override
@@ -206,136 +241,130 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   @Override
-  public ResponseObject getActiveJobPost() {
-    Set<JobPostDtoOld> jobPostDtos = jobPostRepository.findAllByActiveIsTrue().stream().map(jobPostEntity -> {
-      JobPostDtoOld jobPostDTO = converter.toDTO(jobPostEntity);
+  public List<JobPostDto> getActiveJobPost() {
+    List<JobPostDto> jobPostDtos = jobPostRepository.findAllByActiveIsTrue().stream().map(jobPostEntity -> {
+      JobPostDto jobPostDTO = jobPostMapper.jobPostToJobPostDto(jobPostEntity);
       jobPostDTO.setDescription(null);
       return jobPostDTO;
-    }).collect(Collectors.toSet());
+    }).collect(Collectors.toList());
 
-    return new ResponseObject<>(200, "Job Post active", jobPostDtos);
+    return jobPostDtos;
   }
 
   @Override
-  public ResponseObject getInactiveJobPost() {
-    Set<JobPostDtoOld> jobPostDtos = jobPostRepository.findAllByActiveIsFalse()
-                                                      .stream()
-                                                      .map(jobPostEntity -> converter.toDTO(jobPostEntity))
-                                                      .collect(Collectors.toSet());
+  public List<JobPostDto> getInactiveJobPost() {
+    List<JobPostDto> jobPostDtos = jobPostRepository.findAllByActiveIsFalse()
+                                                    .stream()
+                                                    .map(jobPostMapper::jobPostToJobPostDto)
+                                                    .toList();
 
-    return new ResponseObject<>(200, "Job Post inactive", jobPostDtos);
-  }
-
-  public ResponseObject getActiveJobPostByCreateEmployerId(long employerId) {
-    Set<JobPostDto> jobPostDtos = jobPostRepository.findAllByActiveAndCreatedEmployerId(true, employerId)
-                                                   .stream()
-                                                   .map(jobPostEntity -> jobPostMapper.jobPostToJobPostDto(
-                                                           jobPostEntity))
-                                                   .collect(Collectors.toSet());
-
-    return new ResponseObject<>(200, "Job Post active", jobPostDtos);
+    return jobPostDtos;
   }
 
   @Override
-  public ResponseObject getInactiveJobPostByCreateEmployerId(long employerId) {
-    Set<JobPostDtoOld> jobPostDtos = jobPostRepository.findAllByActiveAndCreatedEmployerId(false, employerId)
-                                                      .stream()
-                                                      .map(jobPostEntity -> converter.toDTO(jobPostEntity))
-                                                      .collect(Collectors.toSet());
+  public List<JobPostDto> getJobPostByCreateEmployerId(long employerId, boolean isActive) {
+    QJobPost jobPost = QJobPost.jobPost;
+    JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+    List<JobPost> jobPosts = queryFactory.selectFrom(jobPost)
+                                         .where(jobPost.isActive.eq(isActive),
+                                                jobPost.createdEmployer.id.eq(employerId))
+                                         .fetch();
+    List<JobPostDto> jobPostDtos = jobPosts.stream().map(jobPostMapper::jobPostToJobPostDto).toList();
 
-    return new ResponseObject<>(200, "Job Post inactive", jobPostDtos);
+    return jobPostDtos;
   }
 
   @Override
-  public ResponseObject getJobPostSavedByCandidateId(long candidateId) {
-    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
+  public List<JobPostDto> getJobPostSavedByCandidateId(long candidateId) {
+    Candidate candidate = candidateRepository.findById(candidateId)
+                                             .orElseThrow(() -> new NotFoundDataException("Candidate isn't exist"));
 
-    if (candidate.isEmpty()) {
-      throw new CustomException("Candidate isn't exist");
-    }
 
-    Set<JobPostDtoOld> jobPostDtos = candidate.get()
-                                              .getSavedJobPost()
-                                              .stream()
-                                              .map(jobPost -> converter.toDTO(jobPost))
-                                              .collect(Collectors.toSet());
+    List<JobPostDto> jobPostDtos = candidate.getSavedJobPost()
+                                            .stream()
+                                            .map(jobPostMapper::jobPostToJobPostDto)
+                                            .toList();
     processListJobPost(jobPostDtos);
 
-    return new ResponseObject<>(200, "Job Posts is saved", jobPostDtos);
+    return jobPostDtos;
   }
 
-  public ResponseObject activateJobPost(long jobPostId) {
+  public void activateJobPost(long jobPostId) {
     JobPost jobPost = jobPostRepository.findById(jobPostId)
-            .orElseThrow(() -> new NotFoundDataException("Not found job post"));
+                                       .orElseThrow(() -> new NotFoundDataException("Not found job post"));
     jobPost.setIsActive(true);
     jobPostRepository.save(jobPost);
-    return new ResponseObject(200, "Activate success", null);
   }
 
-  public ResponseObject deactivateJobPost(long jobPostId) {
-    Optional<JobPost> jobPost = jobPostRepository.findById(jobPostId);
-    jobPost.get().setIsActive(false);
-    jobPostRepository.save(jobPost.get());
-    return new ResponseObject(200, "Deactivate success", null);
+  public void deactivateJobPost(long jobPostId) {
+    JobPost jobPost = jobPostRepository.findById(jobPostId)
+                                       .orElseThrow(() -> new NotFoundDataException("Not found job post"));
+    jobPost.setIsActive(false);
+    jobPostRepository.save(jobPost);
   }
 
-  public void validateJobPost(JobPostDtoOld jobPostDTO) {
+  public void validateJobPost(JobPostUserPostRequest jobPostUserPostRequest) {
     // check budget
-    if (jobPostDTO.getMinBudget() > jobPostDTO.getMaxBudget()) {
+    if (jobPostUserPostRequest.getMinBudget() > jobPostUserPostRequest.getMaxBudget()) {
       throw new CustomException("Min budget can't be greater than max budget");
     }
 
-    if (jobPostDTO.getDueTime() != null && jobPostDTO.getDueTime().before(new Date())) {
+    if (jobPostUserPostRequest.getDeadline() != null && jobPostUserPostRequest.getDeadline().before(new Date())) {
       throw new CustomException("Due time invalid");
     }
   }
 
-  public ResponseObject getJobPostDueSoon() {
-//    String strQuery = "SELECT jp FROM JobPost jp ORDER BY jp.deadline ASC";
-//    CustomNullsFirstInterceptor firstInterceptor = new CustomNullsFirstInterceptor();
-//    strQuery = firstInterceptor.onPrepareStatement(strQuery);
-//    List<JobPost> jobPostEntities = em.createQuery(strQuery).setMaxResults(15).getResultList();
-//
-//
-//    List<JobPostDtoOld> jobPostDto0s = jobPostEntities.stream()
-//                                                      .map(jobPost -> converter.toDTO(jobPost))
-//                                                      .collect(Collectors.toList());
-//    return new ResponseObject<>(200, "Job Posts due soon", jobPostDto0s);
-    return null;
+  public List<JobPostDto> getJobPostDueSoon() {
+    //    String strQuery = "SELECT jp FROM JobPost jp ORDER BY jp.deadline ASC";
+    //    CustomNullsFirstInterceptor firstInterceptor = new CustomNullsFirstInterceptor();
+    //    strQuery = firstInterceptor.onPrepareStatement(strQuery);
+    //    List<JobPost> jobPostEntities = em.createQuery(strQuery).setMaxResults(15).getResultList();
+    //
+    //
+    //    List<JobPostDtoOld> jobPostDto0s = jobPostEntities.stream()
+    //                                                      .map(jobPost -> converter.toDTO(jobPost))
+    //                                                      .collect(Collectors.toList());
+    //    return new DataResponse<>(200, "Job Posts due soon", jobPostDto0s);
+    QJobPost jobPost = QJobPost.jobPost;
+    JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+    List<JobPost> jobPosts = queryFactory.selectFrom(jobPost).orderBy(jobPost.deadline.desc()).limit(15).fetch();
+    List<JobPostDto> jobPostDtos = jobPosts.stream().map(jobPostMapper::jobPostToJobPostDto).toList();
+    return jobPostDtos;
   }
 
-  public ResponseObject getHotJobPost() {
-//    String strQuery = "SELECT jp FROM JobPost jp ORDER BY jp.createdAt DESC";
-//    CustomNullsFirstInterceptor firstInterceptor = new CustomNullsFirstInterceptor();
-//    strQuery = firstInterceptor.onPrepareStatement(strQuery);
-//    // TypedQuery q = em.createQuery(strQuery, JobPostEntity.class);
-//
-//    List<JobPost> jobPostEntities = em.createQuery(strQuery).setMaxResults(15).getResultList();
-//
-//    List<JobPostDtoOld> jobPostDto0s = jobPostEntities.stream()
-//                                                      .map(jobPost -> converter.toDTO(jobPost))
-//                                                      .collect(Collectors.toList());
-//    return new ResponseObject<>(200, " Hot Job Posts", jobPostDto0s);
-    return null;
+  public List<JobPostDto> getHotJobPost() {
+    //        String strQuery = "SELECT jp FROM JobPost jp ORDER BY jp.createdAt DESC";
+    //        CustomNullsFirstInterceptor firstInterceptor = new CustomNullsFirstInterceptor();
+    //        strQuery = firstInterceptor.onPrepareStatement(strQuery);
+    //        // TypedQuery q = em.createQuery(strQuery, JobPostEntity.class);
+
+    //    List<JobPost> jobPostEntities = em.createQuery(strQuery).setMaxResults(15).getResultList();
+    //
+    //    List<JobPostDtoOld> jobPostDto0s = jobPostEntities.stream()
+    //                                                      .map(jobPost -> converter.toDTO(jobPost))
+    //                                                      .collect(Collectors.toList());
+    //    return new DataResponse<>(200, " Hot Job Posts", jobPostDto0s);
+    QJobPost jobPost = QJobPost.jobPost;
+    JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+    List<JobPost> jobPosts = queryFactory.selectFrom(jobPost).orderBy(jobPost.createdAt.desc()).limit(15).fetch();
+    List<JobPostDto> jobPostDtos = jobPosts.stream().map(jobPostMapper::jobPostToJobPostDto).toList();
+    return jobPostDtos;
   }
 
   @Override
-  public ResponseObject getJobPostAmount() {
-    long amount = jobPostRepository.count();
-
-    return new ResponseObject<>(200, "Job Post amount", amount);
+  public long getJobPostAmount() {
+    return jobPostRepository.count();
   }
 
   @Override
-  public DataResponse getViewedJobPostAmountByUserId(long userId) {
+  public long getViewedJobPostAmountByUserId(long userId) {
     long amount = jobPostRepository.getViewedJobPostAmountByUser(userId);
-
-    return new DataResponse<>(amount);
+    return amount;
   }
 
   @Override
-  public DataResponse countJobPostViewReturnDataResponse(long jobPostId) {
-    return new DataResponse<>(countJobPostView(jobPostId));
+  public long countJobPostViewReturnDataResponse(long jobPostId) {
+    return countJobPostView(jobPostId);
   }
 
   public long countJobPostView(long jobPostId) {
@@ -349,25 +378,16 @@ public class JobPostServiceImpl implements JobPostService {
   }
 
   @Override
-  public DataResponse viewJobPost(long userId, long jobPostId) {
-    Optional<JobPost> jobPost = jobPostRepository.findById(jobPostId);
-    if (jobPost.isEmpty()) {
-      throw new CustomException("Cannot find job post with id = " + jobPostId);
-    }
-
-    Optional<User> userEntity = userRepository.findById(userId);
-    if (userEntity.isEmpty()) {
-      throw new CustomException("Not found user");
-    }
-
-    jobPost.get().getViewedUsers().add(userEntity.get());
-    jobPostRepository.save(jobPost.get());
-
-    return new DataResponse(null);
+  public void viewJobPost(long userId, long jobPostId) {
+    JobPost jobPost = jobPostRepository.findById(jobPostId)
+                                       .orElseThrow(() -> new NotFoundDataException("Not found job post"));
+    User userEntity = userRepository.findById(userId).orElseThrow(() -> new NotFoundDataException(" Not found user"));
+    jobPost.getViewedUsers().add(userEntity);
+    jobPostRepository.save(jobPost);
   }
 
   @Override
-  public DataResponse getApplicationRateByJobPostId(long jobPostId) {
+  public double getApplicationRateByJobPostId(long jobPostId) {
     Optional<JobPost> jobPost = jobPostRepository.findById(jobPostId);
     if (jobPost.isEmpty()) {
       throw new CustomException("Cannot find job post with id = " + jobPostId);
@@ -384,7 +404,7 @@ public class JobPostServiceImpl implements JobPostService {
       rate = Math.round(rate * 100.0) / 100.0;
     }
 
-    return new DataResponse<>(rate);
+    return rate;
   }
 
   public long getLimitNumberOfJobPostsCreatedForEmployer(long employerId) {
@@ -433,7 +453,7 @@ public class JobPostServiceImpl implements JobPostService {
     }
   }
 
-  public static void processListJobPost(Collection<JobPostDtoOld> jobPostDtos) {
+  public static void processListJobPost(Collection<JobPostDto> jobPostDtos) {
     jobPostDtos.forEach(jobPostDTO -> {
       jobPostDTO.setDescription(null);
     });
@@ -590,6 +610,10 @@ public class JobPostServiceImpl implements JobPostService {
             jobPostFilter.setSortColumn("createdAt");
             query.orderBy(criteriaBuilder.asc(root.get(jobPostFilter.getSortColumn())));
             break;
+          case "updatedAt":
+            jobPostFilter.setSortColumn("updatedAt");
+            query.orderBy(criteriaBuilder.asc(root.get(jobPostFilter.getSortColumn())));
+            break;
           case "deadline":
             jobPostFilter.setSortColumn("deadline");
             query.orderBy(criteriaBuilder.asc(root.get(jobPostFilter.getSortColumn())));
@@ -615,6 +639,10 @@ public class JobPostServiceImpl implements JobPostService {
         switch (jobPostFilter.getSortColumn()) {
           case "createdAt":
             jobPostFilter.setSortColumn("createdAt");
+            query.orderBy(criteriaBuilder.desc(root.get(jobPostFilter.getSortColumn())));
+            break;
+          case "updatedAt":
+            jobPostFilter.setSortColumn("updatedAt");
             query.orderBy(criteriaBuilder.desc(root.get(jobPostFilter.getSortColumn())));
             break;
           case "deadline":

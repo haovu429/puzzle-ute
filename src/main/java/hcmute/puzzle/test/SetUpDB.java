@@ -1,6 +1,7 @@
 package hcmute.puzzle.test;
 
 import hcmute.puzzle.infrastructure.entities.*;
+import hcmute.puzzle.infrastructure.models.enums.ExtraInfoType;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.utils.Constant;
@@ -241,6 +242,7 @@ public class SetUpDB {
                                      .thumbnail(
                                              "https://res.cloudinary.com/drwwfkcmg/image/upload/v1686509234/puzzle_ute/user/blog/z2716433391602_947c1acfa0646b29cb08c4e0a02b3d33.jpg2023-06-12T01:47:09_blog_image.jpg")
                                      .blogCategory(blogCategory1)
+                                     .author(user2)
                                      .build();
 
         BlogPost blogPost2 = BlogPost.builder()
@@ -250,6 +252,7 @@ public class SetUpDB {
                                      .thumbnail(
                                              "https://res.cloudinary.com/drwwfkcmg/image/upload/v1686509234/puzzle_ute/user/blog/z2716433391602_947c1acfa0646b29cb08c4e0a02b3d33.jpg2023-06-12T01:47:09_blog_image.jpg")
                                      .blogCategory(blogCategory2)
+                                     .author(user1)
                                      .build();
 
         BlogPost blogPost3 = BlogPost.builder()
@@ -259,6 +262,7 @@ public class SetUpDB {
                                      .thumbnail(
                                              "https://plopdo.com/wp-content/uploads/2021/10/What-is-back-end-development-2.jpg")
                                      .blogCategory(blogCategory1)
+                                     .author(user3)
                                      .build();
         List<BlogPost> blogPosts = new ArrayList<>(List.of(blogPost1, blogPost2, blogPost3));
         blogPostRepository.saveAll(blogPosts);
@@ -336,22 +340,22 @@ public class SetUpDB {
 
         ExtraInfo service1 = new ExtraInfo();
         service1.setName("Java Develop");
-        service1.setType("SERVICE");
+        service1.setType(ExtraInfoType.SERVICE);
         service1.setIsActive(true);
 
         ExtraInfo service2 = new ExtraInfo();
         service2.setName("Mobile Develop");
-        service1.setType("SERVICE");
+        service2.setType(ExtraInfoType.SERVICE);
         service2.setIsActive(true);
 
         ExtraInfo service3 = new ExtraInfo();
         service3.setName("dot Net Develop");
-        service1.setType("SERVICE");
+        service3.setType(ExtraInfoType.SERVICE);
         service3.setIsActive(true);
 
         ExtraInfo service4 = new ExtraInfo();
         service4.setName("Flutter Develop");
-        service1.setType("SERVICE");
+        service4.setType(ExtraInfoType.SERVICE);
         service4.setIsActive(true);
 
         extraInfos.add(service1);
@@ -361,23 +365,23 @@ public class SetUpDB {
 
         ExtraInfo skill1 = new ExtraInfo();
         skill1.setName("Java");
-        skill1.setType("SKILL");
+        skill1.setType(ExtraInfoType.SKILL);
         skill1.setIsActive(true);
 
         ExtraInfo skill2 = new ExtraInfo();
         skill2.setName("Mobile Develop");
-        skill1.setType("SKILL");
+        skill2.setType(ExtraInfoType.SKILL);
         skill2.setIsActive(true);
 
         ExtraInfo skill3 = new ExtraInfo();
-        skill2.setName("dot Net Develop");
-        skill1.setType("SKILL");
-        skill2.setIsActive(true);
+        skill3.setName("dot Net Develop");
+        skill3.setType(ExtraInfoType.SKILL);
+        skill3.setIsActive(true);
 
         ExtraInfo skill4 = new ExtraInfo();
-        skill2.setName("Flutter Develop");
-        skill1.setType("SKILL");
-        skill2.setIsActive(true);
+        skill4.setName("Flutter Develop");
+        skill4.setType(ExtraInfoType.SKILL);
+        skill4.setIsActive(true);
 
         extraInfos.add(skill1);
         extraInfos.add(skill2);
@@ -386,22 +390,22 @@ public class SetUpDB {
 
         ExtraInfo position1 = new ExtraInfo();
         position1.setName("Java Develop");
-        position1.setType("POSITION");
+        position1.setType(ExtraInfoType.POSITION);
         position1.setIsActive(true);
 
         ExtraInfo position2 = new ExtraInfo();
         position2.setName("Mobile Develop");
-        position2.setType("POSITION");
+        position2.setType(ExtraInfoType.POSITION);
         position2.setIsActive(true);
 
         ExtraInfo position3 = new ExtraInfo();
         position3.setName("Dot Net Develop");
-        position3.setType("POSITION");
+        position3.setType(ExtraInfoType.POSITION);
         position3.setIsActive(true);
 
         ExtraInfo position4 = new ExtraInfo();
         position4.setName("Java Develop");
-        position4.setType("POSITION");
+        position4.setType(ExtraInfoType.POSITION);
         position4.setIsActive(true);
 
         extraInfos.add(position1);
@@ -439,6 +443,15 @@ public class SetUpDB {
                         .author(SYSTEM_MAIL)
                         .build();
 
+        FileType categoryType =
+                FileType.builder()
+                        .category(FileCategory.IMAGE_CATEGORY)
+                        .type(hcmute.puzzle.infrastructure.models.enums.FileType.IMAGE)
+                        .location(Constant.FileLocation.STORAGE_CATEGORY_IMAGE_LOCATION)
+                        .storageName(Constant.StorageName.CLOUDINARY)
+                        .author(SYSTEM_MAIL)
+                        .build();
+
         FileType companyType =
                 FileType.builder()
                         .category(FileCategory.IMAGE_COMPANY)
@@ -465,6 +478,7 @@ public class SetUpDB {
                         .storageName(Constant.StorageName.CLOUDINARY)
                         .author(SYSTEM_MAIL)
                         .build();
+
 
         List<FileType> fileTypeList =
                 new ArrayList<>(Arrays.asList(avatarType, companyType, blogImageType, blogThumbnailType));

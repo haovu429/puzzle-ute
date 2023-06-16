@@ -2,9 +2,7 @@ package hcmute.puzzle.services.impl;
 
 import freemarker.template.TemplateException;
 import hcmute.puzzle.exception.*;
-import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.news.*;
-import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.entities.Candidate;
 import hcmute.puzzle.infrastructure.entities.Employer;
@@ -22,17 +20,17 @@ import hcmute.puzzle.services.UserService;
 import hcmute.puzzle.utils.Provider;
 import hcmute.puzzle.utils.RedisUtils;
 import hcmute.puzzle.utils.TimeUtil;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-//import javax.mail.MessagingException;
-import jakarta.mail.MessagingException;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -167,7 +165,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public DataResponse update(long id, UpdateUserDto user) {
+	public UserPostDto update(long id, UpdateUserDto user) {
 		// Check username Exists
 		if (checkUsernameExists(user.getUsername())) {
 			throw new AlreadyExistsException("Username already exists");
@@ -182,11 +180,10 @@ public class UserServiceImpl implements UserService {
 																		   .fullName(user.getFullName())
 																		   .phone(user.getPhone())
 																		   .build();
-
 		return updateUserForAdmin(id, updateUserForAdminDto);
 	}
 
-	public DataResponse updateUserForAdmin(long id, UpdateUserForAdminDto user) {
+	public UserPostDto updateUserForAdmin(long id, UpdateUserForAdminDto user) {
 
 		User updateUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException("NOT_FOUND_USER"));
 		UserMapper.INSTANCE.updateUserFromDto(user, updateUser);
@@ -210,7 +207,7 @@ public class UserServiceImpl implements UserService {
 				userRepository.save(updateUser));// converter.toDTO(userRepository.save(updateUser));
 		redisUtils.delete(updateUser.getEmail());
 
-		return new DataResponse(userPostDTO);
+		return userPostDTO;
 	}
 
 	@Transactional
@@ -258,7 +255,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public DataResponse updateForAdmin(long id, UserPostDto userPayload) {
+	@Transactional
+	public UserPostDto updateForAdmin(long id, UserPostDto userPayload) {
 
 		User oldUser = userRepository.findById(id)
 									 .orElseThrow(() -> new NotFoundDataException("This account isn't exists"));
@@ -284,7 +282,9 @@ public class UserServiceImpl implements UserService {
 		if (userPayload.getRoleCodes() != null && !userPayload.getRoleCodes().isEmpty()) {
 			Set<Role> roleEntities = new HashSet<>();
 			for (String code : userPayload.getRoleCodes()) {
-				Role role = roleRepository.findOneByCode(code);
+				Role role = roleRepository.findByCode(code).orElseThrow(
+						() -> new NotFoundDataException("Not found role")
+				);
 				if (role.getName().equals(Roles.CANDIDATE.getValue())) {
 					Candidate candidate = new Candidate();
 					oldUser.setCandidate(candidate);
@@ -306,10 +306,10 @@ public class UserServiceImpl implements UserService {
 		userRepository.save(oldUser);
 		UserPostDto userPostDTO = userMapper.userToUserPostDto(oldUser);
 
-		return new DataResponse(userPostDTO);
+		return userPostDTO;
 	}
 
-	public DataResponse updateAvatarForUser(User user, MultipartFile file, FileCategory fileCategory) throws
+	public UserPostDto updateAvatarForUser(User user, MultipartFile file, FileCategory fileCategory) throws
 			NotFoundException {
 		String imageUrl = storageService.uploadFileWithFileTypeReturnUrl(user.getEmail(), file, fileCategory, true)
 										.orElseThrow(() -> new FileStorageException("UPLOAD_FILE_FAILURE"));
@@ -317,62 +317,53 @@ public class UserServiceImpl implements UserService {
 		user.setAvatar(imageUrl);
 		userRepository.save(user);
 		UserPostDto userPostDTO = userMapper.userToUserPostDto(user);
-		return new DataResponse(userPostDTO);
+		return userPostDTO;
 	}
 
 	@Override
-	public ResponseObject delete(long id) {
-		boolean exists = userRepository.existsById(id);
-		if (exists) {
-			User user = userRepository.findById(id).orElseThrow(() -> new NotFoundDataException("NOT FOUND USER"));
-			// delete roles of user
-			user.getRoles().clear();
-			userRepository.delete(user);
-			return new ResponseObject(HttpStatus.OK.value(), "Delete user success", "");
-		} else {
-			throw new CustomException("User not found");
-		}
+	public void delete(long id) {
+		User user = userRepository.findById(id).orElseThrow(() -> new NotFoundDataException("User not found"));
+		// delete roles of user
+		user.getRoles().clear();
+		userRepository.save(user);
+		userRepository.delete(user);
 	}
 
 	@Override
-	public ResponseObject getAll() {
+	public Page<UserPostDto> getAll(Pageable pageable) {
 		// Lay Tat Ca UserEntity
-		Set<UserPostDto> userPostDtos = userRepository.findAll().stream().map(userEntity -> {
-			UserPostDto userPostDTO = userMapper.userToUserPostDto(userEntity);
-			return userPostDTO;
-		}).collect(Collectors.toSet());
-
-		return new ResponseObject(userPostDtos);
+		Page<User> users = userRepository.findAll(pageable);
+		Page<UserPostDto> userPostDtos = users.map(userMapper::userToUserPostDto);
+		return userPostDtos;
 	}
 
 	@Override
-	public ResponseObject getOne(long id) {
-		User userEntity = userRepository.findById(id)
-										.orElseThrow(() -> new NotFoundDataException("Account isn't exists"));
-		userEntity.getRoles().add(new Role("user"));
-		userRepository.save(userEntity);
+	public UserPostDto getOne(long id) {
+		User user = userRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Account isn't exists"));
+		user.getRoles().add(new Role("user"));
+		userRepository.save(user);
 
-		return new ResponseObject(userMapper.userToUserPostDto(userEntity));
+		return userMapper.userToUserPostDto(user);
 	}
 
 	@Override
-	public ResponseObject getUserByAccount(String email, String password) {
+	public UserPostDto getUserByAccount(String email, String password) {
 		User user = userRepository.getUserByEmailAndPassword(email, password);
 		if (user != null) {
-			return new ResponseObject(userMapper.userToUserPostDto(user));
+			return userMapper.userToUserPostDto(user);
 		} else {
 			throw new CustomException("User not found");
 		}
 	}
 
 	@Override
-	public ResponseObject getAccountAmount() {
+	public long getAccountAmount() {
 		long count = userRepository.count();
-		return new ResponseObject(count);
+		return count;
 	}
 
 	@Override
-	public ResponseObject getListDataUserJoinLastNumWeeks(long numWeek) {
+	public List<DataStaticJoinAccount> getListDataUserJoinLastNumWeeks(long numWeek) {
 		Date timeline = new Date(); // khoi tao tg hien tai
 		// Date nextDate = new Date();
 		List<DataStaticJoinAccount> data = new ArrayList<>();
@@ -389,7 +380,7 @@ public class UserServiceImpl implements UserService {
 
 		Collections.reverse(data);
 
-		return new ResponseObject(data);
+		return data;
 	}
 
 }

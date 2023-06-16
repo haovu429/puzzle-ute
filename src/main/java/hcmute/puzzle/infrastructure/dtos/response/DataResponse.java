@@ -1,5 +1,7 @@
 package hcmute.puzzle.infrastructure.dtos.response;
 
+import hcmute.puzzle.exception.ErrorCode;
+import hcmute.puzzle.exception.ErrorResponse;
 import lombok.*;
 
 import static hcmute.puzzle.utils.Constant.ResponseCode.STATUS_OK;
@@ -22,8 +24,14 @@ public class DataResponse<T> {
     this.status = status;
   }
 
+  public DataResponse(ErrorResponse errorResponse) {
+    this.errCode = errorResponse.getErrorCode().getValue();
+    this.errMsg = errorResponse.getErrorMsg();
+    this.status = errorResponse.getStatus();
+  }
+
   public DataResponse(T data) {
-    this.errCode = "";
+    this.errCode = null;
     this.status = STATUS_OK;
     this.data = data;
   }

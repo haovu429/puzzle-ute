@@ -87,7 +87,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 
   @Override
   public boolean deleteFile(
-      String key, FileCategory category, User deleter, boolean deleteByUrl)
+      String key, FileCategory category, boolean deleteByUrl)
       throws NotFoundException {
     // if deleteByUrl = true => key is url else key is public id
 
@@ -130,8 +130,6 @@ public class FilesStorageServiceImpl implements FilesStorageService {
       }
 
       file.setIsDeleted(true);
-      file.setUpdatedAt(new Date());
-      file.setUpdatedBy(deleter.getEmail());
       fileRepository.save(file);
       return true;
     } catch (Exception e) {
@@ -197,7 +195,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
           String keyName, MultipartFile file, FileCategory fileCategory, boolean saveDB) throws NotFoundException {
 
     FileType fileType =
-            fileTypeRepository.findByCategory(fileCategory).orElseThrow(NotFoundException::new);
+            fileTypeRepository.findByCategory(fileCategory).orElseThrow(() -> new NotFoundDataException("Not found file type category"));
 
     String fileName = processFileName(keyName, fileCategory);
     CloudinaryUploadFileResponse response =
@@ -205,7 +203,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     String fileUrl = response.getSecure_url();
 
     if (fileUrl == null || fileUrl.isEmpty() || fileUrl.isBlank()) {
-      throw new FileStorageException("UPLOAD_FILE_TO_CLOUD_FAILURE");
+      throw new FileStorageException("UPLOAD_FILE_IS_EMPTY");
     }
 
     if (saveDB) {
@@ -230,6 +228,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   public Optional<File> uploadFileWithFileTypeReturnFileEntity(
           String keyName, MultipartFile file, FileCategory fileCategory) throws NotFoundException {
 
+
     User author =
             ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
                     .getUser();
@@ -243,9 +242,8 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     String fileUrl = response.getSecure_url();
 
     if (fileUrl == null || fileUrl.isEmpty() || fileUrl.isBlank()) {
-      throw new FileStorageException("UPLOAD_FILE_TO_CLOUD_FAILURE");
+      throw new FileStorageException("UPLOAD_FILE_IS_EMPTY");
     }
-
 
     // Save file info to db.
     File fileEntity =

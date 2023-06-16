@@ -15,11 +15,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-public interface JobPostRepository extends JpaRepository<JobPost, Long>, JpaSpecificationExecutor {
+public interface JobPostRepository extends JpaRepository<JobPost, Long>, JpaSpecificationExecutor<JobPost> {
 
   @Query(
       "SELECT c FROM Candidate c WHERE c.id in (SELECT a.candidate.id FROM Application a WHERE a.jobPost.id = :jobPostId)")
-  Set<Candidate> getCandidateApplyJobPost(@Param("jobPostId") long jobPostId);
+  List<Candidate> getCandidateApplyJobPost(@Param("jobPostId") long jobPostId);
 
   @Query(
           "SELECT c FROM Candidate c WHERE c.id in (SELECT a.candidate.id FROM Application a WHERE a.jobPost.id = :jobPostId)")
@@ -36,7 +36,7 @@ public interface JobPostRepository extends JpaRepository<JobPost, Long>, JpaSpec
 
   @Query(
       "SELECT jp FROM JobPost jp, Application ap, Candidate can WHERE can.id = :candidateId AND ap.candidate.id = can.id AND ap.jobPost.id = jp.id")
-  Set<JobPost> findAllByAppliedCandidateId(@Param("candidateId") long candidateId);
+  List<JobPost> findAllByAppliedCandidateId(@Param("candidateId") long candidateId);
 
   @Query("SELECT jp FROM JobPost jp WHERE jp.createdEmployer.id = :employerId AND jp.isDeleted=FALSE ")
   Page<JobPost> findAllByCreatedEmployerId(@Param("employerId") long employerId, Pageable pageable);
@@ -48,7 +48,7 @@ public interface JobPostRepository extends JpaRepository<JobPost, Long>, JpaSpec
   Set<JobPost> getHotJobPost();
 
   @Query("SELECT jp FROM JobPost jp WHERE jp.isActive = TRUE AND jp.isDeleted = FALSE")
-  Set<JobPost> findAllByActiveIsTrue();
+  List<JobPost> findAllByActiveIsTrue();
 
   @Query("SELECT jp FROM JobPost jp WHERE jp.isActive = FALSE AND jp.isDeleted = FALSE")
   Set<JobPost> findAllByActiveIsFalse();

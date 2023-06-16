@@ -53,9 +53,6 @@ public class AuthenticationController {
   private JwtTokenProvider tokenProvider;
 
   @Autowired
-  private UserRepository userRepository;
-
-  @Autowired
   private RedisUtils redisUtils;
 
   @Autowired
@@ -63,9 +60,6 @@ public class AuthenticationController {
 
   @Autowired
   private UserSecurityService userSecurityService;
-
-  @Autowired
-  private UserService userService;
 
   @Autowired
   private SecurityService securityService;

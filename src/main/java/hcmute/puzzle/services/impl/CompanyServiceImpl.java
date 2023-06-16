@@ -2,28 +2,28 @@ package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.*;
-import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.olds.CompanyDto;
-import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 import hcmute.puzzle.infrastructure.dtos.response.CompanyResponse;
 import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.mappers.CompanyMapper;
+import hcmute.puzzle.infrastructure.models.CompanyFilter;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
 import hcmute.puzzle.infrastructure.models.enums.Roles;
-import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.CompanyService;
 import hcmute.puzzle.services.FilesStorageService;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.sql.Timestamp;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,8 +31,8 @@ public class CompanyServiceImpl implements CompanyService {
   @Autowired
   CompanyRepository companyRepository;
 
-  @Autowired
-  Converter converter;
+  //  @Autowired
+  //  Converter converter;
 
   @Autowired
   FilesStorageService storageService;
@@ -62,7 +62,7 @@ public class CompanyServiceImpl implements CompanyService {
 
   @Transactional
   @Override
-  public DataResponse save(CompanyDto companyDto) throws NotFoundException {
+  public CompanyResponse save(CompanyDto companyDto) throws NotFoundException {
     CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                                                                                    .getAuthentication()
                                                                                    .getPrincipal();
@@ -70,9 +70,7 @@ public class CompanyServiceImpl implements CompanyService {
     User currentUser = customUserDetails.getUser();
     Employer currentEmployer = currentUser.getEmployer();
     MultipartFile imageFile = companyDto.getImageFile();
-    Company company = Company.builder()
-                             .name(companyDto.getName())
-                             .description(companyDto.getDescription())
+    Company company = Company.builder().name(companyDto.getName()).description(companyDto.getDescription())
                              .website(companyDto.getWebsite())
                              .createdEmployer(currentEmployer)
                              .isPublic(companyDto.getIsPublic())
@@ -104,8 +102,8 @@ public class CompanyServiceImpl implements CompanyService {
       company.setImage(imageUrl);
       company = companyRepository.save(company);
     }
-    CompanyResponse companyResponse = companyMapper.companyToUserCompanyResponse(company);
-    return new DataResponse<>(companyResponse);
+    CompanyResponse companyResponse = companyMapper.companyToCompanyResponse(company);
+    return companyResponse;
   }
 
   //  @Override
@@ -135,15 +133,12 @@ public class CompanyServiceImpl implements CompanyService {
   //  }
 
   @Override
-  public DataResponse update(long companyId, CompanyDto companyPayload, MultipartFile imageFile,
+  public CompanyResponse update(long companyId, CompanyDto companyPayload, MultipartFile imageFile,
           Employer createEmployer) throws NotFoundException {
-    Optional<Company> companyEntityOptional = companyRepository.findById(companyId);
+    Company companyEntityOptional = companyRepository.findById(companyId)
+                                                     .orElseThrow(() -> new NotFoundDataException("Company not found"));
 
-    if (companyEntityOptional.isEmpty()) {
-      throw new CustomException("Company not found");
-    }
-
-    Company company = companyEntityOptional.get();
+    Company company = companyEntityOptional;
     if (companyPayload.getName() != null) {
       company.setName(companyPayload.getName());
     }
@@ -182,73 +177,153 @@ public class CompanyServiceImpl implements CompanyService {
       }
     }
 
-    return new DataResponse<>(converter.toDTO(company));
+    return companyMapper.companyToCompanyResponse(company);
   }
 
   @Override
-  public ResponseObject delete(long id) {
-    boolean exists = companyRepository.existsById(id);
-
-    if (!exists) {
-      throw new CustomException("Company isn't exists");
-    }
-
-    companyRepository.deleteById(id);
-
-    return new ResponseObject(200, "Delete successfully", null);
+  public void delete(long id) {
+    Company company = companyRepository.findById(id)
+                                       .orElseThrow(() -> new NotFoundDataException("Company isn't exists"));
+    companyRepository.delete(company);
   }
 
   @Override
-  public ResponseObject getAll() {
-    Set<CompanyDto> companyDtos = new HashSet<>();
-    companyRepository.findAll().stream()
-        .forEach(
-            company -> {
-              companyDtos.add(converter.toDTO(company));
-            });
-
-    return new ResponseObject<>(200, "Info company", companyDtos);
+  public Page<CompanyResponse> getAll(Pageable pageable) {
+    Page<CompanyResponse> companyResponses = companyRepository.findAll(pageable)
+                                                              .map(companyMapper::companyToCompanyResponse);
+    return companyResponses;
   }
 
   @Override
-  public ResponseObject getAllCompanyInActive() {
-    Set<CompanyDto> companyDtos = new HashSet<>();
-    companyRepository.findCompanyEntitiesByActiveFalse().stream()
-        .forEach(
-            company -> {
-              companyDtos.add(converter.toDTO(company));
-            });
+  public Page<CompanyResponse> filterCompany(CompanyFilter companyFilter, Pageable pageable) {
+    Specification<Company> companySpecification = doPredicate(companyFilter);
+    Page<CompanyResponse> companyResponses = companyRepository.findAll(companySpecification, pageable)
+                                                              .map(companyMapper::companyToCompanyResponse);
+    return companyResponses;
+  }
 
-    return new ResponseObject<>(200, "Info company inactive", companyDtos);
+
+  @Override
+  public CompanyResponse getOneById(long id) {
+    Company company = companyRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not found company"));
+    return companyMapper.companyToCompanyResponse(company);
   }
 
   @Override
-  public ResponseObject getOneById(long id) {
-    Optional<Company> company = companyRepository.findById(id);
-    return new ResponseObject<>(200, "Info company", converter.toDTO(company.get()));
-  }
-
-  @Override
-  public ResponseObject getCompanyFollowedByCandidateId(long candidateId) {
+  public List<CompanyResponse> getCompanyFollowedByCandidateId(long candidateId) {
     Optional<Candidate> candidate = candidateRepository.findById(candidateId);
 
     if (candidate.isEmpty()) {
       throw new CustomException("Candidate isn't exist");
     }
 
-    Set<CompanyDto> companyDtos =
-        candidate.get().getFollowingCompany().stream()
-            .map(company -> converter.toDTO(company))
-            .collect(Collectors.toSet());
+    List<CompanyResponse> companyDtos = candidate.get()
+                                                 .getFollowingCompany()
+                                                 .stream()
+                                                 .map(companyMapper::companyToCompanyResponse)
+                                                 .toList();
 
-    return new ResponseObject<>(200, "Company saved", companyDtos);
+    return companyDtos;
   }
 
-  public DataResponse getCreatedCompanyByEmployerId(long employerId) {
-    List<CompanyDto> companyDtos =
-        companyRepository.findByCreatedEmployer_Id(employerId).stream()
-            .map(company -> converter.toDTO(company))
-            .collect(Collectors.toList());
-    return new DataResponse<>(companyDtos);
+  public List<CompanyResponse> getCreatedCompanyByEmployerId(long employerId) {
+    List<CompanyResponse> companyResponses = companyRepository.findByCreatedEmployer_Id(employerId)
+                                                              .stream()
+                                                              .map(companyMapper::companyToCompanyResponse)
+                                                              .collect(Collectors.toList());
+    return companyResponses;
+  }
+
+  public Specification<Company> doPredicate(CompanyFilter companyFilter) {
+
+    return ((root, query, criteriaBuilder) -> {
+      List<Predicate> predicates = new LinkedList<>();
+
+      // Is Active
+      if (companyFilter.getIsActive() != null) {
+        Predicate withCheckActiveFromSystem = criteriaBuilder.equal(root.get("isActive"), companyFilter.getIsActive());
+        predicates.add(withCheckActiveFromSystem);
+      }
+
+      // Is Public
+      if (companyFilter.getIsActive() != null) {
+        Predicate withCheckActiveFromSystem = criteriaBuilder.equal(root.get("isPublic"), companyFilter.getIsPublic());
+        predicates.add(withCheckActiveFromSystem);
+      }
+
+      // Search Key
+      if (companyFilter.getSearchKey() != null) {
+        String keyword = companyFilter.getSearchKey();
+        List<Predicate> or = new ArrayList<>();
+        Predicate orInTitle = criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + keyword + "%");
+        Predicate orInDescription = criteriaBuilder.like(criteriaBuilder.lower(root.get("description")),
+                                                         "%" + keyword + "%");
+        Predicate orInWebsite = criteriaBuilder.like(criteriaBuilder.lower(root.get("website")), "%" + keyword + "%");
+        or.add(orInTitle);
+        or.add(orInDescription);
+        or.add(orInWebsite);
+        predicates.add(criteriaBuilder.or(or.toArray(new Predicate[0])));
+      }
+
+      //Create Time
+      if (companyFilter.getCreatedAtFrom() != null) {
+        Timestamp tsCreatedAtFrom = new Timestamp(companyFilter.getCreatedAtFrom().getTime());
+        Predicate withCreatedAtFrom = criteriaBuilder.greaterThanOrEqualTo(root.get("createdAt"), tsCreatedAtFrom);
+        predicates.add(criteriaBuilder.and(withCreatedAtFrom));
+      }
+
+      if (companyFilter.getCreatedAtTo() != null) {
+        Timestamp tsCreatedAtTo = new Timestamp(companyFilter.getCreatedAtTo().getTime());
+        Predicate withCreatedAtTo = criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), tsCreatedAtTo);
+        predicates.add(criteriaBuilder.and(withCreatedAtTo));
+      }
+
+      // Update time
+      if (companyFilter.getUpdatedAtFrom() != null) {
+        Timestamp tsUpdatedAtFrom = new Timestamp(companyFilter.getUpdatedAtFrom().getTime());
+        Predicate withUpdatedAtFrom = criteriaBuilder.greaterThanOrEqualTo(root.get("updatedAt"), tsUpdatedAtFrom);
+        predicates.add(criteriaBuilder.and(withUpdatedAtFrom));
+      }
+
+      if (companyFilter.getUpdatedAtTo() != null) {
+        Timestamp tsUpdatedAtTo = new Timestamp(companyFilter.getUpdatedAtTo().getTime());
+        Predicate withUpdatedAtTo = criteriaBuilder.lessThanOrEqualTo(root.get("updatedAt"), tsUpdatedAtTo);
+        predicates.add(criteriaBuilder.and(withUpdatedAtTo));
+      }
+
+      // Sort
+      if (Objects.nonNull(companyFilter.getIsAscSort()) && companyFilter.getIsAscSort()
+                                                                        .equals(true) && companyFilter.getSortColumn() != null && !companyFilter.getSortColumn()
+                                                                                                                                                .isBlank()) {
+        switch (companyFilter.getSortColumn()) {
+          case "createdAt":
+            companyFilter.setSortColumn("createdAt");
+            query.orderBy(criteriaBuilder.asc(root.get(companyFilter.getSortColumn())));
+            break;
+          case "updatedAt":
+            companyFilter.setSortColumn("updatedAt");
+            query.orderBy(criteriaBuilder.asc(root.get(companyFilter.getSortColumn())));
+            break;
+          default:
+            query.orderBy(criteriaBuilder.asc(root.get(companyFilter.getSortColumn())));
+        }
+      } else if (Objects.nonNull(companyFilter.getIsAscSort()) && companyFilter.getIsAscSort()
+                                                                               .equals(true) && companyFilter.getSortColumn() != null && !companyFilter.getSortColumn()
+                                                                                                                                                       .isBlank()) {
+        switch (companyFilter.getSortColumn()) {
+          case "createdAt":
+            companyFilter.setSortColumn("createdAt");
+            query.orderBy(criteriaBuilder.desc(root.get(companyFilter.getSortColumn())));
+            break;
+          case "updatedAt":
+            companyFilter.setSortColumn("updatedAt");
+            query.orderBy(criteriaBuilder.desc(root.get(companyFilter.getSortColumn())));
+            break;
+          default:
+            query.orderBy(criteriaBuilder.desc(root.get(companyFilter.getSortColumn())));
+        }
+      }
+      return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
+    });
   }
 }

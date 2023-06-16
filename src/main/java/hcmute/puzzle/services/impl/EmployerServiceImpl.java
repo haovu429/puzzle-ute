@@ -1,28 +1,22 @@
 package hcmute.puzzle.services.impl;
 
-import hcmute.puzzle.infrastructure.converter.Converter;
-import hcmute.puzzle.infrastructure.dtos.olds.EmployerDto;
-
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.exception.NotFoundDataException;
+import hcmute.puzzle.infrastructure.dtos.olds.EmployerDto;
 import hcmute.puzzle.infrastructure.entities.Candidate;
 import hcmute.puzzle.infrastructure.entities.Employer;
 import hcmute.puzzle.infrastructure.entities.Role;
 import hcmute.puzzle.infrastructure.entities.User;
+import hcmute.puzzle.infrastructure.mappers.EmployerMapper;
 import hcmute.puzzle.infrastructure.repository.*;
-
-import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.services.EmployerService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-//import javax.persistence.EntityManager;
-//import javax.persistence.PersistenceContext;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class EmployerServiceImpl implements EmployerService {
@@ -45,100 +39,84 @@ public class EmployerServiceImpl implements EmployerService {
   @Autowired
   RoleRepository roleRepository;
 
-  @Autowired Converter converter;
+  //  @Autowired
+  //  Converter converter;
+
+  @Autowired
+  EmployerMapper employerMapper;
 
   @PersistenceContext
   public EntityManager em;
 
   @Override
-  public Optional<EmployerDto> save(EmployerDto employerDTO) {
+  public EmployerDto save(EmployerDto employerDTO) {
     // casting provinceDTO to ProvinceEntity
-    Employer employer = converter.toEntity(employerDTO);
+    Employer employer = employerMapper.employerDtoToEmployer(employerDTO);
 
     // save province
-    employer.setId(0);
-
+    //    employer.setId(0);
     if (employer.getUser().getCandidate() != null) {
       throw new RuntimeException("This account for candidate");
     }
 
     employerRepository.save(employer);
 
-    Optional<User> userEntity = userRepository.findById(employer.getId());
-    if (userEntity.isEmpty()) {
-      throw new CustomException("Account isn't exist");
-    }
-    Optional<Role> role = roleRepository.findById("employer");
-    if (role.isEmpty()) {
-      throw new CustomException("role candidate isn't exist");
-    }
-    userEntity.get().getRoles().add(role.get());
-    userRepository.save(userEntity.get());
+    User user = userRepository.findById(employer.getId())
+                              .orElseThrow(() -> new NotFoundDataException("Account isn't exist"));
 
-    Optional<EmployerDto> result = Optional.of(converter.toDTO(employer));
+    Role role = roleRepository.findById("employer")
+                              .orElseThrow(() -> new NotFoundDataException("role candidate isn't exist"));
 
-    return result;
+    user.getRoles().add(role);
+    userRepository.save(user);
+
+    EmployerDto employerDto = employerMapper.employerToEmployerDto(employer);
+
+    return employerDto;
   }
 
   @Override
-  public ResponseObject delete(long id) {
-    boolean exists = employerRepository.existsById(id);
-    if (exists) {
-      employerRepository.deleteById(id);
-      return new ResponseObject(200, "Delete employer Successfully", null);
-    }
-    throw new CustomException("Cannot find employer with id =" + id);
+  public void delete(long id) {
+    Employer employer = employerRepository.findById(id)
+                                          .orElseThrow(() -> new NotFoundDataException("Not found employer"));
+    employerRepository.delete(employer);
   }
 
   @Override
-  public ResponseObject update(EmployerDto employerDTO) {
-
-    boolean exists = employerRepository.existsById(employerDTO.getId());
-
-    if (exists) {
-      Employer employer = converter.toEntity(employerDTO);
-      // employer.setId(employer.getUserEntity().getId());
-
-      employerRepository.save(employer);
-      return new ResponseObject(converter.toDTO(employer));
-    }
-
-    throw new CustomException("Cannot find employer with id = " + employerDTO.getId());
+  public EmployerDto update(EmployerDto employerDTO) {
+    Employer employer = employerRepository.findById(employerDTO.getId())
+                                          .orElseThrow(() -> new NotFoundDataException("Not found employer"));
+    employerMapper.updateEmployerFromEmployerDto(employerDTO, employer);
+    return employerMapper.employerToEmployerDto(employer);
   }
 
   @Override
-  public ResponseObject getOne(long id) {
-    boolean exists = employerRepository.existsById(id);
+  public EmployerDto getOne(long id) {
+    Employer employer = employerRepository.findById(id)
+                                          .orElseThrow(() -> new NotFoundDataException(
+                                                  "Cannot find employer with id = " + id));
 
-    if (exists) {
-      Employer employer = employerRepository.getReferenceById(id);
-
-      return new ResponseObject(200, "Info of employer", converter.toDTO(employer));
-    }
-
-    throw new CustomException("Cannot find employer with id = " + id);
+    return employerMapper.employerToEmployerDto(employer);
   }
 
   @Override
-  public ResponseObject getEmployerFollowedByCandidateId(long candidateId) {
-    Optional<Candidate> candidate = candidateRepository.findById(candidateId);
+  public List<EmployerDto> getEmployerFollowedByCandidateId(long candidateId) {
+    Candidate candidate = candidateRepository.findById(candidateId)
+                                             .orElseThrow(() -> new NotFoundDataException("Candidate isn't exist"));
 
-    if (candidate.isEmpty()) {
-      throw new CustomException("Candidate isn't exist");
-    }
 
-    Set<EmployerDto> employerDtos =
-            candidate.get().getFollowingEmployers().stream()
-                    .map(employer -> converter.toDTO(employer))
-                    .collect(Collectors.toSet());
+    List<EmployerDto> employerDtos = candidate.getFollowingEmployers()
+                                              .stream()
+                                              .map(employerMapper::employerToEmployerDto)
+                                              .toList();
 
-    return new ResponseObject(200, "Employer followed", employerDtos);
+    return employerDtos;
   }
 
   //markingJobpostWasDeleted
 
   @Override
-  public DataResponse getApplicationRateEmployerId(long employerId) {
+  public double getApplicationRateEmployerId(long employerId) {
     Optional<Employer> employer = employerRepository.findById(employerId);
     if (employer.isEmpty()) {
       throw new CustomException("Cannot find employer with id = " + employerId);
@@ -155,14 +133,13 @@ public class EmployerServiceImpl implements EmployerService {
       rate = Math.round(rate * 100.0) / 100.0;
     }
 
-    return new DataResponse(rate);
+    return rate;
   }
 
   public long getViewedCandidateAmountToJobPostCreatedByEmployer(long employerId) {
     long amount = 0;
     // check subscribes of employer
-    String sql =
-            "SELECT COUNT(u.id) FROM JobPost jp INNER JOIN jp.viewedUsers u WHERE jp.createdEmployer.id =:employerId AND u.candidateEntity.id IS NOT NULL AND jp.isDeleted=FALSE";
+    String sql = "SELECT COUNT(u.id) FROM JobPost jp INNER JOIN jp.viewedUsers u WHERE jp.createdEmployer.id =:employerId AND u.candidate.id IS NOT NULL AND jp.isDeleted=FALSE";
     try {
       amount =
               (long) em.createQuery(sql).setParameter("employerId", employerId).getSingleResult();

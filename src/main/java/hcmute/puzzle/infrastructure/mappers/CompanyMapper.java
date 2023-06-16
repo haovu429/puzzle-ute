@@ -16,10 +16,10 @@ public interface CompanyMapper {
 
     @Mapping(target = "createdEmployerId", source = "createdEmployer.id")
     @Mapping(target = "imageFile", ignore = true)
-    CompanyDto companyToUserCompanyDto(Company entity);
+    CompanyDto companyToCompanyDto(Company entity);
 
     @Mapping(target = "createdEmployerId", source = "createdEmployer.id")
-    CompanyResponse companyToUserCompanyResponse(Company entity);
+    CompanyResponse companyToCompanyResponse(Company entity);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "image", ignore = true)
@@ -30,6 +30,7 @@ public interface CompanyMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "image", ignore = true)
     CompanyDto CreateCompanyAdminDtoToCompanyDto(CreateCompanyAdminRequest createCompanyAdminRequest);
+
 
     //    @Mapping(target = "username", source = "username")
     //    @Mapping(target = "email", source = "email")

@@ -10,5 +10,6 @@ import lombok.Setter;
 public class CategoryDto {
     private long id;
     private String name;
-    private boolean isActive;
+    private String image;
+    private Boolean isActive;
 }

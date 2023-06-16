@@ -13,7 +13,7 @@ public class InvoiceDto {
     private String email;
     private String phone;
     private String serviceType;
-    private long price; // giá bán
+    private Long price; // giá bán
     private String transactionCode;
     private Date payTime;
     private String paymentMethod;

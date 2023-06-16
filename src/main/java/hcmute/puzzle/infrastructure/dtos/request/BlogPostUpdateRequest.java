@@ -2,7 +2,6 @@ package hcmute.puzzle.infrastructure.dtos.request;
 
 
 import lombok.Data;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 //import javax.validation.constraints.NotNull;
@@ -21,7 +20,7 @@ public class BlogPostUpdateRequest {
 
 	private MultipartFile thumbnail;
 
-	private Long categoryId;
+	private Long blogCategoryId;
 
 	private String tags;
 	private Boolean isPublic;

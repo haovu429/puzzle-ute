@@ -31,8 +31,8 @@ public class MailUtil {
       props.put("mail.smtp.auth", "true");
       props.put("mail.smtp.port", "465");
       props.put("mail.smtp.ssl.enable", "true");
-      props.put("mail.smtp.connection-timeout", 1200);
-      props.put("mail.smtp.timeout", 1000);
+      props.put("mail.smtp.connection-timeout", 3000);
+      props.put("mail.smtp.timeout", 3000);
 
       session =
           Session.getDefaultInstance(

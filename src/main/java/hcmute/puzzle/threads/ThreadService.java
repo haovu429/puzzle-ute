@@ -26,7 +26,7 @@ public class ThreadService {
 
   public <T> Future<T> execute(Callable<T> callable, String taskType, Token token)
       throws InterruptedException, ExecutionException {
-    executorService = Executors.newFixedThreadPool(2);
+    executorService = Executors.newFixedThreadPool(5);
     Token savedToken = tokenRepository.save(token);
     Future<T> future = executorService.submit(callable);
     executorService.shutdown();

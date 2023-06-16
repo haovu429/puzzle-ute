@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface FilesStorageService {
     Map uploadFile(String imageName, MultipartFile file, String locationStorage);
 
-    boolean deleteFile(String imageName, FileCategory category, User deleter, boolean deleteByUrl)
+    boolean deleteFile(String imageName, FileCategory category, boolean deleteByUrl)
             throws NotFoundException;
 
     boolean deleteMultiFile(List<String> publicIds, User deleter) throws PartialFailureException;

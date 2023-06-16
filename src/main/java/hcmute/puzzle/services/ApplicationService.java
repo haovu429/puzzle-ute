@@ -2,12 +2,15 @@ package hcmute.puzzle.services;
 
 import hcmute.puzzle.infrastructure.dtos.olds.ApplicationDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.response.CandidateApplicationResult;
 import hcmute.puzzle.infrastructure.models.ApplicationResult;
 import hcmute.puzzle.infrastructure.models.CandidateAppliedAndResult;
 import hcmute.puzzle.infrastructure.models.ResponseApplication;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface ApplicationService {
   ApplicationDto findById(Long id);
@@ -16,23 +19,23 @@ public interface ApplicationService {
 
   Page<ApplicationDto> findAll(Pageable pageable);
 
-  void applyJobPost(long candidateId, long jobPostId);
+  ApplicationDto applyJobPost(long candidateId, long jobPostId);
 
-  void responseApplication(long applicationId, ApplicationResult applicationResult);
+  ApplicationDto responseApplication(long applicationId, ApplicationResult applicationResult);
 
   Page<ApplicationDto> getApplicationByJobPostId(long jobPostId, Pageable pageable);
 
-  ResponseObject getApplicationByJobPostIdAndCandidateId(long jobPostId, long candidateId);
+  ApplicationDto getApplicationByJobPostIdAndCandidateId(long jobPostId, long candidateId);
 
-  void responseApplicationByCandidateAndJobPost(ResponseApplication responseApplication);
+  ApplicationDto responseApplicationByCandidateAndJobPost(ResponseApplication responseApplication);
 
-  ResponseObject getApplicationAmount();
+  Long getApplicationAmount();
 
-  DataResponse getAmountApplicationToEmployer(long employerId);
+  long getAmountApplicationToEmployer(long employerId);
 
-  DataResponse getAmountApplicationByJobPostId(long jobPostId);
+  long getAmountApplicationByJobPostId(long jobPostId);
 
-  Page<CandidateAppliedAndResult> getCandidateAppliedToJobPostIdAndResult(long jobPostId, Pageable pageable);
+  Page<CandidateApplicationResult> getCandidateAppliedToJobPostIdAndResult(long jobPostId, Pageable pageable);
 
-  DataResponse getCandidateAppliedToEmployerAndResult(long employerId);
+  List<CandidateApplicationResult> getCandidateAppliedToEmployerAndResult(long employerId);
 }

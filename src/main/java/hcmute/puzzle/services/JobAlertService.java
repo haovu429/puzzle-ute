@@ -3,16 +3,18 @@ package hcmute.puzzle.services;
 import hcmute.puzzle.infrastructure.dtos.olds.JobAlertDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 
+import java.util.List;
+
 public interface JobAlertService {
-  ResponseObject save(long candidateId, JobAlertDto jobAlertDTO);
+  JobAlertDto save(long candidateId, JobAlertDto jobAlertDTO);
 
-  ResponseObject update(JobAlertDto jobAlertDTO);
+  JobAlertDto update(JobAlertDto jobAlertDTO);
 
-  ResponseObject delete(long id);
+  void delete(long id);
 
   ResponseObject getAll();
 
-  ResponseObject getAllJobAlertByCandidateId(long jobAlertId);
+  List<JobAlertDto> getAllJobAlertByCandidateId(long jobAlertId);
 
-  ResponseObject getOneById(long id);
+  JobAlertDto getOneById(long id);
 }

@@ -24,8 +24,14 @@ public class Application extends Auditable implements Serializable {
   @Column(name = "note", columnDefinition = "VARCHAR(200)")
   private String note;
 
+  @Column(name = "recommendation_letter", columnDefinition = "TEXT")
+  private String recommendationLetter;
+
+  @Column(name = "cv_name")
+  private String cvName;
+
   // cv file url
-  @Column(name = "cv", columnDefinition = "TEXT")
+  @Column(name = "cv_file_url", columnDefinition = "TEXT")
   private String cv;
 
   @ManyToOne(fetch = FetchType.LAZY)

@@ -36,7 +36,7 @@ public class BlogPost extends Auditable{
     private BlogCategory blogCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author", nullable = false)
+    @JoinColumn(name = "author")
     private User author;
 
     @Column(name = "is_public", nullable = false)
