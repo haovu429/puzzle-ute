@@ -169,7 +169,7 @@ public class TestController {
 
 	@PostMapping("/receive-web-hook")
 	@ResponseBody
-	public DataResponse receiveWebHook(Map<String,Object> payload) {
+	public DataResponse receiveWebHook(List<Map<String,Object>> payload) {
 		log.info("=========================WEB HOOK========================");
 		log.info(payload.toString());
 		return new DataResponse("OK");
