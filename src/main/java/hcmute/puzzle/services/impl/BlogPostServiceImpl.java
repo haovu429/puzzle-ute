@@ -375,7 +375,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 
 			// Category
 			if (blogPostFilter.getCategoryId() != null) {
-				Join<JobPost, Category> categoryJoin = root.join("blogCategory", JoinType.INNER);
+				Join<JobPost, BlogCategory> categoryJoin = root.join("blogCategory", JoinType.INNER);
 				predicates.add(criteriaBuilder.equal(categoryJoin.get("id"), blogPostFilter.getCategoryId()));
 			}
 
