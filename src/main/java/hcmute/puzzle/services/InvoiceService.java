@@ -1,21 +1,25 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.entities.InvoiceEntity;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.olds.InvoiceDto;
+import hcmute.puzzle.infrastructure.entities.Invoice;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Date;
+import java.util.List;
 
 public interface InvoiceService {
 
-    InvoiceEntity saveInvoice(InvoiceEntity invoice);
+    Invoice saveInvoice(Invoice invoice);
 
-    DataResponse getInvoiceByEmailUser(String email);
+    List<InvoiceDto> getInvoiceByEmailUser(String email);
 
-    DataResponse getAllInvoice();
+    Page<InvoiceDto> getAllInvoice(Pageable pageable);
 
-    DataResponse getAllInvoiceByTimeFrame(Date startTime, Date endTime);
+    List<InvoiceDto> getAllInvoiceByTimeFrame(Date startTime, Date endTime);
 
-    InvoiceEntity getOneInvoice(long invoiceId);
+    InvoiceDto getOneInvoice(long invoiceId);
 
     long getTotalRevenue();
 

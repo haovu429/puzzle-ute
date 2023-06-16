@@ -1,33 +1,31 @@
 package hcmute.puzzle.paypal;
 
-import javax.servlet.http.HttpServletRequest;
-
-import hcmute.puzzle.entities.PackageEntity;
+//import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+import hcmute.puzzle.infrastructure.entities.Package;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.repository.PackageRepository;
-import hcmute.puzzle.response.DataResponse;
-import hcmute.puzzle.security.CustomUserDetails;
-import hcmute.puzzle.services.SubscribeService;
+import hcmute.puzzle.infrastructure.repository.PackageRepository;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
+import hcmute.puzzle.configuration.security.CustomUserDetails;
+import hcmute.puzzle.services.SubscriptionService;
 import hcmute.puzzle.utils.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 
-import java.security.Principal;
 import java.util.Optional;
 
-//@RequestMapping(path = "/api")
+// @RequestMapping(path = "/api")
 @RestController
-//@Controller
+// @Controller
 public class PaymentController {
-    public static final String URL_PAYPAL_SUCCESS = "api/pay-result/success";
-    public static final String URL_PAYPAL_CANCEL = "api/pay-result/cancel";
+    public static final String URL_PAYPAL_SUCCESS = "/pay-result/success";
+    public static final String URL_PAYPAL_CANCEL = "/pay-result/cancel";
     private Logger log = LoggerFactory.getLogger(getClass());
     @Autowired
     private PaypalService paypalService;
@@ -36,25 +34,25 @@ public class PaymentController {
     private PackageRepository packageRepository;
 
     @Autowired
-    SubscribeService subscribeService;
+    SubscriptionService subscriptionService;
 
     @GetMapping("/")
     public String index(){
-        return "index";
+        return "hi!";
     }
-    @GetMapping("/api/pay")
-    public DataResponse pay(HttpServletRequest request, Authentication authentication, @RequestParam("packageCode") String packageCode ){
+    @GetMapping("/pay")
+    public DataResponse pay(HttpServletRequest request, @RequestParam("packageCode") String packageCode ){
         // Custom logic
-        Optional<PackageEntity> packageEntity = packageRepository.findByCode(packageCode);
+        Optional<Package> packageEntity = packageRepository.findByCode(packageCode);
         if (packageEntity.isEmpty()) {
             throw new CustomException("Package not found");
         }
 
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String customParamRequest = "?userId=" + userDetails.getUser().getId() + "&packageCode=" + packageCode;
 
-        //check Subscribed
-        subscribeService.checkSubscribed(userDetails.getUser().getId(), packageEntity.get().getId());
+        // check Subscribed
+        subscriptionService.checkSubscribed(userDetails.getUser().getId(), packageEntity.get().getId());
 
         String cancelUrl = Util.getBaseURL(request) + "/" + URL_PAYPAL_CANCEL + customParamRequest;
         String successUrl = Util.getBaseURL(request) + "/" + URL_PAYPAL_SUCCESS + customParamRequest;
@@ -70,7 +68,7 @@ public class PaymentController {
                     successUrl);
             for(Links links : payment.getLinks()){
                 if(links.getRel().equals("approval_url")){
-                    //eturn "redirect:" + links.getHref();
+                    // "redirect:" + links.getHref();
                     return new DataResponse(links.getHref());
                 }
             }
@@ -79,9 +77,6 @@ public class PaymentController {
             return new DataResponse(e.getMessage());
         }
         //return "redirect:/";
-        throw new  CustomException("Error pay");
+        throw new  CustomException("ErrorDefine pay");
     }
-
-
-    //public DataResponse
 }

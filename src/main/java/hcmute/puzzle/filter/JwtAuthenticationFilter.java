@@ -1,17 +1,16 @@
 package hcmute.puzzle.filter;
 
-import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.exception.UnauthorizedException;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.repository.UserRepository;
-import hcmute.puzzle.security.CustomUserDetails;
-import hcmute.puzzle.security.JwtTokenProvider;
-import hcmute.puzzle.security.UserService;
+import hcmute.puzzle.infrastructure.repository.UserRepository;
+import hcmute.puzzle.configuration.security.CustomUserDetails;
+import hcmute.puzzle.configuration.security.JwtTokenProvider;
+import hcmute.puzzle.configuration.security.UserSecurityService;
 import hcmute.puzzle.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,10 +18,15 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+//import javax.servlet.FilterChain;
+//import javax.servlet.ServletException;
+//import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletResponse;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -31,7 +35,7 @@ import java.util.Optional;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
   @Autowired UserRepository userRepository;
   @Autowired private JwtTokenProvider tokenProvider;
-  @Autowired private UserService customUserDetailsService;
+  @Autowired private UserSecurityService customUserDetailsService;
   @Autowired private RedisUtils redisUtils;
 
   private static final  String PREFIX ="Bearer ";
@@ -73,22 +77,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = redisUtils.get(email) == null ? "" : redisUtils.get(email).toString();
         // System.out.println("Dung? :" + token.equals(jwt));
         if (userDetails != null  && token.equals(jwt) ) {
-          // set authentication to context
-          UsernamePasswordAuthenticationToken authentication =
-              new UsernamePasswordAuthenticationToken(
-                  userDetails, null, userDetails.getAuthorities());
-          authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+          if (userDetails.getUser().getIsActive() && !userDetails.getUser().getIsDelete()) {
+            // set authentication to context
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-          SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+          } else {
+            throw new UnauthorizedException("THIS ACCOUNT ISN'T ACTIVE");
+          }
         } else {
          log.info("UserDetail is none!");
         }
       }
-    } catch (AccessDeniedException ex) {
+    } catch (AccessDeniedException e) {
+      e.printStackTrace();
       throw new AccessDeniedException("Access Denied");
-    } catch (Exception exception) {
-      exception.printStackTrace();
-      log.error("failed on set user authentication", exception);
+    } catch (Exception e) {
+      e.printStackTrace();
+      log.error("failed on set user authentication", e);
     }
 
     filterChain.doFilter(request, response);
@@ -125,8 +134,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     return validUserEmail;
   }
 
-  public Optional<UserEntity> getUserEntityFromToken(String token) {
-    Optional<UserEntity> linkUser;
+  public Optional<User> getUserEntityFromToken(String token) {
+    Optional<User> linkUser;
     String validUserEmail;
 
     System.out.println(token);
@@ -140,8 +149,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     return linkUser;
   }
 
-  public Optional<UserEntity> getUserEntityFromRequest(HttpServletRequest request) {
-    Optional<UserEntity> linkUser;
+  public Optional<User> getUserEntityFromRequest(HttpServletRequest request) {
+    Optional<User> linkUser;
     String token = request.getHeader("Authorization");
     linkUser = getUserEntityFromToken(token);
     return linkUser;

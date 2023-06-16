@@ -1,0 +1,4 @@
+"id","created_at","created_by","updated_at","update_by","author","category","is_deleted","location","storage_name","type"
+"1","2023-05-09T22:59:45.231","puzzle429@gmail.com","2023-05-09T22:59:45.231","puzzle429@gmail.com","puzzle429@gmail.com","IMAGE_AVATAR","false","puzzle_ute/user/avatar","CLOUDINARY","image"
+"2","2023-05-09T22:59:45.239","puzzle429@gmail.com","2023-05-09T22:59:45.239","puzzle429@gmail.com","puzzle429@gmail.com","IMAGE_COMPANY","false","puzzle_ute/company/image","CLOUDINARY","image"
+"3","2023-05-09T22:59:45.24","puzzle429@gmail.com","2023-05-09T22:59:45.24","puzzle429@gmail.com","puzzle429@gmail.com","IMAGE_BLOG","false","puzzle_ute/user/blog","CLOUDINARY","image"

@@ -36,3 +36,4 @@ build/
 ### Custom ###
 #!application.properties
 .env
+/logs

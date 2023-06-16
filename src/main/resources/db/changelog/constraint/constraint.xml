@@ -1,0 +1,111 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="caiho (generated)" id="1685463321862-1">
+        <addForeignKeyConstraint baseColumnNames="created_employer_id" baseTableName="company" constraintName="fk2atikrgwpylq3yaatq2fsr7sp" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="employer" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-2">
+        <addForeignKeyConstraint baseColumnNames="category_blog_id" baseTableName="blog_post" constraintName="fk2m4arps131asnfab4b4dwbbbn" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="category" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-3">
+        <addForeignKeyConstraint baseColumnNames="employer_id" baseTableName="evaluate" constraintName="fk3jk8ywoml8p6cbbdty53yy4s1" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="employer" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-4">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="employer" constraintName="fk43iuo0lskcmiokbwvolc0lmj9" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-5">
+        <addForeignKeyConstraint baseColumnNames="employer_id" baseTableName="follow_employer" constraintName="fk4enacss7r59kbd67bjneu1ekv" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="employer" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-6">
+        <addForeignKeyConstraint baseColumnNames="candidate_id" baseTableName="following_company" constraintName="fk510hnpnym335jfobwtrm6vaas" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="candidate" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-7">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="user_role" constraintName="fka68196081fvovjhkek5m97n3y" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="code" referencedTableName="role" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-8">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="candidate" constraintName="fkc23nbdgfce6rnt56ofltvxu71" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-9">
+        <addForeignKeyConstraint baseColumnNames="subscriber_id" baseTableName="job_post" constraintName="fkd2rcg6recm16ha25yitv2m714" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="subscribe" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-10">
+        <addForeignKeyConstraint baseColumnNames="candidate_id" baseTableName="saved_job_post" constraintName="fke8agpleopkg4x763gds3ufkvw" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="candidate" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-11">
+        <addForeignKeyConstraint baseColumnNames="created_employer" baseTableName="job_post" constraintName="fkgcgo0tx91859uv2w2trku5e8n" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="employer" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-12">
+        <addForeignKeyConstraint baseColumnNames="candidate_id" baseTableName="application" constraintName="fkgj6l06j10b3sv83rvsnmei78a" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="candidate" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-13">
+        <addForeignKeyConstraint baseColumnNames="author" baseTableName="blog_post" constraintName="fkgmsxgcux63a7sbo0jyysl0ye7" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-14">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_role" constraintName="fkj345gk1bovqvfame88rcx7yyx" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-15">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="token" constraintName="fkj8rfw4x0wjjyibfqq566j4qng" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-16">
+        <addForeignKeyConstraint baseColumnNames="job_post_id" baseTableName="saved_job_post" constraintName="fkkaoljau61q7ivugf8h4t6jeev" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="job_post" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-17">
+        <addForeignKeyConstraint baseColumnNames="candidate_id" baseTableName="follow_employer" constraintName="fklixemajth0mohv4e5kgs7c61q" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="candidate" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-18">
+        <addForeignKeyConstraint baseColumnNames="job_post_id" baseTableName="viewed_user" constraintName="fklnql9po0d9iwrydc0908in921" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="job_post" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-19">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="document" constraintName="fkm19xjdnh3l6aueyrpm1705t52" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-20">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="job_post" constraintName="fkmbkmpskjihmd7ak26lmu3iyhm" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="category" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-21">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="viewed_user" constraintName="fkndr98kc1hdevq4nig8ksui124" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-22">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="notification" constraintName="fknk4ftb5am9ubmkv1661h15ds9" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-23">
+        <addForeignKeyConstraint baseColumnNames="candidate_id" baseTableName="evaluate" constraintName="fko3pickucbvsnd9ikob3hsg0g8" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="candidate" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-24">
+        <addForeignKeyConstraint baseColumnNames="candidate_id" baseTableName="job_alert" constraintName="fko45se1ofok5bs3r6hxyk2wlp" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="candidate" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-25">
+        <addForeignKeyConstraint baseColumnNames="blog_post_id" baseTableName="comment" constraintName="fkohk8fcecowxj55oas8aw8njl1" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="blog_post" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-26">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="sub_comment" constraintName="fkpj0293ib90i4suxgwjem0qap2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-27">
+        <addForeignKeyConstraint baseColumnNames="comment_id" baseTableName="sub_comment" constraintName="fkpyep9wrxv2s4lxgr14h715983" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="comment" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-28">
+        <addForeignKeyConstraint baseColumnNames="job_post_id" baseTableName="application" constraintName="fkqhppc6ebpi0j94530ftuuyldn" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="job_post" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-29">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="comment" constraintName="fkqm52p1v3o13hy268he0wcngr5" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-30">
+        <addForeignKeyConstraint baseColumnNames="reg_user_email" baseTableName="subscribe" constraintName="fkrg9fyxrhwlqgbk5xchaj1eods" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="email" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-31">
+        <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="notification" constraintName="fkrk03rdyysb227p415gdpjmpqt" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="company" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-32">
+        <addForeignKeyConstraint baseColumnNames="package_id" baseTableName="subscribe" constraintName="fks577vx6r5y9w20ls70mdfw9ma" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="package" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-33">
+        <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="following_company" constraintName="fksbph1bnpmf6ph6roy432smjnk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="company" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-34">
+        <addForeignKeyConstraint baseColumnNames="candidate_id" baseTableName="experience" constraintName="fksmv65lqovssalk12ti3cqkpjf" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="user_id" referencedTableName="candidate" validate="true"/>
+    </changeSet>
+    <changeSet author="caiho (generated)" id="1685463321862-35">
+        <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="job_post" constraintName="fkyg71tmq8ufg5uglukumbpn5t" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="company" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

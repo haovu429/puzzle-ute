@@ -1,32 +1,38 @@
 package hcmute.puzzle.controller;
 
-import hcmute.puzzle.dto.CandidateDTO;
-import hcmute.puzzle.dto.ExperienceDTO;
-import hcmute.puzzle.dto.JobAlertDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.entities.ApplicationEntity;
-import hcmute.puzzle.entities.ExperienceEntity;
-import hcmute.puzzle.entities.JobAlertEntity;
-import hcmute.puzzle.entities.JobPostEntity;
+import hcmute.puzzle.configuration.security.CustomUserDetails;
+import hcmute.puzzle.exception.AlreadyExistsException;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.NotFoundDataException;
+import hcmute.puzzle.exception.UnauthorizedException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
-import hcmute.puzzle.repository.*;
-import hcmute.puzzle.response.DataResponse;
-import hcmute.puzzle.security.CustomUserDetails;
+import hcmute.puzzle.infrastructure.dtos.olds.*;
+import hcmute.puzzle.infrastructure.dtos.request.PostCandidateRequest;
+import hcmute.puzzle.infrastructure.dtos.response.CompanyResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.JobPostDto;
+import hcmute.puzzle.infrastructure.entities.Application;
+import hcmute.puzzle.infrastructure.entities.Experience;
+import hcmute.puzzle.infrastructure.entities.JobAlert;
+import hcmute.puzzle.infrastructure.entities.JobPost;
+import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.persistence.EntityGraph;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+
+import static hcmute.puzzle.utils.Constant.ResponseCode.STATUS_CUSTOM_EXCEPTION;
+import static hcmute.puzzle.utils.Constant.ResponseMessage.CODE_ERROR_INACTIVE;
 
 @RestController
 @RequestMapping(path = "/candidate")
@@ -34,26 +40,35 @@ import java.util.Optional;
 @SecurityRequirement(name = "bearerAuth")
 public class CandidateController {
 
-  @Autowired ApplicationService applicationService;
-  @Autowired CandidateService candidateService;
+  @Autowired
+  ApplicationService applicationService;
+  @Autowired
+  CandidateService candidateService;
 
-  @Autowired UserRepository userRepository;
+  @Autowired
+  UserRepository userRepository;
 
-  @Autowired JobPostRepository jobPostRepository;
+  @Autowired
+  JobPostRepository jobPostRepository;
 
-  @Autowired CandidateRepository candidateRepository;
+  @Autowired
+  CandidateRepository candidateRepository;
 
-  @Autowired JwtAuthenticationFilter jwtAuthenticationFilter;
+  @Autowired
+  JwtAuthenticationFilter jwtAuthenticationFilter;
 
-  @Autowired ApplicationRepository applicationRepository;
+  @Autowired
+  ApplicationRepository applicationRepository;
 
-  @Autowired JobAlertRepository jobAlertRepository;
+  @Autowired
+  JobAlertRepository jobAlertRepository;
 
   @Autowired JobAlertService jobAlertService;
 
   @Autowired ExperienceService experienceService;
 
-  @Autowired ExperienceRepository experienceRepository;
+  @Autowired
+  ExperienceRepository experienceRepository;
 
   @Autowired EmployerService employerService;
 
@@ -61,72 +76,71 @@ public class CandidateController {
 
   @Autowired JobPostService jobPostService;
 
+  @PersistenceContext
+  public EntityManager em;
+
+
   @PostMapping("/add")
-  ResponseObject saveCandidate(
-      @RequestBody @Validated CandidateDTO candidate,
-      BindingResult bindingResult,
-      Authentication authentication) {
+  DataResponse<CandidateDto> saveCandidate(@RequestBody @Validated CandidateDto candidate,
+          BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
 
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    if (userDetails.getUser().getCandidateEntity() != null) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    if (userDetails.getUser().getCandidate() != null) {
       throw new CustomException("Info candidate for this account was created!");
     }
     candidate.setUserId(userDetails.getUser().getId());
 
-    Optional<CandidateDTO> candidateDTO = candidateService.save(candidate);
-    if (candidateDTO.isPresent()) {
-      return new ResponseObject(
-          HttpStatus.OK.value(), "Create candidate successfully", candidateDTO.get());
-    } else {
-      throw new RuntimeException("Add candidate failed");
-    }
-
-    //        return new ResponseObject(
-    //                HttpStatus.OK.value(), "Create candidate successfully", new CandidateDTO());
+    CandidateDto candidateDto = candidateService.save(candidate);
+    return new DataResponse<>(candidateDto);
+    //        return new DataResponse(
+    //                HttpStatus.OK.value(), "Create candidate successfully", new CandidateDto());
   }
 
   // Gửi Authentication xác thực tài khoản thì xoá.
-  @DeleteMapping("/candidate")
-  ResponseObject deleteCandidate(Authentication authentication) {
+  //  @DeleteMapping("/candidate")
+  //  DataResponse deleteCandidate() {
+  //
+  //    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+  //                                                                             .getAuthentication()
+  //                                                                             .getPrincipal();
+  //    candidateService.delete(userDetails.getUser().getId());
+  //    return new DataResponse("Success");
+  //  }
 
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return candidateService.delete(userDetails.getUser().getId());
-  }
-
-  @PutMapping("/update")
-  ResponseObject updateCandidate(
-      @RequestBody @Validated CandidateDTO candidate,
-      BindingResult bindingResult,
-      Authentication authentication) {
-    if (bindingResult.hasErrors()) {
-      throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
-    }
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
-    candidate.setUserId(userDetails.getUser().getId());
-    candidate.setId(userDetails.getUser().getId());
-    return candidateService.update(candidate);
+  @PutMapping("/update/{candidateId}")
+  DataResponse<CandidateDto> updateCandidate(@PathVariable Long candidateId,
+          @RequestBody @Valid PostCandidateRequest candidate, BindingResult bindingResult) {
+    //    if (bindingResult.hasErrors()) {
+    //      throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
+    //    }
+    return new DataResponse<>(candidateService.update(candidateId, candidate));
   }
 
   // public
   @GetMapping("/profile")
-  ResponseObject getById(Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return candidateService.getOne(userDetails.getUser().getId());
+  DataResponse<CandidateDto> getById() {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    CandidateDto candidateDto = candidateService.getOne(userDetails.getUser().getId());
+    return new DataResponse<>(candidateDto);
   }
 
   @GetMapping("/follow-employer/{id}")
-  ResponseObject followEmployer(
-      @PathVariable(value = "id") Long employerId,
-      // @RequestBody Map<String, Object> input,
-      // @RequestParam(name = "employerId") long employerId,
-      Authentication authentication) {
+  DataResponse<String> followEmployer(@PathVariable(value = "id") Long employerId
+          // @RequestBody Map<String, Object> input,
+          // @RequestParam(name = "employerId") long employerId,
+  ) {
     // Map<String, Object> retMap = new HashMap<String, Object>();
 
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
 
     // long candidateId = linkUser.get().getId();
 
@@ -134,321 +148,332 @@ public class CandidateController {
     // long candidateId = ((Number) input.get("candidateId")).longValue();
     // long employerId = ((Number) input.get("employerId")).longValue();
 
-    return candidateService.followEmployer(userDetails.getUser().getId(), employerId);
+    candidateService.followEmployer(userDetails.getUser().getId(), employerId);
+    return new DataResponse<>("Success");
   }
 
   @GetMapping("/cancel-followed-employer/{id}")
-  ResponseObject cancelFollowEmployer(
-      @PathVariable(value = "id") Long employerId, Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return candidateService.cancelFollowedEmployer(userDetails.getUser().getId(), employerId);
+  DataResponse<String> cancelFollowEmployer(@PathVariable(value = "id") Long employerId) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    candidateService.cancelFollowedEmployer(userDetails.getUser().getId(), employerId);
+    return new DataResponse<>("Success");
   }
 
   @GetMapping("/follow-company/{id}")
-  ResponseObject followCompany(
-      @PathVariable(value = "id") Long companyId, Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return candidateService.followCompany(userDetails.getUser().getId(), companyId);
+  DataResponse<String> followCompany(@PathVariable(value = "id") Long companyId) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    candidateService.followCompany(userDetails.getUser().getId(), companyId);
+    return new DataResponse<>("Success");
   }
 
   @GetMapping("/cancel-followed-company/{id}")
-  ResponseObject cancelFollowCompany(
-      @PathVariable(value = "id") Long companyId, Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return candidateService.cancelFollowedCompany(userDetails.getUser().getId(), companyId);
+  DataResponse<String> cancelFollowCompany(@PathVariable(value = "id") Long companyId) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    candidateService.cancelFollowedCompany(userDetails.getUser().getId(), companyId);
+    return new DataResponse<>("Success");
   }
 
   @GetMapping("/apply-job-post/{postId}")
-  DataResponse applyJobPost(@PathVariable Long postId, Authentication authentication) {
+  DataResponse<String> applyJobPost(@PathVariable Long postId) {
 
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
 
-    Optional<JobPostEntity> jobPost = jobPostRepository.findById(postId);
+    JobPost jobPost = jobPostRepository.findById(postId)
+                                       .orElseThrow(() -> new NotFoundDataException("JobPost no value present"));
 
-    if (jobPost.isEmpty()) {
-      throw new NoSuchElementException("JobPost no value present");
-    }
 
-    if (!jobPost.get().isActive()) {
+    if (!jobPost.getIsActive()) {
       // throw new CustomException("You can't apply this jobPost. It isn't active");
-      return new DataResponse(
-          DataResponse.CODE_ERROR_INACTIVE,
-          "You can't apply this jobPost. It isn't active",
-          DataResponse.STATUS_CUSTOM_EXCEPTION);
+      return new DataResponse<String>(CODE_ERROR_INACTIVE, "You can't apply this jobPost. It isn't active",
+                                      STATUS_CUSTOM_EXCEPTION);
     }
 
-    if (jobPost.get().getDueTime().before(new Date())) {
+    if (Objects.nonNull(jobPost.getDeadline()) && jobPost.getDeadline().before(new Date())) {
       // throw new CustomException("You can't apply this jobPost. It isn't active");
-      return new DataResponse(
-              DataResponse.CODE_ERROR_INACTIVE,
-              "You can't apply this jobPost. job post has expired",
-              DataResponse.STATUS_CUSTOM_EXCEPTION);
+      return new DataResponse<>(CODE_ERROR_INACTIVE, "You can't apply this jobPost. job post has expired",
+                                STATUS_CUSTOM_EXCEPTION);
     }
 
-    Optional<ApplicationEntity> application =
-        applicationRepository.findApplicationByCanIdAndJobPostId(
-            userDetails.getUser().getId(), postId);
-    if (application.isPresent()) {
+    Application application = applicationRepository.findApplicationByCanIdAndJobPostId(userDetails.getUser().getId(),
+                                                                                       postId).orElse(null);
+    if (application != null) {
       // throw new CustomException("You applied for this job");
-      return new DataResponse(
-          DataResponse.CODE_ERROR_NOT_AGAIN, "You applied for this job", DataResponse.STATUS_NOT_AGAIN);
+      throw new AlreadyExistsException("You applied for this job");
     }
 
-    ApplicationEntity applicationEntity = new ApplicationEntity();
-    applicationEntity.setCandidateEntity(userDetails.getUser().getCandidateEntity());
-    applicationEntity.setJobPostEntity(jobPost.get());
-    applicationEntity.setCreateTime(new Date());
+    Application applicationEntity = new Application();
+    applicationEntity.setCandidate(userDetails.getUser().getCandidate());
+    applicationEntity.setJobPost(jobPost);
+    //applicationEntity.setCreateTime(new Date());
     applicationRepository.save(applicationEntity);
 
-    jobPost.get().getViewedUsers().add(userDetails.getUser());
-    jobPostRepository.save(jobPost.get());
+    EntityGraph<JobPost> graph = this.em.createEntityGraph(JobPost.class);
+    graph.addAttributeNodes("viewUsers");
 
-    return new DataResponse("Apply success");
+    Map<String, Object> hints = new HashMap<String, Object>();
+    hints.put("javax.persistence.loadgraph", graph);
+
+    jobPost = this.em.find(JobPost.class, jobPost.getId(), hints);
+
+//    List<UserEntity> viewUsers = applicationRepository.findAllUserViewedJobPost(jobPost.getId());
+//    if (viewUsers != null) {
+//      viewUsers.add(userDetails.getUser());
+//    } else {
+//      viewUsers = new ArrayList<>();
+//    }
+    jobPost.getViewedUsers().add(userDetails.getUser());
+//    jobPost.setViewedUsers(new HashSet<>(viewUsers));
+    jobPostRepository.save(jobPost);
+
+    return new DataResponse<>("Apply success");
   }
 
   @GetMapping("/cancel-apply-job-post/{postId}")
-  ResponseObject cancelApplyJobPost(
-      @PathVariable Long postId,
-      Authentication authentication /*@RequestHeader(value = "Authorization") String token*/) {
+  DataResponse<String> cancelApplyJobPost(@PathVariable Long postId) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    Application application = applicationRepository.findApplicationByCanIdAndJobPostId(userDetails.getUser().getId(),
+                                                                                       postId)
+                                                   .orElseThrow(() -> new NotFoundDataException(
+                                                           "You have not applied this JobPost or JobPost doesn't exist"));
 
-    //    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-    //
-    //    if (linkUser.isEmpty()) {
-    //      throw new CustomException("Not found account");
-    //    }
-    //
-    //    if (linkUser.get().getCandidateEntity() == null) {
-    //      throw new CustomException("This account isn't Candidate");
-    //    }
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    applicationRepository.delete(application);
 
-    Optional<ApplicationEntity> application =
-        applicationRepository.findApplicationByCanIdAndJobPostId(
-            userDetails.getUser().getId(), postId);
-    if (!application.isPresent()) {
-      throw new CustomException("You have not applied this JobPost or JobPost doesn't exist");
-    }
-    applicationRepository.delete(application.get());
-
-    return new ResponseObject(200, "Cancel apply success", null);
+    return new DataResponse<>("Success");
   }
 
   @GetMapping("/save-job-post/{jobPostId}")
-  ResponseObject saveJobPost(
-      @PathVariable(value = "jobPostId") Long jobPostId, Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return candidateService.saveJobPost(userDetails.getUser().getId(), jobPostId);
+  DataResponse<String> saveJobPost(@PathVariable(value = "jobPostId") Long jobPostId) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    candidateService.saveJobPost(userDetails.getUser().getId(), jobPostId);
+    return new DataResponse<>("Success");
   }
 
   @GetMapping("/cancel-saved-job-post/{jobPostId}")
-  ResponseObject cancelSaveJobPost(
-      @PathVariable(value = "jobPostId") Long jobPostId,
-      /*@RequestHeader(value = "Authorization") String token*/ Authentication authentication) {
-
-    //    Optional<UserEntity> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-    //
-    //    if (linkUser.isEmpty()) {
-    //      throw new CustomException("Not found account");
-    //    }
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return candidateService.cancelSavedJobPost(userDetails.getUser().getId(), jobPostId);
+  DataResponse<String> cancelSaveJobPost(@PathVariable(value = "jobPostId") Long jobPostId) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    candidateService.cancelSavedJobPost(userDetails.getUser().getId(), jobPostId);
+    return new DataResponse<>("Success");
   }
 
   @PostMapping("/add-job-alert")
-  ResponseObject addJobAlert(
-      @RequestBody @Validated JobAlertDTO jobAlertDTO,
-      BindingResult bindingResult,
-      Authentication authentication) {
+  DataResponse<JobAlertDto> addJobAlert(@RequestBody @Validated JobAlertDto jobAlertDTO, BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return jobAlertService.save(userDetails.getUser().getId(), jobAlertDTO);
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    JobAlertDto jobAlertDto = jobAlertService.save(userDetails.getUser().getId(), jobAlertDTO);
+    return new DataResponse<>(jobAlertDto);
   }
 
   @PutMapping("/update-job-alert")
-  ResponseObject updateJobAlert(
-      @RequestBody @Validated JobAlertDTO jobAlertDTO,
-      BindingResult bindingResult,
-      Authentication authentication) {
+  DataResponse<JobAlertDto> updateJobAlert(@RequestBody @Validated JobAlertDto jobAlertDTO,
+          BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
 
-    Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(jobAlertDTO.getId());
+    JobAlert jobAlert = jobAlertRepository.findById(jobAlertDTO.getId())
+                                          .orElseThrow(() -> new NotFoundDataException("Job Alert isn't exists"));
 
-    if (jobAlert.isEmpty()) {
-      throw new CustomException("Job Alert isn't exists");
-    }
-
-    if (jobAlert.get().getCandidateEntity().getId() != userDetails.getUser().getId()) {
+    if (jobAlert.getCandidate().getId() != userDetails.getUser().getId()) {
       throw new CustomException("You don't have rights for this JobAlert");
     }
 
     jobAlertDTO.setCandidateId(userDetails.getUser().getId());
-
-    return jobAlertService.update(jobAlertDTO);
+    jobAlertDTO = jobAlertService.update(jobAlertDTO);
+    return new DataResponse<>(jobAlertDTO);
   }
 
   @GetMapping("/delete-job-alert/{jobAlertId}")
-  ResponseObject deleteJobAlert(
-      @PathVariable(value = "jobAlertId") long id, Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+  DataResponse<String> deleteJobAlert(@PathVariable(value = "jobAlertId") long id) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
 
-    Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(id);
+    JobAlert jobAlert = jobAlertRepository.findById(id)
+                                          .orElseThrow(() -> new NotFoundDataException("Job Alert isn't exists"));
 
-    if (jobAlert.isEmpty()) {
-      throw new CustomException("Job Alert isn't exists");
-    }
-
-    if (jobAlert.get().getCandidateEntity().getId() != userDetails.getUser().getId()) {
+    if (jobAlert.getCandidate().getId() != userDetails.getUser().getId()) {
       throw new CustomException("You don't have rights for this JobAlert");
     }
-
-    return jobAlertService.delete(id);
+    jobAlertService.delete(id);
+    return new DataResponse<>("Success");
   }
 
   @GetMapping("/get-job-alert")
-  ResponseObject getAllJobAlertByCandidateId(Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
-    return jobAlertService.getAllJobAlertByCandidateId(userDetails.getUser().getId());
+  DataResponse<List<JobAlertDto>> getAllJobAlertByCandidateId() {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    List<JobAlertDto> jobAlertDtos = jobAlertService.getAllJobAlertByCandidateId(userDetails.getUser().getId());
+    return new DataResponse<>(jobAlertDtos);
   }
 
   @GetMapping("/get-job-alert-by-id/{jobAlertId}")
-  ResponseObject getAllJobAlertById(
-      @PathVariable(value = "jobAlertId") long jobAlertId, Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+  DataResponse<JobAlertDto> getAllJobAlertById(@PathVariable(value = "jobAlertId") long jobAlertId) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
 
-    Optional<JobAlertEntity> jobAlert = jobAlertRepository.findById(jobAlertId);
+    JobAlert jobAlert = jobAlertRepository.findById(jobAlertId)
+                                          .orElseThrow(() -> new NotFoundDataException(
+                                                  "Job Alert have this id isn't exist"));
 
-    if (jobAlert.isEmpty()) {
-      throw new CustomException("Job Alert have this id isn't exist");
-    }
-
-    if (jobAlert.get().getCandidateEntity().getId() != userDetails.getUser().getId()) {
+    if (jobAlert.getCandidate().getId() != userDetails.getUser().getId()) {
       throw new CustomException("You don't have right for this Job Alert");
     }
-
-    return jobAlertService.getOneById(jobAlertId);
+    JobAlertDto jobAlertDto = jobAlertService.getOneById(jobAlertId);
+    return new DataResponse<>(jobAlertDto);
   }
 
   @PostMapping("/add-experience")
-  ResponseObject addExperience(
-      @RequestBody @Validated ExperienceDTO experienceDTO,
-      BindingResult bindingResult,
-      Authentication authentication) {
+  DataResponse<ExperienceDto> addExperience(@RequestBody @Validated ExperienceDto experienceDTO,
+          BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
 
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
-    return experienceService.save(userDetails.getUser().getId(), experienceDTO);
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    ExperienceDto experienceDto = experienceService.save(userDetails.getUser().getId(), experienceDTO);
+    return new DataResponse<>(experienceDto);
   }
 
   @PutMapping("/update-experience")
-  ResponseObject updateExperience(
-      @RequestBody @Validated ExperienceDTO experienceDTO,
-      BindingResult bindingResult,
-      Authentication authentication) {
+  DataResponse<ExperienceDto> updateExperience(@RequestBody @Validated ExperienceDto experienceDTO,
+          BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
 
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
 
-    Optional<ExperienceEntity> experience = experienceRepository.findById(experienceDTO.getId());
+    Experience experience = experienceRepository.findById(experienceDTO.getId())
+                                                .orElseThrow(
+                                                        () -> new NotFoundDataException("Experience isn't exists"));
 
-    if (experience.isEmpty()) {
-      throw new CustomException("Experience isn't exists");
-    }
 
-    if (experience.get().getCandidateEntity().getId() != userDetails.getUser().getId()) {
-      throw new CustomException("You don't have rights for this Experience");
+    if (experience.getCandidate().getId() != userDetails.getUser().getId()) {
+      throw new UnauthorizedException("You don't have rights for this Experience");
     }
 
     experienceDTO.setCandidateId(userDetails.getUser().getId());
-
-    return experienceService.update(experienceDTO);
+    ExperienceDto experienceDto = experienceService.update(experienceDTO);
+    return new DataResponse<>(experienceDto);
   }
 
   @GetMapping("/delete-experience/{experienceId}")
-  ResponseObject deleteExperience(
-      @PathVariable(value = "experienceId") long id, Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+  DataResponse<String> deleteExperience(@PathVariable(value = "experienceId") long id) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
 
-    Optional<ExperienceEntity> experience = experienceRepository.findById(id);
+    Experience experience = experienceRepository.findById(id)
+                                                .orElseThrow(
+                                                        () -> new NotFoundDataException("Experience isn't exists"));
 
-    if (experience.isEmpty()) {
-      throw new CustomException("Experience isn't exists");
+    if (experience.getCandidate().getId() != userDetails.getUser().getId()) {
+      throw new UnauthorizedException("You don't have rights for this Experience");
     }
-
-    if (experience.get().getCandidateEntity().getId() != userDetails.getUser().getId()) {
-      throw new CustomException("You don't have rights for this Experience");
-    }
-
-    return experienceService.delete(id);
+    experienceService.delete(id);
+    return new DataResponse<>("Success");
   }
 
   @GetMapping("/get-experience")
-  ResponseObject getAllExperienceByCandidateId(Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return experienceService.getAllExperienceByCandidateId(userDetails.getUser().getId());
+  DataResponse<List<ExperienceDto>> getAllExperienceByCandidateId() {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    List<ExperienceDto> experiences = experienceService.getAllExperienceByCandidateId(userDetails.getUser().getId());
+    return new DataResponse<>(experiences);
   }
 
   @GetMapping("/get-experience-by-id/{experienceId}")
-  ResponseObject getExperienceById(
-      @PathVariable(value = "experienceId") long experienceId, Authentication authentication) {
+  DataResponse<ExperienceDto> getExperienceById(@PathVariable(value = "experienceId") long experienceId) {
 
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    Experience experience = experienceRepository.findById(experienceId)
+                                                .orElseThrow(() -> new NotFoundDataException(
+                                                        "Experience have this id isn't exist"));
 
-    Optional<ExperienceEntity> experience = experienceRepository.findById(experienceId);
-
-    if (experience.isEmpty()) {
-      throw new CustomException("Experience have this id isn't exist");
+    if (experience.getCandidate().getId() != userDetails.getUser().getId()) {
+      throw new UnauthorizedException("You don't have right for this Experience");
     }
-
-    if (experience.get().getCandidateEntity().getId() != userDetails.getUser().getId()) {
-      throw new CustomException("You don't have right for this Experience");
-    }
-
-    return experienceService.getOneById(experienceId);
+    ExperienceDto experienceDto = experienceService.getOneById(experienceId);
+    return new DataResponse<>(experienceDto);
   }
 
   @GetMapping("/get-job-post-applied")
-  ResponseObject getJobPostAppliedByCandidate(Authentication authentication) {
+  DataResponse<List<JobPostDto>> getJobPostAppliedByCandidate() {
 
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    List<JobPostDto> jobPostDtos = jobPostService.getJobPostAppliedByCandidateId(userDetails.getUser().getId());
 
-    return jobPostService.getJobPostAppliedByCandidateId(userDetails.getUser().getId());
+    return new DataResponse<>(jobPostDtos);
   }
 
   @GetMapping("/get-job-post-saved")
-  ResponseObject getJobPostSavedByCandidate(Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return jobPostService.getJobPostSavedByCandidateId(userDetails.getUser().getId());
+  DataResponse<List<JobPostDto>> getJobPostSavedByCandidate() {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    List<JobPostDto> jobPostDtos = jobPostService.getJobPostSavedByCandidateId(userDetails.getUser().getId());
+    return new DataResponse<>(jobPostDtos);
   }
 
   @GetMapping("/get-application-by-job-post-id-applied/{jobPostId}")
-  ResponseObject getApplicationByJobPost(
-      Authentication authentication, @PathVariable long jobPostId) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return applicationService.getApplicationByJobPostIdAndCandidateId(
-        jobPostId, userDetails.getUser().getId());
+  DataResponse<ApplicationDto> getApplicationByJobPost(@PathVariable long jobPostId) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    ApplicationDto applicationDto = applicationService.getApplicationByJobPostIdAndCandidateId(jobPostId,
+                                                                                               userDetails.getUser()
+                                                                                                          .getId());
+    return new DataResponse<>(applicationDto);
   }
 
   @GetMapping("/get-company-followed")
-  ResponseObject getCompanyFollowedByCandidate(Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    return companyService.getCompanyFollowedByCandidateId(userDetails.getUser().getId());
+  DataResponse<List<CompanyResponse>> getCompanyFollowedByCandidate() {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    List<CompanyResponse> companyResponses = companyService.getCompanyFollowedByCandidateId(
+            userDetails.getUser().getId());
+    return new DataResponse<>(companyResponses);
   }
 
   @GetMapping("/get-employer-followed")
-  ResponseObject getEmployerFollowedByCandidate(Authentication authentication) {
-    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
-    return employerService.getEmployerFollowedByCandidateId(userDetails.getUser().getId());
+  DataResponse<List<EmployerDto>> getEmployerFollowedByCandidate() {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    List<EmployerDto> employerDtos = employerService.getEmployerFollowedByCandidateId(userDetails.getUser().getId());
+    return new DataResponse<>(employerDtos);
   }
 }

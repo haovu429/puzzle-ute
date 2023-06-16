@@ -2,17 +2,17 @@ package hcmute.puzzle.paypal;
 
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
-import hcmute.puzzle.entities.InvoiceEntity;
-import hcmute.puzzle.entities.PackageEntity;
-import hcmute.puzzle.entities.UserEntity;
+import hcmute.puzzle.infrastructure.entities.Invoice;
+import hcmute.puzzle.infrastructure.entities.Package;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.mail.*;
-import hcmute.puzzle.model.enums.InvoiceStatus;
-import hcmute.puzzle.model.enums.PaymentMethod;
-import hcmute.puzzle.repository.PackageRepository;
-import hcmute.puzzle.repository.UserRepository;
+import hcmute.puzzle.infrastructure.models.enums.InvoiceStatus;
+import hcmute.puzzle.infrastructure.models.enums.PaymentMethod;
+import hcmute.puzzle.infrastructure.repository.PackageRepository;
+import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.InvoiceService;
-import hcmute.puzzle.services.SubscribeService;
+import hcmute.puzzle.services.SubscriptionService;
+import hcmute.puzzle.utils.mail.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class ResultController {
 
   @Autowired private PackageRepository packageRepository;
 
-  @Autowired private SubscribeService subscribeService;
+  @Autowired private SubscriptionService subscriptionService;
 
   @Autowired private InvoiceService invoiceService;
 
@@ -57,39 +57,39 @@ public class ResultController {
       Payment payment = paypalService.executePayment(paymentId, payerId);
       if (payment.getState().equals("approved")) {
         // Tạo hoá đơn, tạo đối tượng đăng ký
-        Optional<UserEntity> userEntity = userRepository.findById(userId);
+        Optional<User> userEntity = userRepository.findById(userId);
         if (userEntity.isEmpty()) {
           throw new CustomException("User not found");
         }
 
-        Optional<PackageEntity> packageEntity = packageRepository.findByCode(packageCode);
+        Optional<Package> packageEntity = packageRepository.findByCode(packageCode);
         if (packageEntity.isEmpty()) {
           throw new CustomException("Package not found");
         }
 
-        InvoiceEntity invoiceEntity = new InvoiceEntity();
-        invoiceEntity.setEmail(userEntity.get().getEmail());
-        invoiceEntity.setPhone(userEntity.get().getPhone());
-        invoiceEntity.setServiceType(packageEntity.get().getServiceType());
+        Invoice invoice = new Invoice();
+        invoice.setEmail(userEntity.get().getEmail());
+        invoice.setPhone(userEntity.get().getPhone());
+        invoice.setServiceType(packageEntity.get().getServiceType());
         long price = 0;
         if (packageEntity.get().getPrice() != null) {
           price = packageEntity.get().getPrice();
         } else {
           price = packageEntity.get().getCost();
         }
-        invoiceEntity.setPrice(price);
+        invoice.setPrice(price);
 
         String transactionCode = payment.getTransactions().get(0).getRelatedResources().get(0).getSale().getId();
-        invoiceEntity.setTransactionCode(transactionCode);
+        invoice.setTransactionCode(transactionCode);
         Date nowTime = new Date();
-        invoiceEntity.setPayTime(nowTime);
-        invoiceEntity.setPaymentMethod(PaymentMethod.PAYPAL.getValue());
-        invoiceEntity.setStatus(InvoiceStatus.COMPLETED.getValue());
+        invoice.setPayTime(nowTime);
+        invoice.setPaymentMethod(PaymentMethod.PAYPAL.getValue());
+        invoice.setStatus(InvoiceStatus.COMPLETED.getValue());
 
         // Save invoice trước khi thêm invoice vào subscribe để lưu
         // (TransientPropertyValueException: object references an unsaved transient instance - save
         // the transient instance before flushing )
-        invoiceEntity = invoiceService.saveInvoice(invoiceEntity);
+        invoice = invoiceService.saveInvoice(invoice);
         InvoiceData invoiceData = new InvoiceData();
         invoiceData.setTransactionId(transactionCode);
         invoiceData.setNameCustomer(userEntity.get().getFullName());
@@ -119,7 +119,6 @@ public class ResultController {
           public void run() {
             try {
               System.out.println("new thread?");
-
               SendMail.sendMail(mailObject);
             } catch(Exception e) {
               System.out.println(e.getMessage());
@@ -128,7 +127,7 @@ public class ResultController {
         };
         one.start();
 
-        subscribeService.subscribePackage(userEntity.get(), packageEntity.get(), invoiceEntity);
+        subscriptionService.subscribePackage(userEntity.get(), packageEntity.get(), invoice);
         return "success";
       }
     } catch (PayPalRESTException e) {

@@ -1,28 +1,36 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.dto.CompanyDTO;
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.entities.EmployerEntity;
 import hcmute.puzzle.exception.NotFoundException;
-import hcmute.puzzle.model.payload.request.company.CreateCompanyPayload;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.olds.CompanyDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.response.CompanyResponse;
+import hcmute.puzzle.infrastructure.entities.Employer;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
+import hcmute.puzzle.infrastructure.models.CompanyFilter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface CompanyService {
 
-  DataResponse save(CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer) throws NotFoundException;
+	CompanyResponse save(CompanyDto CompanyDto) throws NotFoundException;
 
-  DataResponse update(long companyId, CompanyDTO companyPayload, MultipartFile imageFile, EmployerEntity createEmployer);
+	//  DataResponse createCompanyForAdmin(CreateCompanyAdminRequest companyAdminDto);
 
-  ResponseObject delete(long id);
+	CompanyResponse update(long companyId, CompanyDto companyPayload, MultipartFile imageFile,
+			Employer createEmployer) throws NotFoundException;
 
-  ResponseObject getAll();
+	void delete(long id);
 
-  ResponseObject getAllCompanyInActive();
+	Page<CompanyResponse> getAll(Pageable pageable);
 
-  ResponseObject getOneById(long id);
+	Page<CompanyResponse> filterCompany(CompanyFilter companyFilter, Pageable pageable);
 
-  ResponseObject getCompanyFollowedByCandidateId(long candidateId);
+	CompanyResponse getOneById(long id);
 
-  DataResponse getCreatedCompanyByEmployerId(long employerId);
+	List<CompanyResponse> getCompanyFollowedByCandidateId(long candidateId);
+
+	List<CompanyResponse> getCreatedCompanyByEmployerId(long employerId);
 }

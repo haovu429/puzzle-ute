@@ -1,22 +1,42 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.entities.UserEntity;
-import hcmute.puzzle.model.CloudinaryUploadFileResponse;
-import hcmute.puzzle.model.enums.FileType;
+import hcmute.puzzle.infrastructure.entities.File;
+import hcmute.puzzle.infrastructure.entities.User;
+import hcmute.puzzle.exception.NotFoundException;
+import hcmute.puzzle.exception.PartialFailureException;
+import hcmute.puzzle.infrastructure.models.CloudinaryUploadFileResponse;
+import hcmute.puzzle.infrastructure.models.enums.FileCategory;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
-
 public interface FilesStorageService {
-    Map uploadAvatarImage(String imageName, MultipartFile file, String locationStorage);
+    Map uploadFile(String imageName, MultipartFile file, String locationStorage);
 
-    Map deleteAvatarImage(String imageName);
+    boolean deleteFile(String imageName, FileCategory category, boolean deleteByUrl)
+            throws NotFoundException;
 
-//    String updateAvatarReturnUrl(Object id, MultipartFile file, String prefix);
+    boolean deleteMultiFile(List<String> publicIds, User deleter) throws PartialFailureException;
 
-    String uploadFileWithFileTypeReturnUrl(UserEntity author, String keyName, MultipartFile file, FileType fileType);
+    Optional<String> uploadFileWithFileTypeReturnUrl(String keyName
+            , MultipartFile file, FileCategory fileCategory, boolean saveDB)
+            throws NotFoundException;
 
-    String processFileName(String keyValue, FileType fileType);
+    Optional<File> uploadFileWithFileTypeReturnFileEntity(String keyName
+            , MultipartFile file, FileCategory fileCategory)
+            throws NotFoundException;
 
-    CloudinaryUploadFileResponse uploadFileReturnUrl(String fileName, MultipartFile file);
+
+    String processFileName(String keyValue, FileCategory fileCategory);
+
+    CloudinaryUploadFileResponse uploadFileReturnResponseObject(String fileName
+            , MultipartFile file, String fileLocation);
+
+    public List<String> detectedImageSrcList(String html);
+
+    List<String> getDeletedImageSrcs(List<String> oldList, List<String> newList);
 }
+

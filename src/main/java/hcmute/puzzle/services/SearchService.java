@@ -1,7 +1,7 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.model.ModelQuery;
-import hcmute.puzzle.model.SearchBetween;
+import hcmute.puzzle.infrastructure.models.ModelQuery;
+import hcmute.puzzle.infrastructure.models.SearchBetween;
 
 import java.util.List;
 import java.util.Map;

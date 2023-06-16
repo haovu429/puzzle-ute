@@ -1,7 +1,7 @@
 package hcmute.puzzle.controller;
 
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.repository.RoleRepository;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.repository.RoleRepository;
 import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,13 +36,13 @@ public class RoleController {
   }
   //
   //	@PostMapping("/role")
-  //	ResponseObject save(@RequestBody RoleDTO role) {
+  //	ResponseObject save(@RequestBody RoleDto role) {
   //		return roleService.save(role);
   //
   //	}
   //
   //	@PutMapping("/role")
-  //	ResponseObject update(@RequestBody RoleDTO role) {
+  //	ResponseObject update(@RequestBody RoleDto role) {
   //		return roleService.update(role);
   //
   //	}

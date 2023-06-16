@@ -1,13 +1,14 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.dto.CategoryDTO;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.olds.CategoryDto;
+import hcmute.puzzle.infrastructure.dtos.request.CreateCategoryRequest;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 
 
 public interface CategoryService {
-    DataResponse save(CategoryDTO dto);
+    CategoryDto save(CreateCategoryRequest createCategoryRequest);
 
-    DataResponse update(CategoryDTO dto, long id);
+    CategoryDto update(CreateCategoryRequest createCategoryRequest, long id);
 
     DataResponse delete(long id);
 

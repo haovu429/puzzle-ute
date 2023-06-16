@@ -1,35 +1,51 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.dto.ResponseObject;
-import hcmute.puzzle.dto.UserDTO;
-import hcmute.puzzle.entities.UserEntity;
-import hcmute.puzzle.model.enums.FileType;
-import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
-import hcmute.puzzle.response.DataResponse;
+import freemarker.template.TemplateException;
+import hcmute.puzzle.infrastructure.dtos.news.*;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.entities.Token;
+import hcmute.puzzle.infrastructure.entities.User;
+import hcmute.puzzle.exception.NotFoundException;
+import hcmute.puzzle.infrastructure.models.DataStaticJoinAccount;
+import hcmute.puzzle.infrastructure.models.enums.FileCategory;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+//import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+
 public interface UserService {
-  UserEntity save(UserDTO userDTO);
+  Optional<User> registerUser(RegisterUserDto registerUserDto);
 
-  DataResponse update(long id, UpdateUserPayload userPayload);
+  User registerUserForAdmin(CreateUserForAdminDto userForAdminDto, boolean admin);
 
-  ResponseObject delete(long id);
+  UserPostDto update(long id, UpdateUserDto user);
 
-  ResponseObject getAll();
+  UserPostDto updateUserForAdmin(long id, UpdateUserForAdminDto user);
 
-  ResponseObject getOne(long id);
+  void delete(long id);
 
-  ResponseObject getUserByAccount(String email, String password);
+  Page<UserPostDto> getAll(Pageable pageable);
 
-  ResponseObject getAccountAmount();
+  UserPostDto getOne(long id);
 
-  ResponseObject getListDataUserJoinLastNumWeeks(long numWeek);
+  UserPostDto getUserByAccount(String email, String password);
 
-  DataResponse updateForAdmin(long id, UserDTO userPayload);
+  long getAccountAmount();
 
-  DataResponse updateAvatarForUser(UserEntity userEntity, MultipartFile file, FileType fileType);
+  List<DataStaticJoinAccount> getListDataUserJoinLastNumWeeks(long numWeek);
 
-  // void processOAuthPostLogin(String username);
+  UserPostDto updateForAdmin(long id, UserPostDto userPayload);
 
-  // UserDetails loadUserByUsername(String email);
+  public void prepareForRole(User user);
+
+  UserPostDto updateAvatarForUser(
+      User user, MultipartFile file, FileCategory fileCategory)
+      throws NotFoundException;
 }

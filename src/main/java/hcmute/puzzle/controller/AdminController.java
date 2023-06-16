@@ -1,296 +1,348 @@
 package hcmute.puzzle.controller;
 
-import hcmute.puzzle.converter.Converter;
-import hcmute.puzzle.dto.*;
-import hcmute.puzzle.entities.CompanyEntity;
-import hcmute.puzzle.entities.EmployerEntity;
-import hcmute.puzzle.entities.InvoiceEntity;
-import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
-import hcmute.puzzle.model.payload.request.company.CreateCompanyPayload;
-import hcmute.puzzle.model.payload.request.company.CreateCompanyPayloadForAdmin;
-import hcmute.puzzle.model.payload.request.other.TimeFramePayLoad;
-import hcmute.puzzle.model.payload.request.user.UpdateUserPayload;
-import hcmute.puzzle.repository.CompanyRepository;
-import hcmute.puzzle.repository.EmployerRepository;
-import hcmute.puzzle.repository.JobPostRepository;
-import hcmute.puzzle.repository.UserRepository;
-import hcmute.puzzle.response.DataResponse;
-import hcmute.puzzle.security.CustomUserDetails;
+import hcmute.puzzle.infrastructure.converter.Converter;
+import hcmute.puzzle.infrastructure.dtos.news.CreateUserForAdminDto;
+import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
+import hcmute.puzzle.infrastructure.dtos.olds.CategoryDto;
+import hcmute.puzzle.infrastructure.dtos.olds.CompanyDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ExtraInfoDto;
+import hcmute.puzzle.infrastructure.dtos.olds.InvoiceDto;
+import hcmute.puzzle.infrastructure.dtos.request.CreateCategoryRequest;
+import hcmute.puzzle.infrastructure.dtos.request.CreateCompanyAdminRequest;
+import hcmute.puzzle.infrastructure.dtos.request.JobPostAdminPostRequest;
+import hcmute.puzzle.infrastructure.dtos.request.TimeFramePayLoad;
+import hcmute.puzzle.infrastructure.dtos.response.CompanyResponse;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.response.JobPostDto;
+import hcmute.puzzle.infrastructure.entities.Employer;
+import hcmute.puzzle.infrastructure.mappers.CompanyMapper;
+import hcmute.puzzle.infrastructure.models.CompanyFilter;
+import hcmute.puzzle.infrastructure.models.DataStaticJoinAccount;
+import hcmute.puzzle.infrastructure.repository.EmployerRepository;
+import hcmute.puzzle.infrastructure.repository.JobPostRepository;
+import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
+import java.util.List;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping(path = "/admin")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 public class AdminController {
 
-  @Autowired EmployerService employerService;
+	@Autowired
+	EmployerService employerService;
 
-  @Autowired UserRepository userRepository;
+	@Autowired
+	UserRepository userRepository;
 
-  @Autowired JwtAuthenticationFilter jwtAuthenticationFilter;
+	@Autowired
+	JwtAuthenticationFilter jwtAuthenticationFilter;
 
-  @Autowired JobPostRepository jobPostRepository;
+	@Autowired
+	JobPostRepository jobPostRepository;
 
-  @Autowired JobPostService jobPostService;
+	@Autowired
+	JobPostService jobPostService;
 
-  @Autowired Converter converter;
+//	@Autowired
+//	Converter converter;
 
-  @Autowired CompanyService companyService;
+	@Autowired
+	CompanyService companyService;
 
-  @Autowired ExtraInfoService extraInfoService;
+	@Autowired
+	ExtraInfoService extraInfoService;
 
-  @Autowired UserService userService;
+	@Autowired
+	UserService userService;
 
-  @Autowired ApplicationService applicationService;
+	@Autowired
+	ApplicationService applicationService;
 
-  @Autowired InvoiceService invoiceService;
+	@Autowired
+	InvoiceService invoiceService;
 
-  @Autowired
-  EmployerRepository employerRepository;
+	@Autowired
+	EmployerRepository employerRepository;
 
-  @Autowired CategoryService categoryService;
+	@Autowired
+	CategoryService categoryService;
 
-  @Autowired BlogPostService blogPostService;
+	@Autowired
+	BlogPostService blogPostService;
 
-  // Company, add new company
-  @PostMapping("/create-info-company")
-  public DataResponse createCompany(
-          @ModelAttribute CreateCompanyPayloadForAdmin companyPayload, Authentication authentication) throws NotFoundException {
-    //CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-    CompanyDTO companyDTO = new CompanyDTO();
-    companyDTO.setName(companyPayload.getName());
-    companyDTO.setDescription(companyPayload.getDescription());
-    companyDTO.setWebsite(companyPayload.getWebsite());
-    companyDTO.setActive(companyPayload.isActive());
-    EmployerEntity employer = null;
-    if (companyPayload.getCreatedEmployerId() != null) {
-      Optional<EmployerEntity> employerEntityOptional = employerRepository.findById(companyPayload.getCreatedEmployerId());
-      if (employerEntityOptional.isEmpty()) {
-        throw new CustomException("Employer not found");
-      }
-      employer = employerEntityOptional.get();
-    }
-    return companyService.save(companyDTO,companyPayload.getImage(), employer);
-  }
+	@Autowired
+	CompanyMapper companyMapper;
 
-  @PutMapping("/update-info-company/{companyId}")
-  public DataResponse updateCompany(@PathVariable(value = "companyId") long companyId, @ModelAttribute CreateCompanyPayloadForAdmin companyPayload) {
-    CompanyDTO companyDTO = new CompanyDTO();
-    companyDTO.setName(companyPayload.getName());
-    companyDTO.setDescription(companyPayload.getDescription());
-    companyDTO.setWebsite(companyPayload.getWebsite());
-    companyDTO.setActive(companyPayload.isActive());
-    EmployerEntity employer = null;
-    if (companyPayload.getCreatedEmployerId() != null) {
-      Optional<EmployerEntity> employerEntityOptional = employerRepository.findById(companyPayload.getCreatedEmployerId());
-      if (employerEntityOptional.isEmpty()) {
-        throw new CustomException("Employer not found");
-      }
-      employer = employerEntityOptional.get();
-    }
-    return companyService.update(companyId, companyDTO, companyPayload.getImage(), employer);
-  }
+	// Company, add new company
+	@PostMapping("/company")
+	public DataResponse<CompanyResponse> createCompany(@ModelAttribute CreateCompanyAdminRequest companyPayload) throws
+			NotFoundException {
+		CompanyDto companyDTO = companyMapper.CreateCompanyAdminDtoToCompanyDto(companyPayload);
+		//    companyDTO.setName(companyPayload.getName());
+		//    companyDTO.setDescription(companyPayload.getDescription());
+		//    companyDTO.setWebsite(companyPayload.getWebsite());
+		//    companyDTO.setIsActive(companyPayload.isActive());
+		CompanyResponse companyResponse = companyService.save(companyDTO);
+		return new DataResponse<>(companyResponse);
+	}
 
-  @DeleteMapping ("/delete-info-company/{id}")
-  public ResponseObject deleteCompany(@PathVariable Long id) {
-    return companyService.delete(id);
-  }
+	@PutMapping("/company/{companyId}")
+	public DataResponse<CompanyResponse> updateCompany(@PathVariable(value = "companyId") long companyId,
+			@ModelAttribute CreateCompanyAdminRequest companyPayload) throws NotFoundException {
+		CompanyDto companyDTO = new CompanyDto();
+		companyDTO.setName(companyPayload.getName());
+		companyDTO.setDescription(companyPayload.getDescription());
+		companyDTO.setWebsite(companyPayload.getWebsite());
+		companyDTO.setIsActive(companyPayload.getIsActive());
+		Employer employer = null;
+		if (companyPayload.getCreatedEmployerId() != null) {
+			employer = employerRepository.findById(companyPayload.getCreatedEmployerId())
+										 .orElseThrow(() -> new NotFoundException("NOT_FOUND_EMPLOYER"));
+		}
+		CompanyResponse companyResponse = companyService.update(companyId, companyDTO, companyPayload.getImageFile(),
+																employer);
+		return new DataResponse<>(companyResponse);
+	}
 
-  @GetMapping("/get-all-company")
-  public ResponseObject getAllCompany() {
-    return companyService.getAll();
-  }
+	@DeleteMapping("/company/{companyId}")
+	public DataResponse<String> deleteCompany(@PathVariable Long companyId) {
+		companyService.delete(companyId);
+		return new DataResponse<>("Success");
+	}
 
-  @GetMapping("/get-all-company-inactive")
-  public ResponseObject getAllCompanyInactive() {
-    return companyService.getAllCompanyInActive();
-  }
+	@GetMapping("/company")
+	public DataResponse<Page<CompanyResponse>> getAllCompany(@RequestParam(required = false) Integer page,
+			@RequestParam(required = false) Integer size) {
+		Pageable pageable = this.getPageable(page, size);
+		Page<CompanyResponse> companyResponses = companyService.getAll(pageable);
+		return new DataResponse<>(companyResponses);
+	}
 
-  @GetMapping("/get-one-company/{id}")
-  public ResponseObject getOneCompany(@PathVariable Long id) {
-    return companyService.getOneById(id);
-  }
+	@GetMapping("/company/active")
+	public DataResponse<Page<CompanyResponse>> getAllCompanyInactive(
+			@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(required = false) Integer size) {
+		Pageable pageable = this.getPageable(page, size);
+		CompanyFilter companyFilter = CompanyFilter.builder().isActive(true).build();
+		Page<CompanyResponse> companyResponses = companyService.filterCompany(companyFilter, pageable);
+		return new DataResponse<>(companyResponses);
+	}
 
-  // Account
-  @PostMapping("/add-account")
-  public DataResponse saveAccount(@RequestBody UserDTO user) {
-    userService.save(user);
-    return new DataResponse("Add user " + user.getUsername() +" success.");
-  }
+	@GetMapping("/company/{id}")
+	public DataResponse<CompanyResponse> getOneCompany(@PathVariable Long id) {
+		CompanyResponse companyResponse = companyService.getOneById(id);
+		return new DataResponse<>(companyResponse);
+	}
 
-  @DeleteMapping("/delete-account/{id}")
-  public ResponseObject deleteAccount(@PathVariable Long id) {
-    return userService.delete(id);
-  }
+	// Account
+	@PostMapping("/account")
+	public DataResponse<String> saveAccount(@RequestBody @Valid CreateUserForAdminDto user) {
+		userService.registerUserForAdmin(user, true);
+		return new DataResponse<>("Add user " + user.getEmail() + " success.");
+	}
 
-  //  @PutMapping("/update-account/{id}")
-  //  public ResponseObject updateAccount(@PathVariable Long id, @RequestBody UserDTO user) {
-  //    return userService.update(id, user);
-  //  }
+	@DeleteMapping("/account/{id}")
+	public DataResponse<String> deleteAccount(@PathVariable Long id) {
+		userService.delete(id);
+		return new DataResponse<>("Success");
+	}
 
-  @GetMapping("/get-all-account")
-  public ResponseObject getAllAccount() {
-    return userService.getAll();
-  }
+	@GetMapping("/account")
+	public DataResponse<Page<UserPostDto>> getAllAccount(Pageable pageable) {
+		Page<UserPostDto> userPostDtos = userService.getAll(pageable);
+		return new DataResponse<>(userPostDtos);
+	}
 
-  @GetMapping("/get-account-by-id/{id}")
-  public ResponseObject getAllAccountById(@PathVariable(value = "id") long id) {
-    return userService.getOne(id);
-  }
+	@GetMapping("/account/{id}")
+	public DataResponse<UserPostDto> getAllAccountById(@PathVariable(value = "id") long id) {
+		UserPostDto userPostDto = userService.getOne(id);
+		return new DataResponse<>(userPostDto);
+	}
 
-  // Company
-  @PostMapping("/add-extra-info")
-  public ResponseObject createExtraInfo(@RequestBody ExtraInfoDTO extraInfoDTO) {
-    return extraInfoService.save(extraInfoDTO);
-  }
+	// Company
+	@PostMapping("/extra-info")
+	public DataResponse<ExtraInfoDto> createExtraInfo(@RequestBody ExtraInfoDto extraInfoDTO) {
+		ExtraInfoDto extraInfoDto = extraInfoService.save(extraInfoDTO);
+		return new DataResponse<>(extraInfoDto);
+	}
 
-  @PutMapping("/update-extra-info")
-  public ResponseObject updateExtraInfo(@RequestBody ExtraInfoDTO extraInfoDTO) {
-    return extraInfoService.update(extraInfoDTO);
-  }
+	@PutMapping("/extra-info/{extraInfoId}")
+	public DataResponse<ExtraInfoDto> updateExtraInfo(@RequestBody ExtraInfoDto extraInfoDTO,
+			@PathVariable long extraInfoId) {
+		ExtraInfoDto extraInfoDto = extraInfoService.update(extraInfoDTO, extraInfoId);
+		return new DataResponse<>(extraInfoDto);
+	}
 
-  @GetMapping("/delete-extra-info/{id}")
-  public ResponseObject deleteExtraInfo(@PathVariable Long id) {
-    return extraInfoService.delete(id);
-  }
+	@DeleteMapping("/extra-info/{id}")
+	public DataResponse<String> deleteExtraInfo(@PathVariable Long id) {
+		extraInfoService.delete(id);
+		return new DataResponse<>("Success");
+	}
 
-  @GetMapping("/get-all-extra-info")
-  public ResponseObject getAllExtraInfo() {
-    return extraInfoService.getAll();
-  }
+	@GetMapping("/extra-info")
+	public DataResponse<Page<ExtraInfoDto>> getAllExtraInfo(
+			@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(required = false) Integer size) {
+		Pageable pageable = getPageable(page, size);
+		Page<ExtraInfoDto> extraInfoDtos = extraInfoService.getAll(pageable);
+		return new DataResponse<>(extraInfoDtos);
+	}
 
-  @GetMapping("/update-status-job-post/{jobPostId}")
-  public ResponseObject getOneExtraInfo(
-      @PathVariable(value = "jobPostId") Long id, @RequestParam boolean active) {
+	@GetMapping("/job-post/update-status/{jobPostId}")
+	public DataResponse<JobPostDto> getOneExtraInfo(@PathVariable(value = "jobPostId") Long id,
+			@RequestParam boolean active) {
+		JobPostAdminPostRequest jobPostAdminPostRequest = JobPostAdminPostRequest.builder().isActive(active).build();
+		JobPostDto jobPostDto = jobPostService.updateJobPostWithRoleAdmin(id, jobPostAdminPostRequest);
+		return new DataResponse<>(jobPostDto);
+	}
 
-    if (active) {
-      return jobPostService.activateJobPost(id);
-    }
-    return jobPostService.deactivateJobPost(id);
-  }
+	private Pageable getPageable(Integer page, Integer size) {
+		Pageable pageable = Pageable.unpaged();
+		if (page != null && size != null) {
+			pageable = Pageable.ofSize(size).withPage(page);
+		}
+		return pageable;
+	}
 
-  @GetMapping("/get-all-job-by-page")
-  public ResponseObject getJobPostByPage(
-      @RequestParam(value = "page", required = false) Integer page,
-      @RequestParam(required = false) Integer numOfRecord) {
-    if (page == null) {
-      page = 0;
-    }
+	@GetMapping("/job-post")
+	public DataResponse<Page<JobPostDto>> getJobPostByPage(@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(required = false) Integer size) {
+		Pageable pageable = this.getPageable(page, size);
+		Page<JobPostDto> jobPostDtos = jobPostService.getAll(pageable);
+		return new DataResponse<>(jobPostDtos);
+	}
 
-    if (numOfRecord == null) {
-      numOfRecord = 10;
-    }
-    return jobPostService.getJobPostWithPage(page, numOfRecord);
-  }
+	@GetMapping("/get-all-job-post")
+	public DataResponse<Page<JobPostDto>> getAllJobPost() {
+		Page<JobPostDto> jobPostDtos = jobPostService.getAll(Pageable.unpaged());
+		return new DataResponse<>(jobPostDtos);
+	}
 
-  @GetMapping("/get-all-job-post")
-  public ResponseObject getAllJobPost() {
-    return jobPostService.getAll();
-  }
+	@GetMapping("/account/get-amount")
+	public DataResponse getAccountAmount() {
+		long amount = userService.getAccountAmount();
+		return new DataResponse(amount);
+	}
 
-//  @PutMapping("/company/{id}")
-//  public ResponseObject updateCompany(@PathVariable Long id, @RequestBody CompanyDTO companyDTO) {
-//    companyDTO.setId(id);
-//    return companyService.update(companyDTO);
-//    // return null;
-//  }
+	@GetMapping("/job-post/get-amount")
+	public DataResponse<Long> getJobPostAmount() {
+		long amount = jobPostService.getJobPostAmount();
+		return new DataResponse<>(amount);
+	}
 
-  @GetMapping("/get-account-amount")
-  public ResponseObject getAccountAmount() {
-    return userService.getAccountAmount();
-  }
+	@GetMapping("/admin/application/get-amount")
+	public DataResponse<Long> getApplicationAmount() {
+		Long applicationAmount = applicationService.getApplicationAmount();
+		return new DataResponse<>(applicationAmount);
+	}
 
-  @GetMapping("/get-job-post-amount")
-  public ResponseObject getJobPostAmount() {
-    return jobPostService.getJobPostAmount();
-  }
+	@GetMapping("/extra-info/{id}")
+	public DataResponse<ExtraInfoDto> getExtraInfoById(@PathVariable(value = "id") long id) {
+		ExtraInfoDto extraInfoDto = extraInfoService.getOneById(id);
+		return new DataResponse<>(extraInfoDto);
+	}
 
-  @GetMapping("/get-application-amount")
-  public ResponseObject getApplicationAmount() {
-    return applicationService.getApplicationAmount();
-  }
+	@GetMapping("/statistics/new-account/get-amount/{numWeek}")
+	public DataResponse<List<DataStaticJoinAccount>> getDataJoinAccountByNumWeek(
+			@PathVariable(value = "numWeek") long numWeek) {
+		List<DataStaticJoinAccount> dataStaticJoinAccounts = userService.getListDataUserJoinLastNumWeeks(numWeek);
+		return new DataResponse<>(dataStaticJoinAccounts);
+	}
 
-  @GetMapping("/get-extra-info/{id}")
-  public ResponseObject getExtraInfoById(@PathVariable(value = "id") long id) {
-    return extraInfoService.getOneById(id);
-  }
+	@PutMapping("/account/{userId}")
+	public DataResponse<UserPostDto> updateAccountById(@PathVariable(value = "userId") long userId,
+			@RequestBody UserPostDto user) {
+		UserPostDto userPostDto = userService.updateForAdmin(userId, user);
+		return new DataResponse<>(userPostDto);
+	}
 
-  @GetMapping("/get-data-join-account-in-last-num-week/{numWeek}")
-  public ResponseObject getDataJoinAccountByNumWeek(@PathVariable(value = "numWeek") long numWeek) {
-    return userService.getListDataUserJoinLastNumWeeks(numWeek);
-  }
+	@GetMapping("/invoice")
+	public DataResponse<Page<InvoiceDto>> getAllInvoice(@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(required = false) Integer size) {
+		Pageable pageable = this.getPageable(page, size);
+		Page<InvoiceDto> invoiceDtos = invoiceService.getAllInvoice(pageable);
+		return new DataResponse<>(invoiceDtos);
+	}
 
-  @PutMapping("/update-account-by-id/{userId}")
-  public DataResponse updateAccountById(
-      @PathVariable(value = "userId") long userId, @RequestBody UserDTO user) {
+	@PostMapping("/invoice/get-by-time-frame")
+	public DataResponse<List<InvoiceDto>> getAllInvoiceByTimeFrame(@RequestBody TimeFramePayLoad timeFrame) {
+		List<InvoiceDto> invoiceDtos = invoiceService.getAllInvoiceByTimeFrame(timeFrame.getStartTime(),
+																			   timeFrame.getEndTime());
+		return new DataResponse<>(invoiceDtos);
+	}
 
-    return userService.updateForAdmin(userId, user);
-  }
+	@GetMapping("/invoice/detail/{invoiceId}")
+	public DataResponse<InvoiceDto> getOneInvoice(@PathVariable(value = "invoiceId") long invoiceId) {
+		InvoiceDto invoiceDto = invoiceService.getOneInvoice(invoiceId);
+		return new DataResponse<>(invoiceDto);
+	}
 
-  @GetMapping("/get-all-invoice")
-  public DataResponse getAllInvoice() {
-    return invoiceService.getAllInvoice();
-  }
+	@GetMapping("/invoice/total-revenue")
+	public DataResponse<Long> getTotalRevenue() {
+		long totalRevenue = invoiceService.getTotalRevenue();
+		return new DataResponse<>(totalRevenue);
+	}
 
-  @GetMapping("/get-all-invoice-by-time-frame")
-  public DataResponse getAllInvoiceByTimeFrame(@RequestBody TimeFramePayLoad timeFrame) {
-    return invoiceService.getAllInvoiceByTimeFrame(timeFrame.getStartTime(), timeFrame.getEndTime());
-  }
+	@PostMapping("/invoice/total-revenue/get-by-time-frame")
+	public DataResponse<Long> getTotalRevenueByTimeFrame(@RequestBody TimeFramePayLoad timeFrame) {
+		long totalRevenue = invoiceService.getTotalRevenue(timeFrame.getStartTime(), timeFrame.getEndTime());
+		return new DataResponse<>(totalRevenue);
+	}
 
-  @GetMapping("/get-one-invoice/{invoiceId}")
-  public DataResponse getOneInvoice(@PathVariable(value = "invoiceId") long invoiceId) {
-    InvoiceEntity invoice = invoiceService.getOneInvoice(invoiceId);
-    return new DataResponse(converter.toDTO(invoice));
-  }
+	@GetMapping("/category")
+	public DataResponse getAllCategory() {
+		return categoryService.getAll();
+	}
 
-  @GetMapping("/get-total-revenue")
-  public DataResponse getTotalRevenue() {
-    long totalRevenue = invoiceService.getTotalRevenue();
-    return new DataResponse(totalRevenue);
-  }
+	@RequestMapping(
+			path = "/category",
+			method = RequestMethod.POST,
+			consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public DataResponse<CategoryDto> addCategory(@ParameterObject @ModelAttribute CreateCategoryRequest createCategoryRequest,
+			@RequestPart(required = false) MultipartFile image) {
+		if (createCategoryRequest.getImageFile() == null && image != null) {
+			createCategoryRequest.setImageFile(image);
+		}
+		CategoryDto categoryDto = categoryService.save(createCategoryRequest);
+		return new DataResponse<>(categoryDto);
+	}
 
-  @PostMapping("/get-total-revenue-by-time-frame")
-  public DataResponse getTotalRevenueByTimeFrame(@RequestBody TimeFramePayLoad timeFrame) {
-    long totalRevenue = invoiceService.getTotalRevenue(timeFrame.getStartTime(), timeFrame.getEndTime());
-    return new DataResponse(totalRevenue);
-  }
+	@RequestMapping(
+			path = "/category/{categoryId}",
+			method = RequestMethod.PUT,
+			consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public DataResponse<CategoryDto> updateCategory(@PathVariable long categoryId,
+			@ParameterObject @ModelAttribute CreateCategoryRequest createCategoryRequest,
+			@RequestPart(required = false) MultipartFile image) {
+		if (createCategoryRequest.getImageFile() == null && image != null) {
+			createCategoryRequest.setImageFile(image);
+		}
+		CategoryDto categoryDto = categoryService.update(createCategoryRequest, categoryId);
+		return new DataResponse<>(categoryDto);
+	}
 
-  @GetMapping("/get-all-category")
-  public DataResponse getAllCategory() {
-    return categoryService.getAll();
-  }
+	@DeleteMapping("/category/{categoryId}")
+	public DataResponse deleteCategory(@PathVariable long categoryId) {
+		return categoryService.delete(categoryId);
+	}
 
-  @PostMapping("/add-category")
-  public DataResponse addCategory(@RequestBody CategoryDTO categoryDTO) {
-    return categoryService.save(categoryDTO);
-  }
-
-  @PutMapping("/update-category/{categoryId}")
-  public DataResponse updateCategory(@PathVariable long categoryId, @RequestBody CategoryDTO categoryDTO) {
-    return categoryService.update(categoryDTO, categoryId);
-  }
-
-  @DeleteMapping("/delete-category/{categoryId}")
-  public DataResponse deleteCategory(@PathVariable long categoryId) {
-    return categoryService.delete(categoryId);
-  }
-
-  @GetMapping("/blog-post")
-  public DataResponse getAllBlogPost() {
-    return blogPostService.getAll();
-  }
-
-  @DeleteMapping("/delete-blog-post/{blogPostId}")
-  public DataResponse deleteBlogPost(@PathVariable long blogPostId) {
-    return blogPostService.delete(blogPostId);
-  }
-
+	@DeleteMapping("/blog-post/{blogPostId}")
+	public DataResponse deleteBlogPost(@PathVariable long blogPostId) {
+		return blogPostService.delete(blogPostId);
+	}
 }

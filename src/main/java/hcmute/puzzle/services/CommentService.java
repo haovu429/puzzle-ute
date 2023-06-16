@@ -1,21 +1,25 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.dto.CategoryDTO;
-import hcmute.puzzle.dto.CommentDTO;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.news.CreateCommentRequest;
+import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CommentService {
-    DataResponse save(CommentDTO dto);
+//    DataResponse save(CommentDto dto);
 
-    DataResponse update(CommentDTO dto, long id);
+    CommentDto update(CommentDto dto, long id);
 
-    DataResponse delete(long id);
+    void delete(long id);
 
-    DataResponse getAll();
+    Page<CommentDto> getAll(Pageable pageable);
 
-    DataResponse getOneById(long id);
+    CommentDto getOneById(long id);
 
-    DataResponse likeComment(long id);
+    void likeComment(long id);
 
-    DataResponse disLikeComment(long id);
+    void disLikeComment(long id);
+
+    CommentDto addComment(CreateCommentRequest createCommentRequest, long blogPostId);
 }

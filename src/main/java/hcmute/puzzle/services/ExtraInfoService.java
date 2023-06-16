@@ -1,18 +1,24 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.olds.ExtraInfoDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-public interface ExtraInfoService<DTO> {
+import java.util.List;
 
-  ResponseObject save(DTO dto);
 
-  ResponseObject update(DTO dto);
+public interface ExtraInfoService {
 
-  ResponseObject delete(long id);
+  ExtraInfoDto save(ExtraInfoDto dto);
 
-  ResponseObject getAll();
+  ExtraInfoDto update(ExtraInfoDto dto, long id);
 
-  ResponseObject getByType(String type);
+  void delete(long id);
 
-  ResponseObject getOneById(long id);
+  Page<ExtraInfoDto> getAll(Pageable pageable);
+
+  List<ExtraInfoDto> getByType(String type);
+
+  ExtraInfoDto getOneById(long id);
 }

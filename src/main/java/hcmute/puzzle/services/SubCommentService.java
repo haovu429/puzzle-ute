@@ -1,14 +1,13 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.dto.CategoryDTO;
-import hcmute.puzzle.dto.SubCommentDTO;
-import hcmute.puzzle.response.DataResponse;
+import hcmute.puzzle.infrastructure.dtos.olds.SubCommentDto;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 
 public interface SubCommentService {
 
-    DataResponse save(SubCommentDTO dto);
+    DataResponse save(SubCommentDto dto);
 
-    DataResponse update(SubCommentDTO dto, long id);
+    DataResponse update(SubCommentDto dto, long id);
 
     DataResponse delete(long id);
 

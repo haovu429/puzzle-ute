@@ -1,29 +1,30 @@
 package hcmute.puzzle.services;
 
-import hcmute.puzzle.dto.CandidateDTO;
-import hcmute.puzzle.dto.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
+import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.request.PostCandidateRequest;
 
 import java.util.Optional;
 
 public interface CandidateService {
 
-  Optional<CandidateDTO> save(CandidateDTO candidateDTO);
+  CandidateDto save(CandidateDto candidateDTO);
 
-  ResponseObject delete(long id);
+  void delete(long id);
 
-  ResponseObject update(CandidateDTO candidateDTO);
+  CandidateDto update(long id, PostCandidateRequest postCandidateRequest);
 
-  ResponseObject getOne(long id);
+  CandidateDto getOne(long id);
 
-  ResponseObject followEmployer(long candidateId, long employerId);
+  void followEmployer(long candidateId, long employerId);
 
-  ResponseObject cancelFollowedEmployer(long candidateId, long employerId);
+  void cancelFollowedEmployer(long candidateId, long employerId);
 
-  ResponseObject followCompany(long candidateId, long companyId);
+  void followCompany(long candidateId, long companyId);
 
-  ResponseObject cancelFollowedCompany(long candidateId, long companyId);
+  void cancelFollowedCompany(long candidateId, long companyId);
 
-  ResponseObject saveJobPost(long candidateId, long companyId);
+  void saveJobPost(long candidateId, long companyId);
 
-  ResponseObject cancelSavedJobPost(long candidateId, long jobPostId);
+  void cancelSavedJobPost(long candidateId, long jobPostId);
 }
