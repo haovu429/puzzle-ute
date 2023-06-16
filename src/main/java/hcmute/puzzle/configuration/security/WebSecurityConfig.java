@@ -29,7 +29,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 // @EnableJpaRepositories(basePackages="java")
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class WebSecurityConfig {
 	private static final String[] AUTH_WHITE_LIST_DOC_RESOURCE = {"/v3-docs/**", "/swagger-ui/**", "/v2-docs/**",
 			"/swagger-resources/**", "/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-ui/index.html",

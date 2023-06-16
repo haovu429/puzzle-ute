@@ -19,9 +19,18 @@ public interface CategoryMapper {
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "createdBy", ignore = true)
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "updatedBy", ignore = true)
+	@Mapping(target = "updatedAt", ignore = true)
 	void updateCategoryFromDto(CategoryDto categoryDto, @MappingTarget Category category);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "createdBy", ignore = true)
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "updatedBy", ignore = true)
+	@Mapping(target = "updatedAt", ignore = true)
+	@Mapping(target = "image", ignore = true)
 	void updateCategoryFromCreateCategoryRequest(CreateCategoryRequest createCategoryRequest, @MappingTarget Category category);
 }

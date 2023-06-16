@@ -25,10 +25,13 @@ public class JobPostFilterRequest implements Serializable {
 	Boolean isPublic;
 	Boolean isActive;
 	Integer numDayAgo;
+	@Builder.Default
 	Boolean isAscSort = true;
 	String sortColumn;
 	Date createdAtFrom;
+	@Builder.Default
 	Date createdAtTo = new Date();
 	Date updatedAtFrom;
+	@Builder.Default
 	Date updatedAtTo = new Date();
 }

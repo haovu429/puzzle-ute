@@ -459,15 +459,13 @@ public class JobPostServiceImpl implements JobPostService {
     });
   }
 
-  public Page<JobPost> filterJobPost(RequestPageable<JobPostFilterRequest> jobPostFilterRequest) {
-    JobPostFilterRequest jobPostFilter = jobPostFilterRequest.getBody();
+  public Page<JobPostDto> filterJobPost(JobPostFilterRequest jobPostFilterRequest, Pageable pageable) {
+    JobPostFilterRequest jobPostFilter = jobPostFilterRequest;
     jobPostFilter.setIsActive(true);
     Specification<JobPost> jobPostSpecification = doPredicate(jobPostFilter);
-    Pageable pageable = PageRequest.of(jobPostFilterRequest.getPagination().getPage(),
-                                       jobPostFilterRequest.getPagination().getSize());
-    Page<JobPost> jobPostPage = jobPostRepository.findAll(jobPostSpecification, pageable);
+    Page<JobPostDto> jobPostDtos = jobPostRepository.findAll(jobPostSpecification, pageable).map(jobPostMapper::jobPostToJobPostDto);
 
-    return jobPostPage;
+    return jobPostDtos;
   }
 
 

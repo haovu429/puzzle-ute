@@ -4,11 +4,11 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.request.TokenObject;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.entities.Comment;
 import hcmute.puzzle.infrastructure.mappers.CommentMapper;
 import hcmute.puzzle.infrastructure.mappers.SubCommentMapper;
-import hcmute.puzzle.infrastructure.dtos.request.TokenObject;
-import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.test.SetUpDB;
 import hcmute.puzzle.test.TestCloudinary;
@@ -16,16 +16,21 @@ import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.firebase.FirebaseMessagingService;
 import hcmute.puzzle.utils.firebase.Note;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
 
 @Slf4j
 @RestController
@@ -150,8 +155,8 @@ public class TestController {
 
 	@PostMapping("/send-notification")
 	@ResponseBody
-	public String sendNotification(@RequestBody Note note, @RequestParam String topic)
-			throws FirebaseMessagingException {
+	public String sendNotification(@RequestBody Note note, @RequestParam String topic) throws
+			FirebaseMessagingException {
 		return firebaseService.sendNotificationWithTopic(note, topic);
 	}
 
@@ -160,5 +165,23 @@ public class TestController {
 	public DataResponse saveTokenClient(@RequestBody TokenObject token) {
 		System.out.println("Token = " + token);
 		return new DataResponse("OK");
+	}
+
+	@PostMapping("/receive-web-hook")
+	@ResponseBody
+	public DataResponse receiveWebHook(Map<String,Object> payload) {
+		log.info("=========================WEB HOOK========================");
+		log.info(payload.toString());
+		return new DataResponse("OK");
+	}
+
+	@RequestMapping(path = "/file-to-base64",
+			method = RequestMethod.POST,
+			consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@ResponseBody
+	public DataResponse parseFileToBase64(@RequestBody MultipartFile file) throws IOException {
+		byte[] image = Base64.encodeBase64(file.getBytes(), false);
+		String encodedString = new String(image);
+		return new DataResponse(encodedString);
 	}
 }

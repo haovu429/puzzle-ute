@@ -120,9 +120,12 @@ public class CommonController {
 
 	@GetMapping("/job-post/get-all")
 	DataResponse<Page<JobPostDto>> getAllJobPost(@RequestParam(value = "page", required = false) Integer page,
-			@RequestParam(required = false) Integer size) {
+			@RequestParam(required = false) Integer size, @RequestParam(required = false) Long categoryId) {
 		Pageable pageable = this.getPageable(page, size);
-		Page<JobPostDto> jobPostDtos = jobPostService.getAll(pageable);
+		JobPostFilterRequest jobPostFilterRequest = JobPostFilterRequest.builder()
+																		.categoryIds(List.of(categoryId))
+																		.build();
+		Page<JobPostDto> jobPostDtos = jobPostService.filterJobPost(jobPostFilterRequest, pageable);
 		return new DataResponse<>(jobPostDtos);
 	}
 
@@ -164,11 +167,12 @@ public class CommonController {
 	}
 
 	@PostMapping("/job-post-filter-v2")
-	public DataResponse<Page<JobPostDto>> filterJobPostV2(
-			@RequestBody(required = false) RequestPageable<JobPostFilterRequest> jobPostFilterRequest) {
+	public DataResponse<Page<JobPostDto>> filterJobPostV2(@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(required = false) Integer size,
+			@RequestBody(required = false) JobPostFilterRequest jobPostFilterRequest) {
 		try {
-			Page<JobPost> jobPosts = jobPostService.filterJobPost(jobPostFilterRequest);
-			Page<JobPostDto> jobPostDtos = jobPosts.map(jobPostMapper::jobPostToJobPostDto);
+			Pageable pageable = this.getPageable(page, size);
+			Page<JobPostDto> jobPostDtos = jobPostService.filterJobPost(jobPostFilterRequest, pageable);
 			return new DataResponse<>(jobPostDtos);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

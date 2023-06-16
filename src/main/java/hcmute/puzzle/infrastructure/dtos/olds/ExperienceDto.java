@@ -14,12 +14,12 @@ public class ExperienceDto {
   private String title;
   private String employmentType;
   private String company;
-  private boolean isWorking;
+  private Boolean isWorking;
   private String industry;
   private Date startDate;
   private Date endDate;
   private String description;
   private String skills;
-  private long candidateId;
+  private Long candidateId;
   // private List<Long> skillIds;
 }

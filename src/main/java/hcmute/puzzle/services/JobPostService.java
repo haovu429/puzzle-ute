@@ -74,5 +74,5 @@ public interface JobPostService {
 
   void checkCreatedJobPostLimit(long employerId);
 
-  Page<JobPost> filterJobPost(RequestPageable<JobPostFilterRequest> jobPostFilterRequest);
+  Page<JobPostDto> filterJobPost(JobPostFilterRequest jobPostFilterRequest, Pageable pageable);
 }

@@ -12,5 +12,5 @@ public class ExtraInfoDto {
   private Long id;
   private String name;
   private ExtraInfoType type;
-  private boolean isActive;
+  private Boolean isActive;
 }

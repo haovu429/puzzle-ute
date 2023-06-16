@@ -16,6 +16,7 @@ public class JobPostUserPostRequest {
 	private String address;
 	private String educationLevel;
 	private Integer experienceYear;
+	private String level;
 	private Integer quantity;
 	private Long minBudget;
 	private Long maxBudget;

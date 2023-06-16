@@ -29,5 +29,9 @@ public interface EmployerMapper {
 	@Mapping(target = "evaluateEntities", ignore = true)
 	@Mapping(target = "companyEntities", ignore = true)
 	@Mapping(target = "user", ignore = true)
+	@Mapping(target = "createdBy", ignore = true)
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "updatedBy", ignore = true)
+	@Mapping(target = "updatedAt", ignore = true)
 	void updateEmployerFromEmployerDto(EmployerDto employerDto,@MappingTarget Employer employer);
 }

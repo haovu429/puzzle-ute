@@ -41,6 +41,7 @@ public interface UserMapper {
     @Mapping(target = "isActive", ignore = true)
     @Mapping(target = "isDelete", ignore = true)
     @Mapping(target = "lastLoginAt", ignore = true)
+    @Mapping(target = "balance", ignore = true)
     @Mapping(target = "employer", ignore = true)
     @Mapping(target = "candidate", ignore = true)
     @Mapping(target = "documentEntities", ignore = true)

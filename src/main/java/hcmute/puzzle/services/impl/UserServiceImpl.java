@@ -277,7 +277,7 @@ public class UserServiceImpl implements UserService {
 
 		// oldUser.get().setAvatar(userPayload.getAvatar());
 		// oldUser.get().setAvatar(updateAvatarReturnUrl(oldUser.get().getEmail(), file));
-		oldUser.setIsActive(userPayload.isActive());
+		oldUser.setIsActive(userPayload.getIsActive());
 
 		if (userPayload.getRoleCodes() != null && !userPayload.getRoleCodes().isEmpty()) {
 			Set<Role> roleEntities = new HashSet<>();

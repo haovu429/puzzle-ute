@@ -52,7 +52,7 @@ public class Converter<T, D> {
         userPostDTO.setAvatar(entity.getAvatar());
         // userPostDTO.setJoinDate(entity.getCreatedAt());
         userPostDTO.setLastLoginAt(entity.getLastLoginAt());
-        userPostDTO.setActive(entity.getIsActive());
+        userPostDTO.setIsActive(entity.getIsActive());
         if (entity.getProvider() != null) {
             userPostDTO.setProvider(entity.getProvider().toString());
         }
@@ -76,7 +76,7 @@ public class Converter<T, D> {
         user.setPhone(dto.getPhone());
         user.setAvatar(dto.getAvatar());
         user.setLastLoginAt(dto.getLastLoginAt());
-        user.setIsActive(dto.isActive());
+        user.setIsActive(dto.getIsActive());
         user.setProvider(Provider.asProvider(dto.getProvider()));
         user.setFullName(dto.getFullName());
         user.setEmailVerified(dto.isEmailVerified());
@@ -326,7 +326,7 @@ public class Converter<T, D> {
         dto.setTitle(entity.getTitle());
         dto.setEmploymentType(entity.getEmploymentType());
         dto.setCompany(entity.getCompany());
-        dto.setWorking(entity.getIsWorking());
+        dto.setIsWorking(entity.getIsWorking());
         dto.setIndustry(entity.getIndustry());
         dto.setStartDate(entity.getStartDate());
         dto.setEndDate(entity.getEndDate());
@@ -347,7 +347,7 @@ public class Converter<T, D> {
         entity.setTitle(dto.getTitle());
         entity.setEmploymentType(dto.getEmploymentType());
         entity.setCompany(dto.getCompany());
-        entity.setIsWorking(dto.isWorking());
+        entity.setIsWorking(dto.getIsWorking());
         entity.setIndustry(dto.getIndustry());
         entity.setStartDate(dto.getStartDate());
         entity.setEndDate(dto.getEndDate());
@@ -553,7 +553,7 @@ public class Converter<T, D> {
         ExtraInfoDto dto = new ExtraInfoDto();
         dto.setName(entity.getName());
         dto.setType(entity.getType());
-        dto.setActive(entity.getIsActive());
+        dto.setIsActive(entity.getIsActive());
 
         return dto;
     }
@@ -562,7 +562,7 @@ public class Converter<T, D> {
         ExtraInfo entity = new ExtraInfo();
         entity.setName(dto.getName());
         entity.setType(dto.getType());
-        entity.setIsActive(dto.isActive());
+        entity.setIsActive(dto.getIsActive());
 
         return entity;
     }

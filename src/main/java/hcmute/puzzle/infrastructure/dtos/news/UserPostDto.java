@@ -62,7 +62,7 @@ public class UserPostDto extends Auditable {
   private String locale;
 
   @JsonProperty("isActive")
-  private boolean isActive = true;
+  private Boolean isActive = true;
 
   private String provider;
 

@@ -27,9 +27,17 @@ public interface JobPostMapper {
 	@Mapping(target = "savedCandidates", ignore = true)
 	@Mapping(target = "company", ignore = true)
 	@Mapping(target = "category", ignore = true)
+	@Mapping(target = "expiryDate", ignore = true)
+	@Mapping(target = "id", ignore = true)
 	JobPost jobPostUserPostRequestToJobPost(JobPostUserPostRequest jobPostUserPostRequest);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "createdBy", ignore = true)
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "updatedBy", ignore = true)
+	@Mapping(target = "updatedAt", ignore = true)
+	@Mapping(target = "expiryDate", ignore = true)
 	@Mapping(target = "views", ignore = true)
 	@Mapping(target = "isActive", ignore = true)
 	@Mapping(target = "isDeleted", ignore = true)
@@ -42,6 +50,12 @@ public interface JobPostMapper {
 	void updateJobPostFromJobPostUserPostRequest(JobPostUserPostRequest jobPostUserPostRequest, @MappingTarget JobPost jobPost);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "createdBy", ignore = true)
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "updatedBy", ignore = true)
+	@Mapping(target = "updatedAt", ignore = true)
+	@Mapping(target = "expiryDate", ignore = true)
 	@Mapping(target = "views", ignore = true)
 	@Mapping(target = "applications", ignore = true)
 	@Mapping(target = "viewedUsers", ignore = true)

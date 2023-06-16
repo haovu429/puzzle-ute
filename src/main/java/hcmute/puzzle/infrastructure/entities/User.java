@@ -72,6 +72,7 @@ public class User extends Auditable implements Serializable {
   private Boolean isAdmin;
 
   @Column(name = "balance")
+  @Builder.Default
   private Long balance = 0L;
 
   // https://shareprogramming.net/phan-biet-fetchmode-va-fetchtype-trong-jpa-hibernate/

@@ -2,10 +2,7 @@ package hcmute.puzzle.infrastructure.mappers;
 
 import hcmute.puzzle.infrastructure.dtos.olds.ExtraInfoDto;
 import hcmute.puzzle.infrastructure.entities.ExtraInfo;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
@@ -18,5 +15,10 @@ public interface ExtraInfoMapper {
 	ExtraInfo extraInfoDtoToExtraInfo(ExtraInfoDto extraInfoDto);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "createdBy", ignore = true)
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "updatedBy", ignore = true)
+	@Mapping(target = "updatedAt", ignore = true)
+	@Mapping(target = "isActive", ignore = true)
 	void updateExtraInfoFromExtraInfoDto(ExtraInfoDto extraInfoDto, @MappingTarget ExtraInfo extraInfo);
 }

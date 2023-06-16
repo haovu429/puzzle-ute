@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 @Data
 public class RequestPageable <T>{
 	T body;
-	Pagination pagination;
+	//Pagination pagination;
 }
