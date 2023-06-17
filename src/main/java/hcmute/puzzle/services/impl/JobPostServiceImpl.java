@@ -156,7 +156,7 @@ public class JobPostServiceImpl implements JobPostService {
                                                                                    .getAuthentication()
                                                                                    .getPrincipal();
     User currentUser = customUserDetails.getUser();
-    if (currentUser.getIsAdmin() && currentUser.getId() != jobPost.getCreatedEmployer().getId()) {
+    if (!currentUser.getIsAdmin() && currentUser.getId() != jobPost.getCreatedEmployer().getId()) {
       throw new UnauthorizedException("You don't have rights for this job post");
     }
     jobPostMapper.updateJobPostFromJobPostAdminPostRequest(jobPostAdminPostRequest, jobPost);
