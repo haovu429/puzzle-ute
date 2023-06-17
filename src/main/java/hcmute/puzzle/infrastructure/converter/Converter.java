@@ -79,7 +79,7 @@ public class Converter<T, D> {
         user.setIsActive(dto.getIsActive());
         user.setProvider(Provider.asProvider(dto.getProvider()));
         user.setFullName(dto.getFullName());
-        user.setEmailVerified(dto.isEmailVerified());
+        user.setEmailVerified(dto.getEmailVerified());
         user.setLocale(dto.getLocale());
 
         Set<Role> roleEntities = new HashSet<>();

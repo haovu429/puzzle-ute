@@ -54,7 +54,7 @@ public class UserPostDto extends Auditable {
   private Date lastLoginAt;
 
   @JsonProperty("emailVerified")
-  private boolean emailVerified;
+  private Boolean emailVerified;
 
   private Long balance;
 
@@ -62,7 +62,7 @@ public class UserPostDto extends Auditable {
   private String locale;
 
   @JsonProperty("isActive")
-  private Boolean isActive = true;
+  private Boolean isActive;
 
   private String provider;
 

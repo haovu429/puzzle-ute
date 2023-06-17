@@ -15,6 +15,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +43,8 @@ public class UpdateUserForAdminDto {
 
     @JsonProperty("avatar")
     private String avatar;
+
+    private MultipartFile avatarFile;
 
     @JsonProperty("fullName")
     private String fullName;

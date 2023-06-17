@@ -19,6 +19,5 @@ public interface ExtraInfoMapper {
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "updatedBy", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
-	@Mapping(target = "isActive", ignore = true)
 	void updateExtraInfoFromExtraInfoDto(ExtraInfoDto extraInfoDto, @MappingTarget ExtraInfo extraInfo);
 }

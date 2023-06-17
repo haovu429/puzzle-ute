@@ -2,10 +2,9 @@ package hcmute.puzzle.services;
 
 import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.infrastructure.dtos.olds.CompanyDto;
-import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.request.CreateCompanyAdminRequest;
 import hcmute.puzzle.infrastructure.dtos.response.CompanyResponse;
 import hcmute.puzzle.infrastructure.entities.Employer;
-import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.models.CompanyFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,8 +18,7 @@ public interface CompanyService {
 
 	//  DataResponse createCompanyForAdmin(CreateCompanyAdminRequest companyAdminDto);
 
-	CompanyResponse update(long companyId, CompanyDto companyPayload, MultipartFile imageFile,
-			Employer createEmployer) throws NotFoundException;
+	CompanyResponse updateForAdmin(long companyId, CreateCompanyAdminRequest companyPayload) throws NotFoundException;
 
 	void delete(long id);
 

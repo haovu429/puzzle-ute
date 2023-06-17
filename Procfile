@@ -1,0 +1,1 @@
+web java -Xms150M -Dserver.port=$PORT $JAVA_OPTS -jar target/puzzle-ute-1.jar

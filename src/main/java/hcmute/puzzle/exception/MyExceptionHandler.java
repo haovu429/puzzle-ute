@@ -3,13 +3,17 @@ package hcmute.puzzle.exception;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import jakarta.xml.bind.ValidationException;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static hcmute.puzzle.utils.Constant.ResponseCode.STATUS_CUSTOM_EXCEPTION;
 import static hcmute.puzzle.utils.Constant.ResponseCode.STATUS_RUNTIME_EXCEPTION;
@@ -166,6 +170,22 @@ public class MyExceptionHandler {
     log.error(e.getMessage(), e);
     DataResponse dataResponse = new DataResponse(ErrorResponse.VALIDATION_ERROR);
     dataResponse.setErrMsg(e.getMessage());
+    return dataResponse;
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  @ResponseBody
+  public DataResponse handleBadRequestException(MethodArgumentNotValidException e) {
+    log.error(e.getMessage(), e);
+    Map<String, String> errors = new HashMap<>();
+    e.getBindingResult().getAllErrors().forEach((error) -> {
+
+      String fieldName = ((FieldError) error).getField();
+      String message = error.getDefaultMessage();
+      errors.put(fieldName, message);
+    });
+    DataResponse dataResponse = new DataResponse<>(ErrorResponse.VALIDATION_ERROR);
+    dataResponse.setErrMsg(errors.toString());
     return dataResponse;
   }
 

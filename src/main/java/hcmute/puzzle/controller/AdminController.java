@@ -2,8 +2,8 @@ package hcmute.puzzle.controller;
 
 import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
-import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.news.CreateUserForAdminDto;
+import hcmute.puzzle.infrastructure.dtos.news.UpdateUserForAdminDto;
 import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
 import hcmute.puzzle.infrastructure.dtos.olds.CategoryDto;
 import hcmute.puzzle.infrastructure.dtos.olds.CompanyDto;
@@ -92,7 +92,7 @@ public class AdminController {
 	@PostMapping("/company")
 	public DataResponse<CompanyResponse> createCompany(@ModelAttribute CreateCompanyAdminRequest companyPayload) throws
 			NotFoundException {
-		CompanyDto companyDTO = companyMapper.CreateCompanyAdminDtoToCompanyDto(companyPayload);
+		CompanyDto companyDTO = companyMapper.createCompanyAdminDtoToCompanyDto(companyPayload);
 		//    companyDTO.setName(companyPayload.getName());
 		//    companyDTO.setDescription(companyPayload.getDescription());
 		//    companyDTO.setWebsite(companyPayload.getWebsite());
@@ -109,13 +109,12 @@ public class AdminController {
 		companyDTO.setDescription(companyPayload.getDescription());
 		companyDTO.setWebsite(companyPayload.getWebsite());
 		companyDTO.setIsActive(companyPayload.getIsActive());
-		Employer employer = null;
-		if (companyPayload.getCreatedEmployerId() != null) {
-			employer = employerRepository.findById(companyPayload.getCreatedEmployerId())
-										 .orElseThrow(() -> new NotFoundException("NOT_FOUND_EMPLOYER"));
-		}
-		CompanyResponse companyResponse = companyService.update(companyId, companyDTO, companyPayload.getImageFile(),
-																employer);
+//		Employer employer = null;
+//		if (companyPayload.getCreatedEmployerId() != null) {
+//			employer = employerRepository.findById(companyPayload.getCreatedEmployerId())
+//										 .orElseThrow(() -> new NotFoundException("NOT_FOUND_EMPLOYER"));
+//		}
+		CompanyResponse companyResponse = companyService.updateForAdmin(companyId, companyPayload);
 		return new DataResponse<>(companyResponse);
 	}
 
@@ -266,8 +265,11 @@ public class AdminController {
 
 	@PutMapping("/account/{userId}")
 	public DataResponse<UserPostDto> updateAccountById(@PathVariable(value = "userId") long userId,
-			@RequestBody UserPostDto user) {
-		UserPostDto userPostDto = userService.updateForAdmin(userId, user);
+			@ModelAttribute UpdateUserForAdminDto updateUserForAdminDto, @RequestPart(required = false) MultipartFile avatar) {
+		if (avatar != null ) {
+			updateUserForAdminDto.setAvatarFile(avatar);
+		}
+		UserPostDto userPostDto = userService.updateUserForAdmin(userId, updateUserForAdminDto);
 		return new DataResponse<>(userPostDto);
 	}
 
@@ -286,7 +288,7 @@ public class AdminController {
 		return new DataResponse<>(invoiceDtos);
 	}
 
-	@GetMapping("/invoice/detail/{invoiceId}")
+	@GetMapping("/invoice/{invoiceId}")
 	public DataResponse<InvoiceDto> getOneInvoice(@PathVariable(value = "invoiceId") long invoiceId) {
 		InvoiceDto invoiceDto = invoiceService.getOneInvoice(invoiceId);
 		return new DataResponse<>(invoiceDto);

@@ -4,6 +4,8 @@ import hcmute.puzzle.infrastructure.dtos.olds.EmployerDto;
 import hcmute.puzzle.infrastructure.entities.Company;
 import hcmute.puzzle.infrastructure.entities.Employer;
 import io.swagger.models.auth.In;
+import jakarta.persistence.Column;
+import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -34,6 +36,8 @@ public class JobPostDto implements Serializable {
 	private Boolean labor;
 	private String skills;
 	private Long views;
+	private Boolean isPublic;
+	private Boolean isActive;
 	private Boolean canApply;
 	private EmployerDto createdEmployer;
 	private CompanyResponse company;

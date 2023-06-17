@@ -5,8 +5,7 @@ import hcmute.puzzle.infrastructure.dtos.response.CompanyResponse;
 import hcmute.puzzle.infrastructure.entities.Company;
 import hcmute.puzzle.infrastructure.dtos.request.CreateCompanyAdminRequest;
 import hcmute.puzzle.infrastructure.dtos.request.CreateCompanyRoleUserRequest;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
@@ -29,7 +28,20 @@ public interface CompanyMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "image", ignore = true)
-    CompanyDto CreateCompanyAdminDtoToCompanyDto(CreateCompanyAdminRequest createCompanyAdminRequest);
+    CompanyDto createCompanyAdminDtoToCompanyDto(CreateCompanyAdminRequest createCompanyAdminRequest);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedBy", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "image", ignore = true)
+    @Mapping(target = "isActive", ignore = true)
+    @Mapping(target = "createdEmployer", ignore = true)
+    @Mapping(target = "followingCandidate", ignore = true)
+    @Mapping(target = "jobPostEntities", ignore = true)
+    void updateCompanyRoleAdminFromCompanyDto(CreateCompanyAdminRequest createCompanyAdminRequest, @MappingTarget Company company);
 
 
     //    @Mapping(target = "username", source = "username")

@@ -18,13 +18,9 @@ public class WebClientConfiguration {
 	@Bean
 	public WebClient webClient() {
 		HttpClient httpClient = HttpClient.create()
-										  .tcpConfiguration(
-												  client -> client.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
-																  .doOnConnected(conn -> conn.addHandlerLast(
-																									 new ReadTimeoutHandler(10))
-																							 .addHandlerLast(
-																									 new WriteTimeoutHandler(
-																											 10))));
+										  .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
+										  .doOnConnected(conn -> conn.addHandlerLast(new ReadTimeoutHandler(10))
+																	 .addHandlerLast(new WriteTimeoutHandler(10)));
 		ClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
 		return WebClient.builder()
 						.baseUrl("http://localhost:8081/mock")

@@ -185,8 +185,9 @@ public class UserServiceImpl implements UserService {
 
 	public UserPostDto updateUserForAdmin(long id, UpdateUserForAdminDto user) {
 
+
 		User updateUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException("NOT_FOUND_USER"));
-		UserMapper.INSTANCE.updateUserFromDto(user, updateUser);
+		userMapper.updateUserFromDto(user, updateUser);
 		if (user.getRoleCodes() != null && !user.getRoleCodes().isEmpty()) {
 
 			if (updateUser.getRoles() != null && !updateUser.getRoles().isEmpty()) {
@@ -271,18 +272,18 @@ public class UserServiceImpl implements UserService {
 			//      oldUser.get().setFullName(userPayload.getFullName());
 		}
 
-		if (userPayload.isEmailVerified() != oldUser.getEmailVerified()) {
-			oldUser.setEmailVerified(userPayload.isEmailVerified());
+		if (userPayload.getEmailVerified() != oldUser.getEmailVerified()) {
+			oldUser.setEmailVerified(userPayload.getEmailVerified());
 		}
 
-		// oldUser.get().setAvatar(userPayload.getAvatar());
-		// oldUser.get().setAvatar(updateAvatarReturnUrl(oldUser.get().getEmail(), file));
-		oldUser.setIsActive(userPayload.getIsActive());
+		if (!oldUser.getIsAdmin()) {
+			oldUser.setIsActive(userPayload.getIsActive());
+		}
 
 		if (userPayload.getRoleCodes() != null && !userPayload.getRoleCodes().isEmpty()) {
 			Set<Role> roleEntities = new HashSet<>();
 			for (String code : userPayload.getRoleCodes()) {
-				Role role = roleRepository.findByCode(code).orElseThrow(
+				Role role = roleRepository.findByCode(code.toLowerCase()).orElseThrow(
 						() -> new NotFoundDataException("Not found role")
 				);
 				if (role.getName().equals(Roles.CANDIDATE.getValue())) {

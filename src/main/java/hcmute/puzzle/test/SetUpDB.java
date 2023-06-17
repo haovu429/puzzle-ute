@@ -149,15 +149,28 @@ public class SetUpDB {
                          .password(passwordEncoder.encode("123456"))
                          .isActive(true)
                          .emailVerified(true)
+                         .isAdmin(true)
                          .build();
         user5.getRoles().add(userRole1);
         user5.getRoles().add(userRole2);
+
+
+        User user6 = User.builder()
+                         .email("admin2@gmail.com")
+                         .password(passwordEncoder.encode("123456"))
+                         .isActive(true)
+                         .emailVerified(true)
+                         .isAdmin(true)
+                         .build();
+        user6.getRoles().add(userRole1);
+        user6.getRoles().add(userRole2);
 
         userList.add(user1);
         userList.add(user2);
         userList.add(user3);
         userList.add(user4);
         userList.add(user5);
+        userList.add(user6);
 
         userRepository.saveAll(userList);
 
@@ -414,6 +427,7 @@ public class SetUpDB {
         extraInfos.add(position4);
 
         extraInfoRepository.saveAll(extraInfos);
+
 
         //    Set<ExtraInfoEntity> extraInfoList = new HashSet<>();
         //    ExtraInfoEntity extraInfo1 = new ExtraInfoEntity();

@@ -68,7 +68,7 @@ public class User extends Auditable implements Serializable {
   @Temporal(TemporalType.TIMESTAMP)
   private Date lastLoginAt;
 
-  @Transient
+  @Column(name = "is_admin")
   private Boolean isAdmin;
 
   @Column(name = "balance")

@@ -3,6 +3,7 @@ package hcmute.puzzle.services.impl;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.*;
 import hcmute.puzzle.infrastructure.dtos.olds.CompanyDto;
+import hcmute.puzzle.infrastructure.dtos.request.CreateCompanyAdminRequest;
 import hcmute.puzzle.infrastructure.dtos.response.CompanyResponse;
 import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.mappers.CompanyMapper;
@@ -133,25 +134,27 @@ public class CompanyServiceImpl implements CompanyService {
   //  }
 
   @Override
-  public CompanyResponse update(long companyId, CompanyDto companyPayload, MultipartFile imageFile,
-          Employer createEmployer) throws NotFoundException {
-    Company companyEntityOptional = companyRepository.findById(companyId)
-                                                     .orElseThrow(() -> new NotFoundDataException("Company not found"));
+  public CompanyResponse updateForAdmin(long companyId, CreateCompanyAdminRequest companyPayload) throws NotFoundException {
+    Company company = companyRepository.findById(companyId)
+                                       .orElseThrow(() -> new NotFoundDataException("Company not found"));
+    MultipartFile imageFile = companyPayload.getImageFile();
+    companyMapper.updateCompanyRoleAdminFromCompanyDto(companyPayload, company);
 
-    Company company = companyEntityOptional;
-    if (companyPayload.getName() != null) {
-      company.setName(companyPayload.getName());
-    }
+    //    if (companyPayload.getName() != null) {
+    //      company.setName(companyPayload.getName());
+    //    }
+    //
+    //    if (companyPayload.getDescription() != null) {
+    //      company.setDescription(companyPayload.getDescription());
+    //    }
+    //
+    //    if (companyPayload.getWebsite() != null) {
+    //      company.setWebsite(companyPayload.getWebsite());
+    //    }
 
-    if (companyPayload.getDescription() != null) {
-      company.setDescription(companyPayload.getDescription());
-    }
-
-    if (companyPayload.getWebsite() != null) {
-      company.setWebsite(companyPayload.getWebsite());
-    }
-
-    if (createEmployer != null) {
+    if (companyPayload.getCreatedEmployerId() != null) {
+      Employer createEmployer = employerRepository.findById(companyPayload.getCreatedEmployerId())
+                                   .orElseThrow(() -> new NotFoundException("NOT_FOUND_EMPLOYER"));
       company.setCreatedEmployer(createEmployer);
     }
 
