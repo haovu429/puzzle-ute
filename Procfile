@@ -1,1 +1,1 @@
-web java -Xms150M -Xmx500M -Xss512k  -XX:CICompilerCount=2 -Dserver.port=$PORT $JAVA_OPTS -jar target/puzzle-ute-1.jar
+web java -Xms150M -Xmx400M -Xss512k  -XX:CICompilerCount=2 -Dserver.port=$PORT $JAVA_OPTS -jar target/puzzle-ute-1.jar
