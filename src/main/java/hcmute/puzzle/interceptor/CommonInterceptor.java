@@ -20,7 +20,7 @@ public class CommonInterceptor implements HandlerInterceptor {
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
 
-    System.out.println("Pre Handle method is Calling");
+    logger.info("Pre Handle method is Calling");
     return true;
   }
 
@@ -32,7 +32,7 @@ public class CommonInterceptor implements HandlerInterceptor {
       ModelAndView modelAndView)
       throws Exception {
 
-    System.out.println("Post Handle method is Calling");
+    logger.info("Post Handle method is Calling");
   }
 
   @Override
@@ -40,6 +40,6 @@ public class CommonInterceptor implements HandlerInterceptor {
       HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception)
       throws Exception {
 
-    System.out.println("Request and Response is completed");
+    logger.info("Request and Response is completed");
   }
 }

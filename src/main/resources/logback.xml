@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
-<!--    <include resource="org/springframework/boot/logging/logback/base.xml" />-->
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <property name="LOG_DIR" value="./logs" />
     <property name="LOG_FILE" value="LogFile" />
     <property name="APP_NAME" value="puzzle" />
     <property name="CRON_JOB" value="Cronjob" />
-    <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${LOG_DIR}/${LOG_FILE}-%d{yyyy-MM-dd, Asia/Ho_Chi_Minh}-%i.log</fileNamePattern>
             <maxFileSize>10MB</maxFileSize>
-            <maxHistory>2</maxHistory>
+            <maxHistory>7</maxHistory>
             <totalSizeCap>100MB</totalSizeCap>
         </rollingPolicy>
         <encoder>
@@ -29,11 +29,11 @@
         </encoder>
     </appender>
 
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
+    <!--    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">-->
+    <!--        <encoder>-->
+    <!--            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>-->
+    <!--        </encoder>-->
+    <!--    </appender>-->
     <!--    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
     <!--        <file>${LOG_FILE}.log</file>-->
     <!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
@@ -50,11 +50,11 @@
     <springProfile name="local">
         <root level="info">
             <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="FILE-ROLLING"/>
+            <appender-ref ref="FILE"/>
         </root>
         <logger name="hcmute.puzzle" level="INFO" additivity="false">
             <!--            <appender-ref ref="CONSOLE"/>-->
-            <appender-ref ref="FILE-ROLLING"/>
+            <appender-ref ref="FILE"/>
         </logger>
 
         <logger name="hcmute.puzzle.services.schedule_service.ScheduleService" level="INFO" additivity="false">
@@ -70,7 +70,7 @@
         </root>
         <logger name="hcmute.puzzle" level="INFO" additivity="false">
             <appender-ref ref="CONSOLE" />
-            <appender-ref ref="FILE-ROLLING" />
+            <appender-ref ref="FILE" />
         </logger>
 
         <logger name="hcmute.puzzle.services.schedule_service.ScheduleService" level="INFO" additivity="false">
