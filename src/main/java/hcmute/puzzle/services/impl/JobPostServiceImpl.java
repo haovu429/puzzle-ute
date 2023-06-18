@@ -285,7 +285,6 @@ public class JobPostServiceImpl implements JobPostService {
                                             .map(jobPostMapper::jobPostToJobPostDto)
                                             .toList();
     processListJobPost(jobPostDtos);
-
     return jobPostDtos;
   }
 

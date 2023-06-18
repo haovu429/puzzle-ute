@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="PuzzleUteApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-    <option name="ACTIVE_PROFILES" value="prod" />
+    <option name="ACTIVE_PROFILES" value="local" />
     <additionalParameters>
       <param>
         <option name="name" value="spring.config.location" />

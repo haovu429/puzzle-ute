@@ -78,23 +78,23 @@ public class JobPost extends Auditable implements Serializable {
 
   @Column(name = "blind")
   @Builder.Default
-  private boolean blind = false;
+  private Boolean blind = false;
 
   @Column(name = "deaf")
   @Builder.Default
-  private boolean deaf = false;
+  private Boolean deaf = false;
 
   @Column(name = "communication_dis")
   @Builder.Default
-  private boolean communicationDis = false;
+  private Boolean communicationDis = false;
 
   @Column(name = "hand_dis")
   @Builder.Default
-  private boolean handDis = false;
+  private Boolean handDis = false;
 
   @Column(name = "labor")
   @Builder.Default
-  private boolean labor = false;
+  private Boolean labor = false;
 
   @Column(name = "skills", columnDefinition = "TEXT")
   private String skills;
@@ -107,10 +107,12 @@ public class JobPost extends Auditable implements Serializable {
   private Long views = 0L;
 
   @Column(name = "can_apply")
-  private Boolean canApply;
+  @Builder.Default
+  private Boolean canApply = true;
 
   @Column(name = "is_public")
-  private Boolean isPublic;
+  @Builder.Default
+  private Boolean isPublic = true;
 
   @Column(name = "is_active")
   @Builder.Default

@@ -448,11 +448,11 @@ public class Converter<T, D> {
 //        dto.setCreateTime(entity.getCreateTime());
         dto.setDueTime(entity.getDeadline());
         dto.setWorkStatus(entity.getWorkStatus());
-        dto.setBlind(entity.isBlind());
-        dto.setDeaf(entity.isDeaf());
-        dto.setCommunicationDis(entity.isCommunicationDis());
-        dto.setHandDis(entity.isHandDis());
-        dto.setLabor(entity.isLabor());
+        dto.setBlind(entity.getBlind());
+        dto.setDeaf(entity.getDeaf());
+        dto.setCommunicationDis(entity.getCommunicationDis());
+        dto.setHandDis(entity.getHandDis());
+        dto.setLabor(entity.getLabor());
         dto.setSkills(entity.getSkills());
 //        dto.setPositions(entity.getPositions());
         dto.setViews(entity.getViews());

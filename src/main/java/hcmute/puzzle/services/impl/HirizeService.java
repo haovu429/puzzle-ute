@@ -10,5 +10,8 @@ public class HirizeService {
 	@Autowired
 	private WebClient webClient;
 
+	public void parserRequest() {
+
+	}
 
 }
