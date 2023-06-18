@@ -122,6 +122,7 @@ public class TestController {
 	@Transactional
 	@GetMapping("/init-db")
 	public String initDB() {
+		//		setUpDB.tempRun();
 		setUpDB.preStart();
 		setUpDB.createMdFileType();
 		//    Optional<UserEntity> userEntity = userRepository.findByEmail("admin1@gmail.com");

@@ -37,7 +37,7 @@ public class WebSecurityConfig {
 
 	private static final String[] AUTH_WHITE_LIST_BUSINESS = {"/common/**", "/schedule-config/**", "/test/**",
 			"/init-db", "/oauth2/**", "/api-docs", "/actuator/**", "/login/**", "/auth/**", "/login-google/**",
-			"/forgot-password", "/reset-password", "/", "/login-google", "/oauth/**", "/pay-result/**", "/system/**"};
+			"/forgot-password", "/reset-password", "/", "/login-google", "/oauth/**", "/pay-result/**", "/system/**", "/hirize/**"};
 
 	//    @Autowired
 	//    private AuthEntryPointJwt unauthorizedHandler;

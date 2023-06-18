@@ -54,6 +54,9 @@ public class SetUpDB {
     @Autowired
     BlogPostRepository blogPostRepository;
 
+    @Autowired
+    SystemConfigurationRepository systemConfigurationRepository;
+
     public void preStart() {
 
         List<Role> roles = new ArrayList<>();
@@ -472,30 +475,79 @@ public class SetUpDB {
                         .type(hcmute.puzzle.infrastructure.models.enums.FileType.IMAGE)
                         .location(Constant.FileLocation.STORAGE_COMPANY_IMAGE_LOCATION)
                         .storageName(Constant.StorageName.CLOUDINARY)
-                        .author(SYSTEM_MAIL)
-                        .build();
+                        .author(SYSTEM_MAIL).build();
 
-        FileType blogImageType =
-                FileType.builder()
-                        .category(FileCategory.IMAGE_BLOG)
-                        .type(hcmute.puzzle.infrastructure.models.enums.FileType.IMAGE)
-                        .location(Constant.FileLocation.STORAGE_BLOG_IMAGE_LOCATION)
-                        .storageName(Constant.StorageName.CLOUDINARY)
-                        .author(SYSTEM_MAIL)
-                        .build();
+        FileType blogImageType = FileType.builder()
+                                         .category(FileCategory.IMAGE_BLOG)
+                                         .type(hcmute.puzzle.infrastructure.models.enums.FileType.IMAGE)
+                                         .location(Constant.FileLocation.STORAGE_BLOG_IMAGE_LOCATION)
+                                         .storageName(Constant.StorageName.CLOUDINARY)
+                                         .author(SYSTEM_MAIL)
+                                         .build();
 
-        FileType blogThumbnailType =
-                FileType.builder()
-                        .category(FileCategory.THUMBNAIL_BLOGPOST)
-                        .type(hcmute.puzzle.infrastructure.models.enums.FileType.IMAGE)
-                        .location(Constant.FileLocation.STORAGE_BLOG_THUMBNAIL_LOCATION)
-                        .storageName(Constant.StorageName.CLOUDINARY)
-                        .author(SYSTEM_MAIL)
-                        .build();
+        FileType blogThumbnailType = FileType.builder()
+                                             .category(FileCategory.THUMBNAIL_BLOGPOST)
+                                             .type(hcmute.puzzle.infrastructure.models.enums.FileType.IMAGE)
+                                             .location(Constant.FileLocation.STORAGE_BLOG_THUMBNAIL_LOCATION)
+                                             .storageName(Constant.StorageName.CLOUDINARY)
+                                             .author(SYSTEM_MAIL)
+                                             .build();
+
+        List<SystemConfiguration> configurations = new ArrayList<>();
+
+        SystemConfiguration configuration1 = SystemConfiguration.builder()
+                                                               .key(Constant.Hirize.HIRIZE_RESUME_PARSER_API_KEY)
+                                                               .value("none")
+                                                               .build();
+        SystemConfiguration configuration2 = SystemConfiguration.builder()
+                                                               .key(Constant.Hirize.HIRIZE_AI_MATCHER_API_KEY)
+                                                               .value("none")
+                                                               .build();
+
+        SystemConfiguration configuration3 = SystemConfiguration.builder()
+                                                               .key(Constant.Hirize.HIRIZE_HIRIZE_IQ_API_KEY)
+                                                               .value("none")
+                                                               .build();
+        SystemConfiguration configuration4 = SystemConfiguration.builder()
+                                                               .key(Constant.Hirize.HIRIZE_BALANCE)
+                                                               .value("none")
+                                                               .build();
+        configurations.add(configuration1);
+        configurations.add(configuration2);
+        configurations.add(configuration3);
+        configurations.add(configuration4);
+        systemConfigurationRepository.saveAll(configurations);
 
 
-        List<FileType> fileTypeList =
-                new ArrayList<>(Arrays.asList(avatarType, companyType, blogImageType, blogThumbnailType));
+        List<FileType> fileTypeList = new ArrayList<>(
+                Arrays.asList(avatarType, companyType, blogImageType, blogThumbnailType));
         fileTypeRepository.saveAll(fileTypeList);
+    }
+
+    public void tempRun() {
+        List<SystemConfiguration> configurations = new ArrayList<>();
+
+        SystemConfiguration configuration1 = SystemConfiguration.builder()
+                                                                .key(Constant.Hirize.HIRIZE_RESUME_PARSER_API_KEY)
+                                                                .value("none")
+                                                                .build();
+        SystemConfiguration configuration2 = SystemConfiguration.builder()
+                                                                .key(Constant.Hirize.HIRIZE_AI_MATCHER_API_KEY)
+                                                                .value("none")
+                                                                .build();
+
+        SystemConfiguration configuration3 = SystemConfiguration.builder()
+                                                                .key(Constant.Hirize.HIRIZE_HIRIZE_IQ_API_KEY)
+                                                                .value("none")
+                                                                .build();
+        SystemConfiguration configuration4 = SystemConfiguration.builder()
+                                                                .key(Constant.Hirize.HIRIZE_BALANCE)
+                                                                .value("none")
+                                                                .build();
+        configurations.add(configuration1);
+        configurations.add(configuration2);
+        configurations.add(configuration3);
+        configurations.add(configuration4);
+        systemConfigurationRepository.saveAll(configurations);
     }
 }

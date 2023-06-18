@@ -74,6 +74,13 @@ public class Constant {
     public static final String VERIFY_ACCOUNT_URL = "/verify-account";
   }
 
+  public class Hirize {
+    public static final String HIRIZE_BALANCE = "HIRIZE_BALANCE";
+    public static final String HIRIZE_HIRIZE_IQ_API_KEY = "HIRIZE_HIRIZE_IQ_API_KEY";
+    public static final String HIRIZE_AI_MATCHER_API_KEY = "HIRIZE_AI_MATCHER_API_KEY";
+    public static final String HIRIZE_RESUME_PARSER_API_KEY = "HIRIZE_RESUME_PARSER_API_KEY";
+  }
+
   public class ResponseCode {
     public static final int STATUS_OK = 200;
     public static final int STATUS_NO_CONTENT = 200;
