@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+
 @Slf4j
 @RestController
 @RequestMapping(path = "/system")
@@ -40,5 +42,19 @@ public class SystemController {
 			}
 		});
 		return "Generate done. Please check log!";
+	}
+	@GetMapping("/memory-status")
+	public String getMemoryStatistics() {
+		ArrayList<Integer> arrayList = new ArrayList<>();
+		StringBuffer info = new StringBuffer();
+		info.append("i \t Free Memory \t Total Memory \t Max Memory");
+		for (int i = 0; i < 1000000; i++) {
+			arrayList.add(i);
+			info.append(i + " \t " + Runtime.getRuntime().freeMemory() +
+									   " \t \t " + Runtime.getRuntime().totalMemory() +
+									   " \t \t " + Runtime.getRuntime().maxMemory());
+
+		}
+		return info.toString();
 	}
 }

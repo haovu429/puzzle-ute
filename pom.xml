@@ -479,29 +479,29 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <!-- here the phase you need -->
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target/conf</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/resources/conf/*</directory>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--            <plugin>-->
+            <!--                <artifactId>maven-resources-plugin</artifactId>-->
+            <!--                <version>3.3.1</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <id>copy-resources</id>-->
+            <!--                        &lt;!&ndash; here the phase you need &ndash;&gt;-->
+            <!--                        <phase>validate</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>copy-resources</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <outputDirectory>${basedir}/target/conf</outputDirectory>-->
+            <!--                            <resources>-->
+            <!--                                <resource>-->
+            <!--                                    <directory>src/resources/conf/*</directory>-->
+            <!--                                    <filtering>true</filtering>-->
+            <!--                                </resource>-->
+            <!--                            </resources>-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
 
             <plugin>
                 <groupId>com.mysema.maven</groupId>
@@ -520,18 +520,20 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>com.heroku.sdk</groupId>
-                <artifactId>heroku-maven-plugin</artifactId>
-                <version>3.0.3</version>
-                <configuration>
-                    <appName>puzzle-ute</appName>
-                    <processTypes>
-                        <web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>
-                    </processTypes>
-                    <jdkVersion>17</jdkVersion>
-                </configuration>
-            </plugin>
+            <!--            <plugin>-->
+            <!--                <groupId>com.heroku.sdk</groupId>-->
+            <!--                <artifactId>heroku-maven-plugin</artifactId>-->
+            <!--                <version>3.0.3</version>-->
+            <!--                <configuration>-->
+            <!--                    <appName>puzzle-ute</appName>-->
+            <!--                    <processTypes>-->
+            <!--                        <web>java -Xmx300m -Xss512k -XX:CICompilerCount=2 -Dserver.port=$PORT $JAVA_OPTS -cp-->
+            <!--                            target/classes:target/dependency/* Main-->
+            <!--                        </web>-->
+            <!--                    </processTypes>-->
+            <!--                    <jdkVersion>17</jdkVersion>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
         </plugins>
     </build>
 
