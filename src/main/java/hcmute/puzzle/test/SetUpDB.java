@@ -297,6 +297,7 @@ public class SetUpDB {
         jobPost1.setMinBudget(800);
         jobPost1.setMaxBudget(1000);
         jobPost1.setIsActive(true);
+        jobPost1.setIsPublic(true);
         jobPost1.setCreatedEmployer(employer1);
         jobPost1.setCategory(category1);
 
@@ -312,6 +313,7 @@ public class SetUpDB {
         jobPost2.setQuantity(3);
         jobPost2.setMinBudget(800);
         jobPost2.setMaxBudget(1000);
+        jobPost2.setIsPublic(true);
         jobPost2.setIsActive(true);
         jobPost2.setCreatedEmployer(employer2);
         jobPost2.setCategory(category2);
@@ -330,6 +332,7 @@ public class SetUpDB {
                                   .maxBudget(1000)
                                   .createdEmployer(employer2)
                                   .isActive(true)
+                                  .isPublic(true)
                                   .category(category1)
                                   .build();
 

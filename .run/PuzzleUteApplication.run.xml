@@ -1,6 +1,5 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="PuzzleUteApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-    <option name="ACTIVE_PROFILES" value="local" />
     <additionalParameters>
       <param>
         <option name="name" value="spring.config.location" />
@@ -12,7 +11,7 @@
       <option name="environmentVariables" />
     </selectedOptions>
     <option name="SPRING_BOOT_MAIN_CLASS" value="hcmute.puzzle.PuzzleUteApplication" />
-    <option name="VM_PARAMETERS" value="-Djasypt.encryptor.password=puzzle -Dspring.profiles.active=local" />
+    <option name="VM_PARAMETERS" value="-Djasypt.encryptor.password=puzzle -Dspring.profiles.active=prod" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

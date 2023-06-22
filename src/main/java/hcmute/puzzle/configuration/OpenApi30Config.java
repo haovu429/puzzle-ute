@@ -25,17 +25,17 @@ import org.springframework.context.annotation.Configuration;
                 name = "License 1",
                 url = "https://www.youtube.com/channel/UC5GCMUwYXZTMKVc8OBvLbvQ"
         ),
-        termsOfService = "Term of service"),
-        servers = {
-                @Server(
-                        description = "LOCAL ENV",
-                        url = "http://localhost:8080/api"
-                ),
-                @Server(
-                        description = "PROD ENV",
-                        url = "https://puzzle-ute.herokuapp.com/api"
-                )
-        }
+        termsOfService = "Term of service")
+//        servers = {
+//                @Server(
+//                        description = "LOCAL ENV",
+//                        url = "http://localhost:8080/api"
+//                ),
+//                @Server(
+//                        description = "PROD ENV",
+//                        url = "https://puzzle-ute.herokuapp.com/api"
+//                )
+//        }
 )
 @SecurityScheme(
         name = "bearerAuth",

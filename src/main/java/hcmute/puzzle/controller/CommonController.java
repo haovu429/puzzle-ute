@@ -122,8 +122,12 @@ public class CommonController {
 	DataResponse<Page<JobPostDto>> getAllJobPost(@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(required = false) Integer size, @RequestParam(required = false) Long categoryId) {
 		Pageable pageable = this.getPageable(page, size);
+		List<Long> categoryIds = new ArrayList<>();
+		if (categoryId != null) {
+			categoryIds.add(categoryId);
+		}
 		JobPostFilterRequest jobPostFilterRequest = JobPostFilterRequest.builder()
-																		.categoryIds(List.of(categoryId))
+																		.categoryIds(categoryIds)
 																		.build();
 		Page<JobPostDto> jobPostDtos = jobPostService.filterJobPost(jobPostFilterRequest, pageable);
 		return new DataResponse<>(jobPostDtos);
