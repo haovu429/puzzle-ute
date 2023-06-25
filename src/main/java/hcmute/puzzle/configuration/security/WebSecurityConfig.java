@@ -110,11 +110,9 @@ public class WebSecurityConfig {
 																	.requestMatchers("/role/admin", "/admin/**")
 																	.hasAnyAuthority(Roles.ADMIN.getValue())
 																	.requestMatchers("/candidate/**")
-																	.hasAnyAuthority(Roles.CANDIDATE.getValue(),
-																					 Roles.ADMIN.getValue())
+																	.hasAnyAuthority(Roles.CANDIDATE.getValue())
 																	.requestMatchers("/employer/**", "/pay/**")
-																	.hasAnyAuthority(Roles.EMPLOYER.getValue(),
-																					 Roles.ADMIN.getValue())
+																	.hasAnyAuthority(Roles.EMPLOYER.getValue())
 																	.anyRequest()
 																	.authenticated())
 			.httpBasic(withDefaults())
