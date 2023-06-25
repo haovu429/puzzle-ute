@@ -43,6 +43,12 @@ public class File extends Auditable implements Serializable {
   @Column(name = "cloudinary_public_id")
   private String cloudinaryPublicId;
 
+  @Column(name = "s3_bucket_key_name")
+  private String s3BucketKeyName;
+
+  @Column(name = "provider")
+  private String provider;
+
   @Column(name = "is_deleted")
   @Builder.Default
   private Boolean isDeleted = false;

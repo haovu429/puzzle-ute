@@ -445,24 +445,11 @@ public class CommonController {
 
 	@PostMapping("/register")
 	public DataResponse<String> registerAccount(@RequestBody RegisterUserDto user) {
-		try {
 			User userEntity = userService.registerUser(user).orElse(null);
 			if (userEntity != null) {
-				securityService.sendTokenVerifyAccount(userEntity.getEmail());
+				//securityService.sendTokenVerifyAccount(userEntity.getEmail());
 				return new DataResponse<>("Create user " + user.getEmail() + " success");
 			}
-		} catch (MessagingException | TemplateException | IOException | ExecutionException | InterruptedException e) {
-			log.error(e.getMessage());
-			return new DataResponse<>(ErrorDefine.ServerError.SERVER_ERROR);
-		} catch (AlreadyExistsException e) {
-			e.printStackTrace();
-			log.error(e.getMessage(), e);
-			return new DataResponse<>(e.getMessage());
-		} catch (Exception e) {
-			e.printStackTrace();
-			log.error(e.getMessage(), e);
-			return new DataResponse<>(ErrorDefine.ServerError.SERVER_ERROR);
-		}
 		return new DataResponse<>("Error while sent mail verify");
 	}
 

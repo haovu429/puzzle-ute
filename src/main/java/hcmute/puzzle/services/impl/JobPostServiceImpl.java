@@ -8,9 +8,9 @@ import hcmute.puzzle.exception.UnauthorizedException;
 import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
 import hcmute.puzzle.infrastructure.dtos.request.JobPostAdminPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.JobPostUserPostRequest;
-import hcmute.puzzle.infrastructure.dtos.request.RequestPageable;
 import hcmute.puzzle.infrastructure.dtos.response.JobPostDto;
 import hcmute.puzzle.infrastructure.entities.*;
+import hcmute.puzzle.infrastructure.entities.QJobPost;
 import hcmute.puzzle.infrastructure.mappers.CandidateMapper;
 import hcmute.puzzle.infrastructure.mappers.JobPostMapper;
 import hcmute.puzzle.infrastructure.models.JobPostFilterRequest;
@@ -24,7 +24,6 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -263,6 +262,7 @@ public class JobPostServiceImpl implements JobPostService {
 
   @Override
   public List<JobPostDto> getJobPostByCreateEmployerId(long employerId, boolean isActive) {
+
     QJobPost jobPost = QJobPost.jobPost;
     JPAQueryFactory queryFactory = new JPAQueryFactory(em);
     List<JobPost> jobPosts = queryFactory.selectFrom(jobPost)

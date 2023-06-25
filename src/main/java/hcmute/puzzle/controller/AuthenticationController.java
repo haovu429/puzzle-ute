@@ -175,12 +175,12 @@ public class AuthenticationController {
   @PutMapping(VERIFY_ACCOUNT_URL)
   public DataResponse verifyAccount(@RequestBody Map<String, String> data) {
     String token = data.get("token");
-    String email = data.get("email");
-    if (Objects.isNull(token) || Objects.isNull(email)) {
-      String mess = String.format("Miss information: token: %s, email: %s", token, email);
-      log.warn("Miss information: token: {}, email: {}", token, email);
+//    String email = data.get("email");
+    if (Objects.isNull(token)) {
+      String mess = String.format("Miss information: token: %s", token);
+      log.warn("Miss information: token: {}, email: {}", token);
       return new DataResponse(ErrorDefine.ClientError.BAD_REQUEST_ERROR, mess, ErrorDefine.CLIENT_ERROR_CODE);
     }
-    return securityService.verifyAccount(token, email);
+    return securityService.verifyAccount(token);
   }
 }

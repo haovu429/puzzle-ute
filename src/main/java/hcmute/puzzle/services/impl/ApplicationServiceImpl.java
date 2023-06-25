@@ -1,24 +1,26 @@
 package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.configuration.security.CustomUserDetails;
-import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.exception.NotFoundDataException;
-import hcmute.puzzle.exception.UnauthorizedException;
+import hcmute.puzzle.exception.*;
 import hcmute.puzzle.infrastructure.dtos.olds.ApplicationDto;
+import hcmute.puzzle.infrastructure.dtos.request.ApplicationRequest;
 import hcmute.puzzle.infrastructure.dtos.response.CandidateApplicationResult;
 import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.mappers.ApplicationMapper;
 import hcmute.puzzle.infrastructure.mappers.CandidateMapper;
 import hcmute.puzzle.infrastructure.models.ApplicationResult;
-import hcmute.puzzle.infrastructure.models.CandidateAppliedAndResult;
 import hcmute.puzzle.infrastructure.models.ResponseApplication;
+import hcmute.puzzle.infrastructure.models.enums.FileCategory;
+import hcmute.puzzle.infrastructure.models.enums.FileType;
 import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
 import hcmute.puzzle.infrastructure.repository.CandidateRepository;
 import hcmute.puzzle.infrastructure.repository.EmployerRepository;
 import hcmute.puzzle.infrastructure.repository.JobPostRepository;
 import hcmute.puzzle.services.ApplicationService;
+import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.utils.mail.MailObject;
 import hcmute.puzzle.utils.mail.SendMail;
+import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +28,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,12 +49,18 @@ public class ApplicationServiceImpl implements ApplicationService {
 	EmployerRepository employerRepository;
 
 	@Autowired
+	FilesStorageService filesStorageService;
+
+	@Autowired
 	ApplicationMapper applicationMapper;
 
 	@Autowired
 	CandidateMapper candidateMapper;
 	@PersistenceContext
 	public EntityManager em;
+
+	@Autowired
+	AmazoneBucketService amazoneBucketService;
 
 	@Override
 	public ApplicationDto findById(Long id) {
@@ -285,5 +293,73 @@ public class ApplicationServiceImpl implements ApplicationService {
 		Long amount = applicationRepository.getAmountApplicationByJobPostId(jobPostId);
 
 		return amount;
+	}
+
+	@Transactional
+	public ApplicationDto candidateApply(long jobPostId, ApplicationRequest applicationRequest,
+			MultipartFile cvFile) throws InvalidBehaviorException {
+		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+																				 .getAuthentication()
+																				 .getPrincipal();
+
+		JobPost jobPost = jobPostRepository.findById(jobPostId)
+										   .orElseThrow(() -> new NotFoundDataException("JobPost no value present"));
+
+
+		if (!jobPost.getIsActive()) {
+			// throw new CustomException("You can't apply this jobPost. It isn't active");
+			throw new InvalidBehaviorException("You can't apply this jobPost. It isn't active");
+		}
+
+		if (Objects.nonNull(jobPost.getDeadline()) && jobPost.getDeadline().before(new Date())) {
+			// throw new CustomException("You can't apply this jobPost. It isn't active");
+			throw new InvalidBehaviorException("You can't apply this jobPost. job post has expired");
+		}
+
+		Application application = applicationRepository.findApplicationByCanIdAndJobPostId(
+				userDetails.getUser().getId(), jobPostId).orElse(null);
+		if (application != null) {
+			// throw new CustomException("You applied for this job");
+			throw new AlreadyExistsException("You applied for this job");
+		}
+
+		application = Application.builder()
+								 .jobPost(jobPost)
+								 .fullName(applicationRequest.getFullName())
+								 .email(applicationRequest.getEmail())
+								 .phone(applicationRequest.getPhone())
+								 .coverLetter(applicationRequest.getCoverLetter())
+								 .candidate(userDetails.getUser().getCandidate())
+								 .build();
+
+		if (cvFile != null) {
+			String cvUrl = amazoneBucketService.uploadObjectFromInputStream(cvFile, FileCategory.PDF_CV, true);
+			application.setCvName(cvFile.getOriginalFilename());
+			application.setCv(cvUrl);
+		}
+
+		application = applicationRepository.save(application);
+		ApplicationDto applicationDto = applicationMapper.applicationToApplicationDto(application);
+
+		// ====== process optional view count ==============
+		EntityGraph<JobPost> graph = this.em.createEntityGraph(JobPost.class);
+		graph.addAttributeNodes("viewedUsers");
+
+		Map<String, Object> hints = new HashMap<String, Object>();
+		hints.put("javax.persistence.loadgraph", graph);
+
+		jobPost = this.em.find(JobPost.class, jobPost.getId(), hints);
+
+		//    List<UserEntity> viewUsers = applicationRepository.findAllUserViewedJobPost(jobPost.getId());
+		//    if (viewUsers != null) {
+		//      viewUsers.add(userDetails.getUser());
+		//    } else {
+		//      viewUsers = new ArrayList<>();
+		//    }
+		jobPost.getViewedUsers().add(userDetails.getUser());
+		//    jobPost.setViewedUsers(new HashSet<>(viewUsers));
+		jobPostRepository.save(jobPost);
+
+		return applicationDto;
 	}
 }

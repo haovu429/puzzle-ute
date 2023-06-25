@@ -15,6 +15,7 @@ import hcmute.puzzle.infrastructure.entities.BlogPost;
 import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.mappers.UserMapper;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
+import hcmute.puzzle.infrastructure.models.enums.FileType;
 import hcmute.puzzle.infrastructure.repository.BlogPostRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.*;
@@ -317,7 +318,7 @@ public class UserController {
 
   @PostMapping("/upload-blog-image")
   public DataResponse<String> uploadBlogImage(@RequestParam("file") MultipartFile file) throws NotFoundException {
-    String fileName = storageService.uploadFileWithFileTypeReturnUrl(file.getOriginalFilename(), file, FileCategory.IMAGE_BLOG, true)
+    String fileName = storageService.uploadFileWithFileTypeReturnUrl(file.getOriginalFilename(), file, FileType.IMAGE, FileCategory.IMAGE_BLOG, true)
                                     .orElseThrow(() -> new FileStorageException("UPLOAD_FILE_FAILURE"));
     return new DataResponse<>(fileName);
   }

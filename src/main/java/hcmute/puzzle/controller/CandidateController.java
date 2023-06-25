@@ -1,12 +1,10 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.configuration.security.CustomUserDetails;
-import hcmute.puzzle.exception.AlreadyExistsException;
-import hcmute.puzzle.exception.CustomException;
-import hcmute.puzzle.exception.NotFoundDataException;
-import hcmute.puzzle.exception.UnauthorizedException;
+import hcmute.puzzle.exception.*;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.infrastructure.dtos.olds.*;
+import hcmute.puzzle.infrastructure.dtos.request.ApplicationRequest;
 import hcmute.puzzle.infrastructure.dtos.request.PostCandidateRequest;
 import hcmute.puzzle.infrastructure.dtos.response.CompanyResponse;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
@@ -23,17 +21,21 @@ import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
 import static hcmute.puzzle.utils.Constant.ResponseCode.STATUS_CUSTOM_EXCEPTION;
 import static hcmute.puzzle.utils.Constant.ResponseMessage.CODE_ERROR_INACTIVE;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "/candidate")
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
@@ -179,61 +181,17 @@ public class CandidateController {
     return new DataResponse<>("Success");
   }
 
-  @GetMapping("/apply-job-post/{postId}")
-  DataResponse<String> applyJobPost(@PathVariable Long postId) {
+  @RequestMapping(path = "/apply-job-post/{postId}", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  DataResponse<ApplicationDto> applyJobPost(@PathVariable Long postId, @ModelAttribute ApplicationRequest applicationRequest,
+          @RequestPart MultipartFile cvFile) {
 
-    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
-                                                                             .getAuthentication()
-                                                                             .getPrincipal();
-
-    JobPost jobPost = jobPostRepository.findById(postId)
-                                       .orElseThrow(() -> new NotFoundDataException("JobPost no value present"));
-
-
-    if (!jobPost.getIsActive()) {
-      // throw new CustomException("You can't apply this jobPost. It isn't active");
-      return new DataResponse<String>(CODE_ERROR_INACTIVE, "You can't apply this jobPost. It isn't active",
-                                      STATUS_CUSTOM_EXCEPTION);
+    try {
+      ApplicationDto applicationDto = applicationService.candidateApply(postId, applicationRequest, cvFile);
+      return new DataResponse<>(applicationDto);
+    } catch (InvalidBehaviorException e) {
+      log.error(e.getMessage());
+      throw new RuntimeException(e);
     }
-
-    if (Objects.nonNull(jobPost.getDeadline()) && jobPost.getDeadline().before(new Date())) {
-      // throw new CustomException("You can't apply this jobPost. It isn't active");
-      return new DataResponse<>(CODE_ERROR_INACTIVE, "You can't apply this jobPost. job post has expired",
-                                STATUS_CUSTOM_EXCEPTION);
-    }
-
-    Application application = applicationRepository.findApplicationByCanIdAndJobPostId(userDetails.getUser().getId(),
-                                                                                       postId).orElse(null);
-    if (application != null) {
-      // throw new CustomException("You applied for this job");
-      throw new AlreadyExistsException("You applied for this job");
-    }
-
-    Application applicationEntity = new Application();
-    applicationEntity.setCandidate(userDetails.getUser().getCandidate());
-    applicationEntity.setJobPost(jobPost);
-    //applicationEntity.setCreateTime(new Date());
-    applicationRepository.save(applicationEntity);
-
-    EntityGraph<JobPost> graph = this.em.createEntityGraph(JobPost.class);
-    graph.addAttributeNodes("viewUsers");
-
-    Map<String, Object> hints = new HashMap<String, Object>();
-    hints.put("javax.persistence.loadgraph", graph);
-
-    jobPost = this.em.find(JobPost.class, jobPost.getId(), hints);
-
-//    List<UserEntity> viewUsers = applicationRepository.findAllUserViewedJobPost(jobPost.getId());
-//    if (viewUsers != null) {
-//      viewUsers.add(userDetails.getUser());
-//    } else {
-//      viewUsers = new ArrayList<>();
-//    }
-    jobPost.getViewedUsers().add(userDetails.getUser());
-//    jobPost.setViewedUsers(new HashSet<>(viewUsers));
-    jobPostRepository.save(jobPost);
-
-    return new DataResponse<>("Apply success");
   }
 
   @GetMapping("/cancel-apply-job-post/{postId}")

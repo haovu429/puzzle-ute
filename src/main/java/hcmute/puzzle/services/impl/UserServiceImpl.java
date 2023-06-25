@@ -3,7 +3,6 @@ package hcmute.puzzle.services.impl;
 import freemarker.template.TemplateException;
 import hcmute.puzzle.exception.*;
 import hcmute.puzzle.infrastructure.dtos.news.*;
-import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.entities.Candidate;
 import hcmute.puzzle.infrastructure.entities.Employer;
 import hcmute.puzzle.infrastructure.entities.Role;
@@ -11,6 +10,7 @@ import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.mappers.UserMapper;
 import hcmute.puzzle.infrastructure.models.DataStaticJoinAccount;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
+import hcmute.puzzle.infrastructure.models.enums.FileType;
 import hcmute.puzzle.infrastructure.models.enums.Roles;
 import hcmute.puzzle.infrastructure.repository.RoleRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
@@ -312,7 +312,8 @@ public class UserServiceImpl implements UserService {
 
 	public UserPostDto updateAvatarForUser(User user, MultipartFile file, FileCategory fileCategory) throws
 			NotFoundException {
-		String imageUrl = storageService.uploadFileWithFileTypeReturnUrl(user.getEmail(), file, fileCategory, true)
+		String imageUrl = storageService.uploadFileWithFileTypeReturnUrl(user.getEmail(), file, FileType.IMAGE,
+																		 fileCategory, true)
 										.orElseThrow(() -> new FileStorageException("UPLOAD_FILE_FAILURE"));
 
 		user.setAvatar(imageUrl);

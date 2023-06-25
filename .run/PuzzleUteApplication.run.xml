@@ -10,8 +10,9 @@
     <selectedOptions>
       <option name="environmentVariables" />
     </selectedOptions>
+    <option name="SHORTEN_COMMAND_LINE" value="ARGS_FILE" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="hcmute.puzzle.PuzzleUteApplication" />
-    <option name="VM_PARAMETERS" value="-Djasypt.encryptor.password=puzzle -Dspring.profiles.active=prod" />
+    <option name="VM_PARAMETERS" value="-Djasypt.encryptor.password=puzzle -Dspring.profiles.active=local" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

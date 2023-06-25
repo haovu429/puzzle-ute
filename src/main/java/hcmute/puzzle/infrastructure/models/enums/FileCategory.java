@@ -5,7 +5,9 @@ public enum FileCategory {
     IMAGE_BLOG("IMAGE_BLOG"),
     IMAGE_COMPANY("IMAGE_COMPANY"),
     IMAGE_CATEGORY("IMAGE_CATEGORY"),
-    THUMBNAIL_BLOGPOST("THUMBNAIL_BLOGPOST");
+    THUMBNAIL_BLOGPOST("THUMBNAIL_BLOGPOST"),
+
+    PDF_CV("PDF_CV");
 
     private String value;
     FileCategory(String value) {

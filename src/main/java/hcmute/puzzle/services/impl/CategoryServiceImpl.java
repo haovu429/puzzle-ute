@@ -10,6 +10,7 @@ import hcmute.puzzle.infrastructure.entities.Category;
 import hcmute.puzzle.infrastructure.entities.File;
 import hcmute.puzzle.infrastructure.mappers.CategoryMapper;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
+import hcmute.puzzle.infrastructure.models.enums.FileType;
 import hcmute.puzzle.infrastructure.repository.CategoryRepository;
 import hcmute.puzzle.infrastructure.repository.FileRepository;
 import hcmute.puzzle.services.CategoryService;
@@ -46,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
     category = categoryRepository.save(category);
     MultipartFile multipartFile = createCategoryRequest.getImageFile();
     String imageFileName = String.format("%s_%s", category.getId(), Constant.SUFFIX_CATEGORY_IMAGE_FILE_NAME);
-    String uploadedFile = filesStorageService.uploadFileWithFileTypeReturnUrl(imageFileName, multipartFile,
+    String uploadedFile = filesStorageService.uploadFileWithFileTypeReturnUrl(imageFileName, multipartFile, FileType.IMAGE,
                                                                               FileCategory.IMAGE_CATEGORY, true)
                                              .orElseThrow(() -> new FileStorageException("Upload file fail"));
     category.setImage(uploadedFile);
@@ -61,7 +62,7 @@ public class CategoryServiceImpl implements CategoryService {
     categoryMapper.updateCategoryFromCreateCategoryRequest(createCategoryRequest, category);
     MultipartFile multipartFile = createCategoryRequest.getImageFile();
     String imageFileName = String.format("%s_%s", category.getId(), Constant.SUFFIX_CATEGORY_IMAGE_FILE_NAME);
-    String uploadedFile = filesStorageService.uploadFileWithFileTypeReturnUrl(imageFileName, multipartFile,
+    String uploadedFile = filesStorageService.uploadFileWithFileTypeReturnUrl(imageFileName, multipartFile, FileType.IMAGE,
                                                                               FileCategory.IMAGE_CATEGORY, true)
                                              .orElseThrow(() -> new FileStorageException("Upload file fail"));
     // Delete image old

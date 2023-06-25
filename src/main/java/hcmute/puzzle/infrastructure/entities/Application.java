@@ -24,8 +24,17 @@ public class Application extends Auditable implements Serializable {
   @Column(name = "note", columnDefinition = "VARCHAR(200)")
   private String note;
 
-  @Column(name = "recommendation_letter", columnDefinition = "TEXT")
-  private String recommendationLetter;
+  @Column(name = "cover_letter", columnDefinition = "TEXT")
+  private String coverLetter;
+
+  @Column(name = "fullName", columnDefinition = "VARCHAR(200)", nullable = false)
+  private String fullName;
+
+  @Column(name = "email", columnDefinition = "VARCHAR(200)", nullable = false)
+  private String email;
+
+  @Column(name = "phone", columnDefinition = "VARCHAR(20)")
+  private String phone;
 
   @Column(name = "cv_name")
   private String cvName;

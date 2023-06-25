@@ -21,10 +21,10 @@ public class FileType extends Auditable{
   @Column(name = "category", columnDefinition = "VARCHAR(50)", unique = true, nullable = false)
   private FileCategory category;
 
-  @Column(name = "type", columnDefinition = "VARCHAR(50)")
+  @Column(name = "type", columnDefinition = "VARCHAR(50)", nullable = false)
   private hcmute.puzzle.infrastructure.models.enums.FileType type;
 
-  @Column(name = "location", columnDefinition = "TEXT")
+  @Column(name = "location", columnDefinition = "TEXT", nullable = false)
   @Builder.Default
   private String location = "";
 

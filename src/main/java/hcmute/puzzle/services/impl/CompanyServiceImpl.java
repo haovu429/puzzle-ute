@@ -9,6 +9,7 @@ import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.mappers.CompanyMapper;
 import hcmute.puzzle.infrastructure.models.CompanyFilter;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
+import hcmute.puzzle.infrastructure.models.enums.FileType;
 import hcmute.puzzle.infrastructure.models.enums.Roles;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.CompanyService;
@@ -97,7 +98,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     if (imageFile != null && imageFile.getSize() > 0) {
       // lay id sau khi luu vao db de dat ten cho anh
-      String imageUrl = storageService.uploadFileWithFileTypeReturnUrl(String.valueOf(company.getId()), imageFile,
+      String imageUrl = storageService.uploadFileWithFileTypeReturnUrl(String.valueOf(company.getId()), imageFile, FileType.IMAGE,
                                                                        FileCategory.IMAGE_COMPANY, true)
                                       .orElseThrow(() -> new FileStorageException("upload image fail"));
       company.setImage(imageUrl);
@@ -167,7 +168,7 @@ public class CompanyServiceImpl implements CompanyService {
     if (imageFile != null && imageFile.getSize() > 0) {
 
       // lay id sau khi luu vao db de dat ten cho anh
-      String imageUrl = storageService.uploadFileWithFileTypeReturnUrl(String.valueOf(company.getId()), imageFile,
+      String imageUrl = storageService.uploadFileWithFileTypeReturnUrl(String.valueOf(company.getId()), imageFile, FileType.IMAGE, 
                                                                        FileCategory.IMAGE_COMPANY, true)
                                       .orElseThrow(() -> new FileStorageException("UPLOAD_FILE_FAILURE"));
       company.setImage(imageUrl);

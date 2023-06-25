@@ -35,4 +35,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
   long getCountUserJoinInTime(@Param("startTime") Date startTime, @Param("endTime") Date endTime);
 
   Optional<User> getByEmail(String email);
+
 }

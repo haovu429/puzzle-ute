@@ -496,6 +496,20 @@ public class SetUpDB {
                                              .author(SYSTEM_MAIL)
                                              .build();
 
+        FileType cvType =
+                FileType.builder()
+                        .category(FileCategory.PDF_CV)
+                        .type(hcmute.puzzle.infrastructure.models.enums.FileType.PDF)
+                        .location(Constant.FileLocation.STORAGE_CATEGORY_CV_LOCATION)
+                        .storageName(Constant.StorageName.CLOUDINARY)
+                        .author(SYSTEM_MAIL)
+                        .build();
+
+        List<FileType> fileTypeList = new ArrayList<>(
+                Arrays.asList(avatarType, companyType, blogImageType, blogThumbnailType, categoryType, cvType));
+        fileTypeRepository.saveAll(fileTypeList);
+
+
         List<SystemConfiguration> configurations = new ArrayList<>();
 
         SystemConfiguration configuration1 = SystemConfiguration.builder()
@@ -521,10 +535,6 @@ public class SetUpDB {
         configurations.add(configuration4);
         systemConfigurationRepository.saveAll(configurations);
 
-
-        List<FileType> fileTypeList = new ArrayList<>(
-                Arrays.asList(avatarType, companyType, blogImageType, blogThumbnailType));
-        fileTypeRepository.saveAll(fileTypeList);
     }
 
     public void tempRun() {

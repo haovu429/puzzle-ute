@@ -20,6 +20,7 @@ import hcmute.puzzle.infrastructure.mappers.CompanyMapper;
 import hcmute.puzzle.infrastructure.models.ApplicationResult;
 import hcmute.puzzle.infrastructure.models.JobPostWithApplicationAmount;
 import hcmute.puzzle.infrastructure.models.ResponseApplication;
+import hcmute.puzzle.infrastructure.models.enums.FileType;
 import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
 import hcmute.puzzle.infrastructure.repository.CompanyRepository;
 import hcmute.puzzle.infrastructure.repository.JobPostRepository;
@@ -371,7 +372,7 @@ public class EmployerController {
 
 		try {
 			// push to storage cloud
-			response = storageService.uploadFile(fileName, file, Constant.FileLocation.STORAGE_COMPANY_IMAGE_LOCATION);
+			response = storageService.uploadFile(fileName, file, FileType.IMAGE, Constant.FileLocation.STORAGE_COMPANY_IMAGE_LOCATION);
 
 		} catch (Exception e) {
 			e.printStackTrace();

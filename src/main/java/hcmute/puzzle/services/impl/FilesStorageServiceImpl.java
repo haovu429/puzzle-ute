@@ -5,7 +5,6 @@ import com.cloudinary.api.ApiResponse;
 import com.cloudinary.utils.ObjectUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Files;
-import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.*;
 import hcmute.puzzle.infrastructure.entities.File;
 import hcmute.puzzle.infrastructure.entities.FileType;
@@ -20,7 +19,6 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,39 +34,39 @@ import static hcmute.puzzle.utils.Constant.*;
 public class FilesStorageServiceImpl implements FilesStorageService {
 
   Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-  @Autowired private FileRepository fileRepository;
+  @Autowired
+  private FileRepository fileRepository;
 
-  @Autowired private FileTypeRepository fileTypeRepository;
+  @Autowired
+  private FileTypeRepository fileTypeRepository;
 
-  @Autowired CloudinaryUtil cloudinaryUtil;
+  @Autowired
+  CloudinaryUtil cloudinaryUtil;
 
   @Override
-  public Map uploadFile(String publicId, MultipartFile file, String locationStorage) {
+  public Map uploadFile(String publicId, MultipartFile file,
+          hcmute.puzzle.infrastructure.models.enums.FileType fileType, String locationStorage) {
     if (file == null) {
       throw new FileStorageException("FILE_UPLOAD_IS_NULL");
     }
     Cloudinary cloudinary = cloudinaryUtil.getCloudinary();
-
     try {
-      byte[] image = Base64.encodeBase64(file.getBytes(), false);
-      String encodedString = new String(image);
 
       // Upload the image
-      Map params1 =
-          ObjectUtils.asMap(
-              "folder",
-              locationStorage,
-              "public_id",
-              publicId,
-              "use_filename",
-              true,
-              "unique_filename",
-              false,
-              "overwrite",
-              true);
+      Map params1 = ObjectUtils.asMap("folder", locationStorage, "public_id", publicId, "use_filename", true,
+                                      "unique_filename", false, "overwrite", true, "resource_type", "auto");
 
-      Map<String, Object> result =
-          cloudinary.uploader().upload("data:image/png;base64," + encodedString, params1);
+      byte[] buffer = Base64.encodeBase64(file.getBytes(), false);
+      String encodedString = new String(buffer);
+
+      Map<String, Object> result = null;
+      if (fileType.getValue().equals(hcmute.puzzle.infrastructure.models.enums.FileType.IMAGE.getValue())) {
+        result = cloudinary.uploader().upload("data:image/png;base64," + encodedString, params1);
+      } else if (fileType.getValue().equals(hcmute.puzzle.infrastructure.models.enums.FileType.PDF.getValue())){
+        result = cloudinary.uploader().upload("data:application/pdf;base64," + encodedString, params1);
+      } else {
+        throw new ServerException("Don't know MIME type upload");
+      }
 
       if (result == null) {
         throw new UploadFailureException();
@@ -85,10 +83,9 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     return new HashMap<>();
   }
 
+
   @Override
-  public boolean deleteFile(
-      String key, FileCategory category, boolean deleteByUrl)
-      throws NotFoundException {
+  public boolean deleteFile(String key, FileCategory category, boolean deleteByUrl) throws NotFoundException {
     // if deleteByUrl = true => key is url else key is public id
 
     // "puzzle_ute/user/avatar"
@@ -96,8 +93,7 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 
     File file;
     if (deleteByUrl) {
-      file =
-          fileRepository.findAllByUrlAndDeletedIs(key, false).orElseThrow(NotFoundException::new);
+      file = fileRepository.findAllByUrlAndDeletedIs(key, false).orElseThrow(NotFoundException::new);
     } else {
       file = fileRepository.findByCloudinaryPublicId(key).orElseThrow(NotFoundException::new);
     }
@@ -107,21 +103,12 @@ public class FilesStorageServiceImpl implements FilesStorageService {
       return false;
     }
 
-    FileType fileType =
-        fileTypeRepository.findByCategory(category).orElseThrow(NotFoundException::new);
+    FileType fileType = fileTypeRepository.findByCategory(category).orElseThrow(NotFoundException::new);
 
     try {
       // Destroy the image
-      Map params1 =
-          ObjectUtils.asMap(
-              "resource_type",
-              fileType.getType().getValue(),
-              "folder",
-              fileType.getLocation(),
-              "type",
-              "upload",
-              "invalidate",
-              true);
+      Map params1 = ObjectUtils.asMap("resource_type", fileType.getType().getValue(), "folder", fileType.getLocation(),
+                                      "type", "upload", "invalidate", true);
 
       Map result = cloudinary.uploader().destroy(file.getCloudinaryPublicId(), params1);
 
@@ -139,13 +126,11 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   }
 
   // @Override
-  public boolean deleteMultiFile(List<String> publicIds, User deleter)
-      throws PartialFailureException {
+  public boolean deleteMultiFile(List<String> publicIds, User deleter) throws PartialFailureException {
     // "puzzle_ute/user/avatar"
     Cloudinary cloudinary = cloudinaryUtil.getCloudinary();
     // Check public_id exists in db
-    List<File> fileInfoFromDB =
-        fileRepository.findAllByCloudinaryPublicIdInAndDeletedIs(publicIds, false);
+    List<File> fileInfoFromDB = fileRepository.findAllByCloudinaryPublicIdInAndDeletedIs(publicIds, false);
 
     // checkNotExistsPublicIdsInDB(publicIds, publicIdsFromDB);
     try {
@@ -156,12 +141,11 @@ public class FilesStorageServiceImpl implements FilesStorageService {
         throw new CustomException("Delete image failure");
       }
 
-      fileInfoFromDB.forEach(
-          fileEntity -> {
-            fileEntity.setIsDeleted(true);
-            fileEntity.setUpdatedAt(new Date());
-            fileEntity.setUpdatedBy(deleter.getEmail());
-          });
+      fileInfoFromDB.forEach(fileEntity -> {
+        fileEntity.setIsDeleted(true);
+        fileEntity.setUpdatedAt(new Date());
+        fileEntity.setUpdatedBy(deleter.getEmail());
+      });
 
       fileRepository.saveAll(fileInfoFromDB);
       return true;
@@ -191,15 +175,16 @@ public class FilesStorageServiceImpl implements FilesStorageService {
   //    }
   //  }
 
-  public Optional<String> uploadFileWithFileTypeReturnUrl(
-          String keyName, MultipartFile file, FileCategory fileCategory, boolean saveDB) throws NotFoundException {
+  public Optional<String> uploadFileWithFileTypeReturnUrl(String keyName, MultipartFile file,
+          hcmute.puzzle.infrastructure.models.enums.FileType mdFileType, FileCategory fileCategory,
+          boolean saveDB) throws NotFoundException {
 
-    FileType fileType =
-            fileTypeRepository.findByCategory(fileCategory).orElseThrow(() -> new NotFoundDataException("Not found file type category"));
+    FileType fileType = fileTypeRepository.findByCategory(fileCategory)
+                                          .orElseThrow(() -> new NotFoundDataException("Not found file type category"));
 
     String fileName = processFileName(keyName, fileCategory);
-    CloudinaryUploadFileResponse response =
-            uploadFileReturnResponseObject(fileName, file, fileType.getLocation());
+    CloudinaryUploadFileResponse response = uploadFileReturnResponseObject(fileName, file, mdFileType,
+                                                                           fileType.getLocation());
     String fileUrl = response.getSecure_url();
 
     if (fileUrl == null || fileUrl.isEmpty() || fileUrl.isBlank()) {
@@ -208,16 +193,15 @@ public class FilesStorageServiceImpl implements FilesStorageService {
 
     if (saveDB) {
       // Save file info to db.
-      File fileEntity =
-              File.builder()
-                  .name(fileName.replace(" ", ""))
-                  .category(fileCategory.getValue())
-                  .type(fileType.getType().getValue())
-                  .location(fileType.getLocation())
-                  .extension(Files.getFileExtension(Objects.requireNonNull(file.getOriginalFilename())))
-                  .url(fileUrl)
-                  .cloudinaryPublicId(response.getPublic_id())
-                  .build();
+      File fileEntity = File.builder()
+                            .name(fileName.replace(" ", ""))
+                            .category(fileCategory.getValue())
+                            .type(fileType.getType().getValue())
+                            .location(fileType.getLocation())
+                            .extension(Files.getFileExtension(Objects.requireNonNull(file.getOriginalFilename())))
+                            .url(fileUrl)
+                            .cloudinaryPublicId(response.getPublic_id())
+                            .build();
       fileRepository.save(fileEntity);
     }
 
@@ -225,20 +209,19 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     return Optional.of(fileUrl);
   }
 
-  public Optional<File> uploadFileWithFileTypeReturnFileEntity(
-          String keyName, MultipartFile file, FileCategory fileCategory) throws NotFoundException {
+  public Optional<File> uploadFileWithFileTypeReturnFileEntity(String keyName, MultipartFile file,
+          FileCategory fileCategory) throws NotFoundException {
 
 
-    User author =
+/*    User author =
             ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                    .getUser();
+                    .getUser();*/
 
-    FileType fileType =
-            fileTypeRepository.findByCategory(fileCategory).orElseThrow(NotFoundException::new);
+    FileType fileType = fileTypeRepository.findByCategory(fileCategory).orElseThrow(NotFoundException::new);
 
     String fileName = processFileName(keyName, fileCategory);
-    CloudinaryUploadFileResponse response =
-            uploadFileReturnResponseObject(fileName, file, fileType.getLocation());
+    CloudinaryUploadFileResponse response = uploadFileReturnResponseObject(fileName, file, fileType.getType(),
+                                                                           fileType.getLocation());
     String fileUrl = response.getSecure_url();
 
     if (fileUrl == null || fileUrl.isEmpty() || fileUrl.isBlank()) {
@@ -246,16 +229,15 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     }
 
     // Save file info to db.
-    File fileEntity =
-            File.builder()
-                .name(fileName.replace(" ", ""))
-                .category(fileCategory.getValue())
-                .type(fileType.getType().getValue())
-                .location(fileType.getLocation())
-                .extension(Files.getFileExtension(Objects.requireNonNull(file.getOriginalFilename())))
-                .url(fileUrl)
-                .cloudinaryPublicId(response.getPublic_id())
-                .build();
+    File fileEntity = File.builder()
+                          .name(fileName.replace(" ", ""))
+                          .category(fileCategory.getValue())
+                          .type(fileType.getType().getValue())
+                          .location(fileType.getLocation())
+                          .extension(Files.getFileExtension(Objects.requireNonNull(file.getOriginalFilename())))
+                          .url(fileUrl)
+                          .cloudinaryPublicId(response.getPublic_id())
+                          .build();
 
     fileEntity = fileRepository.save(fileEntity);
 
@@ -284,14 +266,14 @@ public class FilesStorageServiceImpl implements FilesStorageService {
     }
   }
 
-  public CloudinaryUploadFileResponse uploadFileReturnResponseObject(
-      String fileName, MultipartFile file, String fileLocation) {
+  public CloudinaryUploadFileResponse uploadFileReturnResponseObject(String fileName, MultipartFile file,
+          hcmute.puzzle.infrastructure.models.enums.FileType fileType, String fileLocation) {
 
     Map<String, Object> response = null;
     CloudinaryUploadFileResponse respObject = new CloudinaryUploadFileResponse();
     try {
       // push to storage cloud
-      response = uploadFile(fileName, file, fileLocation);
+      response = uploadFile(fileName, file, fileType, fileLocation);
 
       final ObjectMapper mapper = new ObjectMapper(); // jackson's objectmapper
       respObject = mapper.convertValue(response, CloudinaryUploadFileResponse.class);

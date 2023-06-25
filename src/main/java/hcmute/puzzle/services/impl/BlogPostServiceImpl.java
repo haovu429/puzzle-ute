@@ -8,11 +8,15 @@ import hcmute.puzzle.infrastructure.dtos.request.BlogPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostUpdateRequest;
 import hcmute.puzzle.infrastructure.dtos.response.BlogCategoryDto;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
-import hcmute.puzzle.infrastructure.entities.*;
+import hcmute.puzzle.infrastructure.entities.BlogCategory;
+import hcmute.puzzle.infrastructure.entities.BlogPost;
+import hcmute.puzzle.infrastructure.entities.File;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.mappers.BlogCategoryMapper;
 import hcmute.puzzle.infrastructure.mappers.BlogPostMapper;
 import hcmute.puzzle.infrastructure.models.BlogCategoryResponseWithBlogPostAmount;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
+import hcmute.puzzle.infrastructure.models.enums.FileType;
 import hcmute.puzzle.infrastructure.repository.BlogCategoryRepository;
 import hcmute.puzzle.infrastructure.repository.BlogPostRepository;
 import hcmute.puzzle.infrastructure.repository.CategoryRepository;
@@ -85,6 +89,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 		String publicName = String.format("%s_%s", blogPost.getId(), Constant.SUFFIX_BLOG_POST_THUMBNAIL);
 		String imageUrl = filesStorageService.uploadFileWithFileTypeReturnUrl(publicName,
 																			  blogPostRequest.getThumbnail(),
+																			  FileType.IMAGE,
 																			  FileCategory.THUMBNAIL_BLOGPOST, true)
 											 .orElseThrow(() -> new FileStorageException("UPLOAD_THUMBNAIL_FAIL"));
 		blogPost.setThumbnail(imageUrl);
@@ -200,6 +205,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 			String publicName = String.format("%s_%s", blogPost.getId(), Constant.SUFFIX_BLOG_POST_THUMBNAIL);
 			String imageUrl = filesStorageService.uploadFileWithFileTypeReturnUrl(publicName,
 																				  blogPostUpdateRequest.getThumbnail(),
+																				  FileType.IMAGE,
 																				  FileCategory.THUMBNAIL_BLOGPOST, true)
 												 .orElseThrow(() -> new FileStorageException("UPLOAD_THUMBNAIL_FAIL"));
 			blogPost.setThumbnail(imageUrl);

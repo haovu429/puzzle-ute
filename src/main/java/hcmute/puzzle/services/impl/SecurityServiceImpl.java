@@ -11,17 +11,14 @@ import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.repository.TokenRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.SecurityService;
-import hcmute.puzzle.services.UserService;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-//import javax.mail.MessagingException;
-import jakarta.mail.MessagingException;
-//import javax.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -102,12 +99,10 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public DataResponse sendTokenVerifyAccount(String email) throws MessagingException, TemplateException, IOException,
             ExecutionException, InterruptedException {
-        User foundUser = userRepository.getUserByEmail(email);
-        if (foundUser == null) {
-            throw new NotFoundDataException("Can not found User Account with email " + email);
-        }
-
-        if (foundUser.getEmailVerified()) {
+        User foundUser = userRepository.findByEmail(email)
+                                       .orElseThrow(() -> new NotFoundDataException(
+                                               "Can not found User Account with email " + email));
+        if (foundUser.getEmailVerified() == null || foundUser.getEmailVerified()) {
             throw new UnauthorizedException("The account's email is verified, No need to repeat");
         }
 
@@ -178,7 +173,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public DataResponse verifyAccount(String token, String userEmail) {
+    public DataResponse verifyAccount(String token) {
         Token foundToken = tokenRepository.findByToken(token);
         if (foundToken == null) {
             throw new CustomException("Token is invalid");

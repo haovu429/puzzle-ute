@@ -18,6 +18,6 @@ public interface SecurityService {
 
   DataResponse resetPassword(String token, String newPassword);
 
-  DataResponse verifyAccount(String token, String userEmail);
+  DataResponse verifyAccount(String token);
 
 }
