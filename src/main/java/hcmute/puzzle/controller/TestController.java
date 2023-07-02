@@ -125,9 +125,10 @@ public class TestController {
 	@Transactional
 	@GetMapping("/init-db")
 	public String initDB() {
-		//		setUpDB.tempRun();
+		// setUpDB.tempRun();
 		setUpDB.preStart();
 		setUpDB.createMdFileType();
+		setUpDB.initPackage();
 		//    Optional<UserEntity> userEntity = userRepository.findByEmail("admin1@gmail.com");
 		//    Optional<RoleEntity> role = roleRepository.findById("user");
 		//    System.out.println(role.get().getName());
