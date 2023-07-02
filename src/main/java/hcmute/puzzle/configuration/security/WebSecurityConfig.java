@@ -5,13 +5,13 @@ import hcmute.puzzle.configuration.accessHandler.CustomAuthenticationHandler;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.infrastructure.models.enums.Roles;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
+import hcmute.puzzle.paypal.PaymentController;
 import hcmute.puzzle.services.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -37,7 +37,8 @@ public class WebSecurityConfig {
 
 	private static final String[] AUTH_WHITE_LIST_BUSINESS = {"/common/**", "/schedule-config/**", "/test/**",
 			"/init-db", "/oauth2/**", "/api-docs", "/actuator/**", "/login/**", "/auth/**", "/login-google/**",
-			"/forgot-password", "/reset-password", "/", "/login-google", "/oauth/**", "/pay-result/**", "/system/**", "/hirize/**"};
+			"/forgot-password", "/reset-password", "/", "/login-google", "/oauth/**", "/pay-result/**", "/system/**",
+			"/lab/**"};
 
 	//    @Autowired
 	//    private AuthEntryPointJwt unauthorizedHandler;
@@ -104,14 +105,14 @@ public class WebSecurityConfig {
 																	.permitAll()
 																	.requestMatchers(AUTH_WHITE_LIST_DOC_RESOURCE)
 																	.permitAll()
-																	.requestMatchers("/user/**")
+																	.requestMatchers("/user/**", "/payment/**")
 																	.hasAnyAuthority(Roles.USER.getValue(),
 																					 Roles.ADMIN.getValue())
 																	.requestMatchers("/role/admin", "/admin/**")
 																	.hasAnyAuthority(Roles.ADMIN.getValue())
 																	.requestMatchers("/candidate/**")
 																	.hasAnyAuthority(Roles.CANDIDATE.getValue())
-																	.requestMatchers("/employer/**", "/pay/**")
+																	.requestMatchers("/employer/**")
 																	.hasAnyAuthority(Roles.EMPLOYER.getValue())
 																	.anyRequest()
 																	.authenticated())

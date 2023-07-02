@@ -99,7 +99,6 @@ public class CandidateServiceImpl implements CandidateService {
                                              .orElseThrow(() -> new NotFoundDataException(
                                                      "Cannot find candidate with id = " + id));
 
-
     CandidateDto candidateDTO = candidateMapper.candidateToCandidateDto(candidate);
 
     return candidateDTO;

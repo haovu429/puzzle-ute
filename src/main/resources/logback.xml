@@ -95,7 +95,7 @@
     </springProfile>
 
     <springProfile name="prod">
-        <property name="LOG_DIR" value="/root/appl/logs"/>
+        <property name="LOG_DIR" value="/logs"/>
         <root level="info">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="FILE"/>

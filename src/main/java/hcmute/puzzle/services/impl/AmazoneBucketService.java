@@ -18,9 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.s3.S3Client;
+//import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+//import software.amazon.awssdk.regions.Region;
+//import software.amazon.awssdk.services.s3.S3Client;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class AmazoneBucketService {
 
 	private AmazonS3 s3 = null;
 
-	private S3Client s3Client;
+//	private S3Client s3Client;
 
 	@Value("${aws.accessKeyId}")
 	private String accessKey;
@@ -76,18 +76,18 @@ public class AmazoneBucketService {
 		return s3;
 	}
 
-	public S3Client getS3Client() {
-		if (s3Client != null) {
-			return this.s3Client;
-		}
-		AwsBasicCredentials basicCredentials = AwsBasicCredentials.create(accessKey, secretKey);
-
-		S3Client s3Client = S3Client.builder()
-									.region(Region.US_EAST_1)
-									.credentialsProvider(() -> basicCredentials)
-									.build();
-		return s3Client;
-	}
+//	public S3Client getS3Client() {
+//		if (s3Client != null) {
+//			return this.s3Client;
+//		}
+//		AwsBasicCredentials basicCredentials = AwsBasicCredentials.create(accessKey, secretKey);
+//
+//		S3Client s3Client = S3Client.builder()
+//									.region(Region.US_EAST_1)
+//									.credentialsProvider(() -> basicCredentials)
+//									.build();
+//		return s3Client;
+//	}
 
 	public Bucket getBucket(String bucket_name) {
 		//final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withRegion(Regions.DEFAULT_REGION).build();
@@ -214,6 +214,4 @@ public class AmazoneBucketService {
 		// System.out.println(date);
 		return keyValue.concat(date).concat("_cv");
 	}
-
-
 }

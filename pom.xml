@@ -220,22 +220,22 @@
         <!--            <version>5.1.4</version>-->
         <!--        </dependency>-->
 
-<!--        <dependency>-->
-<!--            <groupId>com.google.api-client</groupId>-->
-<!--            <artifactId>google-api-client</artifactId>-->
-<!--            <version>2.2.0</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.google.api-client</groupId>-->
+        <!--            <artifactId>google-api-client</artifactId>-->
+        <!--            <version>2.2.0</version>-->
+        <!--        </dependency>-->
 
-<!--        <dependency>-->
-<!--            <groupId>com.google.apis</groupId>-->
-<!--            <artifactId>google-api-services-drive</artifactId>-->
-<!--            <version>v3-rev197-1.25.0</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.google.oauth-client</groupId>-->
-<!--            <artifactId>google-oauth-client-jetty</artifactId>-->
-<!--            <version>1.34.1</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.google.apis</groupId>-->
+        <!--            <artifactId>google-api-services-drive</artifactId>-->
+        <!--            <version>v3-rev197-1.25.0</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.google.oauth-client</groupId>-->
+        <!--            <artifactId>google-oauth-client-jetty</artifactId>-->
+        <!--            <version>1.34.1</version>-->
+        <!--        </dependency>-->
 
 
         <dependency>
@@ -362,11 +362,11 @@
             <version>1.1</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.logback-extensions</groupId>-->
-<!--            <artifactId>logback-ext-spring</artifactId>-->
-<!--            <version>0.1.5</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.logback-extensions</groupId>-->
+        <!--            <artifactId>logback-ext-spring</artifactId>-->
+        <!--            <version>0.1.5</version>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>com.amazonaws</groupId>
@@ -375,15 +375,21 @@
             <scope>compile</scope>
         </dependency>
 
+        <!--        <dependency>-->
+        <!--            <groupId>software.amazon.awssdk</groupId>-->
+        <!--            <artifactId>s3</artifactId>-->
+        <!--            <version>2.17.7</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>software.amazon.awssdk</groupId>-->
+        <!--            <artifactId>regions</artifactId>-->
+        <!--            <version>2.17.7</version>-->
+        <!--        </dependency>-->
+
         <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>s3</artifactId>
-            <version>2.17.7</version>
-        </dependency>
-        <dependency>
-            <groupId>software.amazon.awssdk</groupId>
-            <artifactId>regions</artifactId>
-            <version>2.17.7</version>
+            <groupId>com.detectlanguage</groupId>
+            <artifactId>detectlanguage</artifactId>
+            <version>1.1.0</version>
         </dependency>
 
     </dependencies>

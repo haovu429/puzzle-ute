@@ -10,7 +10,6 @@ import hcmute.puzzle.infrastructure.dtos.request.JobPostAdminPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.JobPostUserPostRequest;
 import hcmute.puzzle.infrastructure.dtos.response.JobPostDto;
 import hcmute.puzzle.infrastructure.entities.*;
-import hcmute.puzzle.infrastructure.entities.QJobPost;
 import hcmute.puzzle.infrastructure.mappers.CandidateMapper;
 import hcmute.puzzle.infrastructure.mappers.JobPostMapper;
 import hcmute.puzzle.infrastructure.models.JobPostFilterRequest;
@@ -440,6 +439,25 @@ public class JobPostServiceImpl implements JobPostService {
     }
 
     return count;
+  }
+
+  public Page<JobPostDto> filterJobPostByJobAlert(JobAlert jobAlert, Pageable pageable) {
+
+    JobPostFilterRequest jobPostFilterRequest = JobPostFilterRequest.builder()
+                                                                    .city(jobAlert.getCity())
+                                                                    .isActive(true)
+                                                                    .searchKeys(List.of(jobAlert.getTag(),
+                                                                                        jobAlert.getIndustry()))
+                                                                    .minBudget(jobAlert.getMinBudget())
+                                                                    .canApply(true)
+                                                                    .position(jobAlert.getTag())
+
+                                                                    .build();
+    Specification<JobPost> jobPostSpecification = doPredicate(jobPostFilterRequest);
+    Page<JobPostDto> jobPostDtos = jobPostRepository.findAll(jobPostSpecification, pageable)
+                                                 .map(jobPostMapper::jobPostToJobPostDto);
+
+    return jobPostDtos;
   }
 
   public void checkCreatedJobPostLimit(long employerId) {

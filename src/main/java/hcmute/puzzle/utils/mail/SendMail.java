@@ -10,15 +10,25 @@ import hcmute.puzzle.exception.CustomException;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.util.Properties;
 
+@Service
 public class SendMail {
+
+    @Value("${support.email}")
+    String systemMail;
+
+    @Value("${mail.service.pass}")
+    String mailPassword;
 
     public static final String CONTENT_UTF8 = "utf-8";
     public static final String CONTENT_TYPE_TEXT_HTML = "html";
     public static final String CONTENT_TYPE_TEXT_PLAIN= "plain";
 
-    public static void sendMail(MailObject mailObject) {
+    public void sendMail(MailObject mailObject) {
 
         // Recipient's email ID needs to be mentioned.
 
@@ -26,9 +36,6 @@ public class SendMail {
             throw new CustomException("Reviver mail is null");
         }
         String to = mailObject.receiver;
-
-        // Sender's email ID needs to be mentioned
-        String from = "caihoncuagiamnguc@gmail.com";
 
         // Assuming you are sending email from through gmails smtp
         String host = "smtp.gmail.com";
@@ -41,15 +48,12 @@ public class SendMail {
         properties.put("mail.smtp.port", "465");
         properties.put("mail.smtp.ssl.enable", "true");
         properties.put("mail.smtp.auth", "true");
-
-        ///System.getenv("EMAIL");
-
         // Get the Session object.// and pass username and password
         Session session = Session.getInstance(properties, new jakarta.mail.Authenticator() {
 
             protected PasswordAuthentication getPasswordAuthentication() {
                  //setup app password reference https://support.google.com/accounts/answer/185833?hl=en
-                return new PasswordAuthentication(from, System.getenv("EMAIL_PASSWORD"));
+                return new PasswordAuthentication(systemMail, mailPassword);
 
             }
 
@@ -63,7 +67,7 @@ public class SendMail {
             MimeMessage message = new MimeMessage(session);
 
             // Set From: header field of the header.
-            message.setFrom(new InternetAddress(from));
+            message.setFrom(new InternetAddress(systemMail));
 
             // Set To: header field of the header.
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
@@ -86,7 +90,7 @@ public class SendMail {
         }
 
     }
-    public static void main(String[] args) {
+    public void main(String[] args) {
         MailObject mailObject = new MailObject("haovu961@gmail.com", "hey", "I am Hao dep try", null);
         sendMail(mailObject);
     }

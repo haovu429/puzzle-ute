@@ -30,11 +30,15 @@ public class Package extends Auditable implements Serializable {
     @Column(name = "cost", nullable = false)
     private Long cost; // giá gốc
 
-    @Column(name = "duration", nullable = false)
+    @Column(name = "duration")
     private Long duration; // tính theo giây
 
-    @Column(name = "num_of_job_post", nullable = false)
+    @Column(name = "num_of_job_post")
     private Integer numOfJobPost; // só job post mua thêm
+
+    // number of coi is added to balance
+    @Column(name = "coin")
+    private Integer coin;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;

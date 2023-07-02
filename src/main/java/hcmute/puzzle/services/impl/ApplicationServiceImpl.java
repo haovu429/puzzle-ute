@@ -11,7 +11,6 @@ import hcmute.puzzle.infrastructure.mappers.CandidateMapper;
 import hcmute.puzzle.infrastructure.models.ApplicationResult;
 import hcmute.puzzle.infrastructure.models.ResponseApplication;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
-import hcmute.puzzle.infrastructure.models.enums.FileType;
 import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
 import hcmute.puzzle.infrastructure.repository.CandidateRepository;
 import hcmute.puzzle.infrastructure.repository.EmployerRepository;
@@ -61,6 +60,9 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 	@Autowired
 	AmazoneBucketService amazoneBucketService;
+
+	@Autowired
+	SendMail sendMail;
 
 	@Override
 	public ApplicationDto findById(Long id) {
@@ -162,7 +164,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 		Runnable myRunnable = new Runnable() {
 			public void run() {
-				SendMail.sendMail(mailObject);
+				sendMail.sendMail(mailObject);
 			}
 		};
 		Thread thread = new Thread(myRunnable);
@@ -185,7 +187,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 																				 .getAuthentication()
 																				 .getPrincipal();
 		User currentUser = userDetails.getUser();
-		if (jobPost.getCreatedEmployer().getId() != currentUser.getId() && !userDetails.getIsAdmin()) {
+		if (jobPost.getCreatedEmployer().getId() != currentUser.getId()) {
 			throw new CustomException("You don't have rights for this job post");
 		}
 		Page<Application> applications = applicationRepository.findApplicationByJobPostId(jobPostId, pageable);
@@ -254,18 +256,10 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 
 	public ApplicationDto getApplicationByJobPostIdAndCandidateId(long jobPostId, long candidateId) {
-		if (!jobPostRepository.existsById(jobPostId)) {
-			throw new CustomException("Job Post isn't exists");
-		}
-
-		Optional<Application> applicationEntity = applicationRepository.findApplicationByCanIdAndJobPostId(candidateId,
-																										   jobPostId);
-		if (applicationEntity.isEmpty()) {
-			throw new CustomException("You have not applied for this job ");
-		}
-
-
-		return applicationMapper.applicationToApplicationDto(applicationEntity.get());
+		Application application = applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPostId).orElseThrow(
+				() -> new NotFoundDataException("Not found application")
+		);
+		return applicationMapper.applicationToApplicationDto(application);
 	}
 
 	@Override
@@ -307,12 +301,10 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 
 		if (!jobPost.getIsActive()) {
-			// throw new CustomException("You can't apply this jobPost. It isn't active");
 			throw new InvalidBehaviorException("You can't apply this jobPost. It isn't active");
 		}
 
 		if (Objects.nonNull(jobPost.getDeadline()) && jobPost.getDeadline().before(new Date())) {
-			// throw new CustomException("You can't apply this jobPost. It isn't active");
 			throw new InvalidBehaviorException("You can't apply this jobPost. job post has expired");
 		}
 

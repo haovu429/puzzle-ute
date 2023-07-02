@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class AIMatcherData {
-	private String id;
+	private Long id;
 
 	@JsonProperty("matcher_result")
 	private MatcherResult matcherResult;

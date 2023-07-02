@@ -82,6 +82,22 @@ public class Constant {
     public static final String HIRIZE_HIRIZE_IQ_API_KEY = "HIRIZE_HIRIZE_IQ_API_KEY";
     public static final String HIRIZE_AI_MATCHER_API_KEY = "HIRIZE_AI_MATCHER_API_KEY";
     public static final String HIRIZE_RESUME_PARSER_API_KEY = "HIRIZE_RESUME_PARSER_API_KEY";
+
+    public static final String HIRIZE_RESUME_JOB_PARSER_API_KEY = "HIRIZE_RESUME_JOB_PARSER_API_KEY";
+  }
+
+  public class Cohere {
+    public static final String COHERE_API_KEY = "COHERE_API_KEY";
+  }
+
+  public class Translate {
+    public static final String TRANSLATE_END_POINT = "TRANSLATE_END_POINT";
+  }
+
+  public class DetectLanguage {
+    public static final String DETECT_LANGUAGE_API_KEY = "DETECT_LANGUAGE_API_KEY";
+
+    public static final String DETECT_LANGUAGE_ENABLE = "DETECT_LANGUAGE_ENABLE";
   }
 
   public class ResponseCode {

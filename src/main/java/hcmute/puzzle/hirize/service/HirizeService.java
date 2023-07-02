@@ -1,17 +1,27 @@
 package hcmute.puzzle.hirize.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import com.google.api.pathtemplate.ValidationException;
 import hcmute.puzzle.exception.NotFoundDataException;
 import hcmute.puzzle.hirize.model.*;
+import hcmute.puzzle.infrastructure.entities.Application;
+import hcmute.puzzle.infrastructure.entities.JobPost;
 import hcmute.puzzle.infrastructure.entities.SystemConfiguration;
+import hcmute.puzzle.infrastructure.models.enums.SeniorityType;
+import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
+import hcmute.puzzle.infrastructure.repository.JsonDataRepository;
 import hcmute.puzzle.infrastructure.repository.SystemConfigurationRepository;
 import hcmute.puzzle.utils.Constant;
+import hcmute.puzzle.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -21,24 +31,51 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static hcmute.puzzle.utils.Utils.fileToBase64;
 
 @Slf4j
 @Service
 public class HirizeService {
 
 	@Autowired()
-	@Qualifier("hirize")
 	WebClient webClient;
 
-	private String baseUrl = "https://connect.hirize.hr";
+	@Value("${file.location.download}")
+	String tempFileLocation;
+
+	// https://connect.hirize.hr
+	@Value("${hirize.base_url}")
+	String baseUrl;
+
+	@Value("${hirize.endpoint.resume_parser}")
+	String resumeParserEndpoint;
+
+	@Value("${hirize.endpoint.job_parser}")
+	String jobParserEndpoint;
+
+	@Value("${hirize.endpoint.ai_matcher}")
+	String aiMatcherEndpoint;
+
+	@Value("${hirize.endpoint.hirize_iq}")
+	String hirizeIqEndpoint;
 
 	@Autowired
 	SystemConfigurationRepository systemConfigurationRepository;
 
+	@Autowired
+	ApplicationRepository applicationRepository;
 
-	public HirizeResponse callApiResumeParser(MultipartFile cvFile, String fileName) throws IOException {
-		HirizeResponse result = null;
+	@Autowired
+	JsonDataRepository jsonDataRepository;
+
+	public HirizeResponse<ParserData> callApiResumeParser(MultipartFile cvFile, String fileName) throws IOException {
+		HirizeResponse<ParserData> result = null;
 		String json = null;
 		if (cvFile != null && !cvFile.isEmpty()) {
 			byte[] image = Base64.encodeBase64(cvFile.getBytes(), false);
@@ -58,7 +95,7 @@ public class HirizeService {
 			// "DbYzemaWGSN2UXkCVR3751F4J6tQhP"
 			String parserToken = systemConfiguration.getValue();
 			queryParams.add("api_key", parserToken);
-			String url = baseUrl.concat("/api/public/parser");
+			String url = baseUrl.concat(this.resumeParserEndpoint);
 			UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(url).queryParams(queryParams);
 
 			result = webClient.post()
@@ -66,7 +103,9 @@ public class HirizeService {
 							  .body(Mono.just(parserRequestPayload), ParserRequestPayload.class)
 							  .exchangeToMono(response -> {
 								  if (response.statusCode().equals(HttpStatus.CREATED)) {
-									  return response.bodyToMono(HirizeResponse.class);
+									  return response.bodyToMono(
+											  new ParameterizedTypeReference<HirizeResponse<ParserData>>() {
+											  });
 								  } else if (response.statusCode().is4xxClientError()) {
 									  return Mono.just(null);
 								  } else {
@@ -75,7 +114,8 @@ public class HirizeService {
 							  })
 							  .block();
 			if (result != null) {
-				log.info("\nResponse: \n" + objectToJson(result));
+				log.info("\nResponse: \n" + Utils.objectToJson(result));
+				this.checkPoverty(result.getRemainingCredit());
 			} else {
 				log.info("\nResponse: null\n");
 			}
@@ -83,28 +123,29 @@ public class HirizeService {
 		return result;
 	}
 
-	public HirizeResponse callApiAiMatcher(AIMatcherRequest aiMatcherRequest) {
-		HirizeResponse result = null;
+	public HirizeResponse<JobParserData> callApiJobParser(JobParserRequest jobParserRequest) throws IOException {
+		HirizeResponse<JobParserData> result = null;
 		String json = null;
 
 		MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
 		SystemConfiguration systemConfiguration = systemConfigurationRepository.findByKey(
-																					   Constant.Hirize.HIRIZE_AI_MATCHER_API_KEY)
+																					   Constant.Hirize.HIRIZE_RESUME_JOB_PARSER_API_KEY)
 																			   .orElseThrow(
 																					   () -> new NotFoundDataException(
-																							   "Not found configuration for hirize AI matcher"));
-		// "hkSGJF9b2U6Ct51azV843mNWD7XPeQ"
+																							   "Not found configuration for hirize resume parser"));
 		String parserToken = systemConfiguration.getValue();
 		queryParams.add("api_key", parserToken);
-		String url = baseUrl.concat("/api/public/ai-matcher");
+		String url = baseUrl.concat(this.jobParserEndpoint);
 		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(url).queryParams(queryParams);
 
 		result = webClient.post()
 						  .uri(uriBuilder.toUriString())
-						  .body(Mono.just(aiMatcherRequest), AIMatcherRequest.class)
+						  .body(Mono.just(jobParserRequest), JobParserRequest.class)
 						  .exchangeToMono(response -> {
 							  if (response.statusCode().equals(HttpStatus.CREATED)) {
-								  return response.bodyToMono(HirizeResponse.class);
+								  return response.bodyToMono(
+										  new ParameterizedTypeReference<HirizeResponse<JobParserData>>() {
+										  });
 							  } else if (response.statusCode().is4xxClientError()) {
 								  return Mono.just(null);
 							  } else {
@@ -113,8 +154,52 @@ public class HirizeService {
 						  })
 						  .block();
 		if (result != null) {
-			json = objectToJson(result);
+			log.info("\nResponse: \n" + Utils.objectToJson(result));
+			this.checkPoverty(result.getRemainingCredit());
+		} else {
+			log.info("\nResponse: null\n");
+		}
+
+		return result;
+	}
+
+	public HirizeResponse<AIMatcherData> callApiAiMatcher(AIMatcherRequest aiMatcherRequest) {
+		HirizeResponse<AIMatcherData> result = null;
+		String json = null;
+
+		MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+		SystemConfiguration systemConfiguration = systemConfigurationRepository.findByKey(
+																					   Constant.Hirize.HIRIZE_AI_MATCHER_API_KEY)
+																			   .orElseThrow(
+																					   () -> new NotFoundDataException(
+																							   "Not found configuration for hirize AI matcher"));
+		String parserToken = systemConfiguration.getValue();
+		queryParams.add("api_key", parserToken);
+		String url = baseUrl.concat(this.aiMatcherEndpoint);
+		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(url).queryParams(queryParams);
+
+		result = webClient.post()
+						  .uri(uriBuilder.toUriString())
+						  .body(Mono.just(aiMatcherRequest), AIMatcherRequest.class)
+						  .exchangeToMono(response -> {
+							  if (response.statusCode().equals(HttpStatus.CREATED)) {
+								  return response.bodyToMono(
+										  new ParameterizedTypeReference<HirizeResponse<AIMatcherData>>() {
+										  });
+							  } else if (response.statusCode().is4xxClientError()) {
+								  //
+								  throw new RuntimeException(
+										  "Response from hirize has error code: " + response.statusCode());
+								  //return Mono.just(null);
+							  } else {
+								  return response.createException().flatMap(Mono::error);
+							  }
+						  })
+						  .block();
+		if (result != null) {
+			json = Utils.objectToJson(result);
 			log.info("\nResponse: \n" + json);
+			this.checkPoverty(result.getRemainingCredit());
 		} else {
 			log.info("\nResponse: null\n");
 		}
@@ -122,7 +207,7 @@ public class HirizeService {
 	}
 
 	public HirizeResponse<HirizeIQData> callApiHirizeIQ(HirizeIQRequest hirizeIQRequest) {
-		HirizeResponse result = null;
+		HirizeResponse<HirizeIQData> result = null;
 		String json = null;
 
 		MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
@@ -134,7 +219,7 @@ public class HirizeService {
 		// "zG8U46h79akDe1PY5V3WbSQ2XtCNFm"
 		String parserToken = systemConfiguration.getValue();
 		queryParams.add("api_key", parserToken);
-		String url = baseUrl.concat("/api/public/hirize-iq");
+		String url = baseUrl.concat(this.hirizeIqEndpoint);
 		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(url).queryParams(queryParams);
 
 		result = webClient.post()
@@ -142,7 +227,9 @@ public class HirizeService {
 						  .body(Mono.just(hirizeIQRequest), HirizeIQRequest.class)
 						  .exchangeToMono(response -> {
 							  if (response.statusCode().equals(HttpStatus.CREATED)) {
-								  return response.bodyToMono(HirizeResponse.class);
+								  return response.bodyToMono(
+										  new ParameterizedTypeReference<HirizeResponse<HirizeIQData>>() {
+										  });
 							  } else if (response.statusCode().is4xxClientError()) {
 								  return Mono.just(null);
 							  } else {
@@ -152,34 +239,13 @@ public class HirizeService {
 						  .block();
 
 		if (result != null) {
-			log.info("\nResponse: \n" + objectToJson(result));
+			log.info("\nResponse: \n" + Utils.objectToJson(result));
+			this.checkPoverty(result.getRemainingCredit());
 		} else {
 			log.info("\nResponse: null\n");
 		}
 
 		return result;
-	}
-
-	public static String objectToJson(Object object) {
-		try {
-			ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-			String json = ow.writeValueAsString(object);
-			return json;
-		} catch (JsonProcessingException e) {
-			log.error(e.getMessage(), e);
-			throw new RuntimeException(e);
-		}
-	}
-
-	public static String fileToBase64(MultipartFile file) {
-		try {
-			byte[] image = Base64.encodeBase64(file.getBytes(), false);
-			String encodedString = new String(image);
-			return encodedString;
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-			throw new RuntimeException(e);
-		}
 	}
 
 	public void checkPoverty(Double balance) {
@@ -192,7 +258,103 @@ public class HirizeService {
 			systemConfiguration.setValue(String.valueOf(balance));
 			systemConfigurationRepository.save(systemConfiguration);
 		}
+	}
 
+	private void validateJobParserResponse(HirizeResponse<JobParserData> jobParserResponse, SeniorityType seniorityType, JobPost jobPost) {
+		if (jobParserResponse != null && jobParserResponse.getData() != null && jobParserResponse.getData()
+																								 .getResult() != null) {
+			JobParserResult jobParserResult = jobParserResponse.getData().getResult();
+			if (jobParserResult.getSeniority() == null) {
+				throw new ValidationException("Can't identify seniority of this job description");
+			}
+
+			// IllegalArgumentException
+			seniorityType = SeniorityType.valueOf(jobParserResult.getSeniority());
+
+			if (jobParserResult.getJobTitle() == null) {
+				if (jobPost.getTitle() != null && !jobPost.getTitle().isBlank()) {
+					jobParserResult.setJobTitle(jobPost.getTitle());
+				} else {
+					throw new ValidationException(
+							"Can't identify title of this job description and default title is blank");
+				}
+			}
+
+			if (jobParserResult.getSkills() == null) {
+				throw new ValidationException(
+						"Can't identify skills of this job description and default title is blank");
+			} else if (jobParserResult.getSkills().length == 0) {
+				throw new ValidationException(
+						"Can't identify skills of this job description and default title is blank");
+			}
+
+		}
+	}
+
+	public HirizeResponse<AIMatcherData> getPointOfApplicationFromHirize(Application application,
+			JobPost jobPost) throws IOException, IllegalArgumentException {
+		String fileName = application.getCvName();
+		String fileExtension = "";
+
+		int dotIndex = fileName.lastIndexOf('.');
+		if (dotIndex != -1 && dotIndex < fileName.length() - 1) {
+			fileExtension = fileName.substring(dotIndex + 1);
+			fileName = fileName.substring(0, dotIndex);
+		}
+		String filePath = tempFileLocation.concat("/")
+										  .concat(this.processFileName(fileName))
+										  .concat(".")
+										  .concat(fileExtension);
+		File tmpFile = new File(filePath);
+
+		this.downloadFileFromUrl(tmpFile, application.getCv());
+		String cvBase64 = Utils.fileToBase64(tmpFile);
+		if (!tmpFile.delete()) {
+			log.error("Failed to delete the file");
+		}
+
+		// Call job parser of Hirize
+		JobParserRequest jobParserRequest = JobParserRequest.builder().description(jobPost.getDescription()).build();
+		HirizeResponse<JobParserData> jobParserResponse = this.callApiJobParser(jobParserRequest);
+		SeniorityType seniorityType = null;
+		// Validate job parser result
+		this.validateJobParserResponse(jobParserResponse, seniorityType, jobPost);
+
+		// String[] skillFake = {"JAVA", "HTML", "PYTHON"};
+		AIMatcherRequest aIMatcherRequest = AIMatcherRequest.builder()
+															.payload(cvBase64)
+															.fileName(application.getCvName())
+															.jobTitle(jobParserResponse.getData()
+																					   .getResult()
+																					   .getJobTitle())
+															.seniority(seniorityType.getValue())
+															.skills(jobParserResponse.getData().getResult().getSkills())
+															.build();
+
+		HirizeResponse<AIMatcherData> result;
+		result = this.callApiAiMatcher(aIMatcherRequest);
+		return result;
+	}
+
+
+	public static HirizeResponse<AIMatcherData> jsonToAIMatcher(String json) throws JsonProcessingException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		TypeReference<HirizeResponse<AIMatcherData>> typeRef = new TypeReference<HirizeResponse<AIMatcherData>>() {
+		};
+		HirizeResponse<AIMatcherData> hirizeResponse = objectMapper.readValue(json, typeRef);
+		return hirizeResponse;
+	}
+
+	public void downloadFileFromUrl(File file, String url) throws IOException {
+		FileUtils.copyURLToFile(new URL(url), file, 4000, 4000);
+	}
+
+	public String processFileName(String keyValue) {
+		String pattern = "yyyy_MM_dd-HH_mm_ss";
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+		String date = simpleDateFormat.format(new Date());
+		// System.out.println(date);
+		return keyValue.concat(date);
 	}
 
 }

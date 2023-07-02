@@ -12,8 +12,9 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
 import reactor.netty.http.client.HttpClient;
+
+import static com.amazonaws.services.elasticloadbalancingv2.model.ActionTypeEnum.Redirect;
 
 @Configuration
 public class WebClientConfiguration {
@@ -24,22 +25,21 @@ public class WebClientConfiguration {
 	@Bean
 	public WebClient webClient() {
 		HttpClient httpClient = HttpClient.create()
-										  .tcpConfiguration(
-												  client -> client.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
-																  .doOnConnected(conn -> conn.addHandlerLast(
-																									 new ReadTimeoutHandler(10))
-																							 .addHandlerLast(
-																									 new WriteTimeoutHandler(
-																											 10))));
+										  .followRedirect(false)
+										  .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
+										  .doOnConnected(conn -> conn.addHandlerLast(new ReadTimeoutHandler(10))
+																	 .addHandlerLast(new WriteTimeoutHandler(10)));
+		//UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(baseUrl).queryParams(queryParams);
+
 		ClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
 		return WebClient.builder()
-						.baseUrl("http://localhost:8081/mock")
+						//.baseUrl(baseUrl)
 						.clientConnector(connector)
 						.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 						.build();
 	}
 
-	@Bean(name = "hirize")
+	//@Bean(name = "hirize")
 	public WebClient webClientHirize() {
 		HttpClient httpClient = HttpClient.create()
 										  .tcpConfiguration(
@@ -49,9 +49,9 @@ public class WebClientConfiguration {
 																							 .addHandlerLast(
 																									 new WriteTimeoutHandler(
 																											 10))));
-		MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-		queryParams.add("api_key", parserToken);
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(baseUrl).queryParams(queryParams);
+		//		MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+		//		queryParams.add("api_key", parserToken);
+		//UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(baseUrl).queryParams(queryParams);
 
 		ClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
 		return WebClient.builder()

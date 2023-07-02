@@ -28,7 +28,7 @@ public class PaypalConfig {
     }
     @Bean
     public APIContext apiContext() throws PayPalRESTException{
-        APIContext apiContext = new APIContext(authTokenCredential().getAccessToken(),"", "sandbox");
+        APIContext apiContext = new APIContext(clientId,clientSecret, "sandbox");
         apiContext.setConfigurationMap(paypalSdkConfig());
         return apiContext;
     }

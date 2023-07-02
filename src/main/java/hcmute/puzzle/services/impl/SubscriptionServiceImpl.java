@@ -48,9 +48,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     subscribe.setExpirationTime(new Date(nowTime.getTime() + aPackage.getDuration()));
     subscribe.setAPackage(aPackage);
     subscribe.setRegUser(user);
-
     // Hoá đơn đã lưu trong db rồi thì mới set
-    // Lưu hai chiều vì để cascade là DETACH
     subscribe.setPaymentTransactionCode(invoice.getTransactionCode());
 
     subscribeRepository.save(subscribe);

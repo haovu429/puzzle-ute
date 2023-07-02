@@ -12,7 +12,6 @@ import java.util.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "job_post")
 public class JobPost extends Auditable implements Serializable {

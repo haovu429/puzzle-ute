@@ -2,16 +2,18 @@ package hcmute.puzzle.paypal;
 
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
+import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.NotFoundDataException;
 import hcmute.puzzle.infrastructure.entities.Invoice;
 import hcmute.puzzle.infrastructure.entities.Package;
 import hcmute.puzzle.infrastructure.entities.User;
-import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.infrastructure.models.enums.InvoiceStatus;
 import hcmute.puzzle.infrastructure.models.enums.PaymentMethod;
 import hcmute.puzzle.infrastructure.repository.PackageRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.InvoiceService;
 import hcmute.puzzle.services.SubscriptionService;
+import hcmute.puzzle.services.impl.TransactionService;
 import hcmute.puzzle.utils.mail.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +44,10 @@ public class ResultController {
 
   @Autowired private ThymeleafService thymeleafService;
 
+  @Autowired private TransactionService transactionService;
+
+  @Autowired private SendMail sendMail;
+
   @GetMapping(URL_PAYPAL_CANCEL)
   public String cancelPay() {
     return "cancel";
@@ -61,21 +67,19 @@ public class ResultController {
         if (userEntity.isEmpty()) {
           throw new CustomException("User not found");
         }
-
-        Optional<Package> packageEntity = packageRepository.findByCode(packageCode);
-        if (packageEntity.isEmpty()) {
-          throw new CustomException("Package not found");
-        }
+        packageCode = packageCode.toLowerCase();
+        Package packageEntity = packageRepository.findByCode(packageCode)
+                                                 .orElseThrow(() -> new NotFoundDataException("Not found package"));
 
         Invoice invoice = new Invoice();
         invoice.setEmail(userEntity.get().getEmail());
         invoice.setPhone(userEntity.get().getPhone());
-        invoice.setServiceType(packageEntity.get().getServiceType());
+        invoice.setServiceType(packageEntity.getServiceType());
         long price = 0;
-        if (packageEntity.get().getPrice() != null) {
-          price = packageEntity.get().getPrice();
+        if (packageEntity.getPrice() != null) {
+          price = packageEntity.getPrice();
         } else {
-          price = packageEntity.get().getCost();
+          price = packageEntity.getCost();
         }
         invoice.setPrice(price);
 
@@ -99,7 +103,7 @@ public class ResultController {
 
         //invoice detail
         InvoiceDetail invoiceDetail = new InvoiceDetail();
-        invoiceDetail.setItemName(packageEntity.get().getName());
+        invoiceDetail.setItemName(packageEntity.getName());
         int quantity = 1;
         invoiceDetail.setQuantity(quantity);
         invoiceDetail.setPrice(price*quantity);
@@ -119,7 +123,7 @@ public class ResultController {
           public void run() {
             try {
               System.out.println("new thread?");
-              SendMail.sendMail(mailObject);
+              sendMail.sendMail(mailObject);
             } catch(Exception e) {
               System.out.println(e.getMessage());
             }
@@ -127,7 +131,7 @@ public class ResultController {
         };
         one.start();
 
-        subscriptionService.subscribePackage(userEntity.get(), packageEntity.get(), invoice);
+        transactionService.subscribePackage(userEntity.get(), packageEntity, invoice);
         return "success";
       }
     } catch (PayPalRESTException e) {

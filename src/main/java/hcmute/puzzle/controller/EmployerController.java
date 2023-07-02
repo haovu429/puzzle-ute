@@ -1,8 +1,12 @@
 package hcmute.puzzle.controller;
 
+import com.cloudinary.api.AuthorizationRequired;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.*;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
+import hcmute.puzzle.hirize.model.AIMatcherData;
+import hcmute.puzzle.hirize.model.HirizeResponse;
+import hcmute.puzzle.hirize.service.HirizeService;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.olds.ApplicationDto;
 import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
@@ -16,10 +20,10 @@ import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.dtos.response.JobPostDto;
 import hcmute.puzzle.infrastructure.entities.Company;
 import hcmute.puzzle.infrastructure.entities.JobPost;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.mappers.CompanyMapper;
 import hcmute.puzzle.infrastructure.models.ApplicationResult;
 import hcmute.puzzle.infrastructure.models.JobPostWithApplicationAmount;
-import hcmute.puzzle.infrastructure.models.ResponseApplication;
 import hcmute.puzzle.infrastructure.models.enums.FileType;
 import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
 import hcmute.puzzle.infrastructure.repository.CompanyRepository;
@@ -30,9 +34,9 @@ import hcmute.puzzle.utils.Constant;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
@@ -40,6 +44,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,6 +57,7 @@ import static hcmute.puzzle.utils.Constant.SUFFIX_COMPANY_IMAGE_FILE_NAME;
 @CrossOrigin(origins = {Constant.LOCAL_URL, Constant.ONLINE_URL})
 @SecurityRequirement(name = "bearerAuth")
 public class EmployerController {
+
 	@Autowired
 	EmployerService employerService;
 
@@ -91,6 +97,9 @@ public class EmployerController {
 	@Autowired
 	CompanyMapper companyMapper;
 
+	@Autowired
+	HirizeService hirizeService;
+
 	// Delete by user Entity
 	//  @DeleteMapping("/deactivate")
 	//  DataResponse deleteEmployer(Authentication authentication) {
@@ -99,23 +108,23 @@ public class EmployerController {
 	//  }
 
 	@PutMapping("/update")
-	DataResponse updateEmployer(@RequestBody @Validated EmployerDto employer, BindingResult bindingResult,
+	DataResponse<EmployerDto> updateEmployer(@RequestBody @Validated EmployerDto employer, BindingResult bindingResult,
 			Authentication authentication) {
 		if (bindingResult.hasErrors()) {
 			throw new CustomException(bindingResult.getFieldError().toString());
 		}
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		EmployerDto employerDto = employerService.update(employer);
-		return new DataResponse(employerDto);
+		return new DataResponse<>(employerDto);
 	}
 
 	@GetMapping("/profile")
-	DataResponse getById() {
+	DataResponse<EmployerDto> getById() {
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
 																				 .getAuthentication()
 																				 .getPrincipal();
 		EmployerDto employerDto = employerService.getOne(userDetails.getUser().getId());
-		return new DataResponse(employerDto);
+		return new DataResponse<>(employerDto);
 	}
 
 	@PostMapping("/post-job")
@@ -130,7 +139,7 @@ public class EmployerController {
 	}
 
 	@DeleteMapping("/delete-job-post/{id}")
-	DataResponse deleteJobPost(@PathVariable Long id, Authentication authentication) {
+	DataResponse<String> deleteJobPost(@PathVariable Long id, Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		// employer can not change active status
 		JobPost jobPost = jobPostRepository.findById(id)
@@ -141,7 +150,7 @@ public class EmployerController {
 			throw new CustomException("You don't have rights for this jobPost");
 		}
 		jobPostService.markJobPostWasDelete(id);
-		return new DataResponse("Success");
+		return new DataResponse<>("Success");
 	}
 
 	@PutMapping("/update-job-post/{jobPostId}")
@@ -213,12 +222,22 @@ public class EmployerController {
 		return new DataResponse<>("Success");
 	}
 
-	@PostMapping("/response-application-by-candidate-and-job-post")
-	DataResponse<String> responseApplicationByCandidateIdAndJobPostId(
-			@RequestBody ResponseApplication responseApplication) {
-		// return new DataResponse(200, "Response success", new ResponseApplication());
-		applicationService.responseApplicationByCandidateAndJobPost(responseApplication);
-		return new DataResponse<>("Success");
+	@GetMapping("/application")
+	DataResponse<ApplicationDto> responseApplicationByCandidateIdAndJobPostId(@RequestParam Long jobPostId,
+			@RequestParam Long candidateId) throws AuthorizationRequired {
+		JobPost jobPost = jobPostRepository.findById(jobPostId)
+										   .orElseThrow(() -> new NotFoundDataException("Not found job post "));
+
+		CustomUserDetails principal = (CustomUserDetails) SecurityContextHolder.getContext()
+																			   .getAuthentication()
+																			   .getPrincipal();
+		User currentUser = principal.getUser();
+		if (currentUser.getId() != jobPost.getCreatedEmployer().getId()) {
+			throw new UnauthorizedException("You don't have right for this application");
+		}
+		ApplicationDto applicationDto = applicationService.getApplicationByJobPostIdAndCandidateId(jobPostId,
+																								   candidateId);
+		return new DataResponse<>(applicationDto);
 	}
 
 	@GetMapping("/get-all-job-post-created")
@@ -372,7 +391,8 @@ public class EmployerController {
 
 		try {
 			// push to storage cloud
-			response = storageService.uploadFile(fileName, file, FileType.IMAGE, Constant.FileLocation.STORAGE_COMPANY_IMAGE_LOCATION);
+			response = storageService.uploadFile(fileName, file, FileType.IMAGE,
+												 Constant.FileLocation.STORAGE_COMPANY_IMAGE_LOCATION);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -388,5 +408,18 @@ public class EmployerController {
 		company.setImage(url);
 		companyRepository.save(company);
 		return new DataResponse<>(companyMapper.companyToCompanyDto(company));
+	}
+
+	@GetMapping("/application/score-cv")
+	public DataResponse<HirizeResponse<AIMatcherData>> scoreCV(@RequestParam Long jobPostId,
+			@RequestParam Long candidateId) {
+		try {
+			HirizeResponse<AIMatcherData> result = employerService.getPointOfApplicationFromHirize(jobPostId,
+																								   candidateId);
+			return new DataResponse<>(result);
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+			throw new RuntimeException(e);
+		}
 	}
 }

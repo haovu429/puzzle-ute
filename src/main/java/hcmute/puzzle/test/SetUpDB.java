@@ -1,5 +1,6 @@
 package hcmute.puzzle.test;
 
+import hcmute.puzzle.infrastructure.entities.Package;
 import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.models.enums.ExtraInfoType;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
@@ -56,6 +57,9 @@ public class SetUpDB {
 
     @Autowired
     SystemConfigurationRepository systemConfigurationRepository;
+
+    @Autowired
+    PackageRepository packageRepository;
 
     public void preStart() {
 
@@ -434,51 +438,65 @@ public class SetUpDB {
 
         extraInfoRepository.saveAll(extraInfos);
 
+    }
 
-        //    Set<ExtraInfoEntity> extraInfoList = new HashSet<>();
-        //    ExtraInfoEntity extraInfo1 = new ExtraInfoEntity();
-        //    extraInfo1.setActive(true);
-        //    extraInfo1.setName("Java Develop");
-        //    extraInfo1.setType("skill");
-        //
-        //    extraInfoList.add(extraInfo1);
-        //
-        //    ExtraInfoEntity extraInfo2 = new ExtraInfoEntity();
-        //    extraInfo1.setActive(true);
-        //    extraInfo1.setName("Java Develop");
-        //    extraInfo1.setType("position");
-        //
-        //    extraInfoList.add(extraInfo2);
-        //
-        //    extraInfoRepository.saveAll(extraInfoList);
+    public void initPackage() {
+        List<Package> packages = new ArrayList<>();
+        final String BALANCE = "BALANCE";
+        Package myPackage1 = Package.builder()
+                                    .name("Bronze")
+                                    .code("bronze")
+                                    .coin(50)
+                                    .cost(20L)
+                                    .description("For single person only")
+                                    .serviceType(BALANCE)
+                                    .build();
+        Package myPackage2 = Package.builder()
+                                    .name("Silver")
+                                    .code("silver")
+                                    .coin(150)
+                                    .cost(50L)
+                                    .description("For small companies")
+                                    .serviceType(BALANCE)
+                                    .build();
+        Package myPackage3 = Package.builder()
+                                    .name("Gold")
+                                    .code("gold")
+                                    .coin(400)
+                                    .cost(100L)
+                                    .description("For bigger companies")
+                                    .serviceType(BALANCE)
+                                    .build();
+        packages.add(myPackage1);
+        packages.add(myPackage2);
+        packages.add(myPackage3);
+        packageRepository.saveAll(packages);
     }
 
     public void createMdFileType() {
-        FileType avatarType =
-                FileType.builder()
-                        .category(FileCategory.IMAGE_AVATAR)
-                        .type(hcmute.puzzle.infrastructure.models.enums.FileType.IMAGE)
-                        .location(Constant.FileLocation.STORAGE_IMAGE_LOCATION)
-                        .storageName(Constant.StorageName.CLOUDINARY)
-                        .author(SYSTEM_MAIL)
-                        .build();
+        FileType avatarType = FileType.builder()
+                                      .category(FileCategory.IMAGE_AVATAR)
+                                      .type(hcmute.puzzle.infrastructure.models.enums.FileType.IMAGE)
+                                      .location(Constant.FileLocation.STORAGE_IMAGE_LOCATION)
+                                      .storageName(Constant.StorageName.CLOUDINARY)
+                                      .author(SYSTEM_MAIL)
+                                      .build();
 
-        FileType categoryType =
-                FileType.builder()
-                        .category(FileCategory.IMAGE_CATEGORY)
-                        .type(hcmute.puzzle.infrastructure.models.enums.FileType.IMAGE)
-                        .location(Constant.FileLocation.STORAGE_CATEGORY_IMAGE_LOCATION)
-                        .storageName(Constant.StorageName.CLOUDINARY)
-                        .author(SYSTEM_MAIL)
-                        .build();
+        FileType categoryType = FileType.builder()
+                                        .category(FileCategory.IMAGE_CATEGORY)
+                                        .type(hcmute.puzzle.infrastructure.models.enums.FileType.IMAGE)
+                                        .location(Constant.FileLocation.STORAGE_CATEGORY_IMAGE_LOCATION)
+                                        .storageName(Constant.StorageName.CLOUDINARY)
+                                        .author(SYSTEM_MAIL)
+                                        .build();
 
-        FileType companyType =
-                FileType.builder()
-                        .category(FileCategory.IMAGE_COMPANY)
-                        .type(hcmute.puzzle.infrastructure.models.enums.FileType.IMAGE)
-                        .location(Constant.FileLocation.STORAGE_COMPANY_IMAGE_LOCATION)
-                        .storageName(Constant.StorageName.CLOUDINARY)
-                        .author(SYSTEM_MAIL).build();
+        FileType companyType = FileType.builder()
+                                       .category(FileCategory.IMAGE_COMPANY)
+                                       .type(hcmute.puzzle.infrastructure.models.enums.FileType.IMAGE)
+                                       .location(Constant.FileLocation.STORAGE_COMPANY_IMAGE_LOCATION)
+                                       .storageName(Constant.StorageName.CLOUDINARY)
+                                       .author(SYSTEM_MAIL)
+                                       .build();
 
         FileType blogImageType = FileType.builder()
                                          .category(FileCategory.IMAGE_BLOG)
@@ -509,13 +527,14 @@ public class SetUpDB {
                 Arrays.asList(avatarType, companyType, blogImageType, blogThumbnailType, categoryType, cvType));
         fileTypeRepository.saveAll(fileTypeList);
 
-
+        // System configuration
         List<SystemConfiguration> configurations = new ArrayList<>();
 
         SystemConfiguration configuration1 = SystemConfiguration.builder()
                                                                .key(Constant.Hirize.HIRIZE_RESUME_PARSER_API_KEY)
                                                                .value("none")
                                                                .build();
+
         SystemConfiguration configuration2 = SystemConfiguration.builder()
                                                                .key(Constant.Hirize.HIRIZE_AI_MATCHER_API_KEY)
                                                                .value("none")
@@ -525,42 +544,51 @@ public class SetUpDB {
                                                                .key(Constant.Hirize.HIRIZE_HIRIZE_IQ_API_KEY)
                                                                .value("none")
                                                                .build();
+
         SystemConfiguration configuration4 = SystemConfiguration.builder()
                                                                .key(Constant.Hirize.HIRIZE_BALANCE)
                                                                .value("none")
                                                                .build();
+
+        SystemConfiguration configuration5 = SystemConfiguration.builder()
+                                                                .key(Constant.Hirize.HIRIZE_RESUME_JOB_PARSER_API_KEY)
+                                                                .value("none")
+                                                                .build();
+
+        SystemConfiguration configuration6 = SystemConfiguration.builder()
+                                                                .key(Constant.Cohere.COHERE_API_KEY)
+                                                                .value("none")
+                                                                .build();
+
+        SystemConfiguration configuration7 = SystemConfiguration.builder()
+                                                                .key(Constant.Translate.TRANSLATE_END_POINT)
+                                                                .value("none")
+                                                                .build();
+
+        SystemConfiguration configuration8 = SystemConfiguration.builder()
+                                                                .key(Constant.DetectLanguage.DETECT_LANGUAGE_API_KEY)
+                                                                .value("none")
+                                                                .build();
+
+        SystemConfiguration configuration9 = SystemConfiguration.builder()
+                                                                .key(Constant.DetectLanguage.DETECT_LANGUAGE_ENABLE)
+                                                                .value("none")
+                                                                .build();
+
         configurations.add(configuration1);
         configurations.add(configuration2);
         configurations.add(configuration3);
         configurations.add(configuration4);
+        configurations.add(configuration5);
+        configurations.add(configuration6);
+        configurations.add(configuration7);
+        configurations.add(configuration8);
+        configurations.add(configuration9);
         systemConfigurationRepository.saveAll(configurations);
 
     }
 
     public void tempRun() {
-        List<SystemConfiguration> configurations = new ArrayList<>();
-
-        SystemConfiguration configuration1 = SystemConfiguration.builder()
-                                                                .key(Constant.Hirize.HIRIZE_RESUME_PARSER_API_KEY)
-                                                                .value("none")
-                                                                .build();
-        SystemConfiguration configuration2 = SystemConfiguration.builder()
-                                                                .key(Constant.Hirize.HIRIZE_AI_MATCHER_API_KEY)
-                                                                .value("none")
-                                                                .build();
-
-        SystemConfiguration configuration3 = SystemConfiguration.builder()
-                                                                .key(Constant.Hirize.HIRIZE_HIRIZE_IQ_API_KEY)
-                                                                .value("none")
-                                                                .build();
-        SystemConfiguration configuration4 = SystemConfiguration.builder()
-                                                                .key(Constant.Hirize.HIRIZE_BALANCE)
-                                                                .value("none")
-                                                                .build();
-        configurations.add(configuration1);
-        configurations.add(configuration2);
-        configurations.add(configuration3);
-        configurations.add(configuration4);
-        systemConfigurationRepository.saveAll(configurations);
+        initPackage();
     }
 }

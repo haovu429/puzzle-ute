@@ -26,6 +26,11 @@ public class HomeController {
 		return clientIp;
 	}
 
+	@GetMapping("/")
+	public String index(){
+		return "hi!";
+	}
+
 	@GetMapping("/doc")
 	public RedirectView redirectWithUsingRedirectView(HttpServletRequest request, RedirectAttributes attributes) {
 		//    attributes.addFlashAttribute("flashAttribute", "redirectWithRedirectView");

@@ -37,7 +37,7 @@ public class Subscription extends Auditable implements Serializable {
     private User regUser; // Có thể tạo đăng ký gói trước
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "package_id", nullable = false)
+    @JoinColumn(name = "package_id")
     private Package aPackage;
 
     @Column(name = "is_deleted")

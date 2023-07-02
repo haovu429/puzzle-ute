@@ -12,17 +12,18 @@ import hcmute.puzzle.infrastructure.dtos.response.JobPostDto;
 import hcmute.puzzle.infrastructure.entities.Application;
 import hcmute.puzzle.infrastructure.entities.Experience;
 import hcmute.puzzle.infrastructure.entities.JobAlert;
-import hcmute.puzzle.infrastructure.entities.JobPost;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.utils.Constant;
+import hcmute.puzzle.utils.Utils;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
@@ -31,9 +32,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
-
-import static hcmute.puzzle.utils.Constant.ResponseCode.STATUS_CUSTOM_EXCEPTION;
-import static hcmute.puzzle.utils.Constant.ResponseMessage.CODE_ERROR_INACTIVE;
 
 @Slf4j
 @RestController
@@ -433,5 +431,16 @@ public class CandidateController {
                                                                              .getPrincipal();
     List<EmployerDto> employerDtos = employerService.getEmployerFollowedByCandidateId(userDetails.getUser().getId());
     return new DataResponse<>(employerDtos);
+  }
+
+  @PostMapping("/job-alert/suggest")
+  DataResponse<Page<JobPostDto>> suggestJobPostByJobAlert(@RequestParam Long jobAlertId, @RequestParam(value = "page", required = false) Integer page,
+          @RequestParam(required = false) Integer size) {
+    Pageable pageable = Utils.getPageable(page, size);
+    JobAlert jobAlert = jobAlertRepository.findById(jobAlertId).orElseThrow(
+            () -> new NotFoundDataException("Not found job alert")
+    );
+    Page<JobPostDto> jobAlertDtoPage  = jobPostService.filterJobPostByJobAlert(jobAlert, pageable);
+    return new DataResponse<>(jobAlertDtoPage);
   }
 }

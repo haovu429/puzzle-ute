@@ -8,6 +8,7 @@ import hcmute.puzzle.infrastructure.dtos.request.JobPostAdminPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.JobPostUserPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.RequestPageable;
 import hcmute.puzzle.infrastructure.dtos.response.JobPostDto;
+import hcmute.puzzle.infrastructure.entities.JobAlert;
 import hcmute.puzzle.infrastructure.entities.JobPost;
 import hcmute.puzzle.infrastructure.models.JobPostFilterRequest;
 import hcmute.puzzle.infrastructure.models.JobPostWithApplicationAmount;
@@ -19,6 +20,8 @@ import java.util.List;
 
 public interface JobPostService {
   JobPostDto add(JobPostUserPostRequest createJobPostRequest);
+
+  Page<JobPostDto> filterJobPostByJobAlert(JobAlert jobAlert, Pageable pageable);
 
   void delete(long id);
 
