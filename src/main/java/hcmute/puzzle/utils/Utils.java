@@ -6,12 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashSet;
@@ -107,5 +109,10 @@ public class Utils {
             throw new RuntimeException(e);
         }
     }
+
+    public static void downloadFileFromUrl(File file, String url) throws IOException {
+        FileUtils.copyURLToFile(new URL(url), file, 4000, 4000);
+    }
+
 
 }

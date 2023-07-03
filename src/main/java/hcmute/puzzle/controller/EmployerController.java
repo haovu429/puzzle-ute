@@ -1,6 +1,7 @@
 package hcmute.puzzle.controller;
 
 import com.cloudinary.api.AuthorizationRequired;
+import com.detectlanguage.errors.APIError;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.*;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
@@ -419,6 +420,8 @@ public class EmployerController {
 			return new DataResponse<>(result);
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
+			throw new RuntimeException(e);
+		} catch (APIError e) {
 			throw new RuntimeException(e);
 		}
 	}

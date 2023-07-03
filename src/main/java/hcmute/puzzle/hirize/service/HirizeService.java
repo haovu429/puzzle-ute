@@ -46,9 +46,6 @@ public class HirizeService {
 	@Autowired()
 	WebClient webClient;
 
-	@Value("${file.location.download}")
-	String tempFileLocation;
-
 	// https://connect.hirize.hr
 	@Value("${hirize.base_url}")
 	String baseUrl;
@@ -131,8 +128,7 @@ public class HirizeService {
 		SystemConfiguration systemConfiguration = systemConfigurationRepository.findByKey(
 																					   Constant.Hirize.HIRIZE_RESUME_JOB_PARSER_API_KEY)
 																			   .orElseThrow(
-																					   () -> new NotFoundDataException(
-																							   "Not found configuration for hirize resume parser"));
+																					   () -> new NotFoundDataException("Not found configuration for hirize job parser"));
 		String parserToken = systemConfiguration.getValue();
 		queryParams.add("api_key", parserToken);
 		String url = baseUrl.concat(this.jobParserEndpoint);
@@ -260,7 +256,7 @@ public class HirizeService {
 		}
 	}
 
-	private void validateJobParserResponse(HirizeResponse<JobParserData> jobParserResponse, SeniorityType seniorityType, JobPost jobPost) {
+	public static void validateJobParserResponse(HirizeResponse<JobParserData> jobParserResponse, JobPost jobPost) {
 		if (jobParserResponse != null && jobParserResponse.getData() != null && jobParserResponse.getData()
 																								 .getResult() != null) {
 			JobParserResult jobParserResult = jobParserResponse.getData().getResult();
@@ -268,8 +264,8 @@ public class HirizeService {
 				throw new ValidationException("Can't identify seniority of this job description");
 			}
 
-			// IllegalArgumentException
-			seniorityType = SeniorityType.valueOf(jobParserResult.getSeniority());
+//			// IllegalArgumentException
+//			seniorityType = SeniorityType.valueOf(jobParserResult.getSeniority());
 
 			if (jobParserResult.getJobTitle() == null) {
 				if (jobPost.getTitle() != null && !jobPost.getTitle().isBlank()) {
@@ -291,51 +287,6 @@ public class HirizeService {
 		}
 	}
 
-	public HirizeResponse<AIMatcherData> getPointOfApplicationFromHirize(Application application,
-			JobPost jobPost) throws IOException, IllegalArgumentException {
-		String fileName = application.getCvName();
-		String fileExtension = "";
-
-		int dotIndex = fileName.lastIndexOf('.');
-		if (dotIndex != -1 && dotIndex < fileName.length() - 1) {
-			fileExtension = fileName.substring(dotIndex + 1);
-			fileName = fileName.substring(0, dotIndex);
-		}
-		String filePath = tempFileLocation.concat("/")
-										  .concat(this.processFileName(fileName))
-										  .concat(".")
-										  .concat(fileExtension);
-		File tmpFile = new File(filePath);
-
-		this.downloadFileFromUrl(tmpFile, application.getCv());
-		String cvBase64 = Utils.fileToBase64(tmpFile);
-		if (!tmpFile.delete()) {
-			log.error("Failed to delete the file");
-		}
-
-		// Call job parser of Hirize
-		JobParserRequest jobParserRequest = JobParserRequest.builder().description(jobPost.getDescription()).build();
-		HirizeResponse<JobParserData> jobParserResponse = this.callApiJobParser(jobParserRequest);
-		SeniorityType seniorityType = null;
-		// Validate job parser result
-		this.validateJobParserResponse(jobParserResponse, seniorityType, jobPost);
-
-		// String[] skillFake = {"JAVA", "HTML", "PYTHON"};
-		AIMatcherRequest aIMatcherRequest = AIMatcherRequest.builder()
-															.payload(cvBase64)
-															.fileName(application.getCvName())
-															.jobTitle(jobParserResponse.getData()
-																					   .getResult()
-																					   .getJobTitle())
-															.seniority(seniorityType.getValue())
-															.skills(jobParserResponse.getData().getResult().getSkills())
-															.build();
-
-		HirizeResponse<AIMatcherData> result;
-		result = this.callApiAiMatcher(aIMatcherRequest);
-		return result;
-	}
-
 
 	public static HirizeResponse<AIMatcherData> jsonToAIMatcher(String json) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -345,11 +296,7 @@ public class HirizeService {
 		return hirizeResponse;
 	}
 
-	public void downloadFileFromUrl(File file, String url) throws IOException {
-		FileUtils.copyURLToFile(new URL(url), file, 4000, 4000);
-	}
-
-	public String processFileName(String keyValue) {
+	public static String processFileName(String keyValue) {
 		String pattern = "yyyy_MM_dd-HH_mm_ss";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 		String date = simpleDateFormat.format(new Date());
