@@ -2,6 +2,7 @@ package hcmute.puzzle.services.impl;
 
 import com.detectlanguage.errors.APIError;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.exception.NotFoundDataException;
 import hcmute.puzzle.hirize.model.*;
@@ -18,6 +19,7 @@ import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -192,6 +194,7 @@ public class EmployerServiceImpl implements EmployerService {
 											.data(Utils.objectToJson(result))
 											.build();
 				jsonDataRepository.save(jsonData);
+				reduceCoin();
 			}
 		}
 		return result;
@@ -312,9 +315,19 @@ public class EmployerServiceImpl implements EmployerService {
 											.data(Utils.objectToJson(result))
 											.build();
 				jsonDataRepository.save(jsonData);
+				reduceCoin();
 			}
 		}
 		return result;
+	}
+
+	private void reduceCoin() {
+		CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+																					   .getAuthentication()
+																					   .getPrincipal();
+		User currentUser = customUserDetails.getUser();
+		currentUser.setBalance(currentUser.getBalance() - 2);
+		userRepository.save(currentUser);
 	}
 
 	public HirizeResponse<HirizeIQData> getAISuggestAlreadyExisted(long applicationId) throws JsonProcessingException {

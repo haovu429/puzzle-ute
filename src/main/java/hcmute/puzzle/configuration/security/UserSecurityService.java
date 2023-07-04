@@ -1,6 +1,7 @@
 package hcmute.puzzle.configuration.security;
 
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.NotFoundDataException;
 import hcmute.puzzle.infrastructure.entities.Role;
 import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.repository.RoleRepository;
@@ -19,10 +20,8 @@ import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -96,11 +95,10 @@ public class UserSecurityService implements UserDetailsService {
     newUser.setEmailVerified(googlePojo.isVerified_email());
     newUser.setLocale(googlePojo.getLocale());
     newUser.setProvider(Provider.GOOGLE);
-    Optional<Role> role = roleRepository.findById("user");
-    if (role.isEmpty()) {
-      throw new CustomException("role user isn't exist");
-    }
-    newUser.getRoles().add(role.get());
+    Role role = roleRepository.findById("user").orElseThrow(() -> new NotFoundDataException("Not found role"));
+    Set<Role> roles = new HashSet<>();
+    roles.add(role);
+    newUser.setRoles(roles);
     newUser.setIsActive(true);
 
     return userRepository.save(newUser);
