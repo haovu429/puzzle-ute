@@ -6,20 +6,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.pathtemplate.ValidationException;
 import hcmute.puzzle.exception.NotFoundDataException;
 import hcmute.puzzle.hirize.model.*;
-import hcmute.puzzle.infrastructure.entities.Application;
 import hcmute.puzzle.infrastructure.entities.JobPost;
 import hcmute.puzzle.infrastructure.entities.SystemConfiguration;
-import hcmute.puzzle.infrastructure.models.enums.SeniorityType;
 import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
 import hcmute.puzzle.infrastructure.repository.JsonDataRepository;
 import hcmute.puzzle.infrastructure.repository.SystemConfigurationRepository;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
@@ -31,13 +27,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static hcmute.puzzle.utils.Utils.fileToBase64;
 
 @Slf4j
 @Service
@@ -126,7 +118,7 @@ public class HirizeService {
 
 		MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
 		SystemConfiguration systemConfiguration = systemConfigurationRepository.findByKey(
-																					   Constant.Hirize.HIRIZE_RESUME_JOB_PARSER_API_KEY)
+																					   Constant.Hirize.HIRIZE_JOB_PARSER_API_KEY)
 																			   .orElseThrow(
 																					   () -> new NotFoundDataException("Not found configuration for hirize job parser"));
 		String parserToken = systemConfiguration.getValue();
@@ -293,6 +285,14 @@ public class HirizeService {
 		TypeReference<HirizeResponse<AIMatcherData>> typeRef = new TypeReference<HirizeResponse<AIMatcherData>>() {
 		};
 		HirizeResponse<AIMatcherData> hirizeResponse = objectMapper.readValue(json, typeRef);
+		return hirizeResponse;
+	}
+
+	public static HirizeResponse<HirizeIQData> jsonToHirizeIQ(String json) throws JsonProcessingException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		TypeReference<HirizeResponse<HirizeIQData>> typeRef = new TypeReference<HirizeResponse<HirizeIQData>>() {
+		};
+		HirizeResponse<HirizeIQData> hirizeResponse = objectMapper.readValue(json, typeRef);
 		return hirizeResponse;
 	}
 

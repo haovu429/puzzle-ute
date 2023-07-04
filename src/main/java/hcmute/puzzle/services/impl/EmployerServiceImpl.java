@@ -10,10 +10,6 @@ import hcmute.puzzle.infrastructure.dtos.olds.EmployerDto;
 import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.mappers.EmployerMapper;
 import hcmute.puzzle.infrastructure.models.enums.JsonDataType;
-import hcmute.puzzle.infrastructure.models.enums.SeniorityType;
-import hcmute.puzzle.infrastructure.models.translate.TranslateObject;
-import hcmute.puzzle.infrastructure.models.translate.TranslateRequest;
-import hcmute.puzzle.infrastructure.models.translate.TranslateResponse;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.EmployerService;
 import hcmute.puzzle.utils.Utils;
@@ -29,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -217,25 +214,8 @@ public class EmployerServiceImpl implements EmployerService {
 
 	public HirizeResponse<AIMatcherData> getPointOfApplicationFromHirize(Application application,
 			JobPost jobPost) throws IOException, IllegalArgumentException, APIError {
-		String fileName = application.getCvName();
-		String fileExtension = "";
 
-		int dotIndex = fileName.lastIndexOf('.');
-		if (dotIndex != -1 && dotIndex < fileName.length() - 1) {
-			fileExtension = fileName.substring(dotIndex + 1);
-			fileName = fileName.substring(0, dotIndex);
-		}
-		String filePath = tempFileLocation.concat("/")
-										  .concat(HirizeService.processFileName(fileName))
-										  .concat(".")
-										  .concat(fileExtension);
-		java.io.File tmpFile = new File(filePath);
-
-		Utils.downloadFileFromUrl(tmpFile, application.getCv());
-		String cvBase64 = Utils.fileToBase64(tmpFile);
-		if (!tmpFile.delete()) {
-			log.error("Failed to delete the file");
-		}
+		String cvBase64 = EmployerServiceImpl.getStringBase64FromURL(application.getCv(), tempFileLocation);
 
 		// Detect language of content cv to convert to English
 		String translated = webClientService.translate(jobPost.getDescription());
@@ -255,13 +235,144 @@ public class EmployerServiceImpl implements EmployerService {
 															.jobTitle(jobParserResponse.getData()
 																					   .getResult()
 																					   .getJobTitle())
-															.seniority(jobParserResponse.getData().getResult().getSeniority())
+															.seniority(jobParserResponse.getData()
+																						.getResult()
+																						.getSeniority())
 															.skills(jobParserResponse.getData().getResult().getSkills())
 															.build();
 
 		HirizeResponse<AIMatcherData> result;
 		result = hirizeService.callApiAiMatcher(aIMatcherRequest);
 		return result;
+	}
+
+	public void clearAIMatcherDataForApplication(Long jobPostId, Long candidateId) {
+		this.clearJsonDataForApplication(jobPostId, candidateId, JsonDataType.HIRIZE_AI_MATCHER);
+	}
+
+	public void clearHirizeIQDataForApplication(Long jobPostId, Long candidateId) {
+		this.clearJsonDataForApplication(jobPostId, candidateId, JsonDataType.HIRIZE_IQ);
+	}
+
+	public void clearJsonDataForApplication(Long jobPostId, Long candidateId, JsonDataType jsonDataType) {
+		JobPost jobPost = jobPostRepository.findById(jobPostId)
+										   .orElseThrow(() -> new NotFoundDataException("Not found job post"));
+		Application application = applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPostId)
+													   .orElseThrow(() -> new NotFoundDataException(
+															   "Not found application"));
+
+		List<JsonData> jsonDataList = jsonDataRepository.findAllByApplicationIdAndType(application.getId(),
+																					   jsonDataType);
+		jsonDataRepository.deleteAll(jsonDataList);
+	}
+
+	public boolean checkAIMatcherExisted(Long jobPostId, Long candidateId) {
+		return this.checkJsonDataExistedByType(jobPostId, candidateId, JsonDataType.HIRIZE_AI_MATCHER);
+	}
+
+	public boolean checkHirizeIQExisted(Long jobPostId, Long candidateId) {
+		return this.checkJsonDataExistedByType(jobPostId, candidateId, JsonDataType.HIRIZE_IQ);
+	}
+
+	public boolean checkJsonDataExistedByType(Long jobPostId, Long candidateId, JsonDataType jsonDataType) {
+		JobPost jobPost = jobPostRepository.findById(jobPostId)
+										   .orElseThrow(() -> new NotFoundDataException("Not found job post"));
+		Application application = applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPost.getId())
+													   .orElseThrow(() -> new NotFoundDataException(
+															   "Not found application"));
+
+		List<JsonData> jsonDataList = jsonDataRepository.findAllByApplicationIdAndType(application.getId(),
+																					   jsonDataType);
+		if (jsonDataList.isEmpty()) {
+			return false;
+		}
+		return true;
+	}
+
+
+	@Transactional
+	public HirizeResponse<HirizeIQData> getAISuggestForApplicationFromHirize(Long jobPostId, Long candidateId) throws
+			IOException, APIError {
+		JobPost jobPost = jobPostRepository.findById(jobPostId)
+										   .orElseThrow(() -> new NotFoundDataException("Not found job post"));
+		Application application = applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPostId)
+													   .orElseThrow(() -> new NotFoundDataException(
+															   "Not found application"));
+
+		HirizeResponse<HirizeIQData> result = null;
+		result = this.getAISuggestAlreadyExisted(application.getId());
+		if (result == null) {
+			result = this.getAISuggestForApplicationFromHirize(application, jobPost);
+			if (result != null) {
+				// Save result to database
+				JsonData jsonData = JsonData.builder()
+											.hirizeId(result.getData().getId())
+											.applicationId(application.getId())
+											.type(JsonDataType.HIRIZE_AI_MATCHER)
+											.data(Utils.objectToJson(result))
+											.build();
+				jsonDataRepository.save(jsonData);
+			}
+		}
+		return result;
+	}
+
+	public HirizeResponse<HirizeIQData> getAISuggestAlreadyExisted(long applicationId) throws JsonProcessingException {
+		Application application = applicationRepository.findById(applicationId)
+													   .orElseThrow(() -> new NotFoundDataException(
+															   "Not found application"));
+
+		List<JsonData> jsonDataList = jsonDataRepository.findAllByApplicationIdAndType(application.getId(),
+																					   JsonDataType.HIRIZE_IQ);
+		if (jsonDataList != null && !jsonDataList.isEmpty()) {
+			JsonData jsonData = jsonDataList.get(0);
+			HirizeResponse<HirizeIQData> hirizeResponses = HirizeService.jsonToHirizeIQ(jsonData.getData());
+			return hirizeResponses;
+		}
+		return null;
+	}
+
+	public HirizeResponse<HirizeIQData> getAISuggestForApplicationFromHirize(Application application,
+			JobPost jobPost) throws IOException, IllegalArgumentException, APIError {
+		String cvBase64 = EmployerServiceImpl.getStringBase64FromURL(application.getCv(), tempFileLocation);
+
+		// Detect language of content cv to convert to English
+		String translated = webClientService.translate(jobPost.getDescription());
+		jobPost.setDescription(translated);
+
+		// String[] skillFake = {"JAVA", "HTML", "PYTHON"};
+		HirizeIQRequest hirizeIQRequest = HirizeIQRequest.builder()
+														 .payload(cvBase64)
+														 .fileName(application.getCvName())
+														 .jobDescription(jobPost.getDescription())
+														 .build();
+
+		HirizeResponse<HirizeIQData> result;
+		result = hirizeService.callApiHirizeIQ(hirizeIQRequest);
+		return result;
+	}
+
+	private static String getStringBase64FromURL(String url, String tempFileLocation) throws IOException {
+		String fileName = UUID.randomUUID().toString();
+		String fileExtension = "";
+
+		int dotIndex = fileName.lastIndexOf('.');
+		if (dotIndex != -1 && dotIndex < fileName.length() - 1) {
+			fileExtension = fileName.substring(dotIndex + 1);
+			fileName = fileName.substring(0, dotIndex);
+		}
+		String filePath = tempFileLocation.concat("/")
+										  .concat(HirizeService.processFileName(fileName))
+										  .concat(".")
+										  .concat(fileExtension);
+		java.io.File tmpFile = new File(filePath);
+
+		Utils.downloadFileFromUrl(tmpFile, url);
+		String strBase64 = Utils.fileToBase64(tmpFile);
+		if (!tmpFile.delete()) {
+			log.error("Failed to delete the file");
+		}
+		return strBase64;
 	}
 
 }

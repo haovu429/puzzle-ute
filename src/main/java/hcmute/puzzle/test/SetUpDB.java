@@ -551,7 +551,7 @@ public class SetUpDB {
                                                                .build();
 
         SystemConfiguration configuration5 = SystemConfiguration.builder()
-                                                                .key(Constant.Hirize.HIRIZE_RESUME_JOB_PARSER_API_KEY)
+                                                                .key(Constant.Hirize.HIRIZE_JOB_PARSER_API_KEY)
                                                                 .value("none")
                                                                 .build();
 

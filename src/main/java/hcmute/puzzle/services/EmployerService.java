@@ -2,6 +2,7 @@ package hcmute.puzzle.services;
 
 import com.detectlanguage.errors.APIError;
 import hcmute.puzzle.hirize.model.AIMatcherData;
+import hcmute.puzzle.hirize.model.HirizeIQData;
 import hcmute.puzzle.hirize.model.HirizeResponse;
 import hcmute.puzzle.infrastructure.dtos.olds.EmployerDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
@@ -26,4 +27,16 @@ public interface EmployerService {
 
   HirizeResponse<AIMatcherData> getPointOfApplicationFromHirize(Long jobPostId, Long candidateId) throws IOException,
           APIError;
+
+  HirizeResponse<HirizeIQData> getAISuggestForApplicationFromHirize(Long jobPostId, Long candidateId) throws
+          IOException, APIError;
+
+  void clearAIMatcherDataForApplication(Long jobPostId, Long candidateId);
+
+  void clearHirizeIQDataForApplication(Long jobPostId, Long candidateId);
+
+  boolean checkAIMatcherExisted(Long jobPostId, Long candidateId);
+
+  boolean checkHirizeIQExisted(Long jobPostId, Long candidateId);
+
 }

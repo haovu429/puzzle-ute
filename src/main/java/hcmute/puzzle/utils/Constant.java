@@ -83,7 +83,7 @@ public class Constant {
     public static final String HIRIZE_AI_MATCHER_API_KEY = "HIRIZE_AI_MATCHER_API_KEY";
     public static final String HIRIZE_RESUME_PARSER_API_KEY = "HIRIZE_RESUME_PARSER_API_KEY";
 
-    public static final String HIRIZE_RESUME_JOB_PARSER_API_KEY = "HIRIZE_RESUME_JOB_PARSER_API_KEY";
+    public static final String HIRIZE_JOB_PARSER_API_KEY = "HIRIZE_JOB_PARSER_API_KEY";
   }
 
   public class Cohere {

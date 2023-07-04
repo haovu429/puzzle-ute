@@ -6,6 +6,7 @@ import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.*;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.hirize.model.AIMatcherData;
+import hcmute.puzzle.hirize.model.HirizeIQData;
 import hcmute.puzzle.hirize.model.HirizeResponse;
 import hcmute.puzzle.hirize.service.HirizeService;
 import hcmute.puzzle.infrastructure.converter.Converter;
@@ -35,7 +36,6 @@ import hcmute.puzzle.utils.Constant;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -424,5 +424,44 @@ public class EmployerController {
 		} catch (APIError e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@GetMapping("/application/hirize-iq-suggest")
+	public DataResponse<HirizeResponse<HirizeIQData>> getSuggestionFromHirizeIQ(@RequestParam Long jobPostId,
+			@RequestParam Long candidateId) {
+		try {
+			HirizeResponse<HirizeIQData> result = employerService.getAISuggestForApplicationFromHirize(jobPostId,
+																									   candidateId);
+			return new DataResponse<>(result);
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+			throw new RuntimeException(e);
+		} catch (APIError e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@GetMapping("/application/ai-matcher/clear")
+	public DataResponse<String> clearAIMatcherData(@RequestParam Long jobPostId, @RequestParam Long candidateId) {
+		employerService.clearAIMatcherDataForApplication(jobPostId, candidateId);
+		return new DataResponse<>("Success");
+	}
+
+	@GetMapping("/application/hirize-iq/clear")
+	public DataResponse<String> clearHirizeIQData(@RequestParam Long jobPostId, @RequestParam Long candidateId) {
+		employerService.clearHirizeIQDataForApplication(jobPostId, candidateId);
+		return new DataResponse<>("Success");
+	}
+
+	@GetMapping("/application/ai-matcher/check-existed")
+	public DataResponse<Boolean> checkAIMatcherDataExisted(@RequestParam Long jobPostId, @RequestParam Long candidateId) {
+		boolean isExisted = employerService.checkAIMatcherExisted(jobPostId, candidateId);
+		return new DataResponse<>(isExisted);
+	}
+
+	@GetMapping("/application/hirize-iq/check-existed")
+	public DataResponse<Boolean> checkHirizeIQDataExisted(@RequestParam Long jobPostId, @RequestParam Long candidateId) {
+		boolean isExisted = employerService.checkHirizeIQExisted(jobPostId, candidateId);
+		return new DataResponse<>(isExisted);
 	}
 }
