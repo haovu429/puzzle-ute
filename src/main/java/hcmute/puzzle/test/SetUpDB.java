@@ -260,17 +260,17 @@ public class SetUpDB {
                                      .body("This is content about dsl, jpa spring boot")
                                      .tags("#jpa, #dsl")
                                      .thumbnail(
-                                             "https://res.cloudinary.com/drwwfkcmg/image/upload/v1686509234/puzzle_ute/user/blog/z2716433391602_947c1acfa0646b29cb08c4e0a02b3d33.jpg2023-06-12T01:47:09_blog_image.jpg")
+                                             "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbA2sTQ%2FbtrHNMfDKIg%2F1CeHvVFBbb20qqHIQ91CQ0%2Fimg.png")
                                      .blogCategory(blogCategory1)
                                      .author(user2)
                                      .build();
 
         BlogPost blogPost2 = BlogPost.builder()
-                                     .title("Test test is beautiful girl")
-                                     .body("This post view a beautiful girl who is tester")
-                                     .tags("#tester, #girl")
+                                     .title("Development potential of Dev-op")
+                                     .body("This post is about Dev-op")
+                                     .tags("#tester, #devop")
                                      .thumbnail(
-                                             "https://res.cloudinary.com/drwwfkcmg/image/upload/v1686509234/puzzle_ute/user/blog/z2716433391602_947c1acfa0646b29cb08c4e0a02b3d33.jpg2023-06-12T01:47:09_blog_image.jpg")
+                                             "https://cdn.invicti.com/app/uploads/2022/06/28121059/what-is-devsecops-1024x538.png")
                                      .blogCategory(blogCategory2)
                                      .author(user1)
                                      .build();

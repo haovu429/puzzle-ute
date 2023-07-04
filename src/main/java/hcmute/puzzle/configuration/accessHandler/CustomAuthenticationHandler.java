@@ -1,21 +1,16 @@
 package hcmute.puzzle.configuration.accessHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.exception.ErrorResponse;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
-
-//import javax.servlet.ServletException;
-//import javax.servlet.http.HttpServletRequest;
-//import javax.servlet.http.HttpServletResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import org.apache.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 
-import static hcmute.puzzle.utils.Constant.ResponseCode.STATUS_BAD;
-import static hcmute.puzzle.utils.Constant.ResponseMessage.CODE_ERROR_FORBIDDEN;
+import java.io.IOException;
 
 public class CustomAuthenticationHandler implements AuthenticationEntryPoint {
 
@@ -28,8 +23,8 @@ public class CustomAuthenticationHandler implements AuthenticationEntryPoint {
       HttpServletResponse response,
       AuthenticationException authException)
       throws IOException, ServletException {
-    DataResponse dataResponse = new DataResponse(CODE_ERROR_FORBIDDEN, authException.getMessage(), STATUS_BAD);
-    ResponseObject responseObject = new ResponseObject("530", 530, authException.getMessage());
+    DataResponse<String> dataResponse = new DataResponse<>(ErrorResponse.UNAUTHORIZED_ERROR.getErrorCode().getValue(),
+                                                           authException.getMessage(), HttpStatus.SC_UNAUTHORIZED);
     // System.out.println(authException.getMessage());
     //responseObject.setMessage("Invalid token");
     //response.setStatus(401);
