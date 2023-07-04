@@ -257,7 +257,7 @@ public class EmployerServiceImpl implements EmployerService {
 	public void clearJsonDataForApplication(Long jobPostId, Long candidateId, JsonDataType jsonDataType) {
 		JobPost jobPost = jobPostRepository.findById(jobPostId)
 										   .orElseThrow(() -> new NotFoundDataException("Not found job post"));
-		Application application = applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPostId)
+		Application application = applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPost.getId())
 													   .orElseThrow(() -> new NotFoundDataException(
 															   "Not found application"));
 
