@@ -1,13 +1,9 @@
 package hcmute.puzzle.controller;
 
-import freemarker.template.TemplateException;
-import hcmute.puzzle.exception.AlreadyExistsException;
-import hcmute.puzzle.exception.ErrorDefine;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.infrastructure.dtos.news.RegisterUserDto;
 import hcmute.puzzle.infrastructure.dtos.olds.*;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostFilterRequest;
-import hcmute.puzzle.infrastructure.dtos.request.RequestPageable;
 import hcmute.puzzle.infrastructure.dtos.response.CompanyResponse;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.dtos.response.JobPostDto;
@@ -23,10 +19,9 @@ import hcmute.puzzle.infrastructure.repository.CandidateRepository;
 import hcmute.puzzle.infrastructure.repository.JobPostRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.*;
-import hcmute.puzzle.services.impl.CurrentUserService;
+import hcmute.puzzle.services.impl.*;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.TimeUtil;
-import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +30,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -538,13 +531,15 @@ public class CommonController {
 
 	@GetMapping("/blog-post")
 	public DataResponse<Page<BlogPostDto>> getAllBlogPost(@RequestParam(required = false) Long blogCategoryId,
-			@RequestParam(required = false) Integer page, @RequestParam(required = false) Integer size) {
+			@RequestParam(required = false) String searchKey, @RequestParam(required = false) Integer page,
+			@RequestParam(required = false) Integer size) {
 		Pageable pageable = Pageable.unpaged();
 		if (page != null && size != null) {
 			pageable = PageRequest.of(page, size);
 		}
 		BlogPostFilterRequest blogPostFilterRequest = BlogPostFilterRequest.builder()
 																		   .categoryId(blogCategoryId)
+																		   .searchKey(searchKey)
 																		   .isActive(true)
 																		   .isPublic(true)
 																		   .isAscSort(false)
@@ -573,4 +568,11 @@ public class CommonController {
 		}
 		return pageable;
 	}
+	@GetMapping("/comment/get-by-blog-post")
+	public DataResponse<List<CommentDto>> getCommentListByJobPostId(@RequestParam long blogPostId) {
+		List<CommentDto> commentDtos = commentService.getAllByBlogPostId(blogPostId);
+		return new DataResponse<>(commentDtos);
+	}
+
+
 }

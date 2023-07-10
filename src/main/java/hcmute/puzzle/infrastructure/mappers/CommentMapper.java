@@ -2,10 +2,12 @@ package hcmute.puzzle.infrastructure.mappers;
 
 import hcmute.puzzle.infrastructure.dtos.news.CreateCommentRequest;
 import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
+import hcmute.puzzle.infrastructure.dtos.request.UpdateCommentRequest;
 import hcmute.puzzle.infrastructure.entities.Comment;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 @Mapper(
 		uses = {SubCommentMapper.class},
@@ -21,6 +23,8 @@ public interface CommentMapper {
 	@Mapping(target = "canEdit", ignore = true)
 	CommentDto commentToCommentDto(Comment entity);
 
+	List<CommentDto> commentListToCommentDtoList(List<Comment> comments);
+
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "likeNum", ignore = true)
 	@Mapping(target = "disLikeNum", ignore = true)
@@ -28,6 +32,15 @@ public interface CommentMapper {
 	@Mapping(target = "author", ignore = true)
 	@Mapping(target = "subComments", ignore = true)
 	Comment createCommentRequestToComment(CreateCommentRequest createCommentRequest);
+
+	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "likeNum", ignore = true)
+	@Mapping(target = "disLikeNum", ignore = true)
+	@Mapping(target = "blogPost", ignore = true)
+	@Mapping(target = "author", ignore = true)
+	@Mapping(target = "subComments", ignore = true)
+	void updateCommentFromUpdateCommentRequest(UpdateCommentRequest updateCommentRequest,@MappingTarget Comment comment);
 //	default CommentDto commentToCommentDto(CommentEntity entity) {
 //
 //		CommentDto commentDto = CommentDto.builder()

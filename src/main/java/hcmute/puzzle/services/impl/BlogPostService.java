@@ -3,15 +3,13 @@ package hcmute.puzzle.services.impl;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.*;
 import hcmute.puzzle.infrastructure.dtos.olds.BlogPostDto;
+import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostFilterRequest;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostUpdateRequest;
 import hcmute.puzzle.infrastructure.dtos.response.BlogCategoryDto;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
-import hcmute.puzzle.infrastructure.entities.BlogCategory;
-import hcmute.puzzle.infrastructure.entities.BlogPost;
-import hcmute.puzzle.infrastructure.entities.File;
-import hcmute.puzzle.infrastructure.entities.User;
+import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.mappers.BlogCategoryMapper;
 import hcmute.puzzle.infrastructure.mappers.BlogPostMapper;
 import hcmute.puzzle.infrastructure.models.BlogCategoryResponseWithBlogPostAmount;
@@ -21,7 +19,6 @@ import hcmute.puzzle.infrastructure.repository.BlogCategoryRepository;
 import hcmute.puzzle.infrastructure.repository.BlogPostRepository;
 import hcmute.puzzle.infrastructure.repository.CategoryRepository;
 import hcmute.puzzle.infrastructure.repository.FileRepository;
-import hcmute.puzzle.services.BlogPostService;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.utils.Constant;
 import jakarta.persistence.criteria.Join;
@@ -41,7 +38,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
-public class BlogPostServiceImpl implements BlogPostService {
+public class BlogPostService {
 
 
 	@Autowired
@@ -65,7 +62,10 @@ public class BlogPostServiceImpl implements BlogPostService {
 	@Autowired
 	BlogCategoryRepository blogCategoryRepository;
 
-	public DataResponse createBlogPost(BlogPostRequest blogPostRequest) {
+	@Autowired
+	CommentService commentService;
+
+	public DataResponse<BlogPostDto> createBlogPost(BlogPostRequest blogPostRequest) {
 
 		CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
 																					   .getAuthentication()
@@ -113,7 +113,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 		}
 		BlogPostDto blogPostDto = blogPostMapper.blogPostToBlogPostDto(blogPost);
 
-		return new DataResponse(blogPostDto);
+		return new DataResponse<>(blogPostDto);
 	}
 
 	private void resolveBlogPostDtoWithRightEditOfCommentSubComment(BlogPostDto blogPostDto, long currentUserId) {
@@ -154,8 +154,8 @@ public class BlogPostServiceImpl implements BlogPostService {
 		//    blogPostDto.setComments(commentDtos);
 	}
 
-	@Override
-	public DataResponse update(BlogPostUpdateRequest blogPostUpdateRequest, long id) {
+	
+	public DataResponse<BlogPostDto> update(BlogPostUpdateRequest blogPostUpdateRequest, long id) {
 		BlogPost blogPost = blogPostRepository.findById(id)
 											  .orElseThrow(() -> new CustomException(
 													  "You don't have rights for this blog post"));
@@ -212,7 +212,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 		}
 		BlogPostDto blogPostDto = blogPostMapper.blogPostToBlogPostDto(blogPost);
 		resolveBlogPostDtoWithRightEditOfCommentSubComment(blogPostDto, user.getId());
-		return new DataResponse(blogPostDto);
+		return new DataResponse<>(blogPostDto);
 
 	}
 
@@ -250,8 +250,8 @@ public class BlogPostServiceImpl implements BlogPostService {
 		if (!publicIdsToDelete.isEmpty()) filesStorageService.deleteMultiFile(publicIdsToDelete, currentUser);
 	}
 
-	@Override
-	public DataResponse delete(long id) {
+	
+	public DataResponse<String> delete(long id) {
 		BlogPost blogPost = blogPostRepository.findById(id)
 											  .orElseThrow(() -> new NotFoundException("NOT_FOUND_BLOG_POST"));
 		try {
@@ -262,11 +262,11 @@ public class BlogPostServiceImpl implements BlogPostService {
 			//throw new FileStorageException("DO_NOT_DELETE_FILE_OF_BLOG_POST");
 		}
 		blogPostRepository.delete(blogPost);
-		return new DataResponse("Success");
+		return new DataResponse<>("Success");
 	}
 
-	@Override
-	public DataResponse getAll() {
+	
+	public DataResponse<List<BlogPostDto>> getAll() {
 
 		User currentUser;
 		if (SecurityContextHolder.getContext().getAuthentication() != null && SecurityContextHolder.getContext()
@@ -287,17 +287,19 @@ public class BlogPostServiceImpl implements BlogPostService {
 			}
 			return blogPostDto;
 		}).collect(Collectors.toList());
-		return new DataResponse(dtos);
+		return new DataResponse<>(dtos);
 	}
 
-	@Override
-	public DataResponse getOneById(long id) {
-		BlogPostDto dto = blogPostMapper.blogPostToBlogPostDto(
+	
+	public DataResponse<BlogPostDto> getOneById(long id) {
+		BlogPostDto blogPostDto = blogPostMapper.blogPostToBlogPostDto(
 				blogPostRepository.findById(id).orElseThrow(() -> new NotFoundException("NOT_FOUND_BLOG_POST")));
-		return new DataResponse(dto);
+		List<CommentDto> commentDtos = commentService.getAllByBlogPostId(blogPostDto.getId());
+		blogPostDto.setComments(commentDtos);
+		return new DataResponse<>(blogPostDto);
 	}
 
-	@Override
+	
 	public List<BlogPostDto> getBlogPostByUser(long userId) {
 		List<BlogPost> blogPosts = blogPostRepository.findAllByAuthorId(userId);
 		List<BlogPostDto> blogPostDtos = new ArrayList<>();
@@ -446,7 +448,7 @@ public class BlogPostServiceImpl implements BlogPostService {
 						query.orderBy(criteriaBuilder.asc(root.get(blogPostFilter.getSortColumn())));
 				}
 			} else if (Objects.nonNull(blogPostFilter.getIsAscSort()) && blogPostFilter.getIsAscSort()
-																					   .equals(true) && blogPostFilter.getSortColumn() != null && !blogPostFilter.getSortColumn()
+																					   .equals(false) && blogPostFilter.getSortColumn() != null && !blogPostFilter.getSortColumn()
 																																								 .isBlank()) {
 				switch (blogPostFilter.getSortColumn()) {
 					case "createdAt":

@@ -38,15 +38,17 @@ public class CandidateServiceImpl implements CandidateService {
   @Autowired
   CandidateMapper candidateMapper;
 
+  @Autowired
+  CurrentUserService currentUserService;
+
   @Override
   public CandidateDto save(CandidateDto candidateDto) {
     // casting provinceDTO to ProvinceEntity
     Candidate candidate = candidateMapper.candidateDtoToCandidate(candidateDto);
-    CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    User currentUser = customUserDetails.getUser();
+    User currentUser = currentUserService.getCurrentUser();
     candidate.setUser(currentUser);
     // set id
-    candidate.setId(0);
+    // candidate.setId(0);
 
     if (candidate.getUser().getEmployer() != null) {
       throw new RuntimeException("This account for employer");

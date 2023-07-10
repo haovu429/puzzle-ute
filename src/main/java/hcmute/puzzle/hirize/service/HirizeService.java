@@ -135,6 +135,7 @@ public class HirizeService {
 										  new ParameterizedTypeReference<HirizeResponse<JobParserData>>() {
 										  });
 							  } else if (response.statusCode().is4xxClientError()) {
+								  log.info("Status code: {}", response.statusCode());
 								  return Mono.just(null);
 							  } else {
 								  return response.createException().flatMap(Mono::error);

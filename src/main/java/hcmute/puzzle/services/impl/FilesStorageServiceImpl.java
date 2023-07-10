@@ -33,7 +33,7 @@ import static hcmute.puzzle.utils.Constant.*;
 @Service
 public class FilesStorageServiceImpl implements FilesStorageService {
 
-  Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+  Logger logger = LoggerFactory.getLogger(UserService.class);
   @Autowired
   private FileRepository fileRepository;
 

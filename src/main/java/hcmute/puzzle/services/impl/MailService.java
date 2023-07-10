@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class MailService {
 
-  Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+  Logger logger = LoggerFactory.getLogger(UserService.class);
 
   @Autowired
   FreemarkerConfiguration freeMarkerConfiguration;

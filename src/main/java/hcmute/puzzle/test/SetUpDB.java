@@ -575,6 +575,11 @@ public class SetUpDB {
                                                                 .value("none")
                                                                 .build();
 
+        SystemConfiguration configuration10 = SystemConfiguration.builder()
+                                                                .key(Constant.Hirize.HIRIZE_COIN_PRICING)
+                                                                .value("5")
+                                                                .build();
+
         configurations.add(configuration1);
         configurations.add(configuration2);
         configurations.add(configuration3);
@@ -584,6 +589,7 @@ public class SetUpDB {
         configurations.add(configuration7);
         configurations.add(configuration8);
         configurations.add(configuration9);
+        configurations.add(configuration10);
         systemConfigurationRepository.saveAll(configurations);
 
     }

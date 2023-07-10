@@ -67,6 +67,9 @@ public class JobPostServiceImpl implements JobPostService {
   @Autowired
   CategoryRepository categoryRepository;
 
+  @Autowired
+  EmployerRepository employerRepository;
+
   public JobPostDto add(JobPostUserPostRequest createJobPostRequest) {
     //validateJobPost(jobPostDTO);
     //    JobPost jobPost = JobPost.builder()
@@ -105,6 +108,14 @@ public class JobPostServiceImpl implements JobPostService {
                                             .orElseThrow(() -> new NotFoundDataException("Not found category"));
       jobPost.setCategory(category);
     }
+    CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                                   .getAuthentication()
+                                                                                   .getPrincipal();
+
+    User user = customUserDetails.getUser();
+    Employer employer = employerRepository.findById(user.getId())
+                                          .orElseThrow(() -> new NotFoundDataException("Not found employer"));
+    jobPost.setCreatedEmployer(employer);
 
     // set id
     jobPost.setId(0);
@@ -449,16 +460,35 @@ public class JobPostServiceImpl implements JobPostService {
                                                                     .searchKeys(List.of(jobAlert.getTag(),
                                                                                         jobAlert.getIndustry()))
                                                                     .minBudget(jobAlert.getMinBudget())
-                                                                    .canApply(true)
-                                                                    .position(jobAlert.getTag())
+                                                                    .canApply(true).position(jobAlert.getTag())
 
                                                                     .build();
     Specification<JobPost> jobPostSpecification = doPredicate(jobPostFilterRequest);
     Page<JobPostDto> jobPostDtos = jobPostRepository.findAll(jobPostSpecification, pageable)
-                                                 .map(jobPostMapper::jobPostToJobPostDto);
+                                                    .map(jobPostMapper::jobPostToJobPostDto);
 
     return jobPostDtos;
   }
+
+  //  @Scheduled(cron = "0 0 0 * * ?")
+  //  public Page<JobPostDto> cronJobFilterJobPostByJobAlert(JobAlert jobAlert, Pageable pageable) {
+  //
+  //    JobPostFilterRequest jobPostFilterRequest = JobPostFilterRequest.builder()
+  //                                                                    .city(jobAlert.getCity())
+  //                                                                    .isActive(true)
+  //                                                                    .searchKeys(List.of(jobAlert.getTag(),
+  //                                                                                        jobAlert.getIndustry()))
+  //                                                                    .minBudget(jobAlert.getMinBudget())
+  //                                                                    .canApply(true)
+  //                                                                    .position(jobAlert.getTag())
+  //
+  //                                                                    .build();
+  //    Specification<JobPost> jobPostSpecification = doPredicate(jobPostFilterRequest);
+  //    Page<JobPostDto> jobPostDtos = jobPostRepository.findAll(jobPostSpecification, pageable)
+  //                                                    .map(jobPostMapper::jobPostToJobPostDto);
+  //
+  //    return jobPostDtos;
+  //  }
 
   public void checkCreatedJobPostLimit(long employerId) {
     long limit = getLimitNumberOfJobPostsCreatedForEmployer(employerId);

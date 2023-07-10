@@ -1,7 +1,10 @@
 package hcmute.puzzle.controller;
 
 import hcmute.puzzle.configuration.security.CustomUserDetails;
-import hcmute.puzzle.exception.*;
+import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.InvalidBehaviorException;
+import hcmute.puzzle.exception.NotFoundDataException;
+import hcmute.puzzle.exception.UnauthorizedException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.infrastructure.dtos.olds.*;
 import hcmute.puzzle.infrastructure.dtos.request.ApplicationRequest;
@@ -14,6 +17,7 @@ import hcmute.puzzle.infrastructure.entities.Experience;
 import hcmute.puzzle.infrastructure.entities.JobAlert;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.*;
+import hcmute.puzzle.services.impl.ApplicationService;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.Utils;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -31,7 +35,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -414,6 +419,25 @@ public class CandidateController {
     return new DataResponse<>(applicationDto);
   }
 
+  @GetMapping("/application/applied")
+  DataResponse<Page<ApplicationDto>> getApplicationApplied(@RequestParam(value = "page", required = false) Integer page,
+          @RequestParam(required = false) Integer size) {
+    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                             .getAuthentication()
+                                                                             .getPrincipal();
+    Pageable pageable = Utils.getPageable(page, size);
+    Page<ApplicationDto> applicationDtos = applicationService.getApplicationApplied(userDetails.getUser().getId(),
+                                                                                    pageable);
+    return new DataResponse<>(applicationDtos);
+  }
+
+  @GetMapping("/application/applied/detail/{applicationId}")
+  DataResponse<ApplicationDto> getApplicationApplied(@PathVariable Long applicationId) {
+    ApplicationDto applicationDtos = applicationService.getDetailApplicationApplied(applicationId);
+    return new DataResponse<>(applicationDtos);
+  }
+
+
   @GetMapping("/get-company-followed")
   DataResponse<List<CompanyResponse>> getCompanyFollowedByCandidate() {
     CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
@@ -433,7 +457,7 @@ public class CandidateController {
     return new DataResponse<>(employerDtos);
   }
 
-  @PostMapping("/job-alert/suggest")
+  @GetMapping("/job-alert/suggest")
   DataResponse<Page<JobPostDto>> suggestJobPostByJobAlert(@RequestParam Long jobAlertId, @RequestParam(value = "page", required = false) Integer page,
           @RequestParam(required = false) Integer size) {
     Pageable pageable = Utils.getPageable(page, size);

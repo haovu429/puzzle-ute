@@ -2,6 +2,8 @@ package hcmute.puzzle.infrastructure.dtos.olds;
 
 import lombok.*;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,4 +17,6 @@ public class SubCommentDto {
     private boolean canEdit;
     private long commentId;
     private long userId;
+    private Date createdAt;
+    private Date updatedAt;
 }

@@ -24,6 +24,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
+import static hcmute.puzzle.utils.Constant.AuthPath.VERIFY_ACCOUNT_URL;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 // @EnableJpaRepositories(basePackages="java")
@@ -38,7 +39,7 @@ public class WebSecurityConfig {
 	private static final String[] AUTH_WHITE_LIST_BUSINESS = {"/common/**", "/schedule-config/**", "/test/**",
 			"/init-db", "/oauth2/**", "/api-docs", "/actuator/**", "/login/**", "/auth/**", "/login-google/**",
 			"/forgot-password", "/reset-password", "/", "/login-google", "/oauth/**", "/pay-result/**", "/system/**",
-			"/lab/**"};
+			"/lab/**", "/redirect/**"};
 
 	//    @Autowired
 	//    private AuthEntryPointJwt unauthorizedHandler;

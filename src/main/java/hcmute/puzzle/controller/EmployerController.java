@@ -1,6 +1,5 @@
 package hcmute.puzzle.controller;
 
-import com.cloudinary.api.AuthorizationRequired;
 import com.detectlanguage.errors.APIError;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.*;
@@ -26,12 +25,14 @@ import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.mappers.CompanyMapper;
 import hcmute.puzzle.infrastructure.models.ApplicationResult;
 import hcmute.puzzle.infrastructure.models.JobPostWithApplicationAmount;
+import hcmute.puzzle.infrastructure.models.ResponseApplication;
 import hcmute.puzzle.infrastructure.models.enums.FileType;
 import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
 import hcmute.puzzle.infrastructure.repository.CompanyRepository;
 import hcmute.puzzle.infrastructure.repository.JobPostRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.*;
+import hcmute.puzzle.services.impl.ApplicationService;
 import hcmute.puzzle.utils.Constant;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.log4j.Log4j2;
@@ -109,12 +110,11 @@ public class EmployerController {
 	//  }
 
 	@PutMapping("/update")
-	DataResponse<EmployerDto> updateEmployer(@RequestBody @Validated EmployerDto employer, BindingResult bindingResult,
-			Authentication authentication) {
+	DataResponse<EmployerDto> updateEmployer(@RequestBody @Validated EmployerDto employer,
+			BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			throw new CustomException(bindingResult.getFieldError().toString());
 		}
-		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		EmployerDto employerDto = employerService.update(employer);
 		return new DataResponse<>(employerDto);
 	}
@@ -134,7 +134,7 @@ public class EmployerController {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		// Validate JobPost
 		jobPostService.validateJobPost(createJobPostRequest);
-		jobPostService.checkCreatedJobPostLimit(userDetails.getUser().getId());
+		//jobPostService.checkCreatedJobPostLimit(userDetails.getUser().getId());
 		JobPostDto jobPostDto = jobPostService.add(createJobPostRequest);
 		return new DataResponse<>(jobPostDto);
 	}
@@ -223,9 +223,15 @@ public class EmployerController {
 		return new DataResponse<>("Success");
 	}
 
+	@PostMapping("/response-application-by-candidate-and-job-post")
+	DataResponse<String> responseApplicationV2(@RequestBody ResponseApplication responseApplication) {
+		applicationService.responseApplicationByCandidateAndJobPost(responseApplication);
+		return new DataResponse<>("Success");
+	}
+
 	@GetMapping("/application")
 	DataResponse<ApplicationDto> responseApplicationByCandidateIdAndJobPostId(@RequestParam Long jobPostId,
-			@RequestParam Long candidateId) throws AuthorizationRequired {
+			@RequestParam Long candidateId) {
 		JobPost jobPost = jobPostRepository.findById(jobPostId)
 										   .orElseThrow(() -> new NotFoundDataException("Not found job post "));
 
@@ -421,7 +427,7 @@ public class EmployerController {
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 			throw new RuntimeException(e);
-		} catch (APIError e) {
+		} catch (APIError | InvalidBehaviorException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -436,7 +442,7 @@ public class EmployerController {
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 			throw new RuntimeException(e);
-		} catch (APIError e) {
+		} catch (APIError | InvalidBehaviorException e) {
 			throw new RuntimeException(e);
 		}
 	}

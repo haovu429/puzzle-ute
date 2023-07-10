@@ -53,11 +53,11 @@ public class Constant {
   public static final String[] LIST_HOST_FRONT_END =
       new String[] {LOCAL_URL, ONLINE_URL, ONLINE1_URL};
 
-  public class StorageName {
+  public static class StorageName {
     public static final String CLOUDINARY = "CLOUDINARY";
   }
 
-  public class FileLocation {
+  public static class FileLocation {
     public static final String STORAGE_BLOG_IMAGE_LOCATION = "puzzle_ute/user/blog";
     public static final String STORAGE_BLOG_THUMBNAIL_LOCATION = "puzzle_ute/user/blog/thumbnail";
     public static final String STORAGE_IMAGE_LOCATION = "puzzle_ute/user/avatar";
@@ -67,7 +67,7 @@ public class Constant {
     public static final String STORAGE_CATEGORY_CV_LOCATION = "puzzle_ute/application/cv";
   }
 
-  public class AuthPath {
+  public static class AuthPath {
     public static final String LOGIN_URL = "/login";
     public static final String LOGOUT_URL = "/logout";
     public static final String LOGIN_GOOGLE_URL = "/login-google";
@@ -77,30 +77,30 @@ public class Constant {
     public static final String VERIFY_ACCOUNT_URL = "/verify-account";
   }
 
-  public class Hirize {
+  public static class Hirize {
     public static final String HIRIZE_BALANCE = "HIRIZE_BALANCE";
     public static final String HIRIZE_HIRIZE_IQ_API_KEY = "HIRIZE_HIRIZE_IQ_API_KEY";
     public static final String HIRIZE_AI_MATCHER_API_KEY = "HIRIZE_AI_MATCHER_API_KEY";
     public static final String HIRIZE_RESUME_PARSER_API_KEY = "HIRIZE_RESUME_PARSER_API_KEY";
-
     public static final String HIRIZE_JOB_PARSER_API_KEY = "HIRIZE_JOB_PARSER_API_KEY";
+    public static final String HIRIZE_COIN_PRICING = "HIRIZE_COIN_PRICING";
   }
 
-  public class Cohere {
+  public static class Cohere {
     public static final String COHERE_API_KEY = "COHERE_API_KEY";
   }
 
-  public class Translate {
+  public static class Translate {
     public static final String TRANSLATE_END_POINT = "TRANSLATE_END_POINT";
   }
 
-  public class DetectLanguage {
+  public static class DetectLanguage {
     public static final String DETECT_LANGUAGE_API_KEY = "DETECT_LANGUAGE_API_KEY";
 
     public static final String DETECT_LANGUAGE_ENABLE = "DETECT_LANGUAGE_ENABLE";
   }
 
-  public class ResponseCode {
+  public static class ResponseCode {
     public static final int STATUS_OK = 200;
     public static final int STATUS_NO_CONTENT = 200;
     public static final int STATUS_BAD = 400;
@@ -112,7 +112,14 @@ public class Constant {
     public static final int STATUS_CUSTOM_EXCEPTION = 501;
   }
 
-  public class ResponseMessage {
+  public static class SortBy {
+//    public static final String ASC = "ASC";
+//    public static final String DESC = "DESC";
+    public static final String CREATED_AT = "createdAt";
+    public static final String UPDATED_AT = "updatedAt";
+  }
+
+  public static class ResponseMessage {
     public static final String MSG_CUSTOM_EXCEPTION = "CUSTOM_EXCEPTION";
     //public static final int STATUS_
 

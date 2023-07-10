@@ -9,10 +9,7 @@ import hcmute.puzzle.infrastructure.dtos.olds.CategoryDto;
 import hcmute.puzzle.infrastructure.dtos.olds.CompanyDto;
 import hcmute.puzzle.infrastructure.dtos.olds.ExtraInfoDto;
 import hcmute.puzzle.infrastructure.dtos.olds.InvoiceDto;
-import hcmute.puzzle.infrastructure.dtos.request.CreateCategoryRequest;
-import hcmute.puzzle.infrastructure.dtos.request.CreateCompanyAdminRequest;
-import hcmute.puzzle.infrastructure.dtos.request.JobPostAdminPostRequest;
-import hcmute.puzzle.infrastructure.dtos.request.TimeFramePayLoad;
+import hcmute.puzzle.infrastructure.dtos.request.*;
 import hcmute.puzzle.infrastructure.dtos.response.CompanyResponse;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.dtos.response.JobPostDto;
@@ -24,6 +21,10 @@ import hcmute.puzzle.infrastructure.repository.EmployerRepository;
 import hcmute.puzzle.infrastructure.repository.JobPostRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.*;
+import hcmute.puzzle.services.impl.AdminService;
+import hcmute.puzzle.services.impl.ApplicationService;
+import hcmute.puzzle.services.impl.BlogPostService;
+import hcmute.puzzle.services.impl.UserService;
 import hcmute.puzzle.utils.Constant;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -88,7 +89,10 @@ public class AdminController {
 	@Autowired
 	CompanyMapper companyMapper;
 
-	// Company, add new company
+	@Autowired
+	AdminService adminService;
+
+	// =========== Company ========================
 	@PostMapping("/company")
 	public DataResponse<CompanyResponse> createCompany(@ModelAttribute CreateCompanyAdminRequest companyPayload) throws
 			NotFoundException {
@@ -148,7 +152,23 @@ public class AdminController {
 		return new DataResponse<>(companyResponse);
 	}
 
-	// Account
+	@GetMapping("/company/config-rights/add")
+	public DataResponse<String> addConfigRightsEmployerWithCompany(
+			@RequestParam Long employerId, @RequestParam Long companyId) {
+		adminService.addRightsOfEmployerWithCompany(employerId,
+													companyId);
+		return new DataResponse<>("Success");
+	}
+
+	@GetMapping("/company/config-rights/remove")
+	public DataResponse<String> removeConfigRightsEmployerWithCompany(
+			@RequestParam Long employerId, @RequestParam Long companyId) {
+		adminService.removeRightsOfEmployerWithCompany(employerId,
+													   companyId);
+		return new DataResponse<>("Success");
+	}
+
+	// =========== Account ========================
 	@PostMapping("/account")
 	public DataResponse<String> saveAccount(@RequestBody @Valid CreateUserForAdminDto user) {
 		userService.registerUserForAdmin(user, true);

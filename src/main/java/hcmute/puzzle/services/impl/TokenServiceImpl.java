@@ -26,7 +26,7 @@ public class TokenServiceImpl implements TokenService {
       throw new RuntimeException("User was not found by email: " + userMail);
     }
     Token token = new Token();
-    token.setUser(user);
+    token.setEmail(user.getEmail());
     token.setToken(tokenValue);
 
     tokenRepository.save(token);

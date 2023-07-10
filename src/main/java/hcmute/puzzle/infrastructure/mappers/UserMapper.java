@@ -48,7 +48,7 @@ public interface UserMapper {
     @Mapping(target = "notificationEntities", ignore = true)
     @Mapping(target = "viewJobPosts", ignore = true)
     @Mapping(target = "subscribeEntities", ignore = true)
-    @Mapping(target = "tokens", ignore = true)
+//    @Mapping(target = "tokens", ignore = true)
     @Mapping(target = "isAdmin", ignore = true)
     void updateUserFromDto(UpdateUserForAdminDto dto, @MappingTarget User entity);
 

@@ -20,6 +20,7 @@ public class CommentDto {
     private Integer disLikeNum;
     private long blogPostId;
     private Date createdAt;
+    private Date updatedAt;
     private long userId;
     //custom while use, resolve to info front end know current user has right to edit comment.
     private boolean canEdit;

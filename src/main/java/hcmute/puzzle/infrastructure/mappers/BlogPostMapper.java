@@ -33,6 +33,7 @@ public interface BlogPostMapper {
 
 	@Mapping(target = "blogCategoryId", source = "blogCategory.id")
 	@Mapping(target = "userId", source = "author.id")
+	@Mapping(target = "comments", ignore = true)
 	BlogPostDto blogPostToBlogPostDto(BlogPost entity);
 
 //	default BlogPostEntity blogPostDtoToBlogPost(BlogPostDto dto){

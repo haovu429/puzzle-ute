@@ -109,9 +109,9 @@ public class User extends Auditable implements Serializable {
   private List<Subscription> subscribeEntities = new ArrayList<>();
 
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  @Builder.Default
-  private List<Token> tokens = new ArrayList<>();
+//  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//  @Builder.Default
+//  private List<Token> tokens = new ArrayList<>();
 
   public User() {
 

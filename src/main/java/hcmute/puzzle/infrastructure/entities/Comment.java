@@ -44,4 +44,5 @@ public class Comment extends Auditable{
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<SubComment> subComments = new ArrayList<>();
+
 }

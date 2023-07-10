@@ -1,6 +1,7 @@
 package hcmute.puzzle.services;
 
 import com.detectlanguage.errors.APIError;
+import hcmute.puzzle.exception.InvalidBehaviorException;
 import hcmute.puzzle.hirize.model.AIMatcherData;
 import hcmute.puzzle.hirize.model.HirizeIQData;
 import hcmute.puzzle.hirize.model.HirizeResponse;
@@ -26,10 +27,10 @@ public interface EmployerService {
   double getApplicationRateEmployerId(long employerId);
 
   HirizeResponse<AIMatcherData> getPointOfApplicationFromHirize(Long jobPostId, Long candidateId) throws IOException,
-          APIError;
+          APIError, InvalidBehaviorException;
 
-  HirizeResponse<HirizeIQData> getAISuggestForApplicationFromHirize(Long jobPostId, Long candidateId) throws
-          IOException, APIError;
+  HirizeResponse<HirizeIQData> getAISuggestForApplicationFromHirize(Long jobPostId, Long candidateId) throws IOException, APIError,
+		  InvalidBehaviorException;
 
   void clearAIMatcherDataForApplication(Long jobPostId, Long candidateId);
 

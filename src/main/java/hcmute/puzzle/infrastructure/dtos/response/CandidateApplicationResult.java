@@ -8,7 +8,8 @@ import lombok.Data;
 @Data
 @Builder
 public class CandidateApplicationResult {
-	String position;
-	CandidateDto candidate;
-	ApplicationDto application;
+	private String position;
+	private String avatar;
+	private CandidateDto candidate;
+	private ApplicationDto application;
 }

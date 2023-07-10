@@ -4,6 +4,7 @@ import com.detectlanguage.errors.APIError;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.InvalidBehaviorException;
 import hcmute.puzzle.exception.NotFoundDataException;
 import hcmute.puzzle.hirize.model.*;
 import hcmute.puzzle.hirize.service.HirizeService;
@@ -13,6 +14,7 @@ import hcmute.puzzle.infrastructure.mappers.EmployerMapper;
 import hcmute.puzzle.infrastructure.models.enums.JsonDataType;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.EmployerService;
+import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.Utils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -69,20 +71,27 @@ public class EmployerServiceImpl implements EmployerService {
 	@Value("${file.location.download}")
 	String tempFileLocation;
 
+	@Value("${hirize.pricing.coin}")
+	Long coinPrice;
+
 	@Autowired
 	SystemConfigurationRepository systemConfigurationRepository;
 
 	@Autowired
 	WebClientService webClientService;
 
+	@Autowired
+	CurrentUserService currentUserService;
+
 	@Override
 	public EmployerDto save(EmployerDto employerDTO) {
 		// casting provinceDTO to ProvinceEntity
 		Employer employer = employerMapper.employerDtoToEmployer(employerDTO);
+		User currentUser =currentUserService.getCurrentUser();
 
 		// save province
 		//    employer.setId(0);
-		if (employer.getUser().getCandidate() != null) {
+		if (currentUser.getCandidate() != null) {
 			throw new RuntimeException("This account for candidate");
 		}
 
@@ -110,8 +119,14 @@ public class EmployerServiceImpl implements EmployerService {
 
 	@Override
 	public EmployerDto update(EmployerDto employerDTO) {
-		Employer employer = employerRepository.findById(employerDTO.getId()).orElseThrow(() -> new NotFoundDataException("Not found employer"));
+		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+																				 .getAuthentication()
+																				 .getPrincipal();
+		User currentUser = userDetails.getUser();
+		Employer employer = employerRepository.findById(currentUser.getId())
+											  .orElseThrow(() -> new NotFoundDataException("Not found employer"));
 		employerMapper.updateEmployerFromEmployerDto(employerDTO, employer);
+		employerRepository.save(employer);
 		return employerMapper.employerToEmployerDto(employer);
 	}
 
@@ -151,7 +166,7 @@ public class EmployerServiceImpl implements EmployerService {
 		long applicationOfCandidateAmount = applicationRepository.getAmountApplicationToEmployer(employerId);
 
 		if (viewOfCandidateAmount != 0 && viewOfCandidateAmount >= applicationOfCandidateAmount) {
-			rate = Double.valueOf(applicationOfCandidateAmount) / viewOfCandidateAmount;
+			rate = (double) applicationOfCandidateAmount / viewOfCandidateAmount;
 			rate = rate * 100; // doi ti le ra phan tram
 			// lam tron 2 chu so thap phan
 			rate = Math.round(rate * 100.0) / 100.0;
@@ -174,7 +189,7 @@ public class EmployerServiceImpl implements EmployerService {
 
 	@Transactional
 	public HirizeResponse<AIMatcherData> getPointOfApplicationFromHirize(Long jobPostId, Long candidateId) throws
-			IOException, APIError {
+			IOException, APIError, InvalidBehaviorException {
 		JobPost jobPost = jobPostRepository.findById(jobPostId)
 										   .orElseThrow(() -> new NotFoundDataException("Not found job post"));
 		Application application = applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPostId)
@@ -295,7 +310,7 @@ public class EmployerServiceImpl implements EmployerService {
 
 	@Transactional
 	public HirizeResponse<HirizeIQData> getAISuggestForApplicationFromHirize(Long jobPostId, Long candidateId) throws
-			IOException, APIError {
+			IOException, APIError, InvalidBehaviorException {
 		JobPost jobPost = jobPostRepository.findById(jobPostId)
 										   .orElseThrow(() -> new NotFoundDataException("Not found job post"));
 		Application application = applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPostId)
@@ -311,7 +326,7 @@ public class EmployerServiceImpl implements EmployerService {
 				JsonData jsonData = JsonData.builder()
 											.hirizeId(result.getData().getId())
 											.applicationId(application.getId())
-											.type(JsonDataType.HIRIZE_AI_MATCHER)
+											.type(JsonDataType.HIRIZE_IQ)
 											.data(Utils.objectToJson(result))
 											.build();
 				jsonDataRepository.save(jsonData);
@@ -321,12 +336,25 @@ public class EmployerServiceImpl implements EmployerService {
 		return result;
 	}
 
-	private void reduceCoin() {
+	private void reduceCoin() throws InvalidBehaviorException, NumberFormatException {
 		CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
 																					   .getAuthentication()
 																					   .getPrincipal();
 		User currentUser = customUserDetails.getUser();
-		currentUser.setBalance(currentUser.getBalance() - 2);
+		SystemConfiguration pricingConfiguration = systemConfigurationRepository.findByKey(
+				Constant.Hirize.HIRIZE_COIN_PRICING).orElse(null);
+		if (pricingConfiguration != null && pricingConfiguration.getValue() != null) {
+			coinPrice = Long.parseLong(pricingConfiguration.getValue());
+		} else if (coinPrice == null) {
+			throw new NotFoundDataException("Not found configuration for Cohere api");
+		}
+		long newBalance = currentUser.getBalance() - coinPrice;
+		if (newBalance >= 0) {
+			currentUser.setBalance(newBalance);
+		} else {
+			throw new InvalidBehaviorException("account not enough coins");
+		}
+
 		userRepository.save(currentUser);
 	}
 
