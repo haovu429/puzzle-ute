@@ -1,6 +1,7 @@
 package hcmute.puzzle.services.impl;
 
 import hcmute.puzzle.exception.NotFoundDataException;
+import hcmute.puzzle.exception.ServerException;
 import hcmute.puzzle.exception.UnauthorizedException;
 import hcmute.puzzle.infrastructure.dtos.news.CreateCommentRequest;
 import hcmute.puzzle.infrastructure.dtos.news.CreateSubCommentRequest;
@@ -17,6 +18,7 @@ import hcmute.puzzle.infrastructure.mappers.SubCommentMapper;
 import hcmute.puzzle.infrastructure.repository.BlogPostRepository;
 import hcmute.puzzle.infrastructure.repository.CommentRepository;
 import hcmute.puzzle.infrastructure.repository.SubCommentRepository;
+import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.utils.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -52,6 +54,9 @@ public class CommentService {
 
   @Autowired
   CurrentUserService currentUserService;
+
+  @Autowired
+  UserRepository userRepository;
 
   //
   //  public CommentDto save(CreateCommentRequest createCommentRequest) {
@@ -159,6 +164,18 @@ public class CommentService {
   }
 
   public void resolveBlogPostDtoWithRightEditOfComment(CommentDto commentDto, User user) {
+    if (Objects.isNull(commentDto.getUserId())) {
+      throw new ServerException("Data wrong, comment don't have created user");
+    }
+
+    User createdUser = userRepository.findById(commentDto.getUserId()).orElseThrow(
+            () -> new NotFoundDataException("Not found user")
+    );
+
+    if (createdUser.getAvatar() != null) {
+      commentDto.setAvatar(createdUser.getAvatar());
+    }
+
     if (user != null && Objects.equals(commentDto.getUserId(), user.getId())) {
       commentDto.setCanEdit(true);
     } else {
@@ -172,6 +189,18 @@ public class CommentService {
 
 
   public void resolveBlogPostDtoWithRightEditOfSubComment(SubCommentDto subCommentDto, User user) {
+    if (Objects.isNull(subCommentDto.getUserId())) {
+      throw new ServerException("Data wrong, comment don't have created user");
+    }
+
+    User createdUser = userRepository.findById(subCommentDto.getUserId()).orElseThrow(
+            () -> new NotFoundDataException("Not found user")
+    );
+
+    if (createdUser.getAvatar() != null) {
+      subCommentDto.setAvatar(createdUser.getAvatar());
+    }
+
     if (user != null && Objects.equals(subCommentDto.getUserId(), user.getId())) {
       subCommentDto.setCanEdit(true);
     } else {

@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -283,6 +284,7 @@ public class AdminController {
 		return new DataResponse<>(dataStaticJoinAccounts);
 	}
 
+	@Transactional
 	@PutMapping("/account/{userId}")
 	public DataResponse<UserPostDto> updateAccountById(@PathVariable(value = "userId") long userId,
 			@ModelAttribute UpdateUserForAdminDto updateUserForAdminDto, @RequestPart(required = false) MultipartFile avatar) {

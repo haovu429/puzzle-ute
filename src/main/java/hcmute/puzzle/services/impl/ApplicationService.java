@@ -100,8 +100,7 @@ public class ApplicationService {
 		application.setCandidate(candidate);
 		application.setJobPost(jobPost);
 		applicationRepository.save(application);
-		ApplicationDto applicationDto = applicationMapper.applicationToApplicationDto(application);
-		return applicationDto;
+		return applicationMapper.applicationToApplicationDto(application);
 	}
 
 

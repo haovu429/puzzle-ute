@@ -69,7 +69,8 @@ public class User extends Auditable implements Serializable {
   private Date lastLoginAt;
 
   @Column(name = "is_admin")
-  private Boolean isAdmin;
+  @Builder.Default
+  private Boolean isAdmin = false;
 
   @Column(name = "balance")
   @Builder.Default

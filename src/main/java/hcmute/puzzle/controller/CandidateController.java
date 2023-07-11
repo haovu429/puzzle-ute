@@ -8,16 +8,19 @@ import hcmute.puzzle.exception.UnauthorizedException;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.infrastructure.dtos.olds.*;
 import hcmute.puzzle.infrastructure.dtos.request.ApplicationRequest;
+import hcmute.puzzle.infrastructure.dtos.request.CreateExperienceRequest;
 import hcmute.puzzle.infrastructure.dtos.request.PostCandidateRequest;
+import hcmute.puzzle.infrastructure.dtos.request.UpdateExperienceRequest;
 import hcmute.puzzle.infrastructure.dtos.response.CompanyResponse;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.dtos.response.JobPostDto;
-import hcmute.puzzle.infrastructure.entities.Application;
-import hcmute.puzzle.infrastructure.entities.Experience;
-import hcmute.puzzle.infrastructure.entities.JobAlert;
+import hcmute.puzzle.infrastructure.entities.*;
+import hcmute.puzzle.infrastructure.mappers.ExperienceMapper;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.services.impl.ApplicationService;
+import hcmute.puzzle.services.impl.CurrentUserService;
+import hcmute.puzzle.services.impl.ExperienceService;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.Utils;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -70,7 +73,8 @@ public class CandidateController {
 
   @Autowired JobAlertService jobAlertService;
 
-  @Autowired ExperienceService experienceService;
+  @Autowired
+  ExperienceService experienceService;
 
   @Autowired
   ExperienceRepository experienceRepository;
@@ -80,6 +84,12 @@ public class CandidateController {
   @Autowired CompanyService companyService;
 
   @Autowired JobPostService jobPostService;
+
+  @Autowired
+  ExperienceMapper experienceMapper;
+
+  @Autowired
+  CurrentUserService currentUserService;
 
   @PersistenceContext
   public EntityManager em;
@@ -117,13 +127,14 @@ public class CandidateController {
   //    return new DataResponse("Success");
   //  }
 
-  @PutMapping("/update/{candidateId}")
-  DataResponse<CandidateDto> updateCandidate(@PathVariable Long candidateId,
+  @PutMapping("/update")
+  DataResponse<CandidateDto> updateCandidate(
           @RequestBody @Valid PostCandidateRequest candidate, BindingResult bindingResult) {
     //    if (bindingResult.hasErrors()) {
     //      throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     //    }
-    return new DataResponse<>(candidateService.update(candidateId, candidate));
+    User crrentUser = currentUserService.getCurrentUser();
+    return new DataResponse<>(candidateService.update(crrentUser.getId(), candidate));
   }
 
   // public
@@ -307,7 +318,7 @@ public class CandidateController {
   }
 
   @PostMapping("/add-experience")
-  DataResponse<ExperienceDto> addExperience(@RequestBody @Validated ExperienceDto experienceDTO,
+  DataResponse<ExperienceDto> addExperience(@RequestBody @Validated CreateExperienceRequest createExperienceRequest,
           BindingResult bindingResult) {
     if (bindingResult.hasErrors()) {
       throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
@@ -316,7 +327,7 @@ public class CandidateController {
     CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
                                                                              .getAuthentication()
                                                                              .getPrincipal();
-    ExperienceDto experienceDto = experienceService.save(userDetails.getUser().getId(), experienceDTO);
+    ExperienceDto experienceDto = experienceService.save(userDetails.getUser().getId(), createExperienceRequest);
     return new DataResponse<>(experienceDto);
   }
 
@@ -326,22 +337,8 @@ public class CandidateController {
     if (bindingResult.hasErrors()) {
       throw new RuntimeException(Objects.requireNonNull(bindingResult.getFieldError()).toString());
     }
-
-    CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
-                                                                             .getAuthentication()
-                                                                             .getPrincipal();
-
-    Experience experience = experienceRepository.findById(experienceDTO.getId())
-                                                .orElseThrow(
-                                                        () -> new NotFoundDataException("Experience isn't exists"));
-
-
-    if (experience.getCandidate().getId() != userDetails.getUser().getId()) {
-      throw new UnauthorizedException("You don't have rights for this Experience");
-    }
-
-    experienceDTO.setCandidateId(userDetails.getUser().getId());
-    ExperienceDto experienceDto = experienceService.update(experienceDTO);
+    UpdateExperienceRequest updateExperienceRequest = experienceMapper.experienceDtoToUpdateExperienceRequest(experienceDTO);
+    ExperienceDto experienceDto = experienceService.update(experienceDTO.getCandidateId(), updateExperienceRequest);
     return new DataResponse<>(experienceDto);
   }
 
@@ -466,5 +463,23 @@ public class CandidateController {
     );
     Page<JobPostDto> jobAlertDtoPage  = jobPostService.filterJobPostByJobAlert(jobAlert, pageable);
     return new DataResponse<>(jobAlertDtoPage);
+  }
+
+  @GetMapping("/application")
+  DataResponse<ApplicationDto> responseApplicationByCandidateIdAndJobPostId(@RequestParam Long jobPostId) {
+    JobPost jobPost = jobPostRepository.findById(jobPostId)
+                                       .orElseThrow(() -> new NotFoundDataException("Not found job post "));
+
+    CustomUserDetails principal = (CustomUserDetails) SecurityContextHolder.getContext()
+                                                                           .getAuthentication()
+                                                                           .getPrincipal();
+    User currentUser = principal.getUser();
+
+    ApplicationDto applicationDto = applicationService.getApplicationByJobPostIdAndCandidateId(jobPostId,
+                                                                                               currentUser.getId());
+    if (currentUser.getId() != applicationDto.getCandidateId()) {
+      throw new UnauthorizedException("You don't have right for this application");
+    }
+    return new DataResponse<>(applicationDto);
   }
 }

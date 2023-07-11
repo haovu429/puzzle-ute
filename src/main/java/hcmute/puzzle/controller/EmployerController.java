@@ -156,7 +156,7 @@ public class EmployerController {
 
 	@PutMapping("/update-job-post/{jobPostId}")
 	DataResponse<JobPostDto> updateJobPost(@RequestBody @Validated JobPostUserPostRequest jobPostUserPostRequest,
-			@PathVariable long jobPostId) {
+			@PathVariable(required = false) Long jobPostId) {
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
 																				 .getAuthentication()
 																				 .getPrincipal();

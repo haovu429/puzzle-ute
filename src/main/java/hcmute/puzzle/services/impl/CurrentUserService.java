@@ -12,7 +12,7 @@ import java.util.Optional;
 @Service
 public class CurrentUserService {
 	public Optional<User> getCurrentUserOptional() {
-		User user = null;
+		User user;
 		try {
 			CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			user = customUserDetails.getUser();

@@ -87,10 +87,13 @@ public class EmployerServiceImpl implements EmployerService {
 	public EmployerDto save(EmployerDto employerDTO) {
 		// casting provinceDTO to ProvinceEntity
 		Employer employer = employerMapper.employerDtoToEmployer(employerDTO);
-		User currentUser =currentUserService.getCurrentUser();
+		User currentUser = currentUserService.getCurrentUser();
 
 		// save province
-		//    employer.setId(0);
+		//employer.setId(currentUser.getId());
+		User userFromDb = userRepository.findById(currentUser.getId())
+										.orElseThrow(() -> new NotFoundDataException("Not found user"));
+		employer.setUser(userFromDb);
 		if (currentUser.getCandidate() != null) {
 			throw new RuntimeException("This account for candidate");
 		}

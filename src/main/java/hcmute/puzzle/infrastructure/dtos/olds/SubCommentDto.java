@@ -12,11 +12,12 @@ public class SubCommentDto {
     private String nickname;
     private String email;
     private String content;
+    private String avatar;
     private String interact;
     //custom while use, resolve to info front end know current user has right to edit comment.
     private boolean canEdit;
-    private long commentId;
-    private long userId;
+    private Long commentId;
+    private Long userId;
     private Date createdAt;
     private Date updatedAt;
 }

@@ -196,6 +196,7 @@ public class UserService {
 		return m.matches();
 	}
 
+	@Transactional
 	public UserPostDto update(long id, UpdateUserDto user) {
 
 		if (user.getUsername() != null && user.getUsername().trim().isEmpty()) {
@@ -211,6 +212,7 @@ public class UserService {
 		return updateUserForAdmin(id, updateUserForAdminDto);
 	}
 
+	@Transactional
 	public UserPostDto updateUserForAdmin(long id, UpdateUserForAdminDto user) {
 
 
@@ -240,7 +242,9 @@ public class UserService {
 
 		UserPostDto userPostDTO = mapper.userToUserPostDto(
 				userRepository.save(updateUser));// converter.toDTO(userRepository.save(updateUser));
-		redisUtils.delete(updateUser.getEmail());
+
+		// user must re-login
+		//redisUtils.delete(updateUser.getEmail());
 
 		return userPostDTO;
 	}
