@@ -211,7 +211,7 @@ public class BlogPostService {
 			blogPost.setThumbnail(imageUrl);
 		}
 		BlogPostDto blogPostDto = blogPostMapper.blogPostToBlogPostDto(blogPost);
-		resolveBlogPostDtoWithRightEditOfCommentSubComment(blogPostDto, user.getId());
+		// resolveBlogPostDtoWithRightEditOfCommentSubComment(blogPostDto, user.getId());
 		return new DataResponse<>(blogPostDto);
 
 	}

@@ -24,9 +24,9 @@ public class WebClientConfiguration {
 	public WebClient webClient() {
 		HttpClient httpClient = HttpClient.create()
 										  .followRedirect(false)
-										  .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
-										  .doOnConnected(conn -> conn.addHandlerLast(new ReadTimeoutHandler(15))
-																	 .addHandlerLast(new WriteTimeoutHandler(15)));
+										  .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
+//										  .doOnConnected(conn -> conn.addHandlerLast(new ReadTimeoutHandler(15))
+//																	 .addHandlerLast(new WriteTimeoutHandler(15)));
 		//UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(baseUrl).queryParams(queryParams);
 
 		ClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);

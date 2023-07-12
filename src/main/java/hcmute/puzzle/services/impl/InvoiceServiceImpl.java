@@ -3,6 +3,7 @@ package hcmute.puzzle.services.impl;
 import hcmute.puzzle.exception.NotFoundDataException;
 import hcmute.puzzle.infrastructure.dtos.olds.InvoiceDto;
 import hcmute.puzzle.infrastructure.entities.Invoice;
+import hcmute.puzzle.infrastructure.entities.SubComment;
 import hcmute.puzzle.infrastructure.mappers.InvoiceMapper;
 import hcmute.puzzle.infrastructure.models.enums.InvoiceStatus;
 import hcmute.puzzle.infrastructure.repository.InvoiceRepository;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +36,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     List<InvoiceDto> invoiceDtos = invoiceRepository.findByEmail(email)
                                                     .stream()
                                                     .map(invoiceMapper::invoiceToInvoiceDto)
+                                                    .sorted(Comparator.comparing(InvoiceDto::getPayTime).reversed())
                                                     .collect(Collectors.toList());
     return invoiceDtos;
   }

@@ -181,7 +181,9 @@ public class HirizeService {
 										  "Response from hirize has error code: " + response.statusCode());
 								  //return Mono.just(null);
 							  } else {
-								  return response.createException().flatMap(Mono::error);
+								  throw new RuntimeException(
+										  "Response from hirize has error code: " + response.statusCode());
+								  //return response.createException().flatMap(Mono::error);
 							  }
 						  })
 						  .block();
@@ -220,9 +222,14 @@ public class HirizeService {
 										  new ParameterizedTypeReference<HirizeResponse<HirizeIQData>>() {
 										  });
 							  } else if (response.statusCode().is4xxClientError()) {
-								  return Mono.just(null);
+								  throw new RuntimeException(
+										  "Response from hirize has error code: " + response.statusCode());
+								  //return Mono.just(null);
 							  } else {
-								  return response.createException().flatMap(Mono::error);
+								  throw new RuntimeException(
+										  "Response from hirize has error code: " + response.statusCode());
+								  //return response.createException().flatMap(Mono::error);
+
 							  }
 						  })
 						  .block();
