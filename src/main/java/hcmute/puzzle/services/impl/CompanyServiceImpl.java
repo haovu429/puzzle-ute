@@ -138,7 +138,7 @@ public class CompanyServiceImpl implements CompanyService {
   public CompanyResponse updateForAdmin(long companyId, CreateCompanyAdminRequest companyPayload) throws NotFoundException {
     Company company = companyRepository.findById(companyId)
                                        .orElseThrow(() -> new NotFoundDataException("Company not found"));
-    MultipartFile imageFile = companyPayload.getImageFile();
+    MultipartFile imageFile = companyPayload.getImage();
     companyMapper.updateCompanyRoleAdminFromCompanyDto(companyPayload, company);
 
     //    if (companyPayload.getName() != null) {

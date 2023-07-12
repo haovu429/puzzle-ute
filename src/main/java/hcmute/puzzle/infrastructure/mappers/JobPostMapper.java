@@ -15,7 +15,7 @@ public interface JobPostMapper {
 	JobPostMapper INSTANCE = Mappers.getMapper(JobPostMapper.class);
 
 	//@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-	@Mapping(target = "categoryName", source = "category.name")
+	@Mapping(target = "categoryId", source = "category.id")
 	JobPostDto jobPostToJobPostDto(JobPost jobPost);
 
 	@Mapping(target = "views", ignore = true)

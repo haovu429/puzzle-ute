@@ -1,5 +1,6 @@
 package hcmute.puzzle.infrastructure.dtos.response;
 
+import hcmute.puzzle.infrastructure.dtos.olds.CategoryDto;
 import hcmute.puzzle.infrastructure.dtos.olds.EmployerDto;
 import hcmute.puzzle.infrastructure.entities.Company;
 import hcmute.puzzle.infrastructure.entities.Employer;
@@ -41,7 +42,7 @@ public class JobPostDto implements Serializable {
 	private Boolean canApply;
 	private EmployerDto createdEmployer;
 	private CompanyResponse company;
-	private String categoryName;
+	private Long categoryId;
 	private Date createdAt;
 	private Date updatedAt;
 }

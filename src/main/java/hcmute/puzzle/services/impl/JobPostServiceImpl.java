@@ -153,6 +153,20 @@ public class JobPostServiceImpl implements JobPostService {
 			throw new UnauthorizedException("You don't have rights for this job post");
 		}
 		jobPostMapper.updateJobPostFromJobPostUserPostRequest(jobPostUserPostRequest, jobPost);
+
+		if (jobPostUserPostRequest.getCompanyId() != null ) {
+			Company company = companyRepository.findById(jobPostUserPostRequest.getCompanyId()).orElseThrow(
+					() -> new NotFoundDataException("Not found company")
+			);
+			jobPost.setCompany(company);
+		}
+		if (jobPostUserPostRequest.getCategoryId() != null ) {
+			Category category = categoryRepository.findById(jobPostUserPostRequest.getCategoryId()).orElseThrow(
+					() -> new NotFoundDataException("Not found company")
+			);
+			jobPost.setCategory(category);
+		}
+
 		jobPostRepository.save(jobPost);
 		return jobPostMapper.jobPostToJobPostDto(jobPost);
 	}

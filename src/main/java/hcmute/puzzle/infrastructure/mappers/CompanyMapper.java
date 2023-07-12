@@ -28,6 +28,7 @@ public interface CompanyMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "image", ignore = true)
+    @Mapping(target = "imageFile", source = "image")
     CompanyDto createCompanyAdminDtoToCompanyDto(CreateCompanyAdminRequest createCompanyAdminRequest);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

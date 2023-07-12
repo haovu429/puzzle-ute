@@ -31,7 +31,9 @@ import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -296,10 +298,11 @@ public class AdminController {
 	}
 
 	@GetMapping("/invoice")
-	public DataResponse<Page<InvoiceDto>> getAllInvoice(@RequestParam(value = "page", required = false) Integer page,
+	public DataResponse<List<InvoiceDto>> getAllInvoice(@RequestParam(value = "page", required = false) Integer page,
 			@RequestParam(required = false) Integer size) {
-		Pageable pageable = this.getPageable(page, size);
-		Page<InvoiceDto> invoiceDtos = invoiceService.getAllInvoice(pageable);
+//		Pageable pageable = this.getPageable(page, size);
+//		pageable.getSort().and(Sort.by("createdAt").descending());
+		List<InvoiceDto> invoiceDtos = invoiceService.getAllInvoice();
 		return new DataResponse<>(invoiceDtos);
 	}
 

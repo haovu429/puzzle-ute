@@ -4,6 +4,7 @@ import freemarker.template.TemplateException;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.configuration.security.JwtTokenProvider;
 import hcmute.puzzle.configuration.security.UserSecurityService;
+import hcmute.puzzle.exception.AuthenticationException;
 import hcmute.puzzle.exception.ErrorDefine;
 import hcmute.puzzle.exception.ErrorResponse;
 import hcmute.puzzle.exception.UnauthorizedException;
@@ -100,15 +101,13 @@ public class AuthenticationController {
       result.put("roles", roles);
       user.setLastLoginAt(new Date());
       //userService.prepareForRole(user);
-
       return new DataResponse<>(result);
-
     } catch (BadCredentialsException e) {
       log.error(e.getMessage(), e);
-      return new DataResponse<>("Email or password incorrect!");
+      throw new AuthenticationException("Email or password incorrect!");
     } catch (LockedException e) {
       log.error(e.getMessage(), e);
-      return new DataResponse<>("Account inactive, check mail please");
+      throw new AuthenticationException("Account inactive, check mail please");
     }
   }
 

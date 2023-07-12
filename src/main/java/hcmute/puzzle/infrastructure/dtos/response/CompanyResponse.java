@@ -15,5 +15,6 @@ public class CompanyResponse {
 	private String image;
 	private String website;
 	private Boolean isPublic;
+	private Boolean isActive;
 	private Long createdEmployerId;
 }
