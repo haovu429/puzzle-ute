@@ -67,7 +67,7 @@ public class ThreadService {
     Token createToken = new Token();
     createToken.setToken(tokenValue);
     createToken.setExpiryTime(expiredTime);
-    createToken.setUser(foundUser);
+    createToken.setEmail(foundUser.getEmail());
     createToken.setType(RESET_PASSWORD_TOKEN);
 
     return tokenRepository.save(createToken);

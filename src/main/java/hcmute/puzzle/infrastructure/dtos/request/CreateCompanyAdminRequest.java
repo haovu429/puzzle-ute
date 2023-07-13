@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class CreateCompanyAdminRequest {
     private String name;
     private String description;
-    private MultipartFile imageFile;
+    private MultipartFile image;
     private String website;
     private Boolean isPublic;
     private Boolean isActive;

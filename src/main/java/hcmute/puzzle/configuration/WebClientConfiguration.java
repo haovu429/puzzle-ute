@@ -20,15 +20,13 @@ import static com.amazonaws.services.elasticloadbalancingv2.model.ActionTypeEnum
 public class WebClientConfiguration {
 	private String baseUrl = "https://connect.hirize.hr";
 
-	String parserToken = "7CFXYtR3meG4WQSh8P9JD1k26V5UNz";
-
 	@Bean
 	public WebClient webClient() {
 		HttpClient httpClient = HttpClient.create()
 										  .followRedirect(false)
-										  .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
-										  .doOnConnected(conn -> conn.addHandlerLast(new ReadTimeoutHandler(10))
-																	 .addHandlerLast(new WriteTimeoutHandler(10)));
+										  .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
+//										  .doOnConnected(conn -> conn.addHandlerLast(new ReadTimeoutHandler(15))
+//																	 .addHandlerLast(new WriteTimeoutHandler(15)));
 		//UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(baseUrl).queryParams(queryParams);
 
 		ClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);

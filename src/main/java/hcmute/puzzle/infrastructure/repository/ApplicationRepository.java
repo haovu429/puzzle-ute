@@ -34,4 +34,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
     @Query("SELECT jp.viewedUsers FROM JobPost jp WHERE jp.id = :jobPostId")
     List<User> findAllUserViewedJobPost(@Param("jobPostId") long jobPostId);
+
+    Page<Application> findAllByCandidate_Id(long candidate_id, Pageable pageable);
 }

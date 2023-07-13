@@ -69,7 +69,8 @@ public class User extends Auditable implements Serializable {
   private Date lastLoginAt;
 
   @Column(name = "is_admin")
-  private Boolean isAdmin;
+  @Builder.Default
+  private Boolean isAdmin = false;
 
   @Column(name = "balance")
   @Builder.Default
@@ -109,9 +110,9 @@ public class User extends Auditable implements Serializable {
   private List<Subscription> subscribeEntities = new ArrayList<>();
 
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  @Builder.Default
-  private List<Token> tokens = new ArrayList<>();
+//  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//  @Builder.Default
+//  private List<Token> tokens = new ArrayList<>();
 
   public User() {
 

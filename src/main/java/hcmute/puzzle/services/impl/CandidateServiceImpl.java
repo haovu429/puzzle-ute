@@ -1,17 +1,14 @@
 package hcmute.puzzle.services.impl;
 
-import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.CustomException;
 import hcmute.puzzle.exception.NotFoundDataException;
 import hcmute.puzzle.infrastructure.dtos.olds.CandidateDto;
-import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 import hcmute.puzzle.infrastructure.dtos.request.PostCandidateRequest;
 import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.mappers.CandidateMapper;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,15 +35,19 @@ public class CandidateServiceImpl implements CandidateService {
   @Autowired
   CandidateMapper candidateMapper;
 
+  @Autowired
+  CurrentUserService currentUserService;
+
   @Override
   public CandidateDto save(CandidateDto candidateDto) {
     // casting provinceDTO to ProvinceEntity
     Candidate candidate = candidateMapper.candidateDtoToCandidate(candidateDto);
-    CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    User currentUser = customUserDetails.getUser();
-    candidate.setUser(currentUser);
+    User currentUser = currentUserService.getCurrentUser();
+    User userFromDb = userRepository.findById(currentUser.getId())
+                                    .orElseThrow(() -> new NotFoundDataException("Not found user"));
+    candidate.setUser(userFromDb);
     // set id
-    candidate.setId(0);
+    // candidate.setId(0);
 
     if (candidate.getUser().getEmployer() != null) {
       throw new RuntimeException("This account for employer");

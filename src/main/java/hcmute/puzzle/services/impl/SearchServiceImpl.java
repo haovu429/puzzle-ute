@@ -266,7 +266,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     if (sortById) {
-      strQuery.append("ORDER BY " + objectAlias + ".id ASC NULLS LAST");
+      strQuery.append(" ORDER BY " + objectAlias + ".id ASC NULLS LAST");
     }
 
     List result = em.createQuery(strQuery.toString())

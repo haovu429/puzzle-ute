@@ -11,6 +11,7 @@ import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.repository.TokenRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.SecurityService;
+import hcmute.puzzle.utils.Constant;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -66,8 +67,9 @@ public class SecurityServiceImpl implements SecurityService {
                 tokenRepository.findTokensByUserAndType(foundUser.getId(), RESET_PASSWORD_TOKEN);
 
         if (!existedTokens.isEmpty()) {
-            List<Token> validTokens =
-                    existedTokens.stream().filter(token -> token.getExpiryTime().after(new Date())).collect(Collectors.toList());
+            List<Token> validTokens = existedTokens.stream()
+                                                   .filter(token -> token.getExpiryTime().after(new Date()))
+                                                   .toList();
             if (!validTokens.isEmpty())
                 throw new CustomException("You just requested change password, try again after 1 minutes");
         }
@@ -78,7 +80,7 @@ public class SecurityServiceImpl implements SecurityService {
         Token createToken = new Token();
         createToken.setToken(tokenValue);
         createToken.setExpiryTime(expiredTime);
-        createToken.setUser(foundUser);
+        createToken.setEmail(foundUser.getEmail());
         createToken.setType(RESET_PASSWORD_TOKEN);
 
         String urlFrontEnd = "https://keen-semifreddo-66d931.netlify.app/reset-password";
@@ -113,10 +115,15 @@ public class SecurityServiceImpl implements SecurityService {
         Token createToken = new Token();
         createToken.setToken(tokenValue);
         createToken.setExpiryTime(expiredTime);
-        createToken.setUser(foundUser);
+        createToken.setEmail(foundUser.getEmail());
         createToken.setType(VERIFY_ACCOUNT_TOKEN);
 
-        String urlFrontEnd = "https://keen-semifreddo-66d931.netlify.app/verify_account";
+        //String urlFrontEnd = "https://keen-semifreddo-66d931.netlify.app/verify_account";
+        String urlFrontEnd = ServletUriComponentsBuilder.fromCurrentContextPath()
+                                                        .build()
+                                                        .toUriString()
+                                                        .concat("/redirect")
+                                                        .concat(Constant.AuthPath.VERIFY_ACCOUNT_URL);
         String finalUrlFrontEnd = urlFrontEnd + "?token=" + tokenValue;
         this.sendMailVerifyAccount(foundUser.getEmail(), finalUrlFrontEnd, createToken);
 
@@ -188,6 +195,7 @@ public class SecurityServiceImpl implements SecurityService {
         }
 
         user.setEmailVerified(true);
+        user.setIsActive(true);
         userRepository.save(user);
         tokenRepository.delete(foundToken);
 

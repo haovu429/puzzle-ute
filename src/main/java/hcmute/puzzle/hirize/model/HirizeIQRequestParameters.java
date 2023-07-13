@@ -9,5 +9,5 @@ public class HirizeIQRequestParameters {
 	private String jobDescription;
 
 	@JsonProperty("parser")
-	private String parser;
+	private ParserResult parser;
 }

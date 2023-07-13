@@ -1,30 +1,34 @@
 package hcmute.puzzle.configuration.security;
 
+import freemarker.template.TemplateException;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.NotFoundDataException;
+import hcmute.puzzle.exception.NotFoundException;
 import hcmute.puzzle.infrastructure.entities.Role;
 import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.repository.RoleRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
+import hcmute.puzzle.services.SecurityService;
+import hcmute.puzzle.services.impl.RoleService;
 import hcmute.puzzle.utils.Provider;
 import hcmute.puzzle.utils.RedisUtils;
 import hcmute.puzzle.utils.login_google.GooglePojo;
+import jakarta.mail.MessagingException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-//import javax.persistence.EntityManager;
-//import javax.persistence.PersistenceContext;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class UserSecurityService implements UserDetailsService {
   @Autowired
@@ -44,6 +48,12 @@ public class UserSecurityService implements UserDetailsService {
 
   @PersistenceContext
   public EntityManager em;
+
+  @Autowired
+  RoleService roleService;
+
+  @Autowired
+  SecurityService securityService;
 
   @Override
   public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -88,20 +98,43 @@ public class UserSecurityService implements UserDetailsService {
   }
 
   public User createNewAccountAfterOAuthGoogleLoginSuccess(GooglePojo googlePojo) {
-    User newUser = new User();
-    newUser.setEmail(googlePojo.getEmail());
+    User newUser = User.builder()
+                       .email(googlePojo.getEmail())
+                       .fullName(googlePojo.getName())
+                       .avatar(googlePojo.getPicture())
+                       .emailVerified(googlePojo.isVerified_email())
+                       .locale(googlePojo.getLocale())
+                       .provider(Provider.GOOGLE)
+                       .isActive(true)
+                       .isDelete(false)
+                       .build();
+    //    newUser.setEmail(googlePojo.getEmail());
     //    newUser.setFullName(googlePojo.getName());
-    newUser.setFullName(googlePojo.getName());
-    newUser.setAvatar(googlePojo.getPicture());
-    newUser.setEmailVerified(googlePojo.isVerified_email());
-    newUser.setLocale(googlePojo.getLocale());
-    newUser.setProvider(Provider.GOOGLE);
-    Optional<Role> role = roleRepository.findById("user");
-    if (role.isEmpty()) {
-      throw new CustomException("role user isn't exist");
+    //    newUser.setFullName(googlePojo.getName());
+    //    newUser.setAvatar(googlePojo.getPicture());
+    //    newUser.setEmailVerified(googlePojo.isVerified_email());
+    //    newUser.setLocale(googlePojo.getLocale());
+    //    newUser.setProvider(Provider.GOOGLE);
+    List<String> roleCodes = new ArrayList<>();
+    roleCodes.add("user");
+//    Role role = roleRepository.findById("user").orElseThrow(() -> new NotFoundDataException("Not found role"));
+//    Set<Role> roles = new HashSet<>();
+//    roles.add(role);
+//    newUser.setRoles(roles);
+
+    List<Role> rolesFromDb = roleRepository.findAllByCodeIn(roleCodes);
+    if (rolesFromDb == null || rolesFromDb.isEmpty()) {
+      throw new NotFoundException("NOT_FOUND_ROLE");
     }
-    newUser.getRoles().add(role.get());
-    newUser.setIsActive(true);
+    roleService.setRoleWithCreateAccountTypeUser(rolesFromDb.stream().map(Role::getCode).collect(Collectors.toList()), newUser);
+    // Save to DB
+    userRepository.save(newUser);
+    try {
+      securityService.sendTokenVerifyAccount(newUser.getEmail());
+    } catch (MessagingException | ExecutionException | IOException | TemplateException | InterruptedException e) {
+      log.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
 
     return userRepository.save(newUser);
   }
@@ -132,14 +165,14 @@ public class UserSecurityService implements UserDetailsService {
         return null;
       }
       //Collection<? extends GrantedAuthority> a = customUserDetails.getAuthorities();
-//      Authentication authentication =
-//          authenticationManager.authenticate(
-//              new UsernamePasswordAuthenticationToken(
-//                  email, null, customUserDetails.getAuthorities()));
-//      //        Set in security context
-//      SecurityContextHolder.getContext().setAuthentication(authentication);
-//      Authentication authentication1 = authenticationManager.authenticate( createNewAccountAfterOAuthLoginSuccess()
-//              authenticationManager.authenticate(
+      //      Authentication authentication =userRepository.getUserByEmailJoinFetch(email)
+      //          authenticationManager.authenticate(
+      //              new UsernamePasswordAuthenticationToken(
+      //                  email, null, customUserDetails.getAuthorities()));
+      //      //        Set in security context
+      //      SecurityContextHolder.getContext().setAuthentication(authentication);
+      //      Authentication authentication1 = authenticationManager.authenticate( createNewAccountAfterOAuthLoginSuccess()
+      //              authenticationManager.authenticate(
       Long JWT_EXPIRATION = (long) (60 * 60 * 1000); // 1 h vi token google 1 h se het han
 
       // get jwt token

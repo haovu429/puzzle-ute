@@ -30,8 +30,11 @@ public class Token extends Auditable implements Serializable {
   @Column(name = "type", columnDefinition = "VARCHAR(100)", nullable = false)
   private String type;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", nullable = false)
-  private User user;
+  @Column(name = "email", nullable = false, columnDefinition = "VARCHAR(100)")
+  private String email;
+
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  @JoinColumn(name = "user_id", nullable = false)
+//  private User user;
 
 }

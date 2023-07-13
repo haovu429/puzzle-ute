@@ -1,7 +1,10 @@
 package hcmute.puzzle.configuration.accessHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hcmute.puzzle.exception.ErrorResponse;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
+import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -32,8 +35,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
       AccessDeniedException accessDeniedException)
       throws IOException, ServletException {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    ResponseObject responseObject =
-        new ResponseObject("403", STATUS_FORBIDDEN, accessDeniedException.getMessage());
+    DataResponse<String> responseObject =
+        new DataResponse<>(ErrorResponse.UNAUTHORIZED_ERROR.getErrorCode().getValue(), accessDeniedException.getMessage(), HttpStatus.SC_OK);
 
     if (auth != null) {
       LOG.warn(
@@ -41,14 +44,14 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
               + auth.getName()
               + " access denied the protected URL: "
               + request.getRequestURI());
-      responseObject.setMessage(
+      responseObject.setErrMsg(
           "User: "
               + auth.getName()
               + " access denied the protected URL: "
               + request.getRequestURI());
     }
 
-    response.setStatus(403);
+    response.setStatus(HttpStatus.SC_FORBIDDEN);
     response.setContentType("application/json");
     response.getWriter().write(objectMapper.writeValueAsString(responseObject));
   }

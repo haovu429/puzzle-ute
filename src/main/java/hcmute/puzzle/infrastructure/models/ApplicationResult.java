@@ -4,6 +4,10 @@ import lombok.Data;
 
 @Data
 public class ApplicationResult {
-	Boolean result;
-	String note;
+	private String email;
+	private Boolean result;
+	private String note;
+	private String subject;
+	private Long jobPostId;
+	private Long candidateId;
 }

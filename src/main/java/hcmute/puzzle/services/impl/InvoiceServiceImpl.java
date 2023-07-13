@@ -10,9 +10,10 @@ import hcmute.puzzle.services.InvoiceService;
 import org.springframework.aop.AopInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,12 +35,16 @@ public class InvoiceServiceImpl implements InvoiceService {
     List<InvoiceDto> invoiceDtos = invoiceRepository.findByEmail(email)
                                                     .stream()
                                                     .map(invoiceMapper::invoiceToInvoiceDto)
+                                                    .sorted(Comparator.comparing(InvoiceDto::getPayTime).reversed())
                                                     .collect(Collectors.toList());
     return invoiceDtos;
   }
 
-  public Page<InvoiceDto> getAllInvoice(Pageable pageable) {
-    Page<InvoiceDto> invoiceDtos = invoiceRepository.findAll(pageable).map(invoiceMapper::invoiceToInvoiceDto);
+  public List<InvoiceDto> getAllInvoice() {
+    List<InvoiceDto> invoiceDtos = invoiceRepository.findAll(Sort.by("payTime").descending())
+                                                    .stream()
+                                                    .map(invoiceMapper::invoiceToInvoiceDto)
+                                                    .toList();
     return invoiceDtos;
   }
 

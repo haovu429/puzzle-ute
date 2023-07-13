@@ -5,6 +5,7 @@ import hcmute.puzzle.infrastructure.entities.Invoice;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.Date;
 import java.util.List;
@@ -15,7 +16,7 @@ public interface InvoiceService {
 
     List<InvoiceDto> getInvoiceByEmailUser(String email);
 
-    Page<InvoiceDto> getAllInvoice(Pageable pageable);
+    List<InvoiceDto> getAllInvoice();
 
     List<InvoiceDto> getAllInvoiceByTimeFrame(Date startTime, Date endTime);
 

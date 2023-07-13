@@ -8,12 +8,14 @@ import hcmute.puzzle.exception.NotFoundDataException;
 import hcmute.puzzle.infrastructure.entities.SystemConfiguration;
 import hcmute.puzzle.infrastructure.models.cohere.SummarizationResponse;
 import hcmute.puzzle.infrastructure.models.cohere.SummarizeRequest;
+import hcmute.puzzle.infrastructure.models.translate.TranslateObject;
 import hcmute.puzzle.infrastructure.models.translate.TranslateRequest;
 import hcmute.puzzle.infrastructure.models.translate.TranslateResponse;
 import hcmute.puzzle.infrastructure.repository.SystemConfigurationRepository;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -106,10 +108,14 @@ public class WebClientService {
 		return result;
 	}
 
-	// Call api summarization to App Script google
-	public TranslateResponse callApiTranslateCustom(TranslateRequest translateRequest) throws APIError {
-		log.info("Call api Summarize");
-		log.info("Request : {}", Utils.objectToJson(translateRequest));
+	public String translate(String origin) throws APIError {
+		String translated = null;
+		// Detect language of content cv to convert to English
+		String escapeData = 	StringEscapeUtils.escapeJava(origin);
+		TranslateObject translateObject = TranslateObject.builder().original(origin).build();
+		TranslateObject[] translateObjects = new TranslateObject[]{translateObject};
+		TranslateRequest translateRequest = TranslateRequest.builder().data(translateObjects).to("EN").build();
+
 		// Pre-process request
 		SystemConfiguration detectLanguageEnable = systemConfigurationRepository.findByKey(
 				Constant.DetectLanguage.DETECT_LANGUAGE_ENABLE).orElse(null);
@@ -121,6 +127,31 @@ public class WebClientService {
 				translateRequest.setFrom(updateFromLanguage);
 			}
 		}
+
+		if (translateRequest.getFrom() == null) {
+			translateRequest.setFrom("VI");
+		} else if (translateRequest.getFrom().isEmpty() || translateRequest.getFrom().isBlank()) {
+			translateRequest.setFrom("VI");
+		} else if (translateRequest.getFrom().equals("EN")){
+			translated = origin;
+		}
+		StringEscapeUtils.unescapeJava(translateRequest.getData()[0].getOriginal());
+
+		TranslateResponse translateResponse = this.callApiTranslateCustom(translateRequest);
+		if (translateResponse != null) {
+			translated = translateResponse.getData()[0].getTranslated();
+		}
+
+		return translated;
+
+	}
+
+
+	// Call api summarization to App Script google
+	public TranslateResponse callApiTranslateCustom(TranslateRequest translateRequest) throws APIError {
+		log.info("Call api Summarize");
+		log.info("Request : {}", Utils.objectToJson(translateRequest));
+
 
 		TranslateResponse result = null;
 
@@ -150,7 +181,7 @@ public class WebClientService {
 										 .block();
 
 		// Follow redirect
-		if (responseEntityForPost != null) {
+		if (responseEntityForPost != null && responseEntityForPost.getStatusCode().is3xxRedirection()) {
 			if (responseEntityForPost.getStatusCode().is3xxRedirection()) {
 				URI redirectUrl = responseEntityForPost.getHeaders().getLocation();
 				if (redirectUrl != null) {
@@ -169,14 +200,16 @@ public class WebClientService {
 
 		if (result != null) {
 			log.info("\nResponse: \n" + Utils.objectToJson(result));
+
+			// Check result belong to Success or Fail
+			if (!result.getMessage().equals("Success")) {
+				throw new CustomException("Translate fail");
+			}
 		} else {
 			log.info("\nResponse: null\n");
-		}
-
-		// Check result belong to Success or Fail
-		if (!result.getMessage().equals("Success")) {
 			throw new CustomException("Translate fail");
 		}
+
 		return result;
 	}
 

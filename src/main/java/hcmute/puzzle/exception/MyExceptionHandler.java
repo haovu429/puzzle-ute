@@ -189,5 +189,13 @@ public class MyExceptionHandler {
     return dataResponse;
   }
 
+  @ExceptionHandler(AuthenticationException.class)
+  @ResponseBody
+  public DataResponse handleAuthenticationException(AuthenticationException e) {
+    log.error(e.getMessage(), e);
+    DataResponse dataResponse = new DataResponse(ErrorResponse.AUTHENTICATION_ERROR);
+    dataResponse.setErrMsg(e.getMessage());
+    return dataResponse;
+  }
 
 }

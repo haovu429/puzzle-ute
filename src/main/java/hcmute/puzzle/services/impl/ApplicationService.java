@@ -11,11 +11,7 @@ import hcmute.puzzle.infrastructure.mappers.CandidateMapper;
 import hcmute.puzzle.infrastructure.models.ApplicationResult;
 import hcmute.puzzle.infrastructure.models.ResponseApplication;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
-import hcmute.puzzle.infrastructure.repository.ApplicationRepository;
-import hcmute.puzzle.infrastructure.repository.CandidateRepository;
-import hcmute.puzzle.infrastructure.repository.EmployerRepository;
-import hcmute.puzzle.infrastructure.repository.JobPostRepository;
-import hcmute.puzzle.services.ApplicationService;
+import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.utils.mail.MailObject;
 import hcmute.puzzle.utils.mail.SendMail;
@@ -34,7 +30,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class ApplicationServiceImpl implements ApplicationService {
+public class ApplicationService {
 	@Autowired
 	ApplicationRepository applicationRepository;
 
@@ -64,7 +60,10 @@ public class ApplicationServiceImpl implements ApplicationService {
 	@Autowired
 	SendMail sendMail;
 
-	@Override
+	@Autowired
+	UserRepository userRepository;
+
+
 	public ApplicationDto findById(Long id) {
 		Application application = applicationRepository.findById(id)
 													   .orElseThrow(() -> new CustomException(
@@ -73,7 +72,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return applicationDto;
 	}
 
-	@Override
+
 	public void deleteById(Long id) {
 		Application application = applicationRepository.findById(id)
 													   .orElseThrow(() -> new RuntimeException(
@@ -81,7 +80,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		applicationRepository.delete(application);
 	}
 
-	@Override
+
 	public Page<ApplicationDto> findAll(Pageable pageable) {
 
 		Page<Application> applications = applicationRepository.findAll(pageable);
@@ -89,7 +88,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return applicationDtos;
 	}
 
-	@Override
+
 	// Candidate apply jobPost
 	public ApplicationDto applyJobPost(long candidateId, long jobPostId) {
 		Candidate candidate = candidateRepository.findById(candidateId)
@@ -101,11 +100,10 @@ public class ApplicationServiceImpl implements ApplicationService {
 		application.setCandidate(candidate);
 		application.setJobPost(jobPost);
 		applicationRepository.save(application);
-		ApplicationDto applicationDto = applicationMapper.applicationToApplicationDto(application);
-		return applicationDto;
+		return applicationMapper.applicationToApplicationDto(application);
 	}
 
-	@Override
+
 	public ApplicationDto responseApplication(long applicationId, ApplicationResult applicationResult) {
 		Application application = applicationRepository.findById(applicationId)
 													   .orElseThrow(() -> new NotFoundDataException(
@@ -130,7 +128,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return applicationDto;
 	}
 
-	@Override
+
 	public ApplicationDto responseApplicationByCandidateAndJobPost(ResponseApplication responseApplication) {
 
 		Application application = null;
@@ -226,8 +224,11 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 		return applicationRepository.findApplicationByJobPostId(jobPostId, pageable).map(application -> {
 			Candidate candidate = application.getCandidate();
+			User user = userRepository.findById(candidate.getId())
+									  .orElseThrow(() -> new NotFoundDataException("Not fount user"));
 			return CandidateApplicationResult.builder()
 											 .position(position)
+											 .avatar(user.getAvatar())
 											 .candidate(candidateMapper.candidateToCandidateDto(candidate))
 											 .application(applicationMapper.applicationToApplicationDto(application))
 											 .build();
@@ -238,10 +239,13 @@ public class ApplicationServiceImpl implements ApplicationService {
 		List<CandidateApplicationResult> candidateApplicationResults = applicationRepository.findApplicationByEmployerId(
 				employerId).stream().map(application -> {
 			Candidate candidate = application.getCandidate();
+			User user = userRepository.findById(candidate.getId())
+									  .orElseThrow(() -> new NotFoundDataException("Not found user"));
 			CandidateApplicationResult candidateApplicationResult = CandidateApplicationResult.builder()
 																							  .position(
 																									  application.getJobPost()
 																												 .getTitle())
+																							  .avatar(user.getAvatar())
 																							  .candidate(
 																									  candidateMapper.candidateToCandidateDto(
 																											  candidate))
@@ -256,19 +260,40 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 
 	public ApplicationDto getApplicationByJobPostIdAndCandidateId(long jobPostId, long candidateId) {
-		Application application = applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPostId).orElseThrow(
-				() -> new NotFoundDataException("Not found application")
-		);
+		Application application = applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPostId)
+													   .orElseThrow(() -> new NotFoundDataException(
+															   "Not found application"));
 		return applicationMapper.applicationToApplicationDto(application);
 	}
 
-	@Override
+	public Page<ApplicationDto> getApplicationApplied(long candidateId, Pageable pageable) {
+		Page<ApplicationDto> applicationDtos = applicationRepository.findAllByCandidate_Id(candidateId, pageable)
+																	.map(applicationMapper::applicationToApplicationDto);
+		return applicationDtos;
+	}
+
+	public ApplicationDto getDetailApplicationApplied(long applicationId) {
+		CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+																					   .getAuthentication()
+																					   .getPrincipal();
+		User currentUser = customUserDetails.getUser();
+		Application application = applicationRepository.findById(applicationId)
+													   .orElseThrow(() -> new NotFoundDataException(
+															   "Not found application"));
+		// Check rights
+		if (currentUser.getId() != application.getCandidate().getId()) {
+			throw new UnauthorizedException("You don't have rights for this application");
+		}
+		return applicationMapper.applicationToApplicationDto(application);
+	}
+
+
 	public Long getApplicationAmount() {
 		Long amount = applicationRepository.count();
 		return amount;
 	}
 
-	@Override
+
 	public long getAmountApplicationToEmployer(long employerId) {
 		Optional<Employer> employerEntity = employerRepository.findById(employerId);
 		if (employerEntity.isEmpty()) {
@@ -278,7 +303,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return amount;
 	}
 
-	@Override
+
 	public long getAmountApplicationByJobPostId(long jobPostId) {
 		Optional<JobPost> jobPostEntity = jobPostRepository.findById(jobPostId);
 		if (jobPostEntity.isEmpty()) {

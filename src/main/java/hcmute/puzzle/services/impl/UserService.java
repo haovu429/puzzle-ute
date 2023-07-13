@@ -1,22 +1,24 @@
 package hcmute.puzzle.services.impl;
 
 import freemarker.template.TemplateException;
+import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.*;
 import hcmute.puzzle.infrastructure.dtos.news.*;
-import hcmute.puzzle.infrastructure.entities.Candidate;
-import hcmute.puzzle.infrastructure.entities.Employer;
-import hcmute.puzzle.infrastructure.entities.Role;
-import hcmute.puzzle.infrastructure.entities.User;
+import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
+import hcmute.puzzle.infrastructure.dtos.olds.SubCommentDto;
+import hcmute.puzzle.infrastructure.dtos.request.UpdateCommentRequest;
+import hcmute.puzzle.infrastructure.dtos.request.UpdateSubCommentRequest;
+import hcmute.puzzle.infrastructure.entities.*;
+import hcmute.puzzle.infrastructure.mappers.CommentMapper;
+import hcmute.puzzle.infrastructure.mappers.SubCommentMapper;
 import hcmute.puzzle.infrastructure.mappers.UserMapper;
 import hcmute.puzzle.infrastructure.models.DataStaticJoinAccount;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
 import hcmute.puzzle.infrastructure.models.enums.FileType;
 import hcmute.puzzle.infrastructure.models.enums.Roles;
-import hcmute.puzzle.infrastructure.repository.RoleRepository;
-import hcmute.puzzle.infrastructure.repository.UserRepository;
+import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.services.SecurityService;
-import hcmute.puzzle.services.UserService;
 import hcmute.puzzle.utils.Provider;
 import hcmute.puzzle.utils.RedisUtils;
 import hcmute.puzzle.utils.TimeUtil;
@@ -25,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -40,7 +43,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class UserServiceImpl implements UserService {
+public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -63,6 +66,27 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserMapper userMapper;
 
+	@Autowired
+	private CommentRepository commentRepository;
+
+	@Autowired
+	private SubCommentRepository subCommentRepository;
+
+	@Autowired
+	private BlogPostRepository blogPostRepository;
+
+	@Autowired
+	private CommentMapper commentMapper;
+
+	@Autowired
+	private SubCommentMapper subCommentMapper;
+
+	@Autowired
+	private CurrentUserService currentUserService;
+
+	@Autowired
+	private CommentService commentService;
+
 	public boolean checkEmailExists(String email) {
 		User user = userRepository.getUserByEmail(email);
 		return user == null;
@@ -73,16 +97,16 @@ public class UserServiceImpl implements UserService {
 		return user != null;
 	}
 
-	@Override
+
 	public Optional<User> registerUser(RegisterUserDto registerUserDto) {
 		return Optional.of(registerUserForAdmin(CreateUserForAdminDto.builder()
 																	 .email(registerUserDto.getEmail())
 																	 .password(registerUserDto.getPassword())
+																	 .isActive(true)
 																	 .build(), false));
 	}
 
 	@Transactional
-	@Override
 	public User registerUserForAdmin(CreateUserForAdminDto userDto, boolean admin) {
 		// Check Email Exists
 		if (!checkEmailExists(userDto.getEmail())) {
@@ -112,7 +136,15 @@ public class UserServiceImpl implements UserService {
 		if (admin) {
 			user.setUsername(userDto.getUsername());
 			user.setAvatar(userDto.getAvatar());
-			//      user.setFullName(userDto.getFullName());
+
+			if (userDto.getFullName() != null && !userDto.getFullName().isEmpty()) {
+				user.setFullName(userDto.getFullName());
+			} else if (userDto.getEmail() != null && !userDto.getEmail().isEmpty()) {
+				String[] split = userDto.getEmail().split("@");
+				String tempName = split[0];
+				user.setFullName(tempName);
+			}
+
 			user.setPhone(userDto.getPhone());
 			user.setIsActive(userDto.isActive());
 			user.setLocale(user.getLocale());
@@ -164,12 +196,9 @@ public class UserServiceImpl implements UserService {
 		return m.matches();
 	}
 
-	@Override
+	@Transactional
 	public UserPostDto update(long id, UpdateUserDto user) {
-		// Check username Exists
-		if (checkUsernameExists(user.getUsername())) {
-			throw new AlreadyExistsException("Username already exists");
-		}
+
 		if (user.getUsername() != null && user.getUsername().trim().isEmpty()) {
 			user.setUsername(null);
 		}
@@ -183,10 +212,17 @@ public class UserServiceImpl implements UserService {
 		return updateUserForAdmin(id, updateUserForAdminDto);
 	}
 
+	@Transactional
 	public UserPostDto updateUserForAdmin(long id, UpdateUserForAdminDto user) {
 
 
 		User updateUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException("NOT_FOUND_USER"));
+		// Check username Exists
+		if (updateUser.getUsername() != null && !updateUser.getUsername()
+														   .equals(user.getUsername()) && checkUsernameExists(
+				user.getUsername())) {
+			throw new AlreadyExistsException("Username already exists");
+		}
 		userMapper.updateUserFromDto(user, updateUser);
 		if (user.getRoleCodes() != null && !user.getRoleCodes().isEmpty()) {
 
@@ -206,7 +242,9 @@ public class UserServiceImpl implements UserService {
 
 		UserPostDto userPostDTO = mapper.userToUserPostDto(
 				userRepository.save(updateUser));// converter.toDTO(userRepository.save(updateUser));
-		redisUtils.delete(updateUser.getEmail());
+
+		// user must re-login
+		//redisUtils.delete(updateUser.getEmail());
 
 		return userPostDTO;
 	}
@@ -255,7 +293,6 @@ public class UserServiceImpl implements UserService {
 		userRepository.save(user);
 	}
 
-	@Override
 	@Transactional
 	public UserPostDto updateForAdmin(long id, UserPostDto userPayload) {
 
@@ -283,9 +320,8 @@ public class UserServiceImpl implements UserService {
 		if (userPayload.getRoleCodes() != null && !userPayload.getRoleCodes().isEmpty()) {
 			Set<Role> roleEntities = new HashSet<>();
 			for (String code : userPayload.getRoleCodes()) {
-				Role role = roleRepository.findByCode(code.toLowerCase()).orElseThrow(
-						() -> new NotFoundDataException("Not found role")
-				);
+				Role role = roleRepository.findByCode(code.toLowerCase())
+										  .orElseThrow(() -> new NotFoundDataException("Not found role"));
 				if (role.getName().equals(Roles.CANDIDATE.getValue())) {
 					Candidate candidate = new Candidate();
 					oldUser.setCandidate(candidate);
@@ -322,7 +358,6 @@ public class UserServiceImpl implements UserService {
 		return userPostDTO;
 	}
 
-	@Override
 	public void delete(long id) {
 		User user = userRepository.findById(id).orElseThrow(() -> new NotFoundDataException("User not found"));
 		// delete roles of user
@@ -331,7 +366,6 @@ public class UserServiceImpl implements UserService {
 		userRepository.delete(user);
 	}
 
-	@Override
 	public Page<UserPostDto> getAll(Pageable pageable) {
 		// Lay Tat Ca UserEntity
 		Page<User> users = userRepository.findAll(pageable);
@@ -339,7 +373,7 @@ public class UserServiceImpl implements UserService {
 		return userPostDtos;
 	}
 
-	@Override
+
 	public UserPostDto getOne(long id) {
 		User user = userRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Account isn't exists"));
 		user.getRoles().add(new Role("user"));
@@ -348,7 +382,6 @@ public class UserServiceImpl implements UserService {
 		return userMapper.userToUserPostDto(user);
 	}
 
-	@Override
 	public UserPostDto getUserByAccount(String email, String password) {
 		User user = userRepository.getUserByEmailAndPassword(email, password);
 		if (user != null) {
@@ -358,13 +391,13 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
-	@Override
+
 	public long getAccountAmount() {
 		long count = userRepository.count();
 		return count;
 	}
 
-	@Override
+
 	public List<DataStaticJoinAccount> getListDataUserJoinLastNumWeeks(long numWeek) {
 		Date timeline = new Date(); // khoi tao tg hien tai
 		// Date nextDate = new Date();
@@ -384,5 +417,7 @@ public class UserServiceImpl implements UserService {
 
 		return data;
 	}
+
+
 
 }

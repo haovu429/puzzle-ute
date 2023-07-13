@@ -5,11 +5,11 @@ import lombok.Data;
 
 @Data
 public class HirizeIQData {
-	private String id;
+	private Long id;
 
 	@JsonProperty("result")
 	private HirizeIQResult result;
 
 	@JsonProperty("request_parameters")
-	private AiMatcherRequestParameters requestParameters;
+	private HirizeIQRequestParameters requestParameters;
 }

@@ -4,22 +4,24 @@ import freemarker.template.TemplateException;
 import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.configuration.security.JwtTokenProvider;
 import hcmute.puzzle.configuration.security.UserSecurityService;
+import hcmute.puzzle.exception.AuthenticationException;
 import hcmute.puzzle.exception.ErrorDefine;
+import hcmute.puzzle.exception.ErrorResponse;
 import hcmute.puzzle.exception.UnauthorizedException;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 import hcmute.puzzle.infrastructure.dtos.request.LoginRequest;
-import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
-import hcmute.puzzle.infrastructure.repository.UserRepository;
+import hcmute.puzzle.infrastructure.entities.Role;
+import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.services.SecurityService;
-import hcmute.puzzle.services.UserService;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.RedisUtils;
 import hcmute.puzzle.utils.login_google.GooglePojo;
 import hcmute.puzzle.utils.login_google.GoogleUtils;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.LockedException;
@@ -29,10 +31,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-//import javax.mail.MessagingException;
-import jakarta.mail.MessagingException;
-//import javax.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.*;
@@ -66,7 +64,7 @@ public class AuthenticationController {
 
   //  @Transactional
   @PostMapping(LOGIN_URL)
-  public ResponseObject<Object> authenticateUser(@Validated @RequestBody LoginRequest loginRequest,
+  public DataResponse<Object> authenticateUser(@Validated @RequestBody LoginRequest loginRequest,
           @RequestParam(value = "rememberMe", required = false) Boolean rememberMe) {
     try {
 
@@ -86,7 +84,7 @@ public class AuthenticationController {
         throw new UnauthorizedException("THIS ACCOUNT ISN'T VERIFY");
       }
 
-      Long JWT_EXPIRATION = (long) (60 * 60 * 24 * 1000); // 1 day
+      long JWT_EXPIRATION = (long) (60 * 60 * 24 * 1000); // 1 day
       if (rememberMe != null) {
         JWT_EXPIRATION *= 7; // 7 days
       }
@@ -96,45 +94,30 @@ public class AuthenticationController {
       // store token in redis
       redisUtils.set(user.getEmail(), jwt);
 
-      Set<String> roles = user.getRoles().stream().map(role -> role.getName()).collect(Collectors.toSet());
+      Set<String> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
 
       Map<String, Object> result = new HashMap<>();
       result.put("jwt", jwt);
       result.put("roles", roles);
       user.setLastLoginAt(new Date());
       //userService.prepareForRole(user);
-
-      return new ResponseObject<>(200, "Login success", result);
-
+      return new DataResponse<>(result);
     } catch (BadCredentialsException e) {
       log.error(e.getMessage(), e);
-      return new ResponseObject<>("Email or password incorrect!");
+      throw new AuthenticationException("Email or password incorrect!");
     } catch (LockedException e) {
       log.error(e.getMessage(), e);
-      return new ResponseObject<>(ErrorDefine.ClientError.AUTHENTICATION_ERROR, HttpStatus.UNAUTHORIZED.value(),
-                                  e.getMessage());
+      throw new AuthenticationException("Account inactive, check mail please");
     }
   }
 
   @PostMapping(LOGIN_GOOGLE_URL)
   public DataResponse<Map<String, Object>> loginGoogle(@RequestBody Map<String, Object> input) throws IOException,
           GeneralSecurityException, NoSuchFieldException, IllegalAccessException {
-    //    String code = request.getParameter("code");
-    //
-    //    if (code == null || code.isEmpty()) {
-    //      return "redirect:/login?google=error";
-    //    }
-    //    String accessToken = googleUtils.getToken(code);
     String token = String.valueOf(input.get("token"));
     GooglePojo googlePojo = googleUtils.getUserInfoFromCredential(token);
     return new DataResponse<>(userSecurityService.processOAuthPostLogin(googlePojo));
-    // UserDetails userDetail = googleUtils.buildUser(googlePojo);
-    //    UsernamePasswordAuthenticationToken authentication =
-    //        new UsernamePasswordAuthenticationToken(userDetail, null,
-    // userDetail.getAuthorities());
-    //    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-    //    SecurityContextHolder.getContext().setAuthentication(authentication);
-    // return "redirect:/user";
+
 
   }
 

@@ -1,8 +1,6 @@
 package hcmute.puzzle.infrastructure.dtos.news;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 //import javax.validation.constraints.Email;
 //import javax.validation.constraints.NotBlank;
@@ -10,12 +8,14 @@ import lombok.Setter;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-@Getter
-@Setter
+import java.io.Serializable;
+
+@Data
 @Builder
-public class CreateCommentRequest {
+@AllArgsConstructor
+@NoArgsConstructor
+public class CreateCommentRequest implements Serializable {
 	private String nickname;
-	@Email
 	private String email;
 	@NotBlank
 	private String content;

@@ -5,11 +5,14 @@ import hcmute.puzzle.exception.*;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.infrastructure.converter.Converter;
 import hcmute.puzzle.infrastructure.dtos.news.CreateCommentRequest;
+import hcmute.puzzle.infrastructure.dtos.news.CreateSubCommentRequest;
 import hcmute.puzzle.infrastructure.dtos.news.UpdateUserDto;
 import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
 import hcmute.puzzle.infrastructure.dtos.olds.*;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.BlogPostUpdateRequest;
+import hcmute.puzzle.infrastructure.dtos.request.UpdateCommentRequest;
+import hcmute.puzzle.infrastructure.dtos.request.UpdateSubCommentRequest;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.entities.BlogPost;
 import hcmute.puzzle.infrastructure.entities.User;
@@ -19,6 +22,9 @@ import hcmute.puzzle.infrastructure.models.enums.FileType;
 import hcmute.puzzle.infrastructure.repository.BlogPostRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.*;
+import hcmute.puzzle.services.impl.BlogPostService;
+import hcmute.puzzle.services.impl.CommentService;
+import hcmute.puzzle.services.impl.UserService;
 import hcmute.puzzle.utils.Constant;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
@@ -323,11 +329,64 @@ public class UserController {
     return new DataResponse<>(fileName);
   }
 
-  @RequestMapping(path = "/add-comment/{blogPostId}", method = RequestMethod.POST)
+  @PostMapping(path = "/comment/add")
   public DataResponse<CommentDto> addComment(@Valid @RequestBody CreateCommentRequest createCommentRequest,
-          @RequestParam long blogPostId) {
-
+          @RequestParam Long blogPostId) {
     return new DataResponse<>(commentService.addComment(createCommentRequest, blogPostId));
+  }
+
+  @PutMapping(path = "/comment/update")
+  public DataResponse<CommentDto> updateComment(@RequestParam Long commentId,
+          @RequestBody UpdateCommentRequest updateCommentRequest) {
+    try {
+      CommentDto commentDto = commentService.updateComment(commentId, updateCommentRequest);
+      return new DataResponse<>(commentDto);
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+      throw e;
+    }
+  }
+
+  @DeleteMapping(path = "/comment/delete")
+  public DataResponse<String> deleteComment(@RequestParam Long commentId) {
+    try {
+      commentService.deleteComment(commentId);
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+      throw e;
+    }
+    return new DataResponse<>("Success");
+  }
+
+
+
+  @RequestMapping(path = "/sub-comment/add", method = RequestMethod.POST)
+  public DataResponse<SubCommentDto> addSubComment(@Valid @RequestBody CreateSubCommentRequest createSubCommentRequest,
+          @RequestParam long commentId) {
+    return new DataResponse<>(commentService.addSubComment(createSubCommentRequest, commentId));
+  }
+
+  @PutMapping(path = "/sub-comment/update")
+  public DataResponse<SubCommentDto> updateSubComment(@RequestParam Long subCommentId,
+          @RequestBody UpdateSubCommentRequest updateSubCommentRequest) {
+    try {
+      SubCommentDto subCommentDto = commentService.updateSubComment(subCommentId, updateSubCommentRequest);
+      return new DataResponse<>(subCommentDto);
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+      throw e;
+    }
+  }
+
+  @DeleteMapping(path = "/sub-comment/delete")
+  public DataResponse<String> deleteSubComment(@RequestParam Long subCommentId) {
+    try {
+      commentService.deleteSubComment(subCommentId);
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+      throw e;
+    }
+    return new DataResponse<>("Success");
   }
 
   private Pageable getPageable(Integer page, Integer size) {

@@ -2,11 +2,12 @@ package hcmute.puzzle.interceptor;
 
 //import javax.servlet.http.HttpServletRequest;
 //import javax.servlet.http.HttpServletResponse;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,8 +20,13 @@ public class CommonInterceptor implements HandlerInterceptor {
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {
-
-    logger.info("Pre Handle method is Calling. End point: " + request.getContextPath());
+    String currentUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+    logger.info("Pre Handle method is Calling. End point: {} - Method: {} - By {}", request.getRequestURI(),
+                request.getMethod(), currentUserName);
+    logger.info("With parameters: ");
+    request.getParameterMap().forEach((key, value) -> {
+      logger.info("key: {} , value: {}", key, value);
+    });
     return true;
   }
 
@@ -32,7 +38,7 @@ public class CommonInterceptor implements HandlerInterceptor {
       ModelAndView modelAndView)
       throws Exception {
 
-    logger.info("Post Handle method is Calling. Response: \n" + response);
+    logger.info("Post Handle method is Calling. Response status: {}", response.getStatus());
   }
 
   @Override

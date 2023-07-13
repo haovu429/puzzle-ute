@@ -1,10 +1,12 @@
 package hcmute.puzzle.services.impl;
 
+import com.detectlanguage.errors.APIError;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.CustomException;
+import hcmute.puzzle.exception.InvalidBehaviorException;
 import hcmute.puzzle.exception.NotFoundDataException;
-import hcmute.puzzle.hirize.model.AIMatcherData;
-import hcmute.puzzle.hirize.model.HirizeResponse;
+import hcmute.puzzle.hirize.model.*;
 import hcmute.puzzle.hirize.service.HirizeService;
 import hcmute.puzzle.infrastructure.dtos.olds.EmployerDto;
 import hcmute.puzzle.infrastructure.entities.*;
@@ -12,17 +14,24 @@ import hcmute.puzzle.infrastructure.mappers.EmployerMapper;
 import hcmute.puzzle.infrastructure.models.enums.JsonDataType;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.EmployerService;
+import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.Utils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
+@Slf4j
 @Service
 public class EmployerServiceImpl implements EmployerService {
 
@@ -59,14 +68,33 @@ public class EmployerServiceImpl implements EmployerService {
 	@Autowired
 	JsonDataRepository jsonDataRepository;
 
+	@Value("${file.location.download}")
+	String tempFileLocation;
+
+	@Value("${hirize.pricing.coin}")
+	Long coinPrice;
+
+	@Autowired
+	SystemConfigurationRepository systemConfigurationRepository;
+
+	@Autowired
+	WebClientService webClientService;
+
+	@Autowired
+	CurrentUserService currentUserService;
+
 	@Override
 	public EmployerDto save(EmployerDto employerDTO) {
 		// casting provinceDTO to ProvinceEntity
 		Employer employer = employerMapper.employerDtoToEmployer(employerDTO);
+		User currentUser = currentUserService.getCurrentUser();
 
 		// save province
-		//    employer.setId(0);
-		if (employer.getUser().getCandidate() != null) {
+		//employer.setId(currentUser.getId());
+		User userFromDb = userRepository.findById(currentUser.getId())
+										.orElseThrow(() -> new NotFoundDataException("Not found user"));
+		employer.setUser(userFromDb);
+		if (currentUser.getCandidate() != null) {
 			throw new RuntimeException("This account for candidate");
 		}
 
@@ -88,16 +116,20 @@ public class EmployerServiceImpl implements EmployerService {
 
 	@Override
 	public void delete(long id) {
-		Employer employer = employerRepository.findById(id)
-											  .orElseThrow(() -> new NotFoundDataException("Not found employer"));
+		Employer employer = employerRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not found employer"));
 		employerRepository.delete(employer);
 	}
 
 	@Override
 	public EmployerDto update(EmployerDto employerDTO) {
-		Employer employer = employerRepository.findById(employerDTO.getId())
+		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+																				 .getAuthentication()
+																				 .getPrincipal();
+		User currentUser = userDetails.getUser();
+		Employer employer = employerRepository.findById(currentUser.getId())
 											  .orElseThrow(() -> new NotFoundDataException("Not found employer"));
 		employerMapper.updateEmployerFromEmployerDto(employerDTO, employer);
+		employerRepository.save(employer);
 		return employerMapper.employerToEmployerDto(employer);
 	}
 
@@ -112,8 +144,7 @@ public class EmployerServiceImpl implements EmployerService {
 
 	@Override
 	public List<EmployerDto> getEmployerFollowedByCandidateId(long candidateId) {
-		Candidate candidate = candidateRepository.findById(candidateId)
-												 .orElseThrow(() -> new NotFoundDataException("Candidate isn't exist"));
+		Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(() -> new NotFoundDataException("Candidate isn't exist"));
 
 
 		List<EmployerDto> employerDtos = candidate.getFollowingEmployers()
@@ -138,7 +169,7 @@ public class EmployerServiceImpl implements EmployerService {
 		long applicationOfCandidateAmount = applicationRepository.getAmountApplicationToEmployer(employerId);
 
 		if (viewOfCandidateAmount != 0 && viewOfCandidateAmount >= applicationOfCandidateAmount) {
-			rate = Double.valueOf(applicationOfCandidateAmount) / viewOfCandidateAmount;
+			rate = (double) applicationOfCandidateAmount / viewOfCandidateAmount;
 			rate = rate * 100; // doi ti le ra phan tram
 			// lam tron 2 chu so thap phan
 			rate = Math.round(rate * 100.0) / 100.0;
@@ -161,7 +192,7 @@ public class EmployerServiceImpl implements EmployerService {
 
 	@Transactional
 	public HirizeResponse<AIMatcherData> getPointOfApplicationFromHirize(Long jobPostId, Long candidateId) throws
-			IOException {
+			IOException, APIError, InvalidBehaviorException {
 		JobPost jobPost = jobPostRepository.findById(jobPostId)
 										   .orElseThrow(() -> new NotFoundDataException("Not found job post"));
 		Application application = applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPostId)
@@ -171,7 +202,7 @@ public class EmployerServiceImpl implements EmployerService {
 		HirizeResponse<AIMatcherData> result = null;
 		result = this.getScoreAlreadyCalculated(application.getId());
 		if (result == null) {
-			result = hirizeService.getPointOfApplicationFromHirize(application, jobPost);
+			result = this.getPointOfApplicationFromHirize(application, jobPost);
 			if (result != null) {
 				// Save result to database
 				JsonData jsonData = JsonData.builder()
@@ -181,13 +212,13 @@ public class EmployerServiceImpl implements EmployerService {
 											.data(Utils.objectToJson(result))
 											.build();
 				jsonDataRepository.save(jsonData);
+				reduceCoin();
 			}
 		}
 		return result;
 	}
 
-	public HirizeResponse<AIMatcherData> getScoreAlreadyCalculated(long applicationId) throws
-			JsonProcessingException {
+	public HirizeResponse<AIMatcherData> getScoreAlreadyCalculated(long applicationId) throws JsonProcessingException {
 		Application application = applicationRepository.findById(applicationId)
 													   .orElseThrow(() -> new NotFoundDataException(
 															   "Not found application"));
@@ -200,6 +231,192 @@ public class EmployerServiceImpl implements EmployerService {
 			return hirizeResponses;
 		}
 		return null;
+	}
+
+	public HirizeResponse<AIMatcherData> getPointOfApplicationFromHirize(Application application,
+			JobPost jobPost) throws IOException, IllegalArgumentException, APIError {
+
+		String cvBase64 = EmployerServiceImpl.getStringBase64FromURL(application.getCv(), tempFileLocation);
+
+		// Detect language of content cv to convert to English
+		String translated = webClientService.translate(jobPost.getDescription());
+		jobPost.setDescription(translated);
+
+		// Call job parser of Hirize
+		JobParserRequest jobParserRequest = JobParserRequest.builder().description(jobPost.getDescription()).build();
+		HirizeResponse<JobParserData> jobParserResponse = hirizeService.callApiJobParser(jobParserRequest);
+		//SeniorityType seniorityType = SeniorityType.valueOf(jobParserResponse.getData().getResult().getSeniority());
+		// Validate job parser result
+		HirizeService.validateJobParserResponse(jobParserResponse, jobPost);
+
+		// String[] skillFake = {"JAVA", "HTML", "PYTHON"};
+		AIMatcherRequest aIMatcherRequest = AIMatcherRequest.builder()
+															.payload(cvBase64)
+															.fileName(application.getCvName())
+															.jobTitle(jobParserResponse.getData()
+																					   .getResult()
+																					   .getJobTitle())
+															.seniority(jobParserResponse.getData()
+																						.getResult()
+																						.getSeniority())
+															.skills(jobParserResponse.getData().getResult().getSkills())
+															.build();
+
+		HirizeResponse<AIMatcherData> result;
+		result = hirizeService.callApiAiMatcher(aIMatcherRequest);
+		return result;
+	}
+
+	public void clearAIMatcherDataForApplication(Long jobPostId, Long candidateId) {
+		this.clearJsonDataForApplication(jobPostId, candidateId, JsonDataType.HIRIZE_AI_MATCHER);
+	}
+
+	public void clearHirizeIQDataForApplication(Long jobPostId, Long candidateId) {
+		this.clearJsonDataForApplication(jobPostId, candidateId, JsonDataType.HIRIZE_IQ);
+	}
+
+	public void clearJsonDataForApplication(Long jobPostId, Long candidateId, JsonDataType jsonDataType) {
+		JobPost jobPost = jobPostRepository.findById(jobPostId)
+										   .orElseThrow(() -> new NotFoundDataException("Not found job post"));
+		Application application = applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPost.getId())
+													   .orElseThrow(() -> new NotFoundDataException(
+															   "Not found application"));
+
+		List<JsonData> jsonDataList = jsonDataRepository.findAllByApplicationIdAndType(application.getId(),
+																					   jsonDataType);
+		jsonDataRepository.deleteAll(jsonDataList);
+	}
+
+	public boolean checkAIMatcherExisted(Long jobPostId, Long candidateId) {
+		return this.checkJsonDataExistedByType(jobPostId, candidateId, JsonDataType.HIRIZE_AI_MATCHER);
+	}
+
+	public boolean checkHirizeIQExisted(Long jobPostId, Long candidateId) {
+		return this.checkJsonDataExistedByType(jobPostId, candidateId, JsonDataType.HIRIZE_IQ);
+	}
+
+	public boolean checkJsonDataExistedByType(Long jobPostId, Long candidateId, JsonDataType jsonDataType) {
+		JobPost jobPost = jobPostRepository.findById(jobPostId)
+										   .orElseThrow(() -> new NotFoundDataException("Not found job post"));
+		Application application = applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPost.getId())
+													   .orElseThrow(() -> new NotFoundDataException(
+															   "Not found application"));
+
+		List<JsonData> jsonDataList = jsonDataRepository.findAllByApplicationIdAndType(application.getId(),
+																					   jsonDataType);
+		if (jsonDataList.isEmpty()) {
+			return false;
+		}
+		return true;
+	}
+
+
+	@Transactional
+	public HirizeResponse<HirizeIQData> getAISuggestForApplicationFromHirize(Long jobPostId, Long candidateId) throws
+			IOException, APIError, InvalidBehaviorException {
+		JobPost jobPost = jobPostRepository.findById(jobPostId)
+										   .orElseThrow(() -> new NotFoundDataException("Not found job post"));
+		Application application = applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPostId)
+													   .orElseThrow(() -> new NotFoundDataException(
+															   "Not found application"));
+
+		HirizeResponse<HirizeIQData> result = null;
+		result = this.getAISuggestAlreadyExisted(application.getId());
+		if (result == null) {
+			result = this.getAISuggestForApplicationFromHirize(application, jobPost);
+			if (result != null) {
+				// Save result to database
+				JsonData jsonData = JsonData.builder()
+											.hirizeId(result.getData().getId())
+											.applicationId(application.getId())
+											.type(JsonDataType.HIRIZE_IQ)
+											.data(Utils.objectToJson(result))
+											.build();
+				jsonDataRepository.save(jsonData);
+				reduceCoin();
+			}
+		}
+		return result;
+	}
+
+	private void reduceCoin() throws InvalidBehaviorException, NumberFormatException {
+		CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+																					   .getAuthentication()
+																					   .getPrincipal();
+		User currentUser = customUserDetails.getUser();
+		SystemConfiguration pricingConfiguration = systemConfigurationRepository.findByKey(
+				Constant.Hirize.HIRIZE_COIN_PRICING).orElse(null);
+		if (pricingConfiguration != null && pricingConfiguration.getValue() != null) {
+			coinPrice = Long.parseLong(pricingConfiguration.getValue());
+		} else if (coinPrice == null) {
+			throw new NotFoundDataException("Not found configuration for Cohere api");
+		}
+		long newBalance = currentUser.getBalance() - coinPrice;
+		if (newBalance >= 0) {
+			currentUser.setBalance(newBalance);
+		} else {
+			throw new InvalidBehaviorException("account not enough coins");
+		}
+
+		userRepository.save(currentUser);
+	}
+
+	public HirizeResponse<HirizeIQData> getAISuggestAlreadyExisted(long applicationId) throws JsonProcessingException {
+		Application application = applicationRepository.findById(applicationId)
+													   .orElseThrow(() -> new NotFoundDataException(
+															   "Not found application"));
+
+		List<JsonData> jsonDataList = jsonDataRepository.findAllByApplicationIdAndType(application.getId(),
+																					   JsonDataType.HIRIZE_IQ);
+		if (jsonDataList != null && !jsonDataList.isEmpty()) {
+			JsonData jsonData = jsonDataList.get(0);
+			HirizeResponse<HirizeIQData> hirizeResponses = HirizeService.jsonToHirizeIQ(jsonData.getData());
+			return hirizeResponses;
+		}
+		return null;
+	}
+
+	public HirizeResponse<HirizeIQData> getAISuggestForApplicationFromHirize(Application application,
+			JobPost jobPost) throws IOException, IllegalArgumentException, APIError {
+		String cvBase64 = EmployerServiceImpl.getStringBase64FromURL(application.getCv(), tempFileLocation);
+
+		// Detect language of content cv to convert to English
+		String translated = webClientService.translate(jobPost.getDescription());
+		jobPost.setDescription(translated);
+
+		// String[] skillFake = {"JAVA", "HTML", "PYTHON"};
+		HirizeIQRequest hirizeIQRequest = HirizeIQRequest.builder()
+														 .payload(cvBase64)
+														 .fileName(application.getCvName())
+														 .jobDescription(jobPost.getDescription())
+														 .build();
+
+		HirizeResponse<HirizeIQData> result;
+		result = hirizeService.callApiHirizeIQ(hirizeIQRequest);
+		return result;
+	}
+
+	private static String getStringBase64FromURL(String url, String tempFileLocation) throws IOException {
+		String fileName = UUID.randomUUID().toString();
+		String fileExtension = "";
+
+		int dotIndex = fileName.lastIndexOf('.');
+		if (dotIndex != -1 && dotIndex < fileName.length() - 1) {
+			fileExtension = fileName.substring(dotIndex + 1);
+			fileName = fileName.substring(0, dotIndex);
+		}
+		String filePath = tempFileLocation.concat("/")
+										  .concat(HirizeService.processFileName(fileName))
+										  .concat(".")
+										  .concat(fileExtension);
+		java.io.File tmpFile = new File(filePath);
+
+		Utils.downloadFileFromUrl(tmpFile, url);
+		String strBase64 = Utils.fileToBase64(tmpFile);
+		if (!tmpFile.delete()) {
+			log.error("Failed to delete the file");
+		}
+		return strBase64;
 	}
 
 }
