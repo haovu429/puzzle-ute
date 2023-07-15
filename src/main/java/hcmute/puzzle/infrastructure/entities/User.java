@@ -62,7 +62,7 @@ public class User extends Auditable implements Serializable {
 
   @Column(name = "is_deleted")
   @Builder.Default
-  private Boolean isDelete = false;
+  private Boolean isDeleted = false;
 
   @Column(name = "last_login_at")
   @Temporal(TemporalType.TIMESTAMP)

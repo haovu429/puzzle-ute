@@ -19,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
   // Avoid ErrorDefine: failed to lazily initialize a collection of role:
   // hcmute.puzzle.entities.UserEntity.roles, could not initialize proxy - no Session
   // https://www.baeldung.com/hibernate-initialize-proxy-exception
-  @Query("SELECT DISTINCT a FROM User a LEFT JOIN FETCH a.roles WHERE a.email = ?1 AND a.isDelete = false")
+  @Query("SELECT DISTINCT a FROM User a LEFT JOIN FETCH a.roles WHERE a.email = ?1 AND a.isDeleted = false")
   User getUserByEmailJoinFetch(String email);
 
   @Query("SELECT a FROM User a WHERE a.email = ?1 AND a.password = ?2")

@@ -121,6 +121,7 @@ public class CommonController {
 		}
 		JobPostFilterRequest jobPostFilterRequest = JobPostFilterRequest.builder()
 																		.categoryIds(categoryIds)
+																		.isActive(true)
 																		.build();
 		Page<JobPostDto> jobPostDtos = jobPostService.filterJobPost(jobPostFilterRequest, pageable);
 		return new DataResponse<>(jobPostDtos);
@@ -163,21 +164,68 @@ public class CommonController {
 		return new DataResponse<>(extraInfoDtos);
 	}
 
-	@PostMapping("/job-post-filter-v2")
-	public DataResponse<Page<JobPostDto>> filterJobPostV2(@RequestParam(value = "page", required = false) Integer page,
-			@RequestParam(required = false) Integer size,
-			@RequestBody(required = false) JobPostFilterRequest jobPostFilterRequest) {
+	@PostMapping("/job-post-filter")
+	public DataResponse<List<JobPostDto>> filterJobPostV2(@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(required = false) Integer size, @RequestBody(required = false) JobPostFilter jobPostFilter) {
 		try {
+			// Apply new filter from old filter
+			Integer experienceYear = null;
+			if (jobPostFilter.getExperienceYear() != null && !jobPostFilter.getExperienceYear().isEmpty()) {
+				try {
+					if (Integer.valueOf(jobPostFilter.getExperienceYear().get(0)) != -1) {
+						experienceYear = Integer.valueOf(jobPostFilter.getExperienceYear().get(0));
+					}
+				} catch (NumberFormatException e) {
+					log.error(e.getMessage(), e);
+				}
+			}
+			List<String> searchKeys = new ArrayList<>();
+			if (jobPostFilter.getTitles() != null && !jobPostFilter.getTitles().isEmpty()) {
+				searchKeys.addAll(jobPostFilter.getTitles());
+			}
+			if (jobPostFilter.getSkills() != null && !jobPostFilter.getSkills().isEmpty()) {
+				searchKeys.addAll(jobPostFilter.getSkills());
+			}
+			if (jobPostFilter.getOthers() != null && !jobPostFilter.getOthers().isEmpty()) {
+				searchKeys.addAll(jobPostFilter.getOthers());
+			}
+
+			String city = null;
+			if (jobPostFilter.getCities() != null && !jobPostFilter.getCities().isEmpty()) {
+				city = jobPostFilter.getCities().get(0);
+			}
+
+			String position = null;
+			if (jobPostFilter.getPositions() != null && !jobPostFilter.getPositions().isEmpty()) {
+				position = jobPostFilter.getPositions().get(0);
+			}
+
+			JobPostFilterRequest jobPostFilterRequest = JobPostFilterRequest.builder()
+																			.minBudget(jobPostFilter.getMinBudget())
+																			.maxBudget(jobPostFilter.getMaxBudget())
+																			.experienceYear(experienceYear)
+																			.searchKeys(searchKeys)
+																			.employmentTypes(
+																					jobPostFilter.getEmploymentTypes())
+																			.city(city)
+																			.position(position)
+																			.skills(jobPostFilter.getSkills())
+																			.categoryIds(jobPostFilter.getCategoryIds())
+																			.isActive(true)
+																			.numDayAgo(jobPostFilter.getNumDayAgo())
+																			.sortColumn("updatedAt")
+																			.build();
 			Pageable pageable = this.getPageable(page, size);
 			Page<JobPostDto> jobPostDtos = jobPostService.filterJobPost(jobPostFilterRequest, pageable);
-			return new DataResponse<>(jobPostDtos);
+			List<JobPostDto> jobPostDtoList = jobPostDtos.getContent();
+			return new DataResponse<>(jobPostDtoList);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw e;
 		}
 	}
 
-	@PostMapping("/job-post-filter")
+	@PostMapping("/job-post-filter-old")
 	public DataResponse<List<JobPostDto>> filterJobPost(@RequestBody(required = false) JobPostFilter jobPostFilter) {
 		Map<String, List<ModelQuery>> fieldSearchValue = new HashMap<>();
 		Map<String, List<ModelQuery>> fieldSearchValueSpecial = new HashMap<>();
@@ -306,7 +354,7 @@ public class CommonController {
 
 		// filer job post active
 		List<Boolean> booleanList = new ArrayList<>();
-		booleanList.add(true);
+		booleanList.add(Boolean.TRUE);
 
 		fieldSearchValue.put("isActive", booleanList.stream()
 													.map(boo -> new ModelQuery(ModelQuery.TYPE_QUERY_EQUAL,
@@ -391,7 +439,6 @@ public class CommonController {
 																						   service))
 															.collect(Collectors.toList()));
 		}
-
 		List<String> commonFieldSearch = new ArrayList<>();
 		List<ModelQuery> valueCommonFieldSearch = candidateFilter.getOthers()
 																 .stream()
@@ -404,20 +451,16 @@ public class CommonController {
 			commonFieldSearch.add("introduction");
 			commonFieldSearch.add("phoneNum");
 		}
-
 		List<Candidate> candidates = searchService.filterObject("CandidateEntity", null, fieldSearchValue, null,
 																commonFieldSearch, valueCommonFieldSearch,
 																candidateFilter.getNoOfRecords(),
 																candidateFilter.getPageIndex(),
 																candidateFilter.isSortById());
-
 		List<CandidateDto> candidateDTOS = candidates.stream()
 													 .map(candidate -> candidateMapper.candidateToCandidateDto(
 															 candidate))
 													 .collect(Collectors.toList());
-
 		// CandidateFilter candidateFilter1 = new CandidateFilter();
-
 		return new DataResponse<>(candidateDTOS);
 	}
 
@@ -466,7 +509,9 @@ public class CommonController {
 
 	@GetMapping("/get-active-job-post")
 	public DataResponse<List<JobPostDto>> getActiveJobPost() {
-		List<JobPostDto> jobPostDtos = jobPostService.getActiveJobPost();
+		JobPostFilterRequest jobPostFilterRequest = JobPostFilterRequest.builder().sortColumn("updatedAt").build();
+		List<JobPostDto> jobPostDtos = jobPostService.filterJobPost(jobPostFilterRequest, Pageable.unpaged())
+													 .getContent();
 		return new DataResponse<>(jobPostDtos);
 	}
 

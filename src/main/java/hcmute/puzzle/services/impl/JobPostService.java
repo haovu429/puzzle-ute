@@ -15,7 +15,7 @@ import hcmute.puzzle.infrastructure.mappers.JobPostMapper;
 import hcmute.puzzle.infrastructure.models.JobPostFilterRequest;
 import hcmute.puzzle.infrastructure.models.JobPostWithApplicationAmount;
 import hcmute.puzzle.infrastructure.repository.*;
-import hcmute.puzzle.services.JobPostService;
+import hcmute.puzzle.utils.TimeUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.Join;
@@ -33,7 +33,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class JobPostServiceImpl implements JobPostService {
+public class JobPostService {
 
 	public static int LIMITED_NUMBER_OF_JOB_POSTS_CREATED_DEFAULT = 2;
 
@@ -97,6 +97,8 @@ public class JobPostServiceImpl implements JobPostService {
 		//                             .canApply(createJobPostRequest.getCanApply())
 		//                             .build();
 		JobPost jobPost = jobPostMapper.jobPostUserPostRequestToJobPost(createJobPostRequest);
+		//Set default
+		setDefault(jobPost);
 		if (createJobPostRequest.getCompanyId() != null) {
 			Company company = companyRepository.findById(createJobPostRequest.getCompanyId())
 											   .orElseThrow(() -> new NotFoundDataException("Not found company"));
@@ -125,14 +127,26 @@ public class JobPostServiceImpl implements JobPostService {
 		return jobPostMapper.jobPostToJobPostDto(jobPost);
 	}
 
-	@Override
+	public JobPost setDefault(JobPost jobPost) {
+		jobPost.setCanApply(true);
+		jobPost.setIsPublic(true);
+		jobPost.setIsActive(true);
+		jobPost.setBlind(false);
+		jobPost.setDeaf(false);
+		jobPost.setCommunicationDis(false);
+		jobPost.setHandDis(false);
+		jobPost.setLabor(false);
+		return jobPost;
+	}
+
+
 	public void delete(long id) {
 		JobPost jobPost = jobPostRepository.findById(id)
 										   .orElseThrow(() -> new NotFoundDataException("Not found job post"));
 		jobPostRepository.delete(jobPost);
 	}
 
-	@Override
+
 	public void markJobPostWasDelete(long id) {
 		JobPost jobPost = jobPostRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not found data"));
 		jobPost.setIsDeleted(true);
@@ -140,7 +154,7 @@ public class JobPostServiceImpl implements JobPostService {
 
 	}
 
-	@Override
+
 	public JobPostDto updateJobPostWithRoleUser(long jobPostId, JobPostUserPostRequest jobPostUserPostRequest) {
 
 		JobPost jobPost = jobPostRepository.findById(jobPostId)
@@ -171,7 +185,7 @@ public class JobPostServiceImpl implements JobPostService {
 		return jobPostMapper.jobPostToJobPostDto(jobPost);
 	}
 
-	@Override
+
 	public JobPostDto updateJobPostWithRoleAdmin(long jobPostId, JobPostAdminPostRequest jobPostAdminPostRequest) {
 
 		JobPost jobPost = jobPostRepository.findById(jobPostId)
@@ -188,7 +202,7 @@ public class JobPostServiceImpl implements JobPostService {
 		return jobPostMapper.jobPostToJobPostDto(jobPost);
 	}
 
-	@Override
+
 	public JobPostDto getOne(long id) {
 		JobPost jobPost = jobPostRepository.findById(id)
 										   .orElseThrow(() -> new NotFoundDataException(
@@ -196,7 +210,7 @@ public class JobPostServiceImpl implements JobPostService {
 		return jobPostMapper.jobPostToJobPostDto(jobPost);
 	}
 
-	@Override
+
 	public Page<JobPostDto> getAll(Pageable pageable) {
 		Page<JobPost> jobPosts = jobPostRepository.findAll(pageable);
 
@@ -205,7 +219,7 @@ public class JobPostServiceImpl implements JobPostService {
 		return jobPostDtos;
 	}
 
-	//  @Override
+	//  
 	//  public List<JobPostDto> getJobPostWithPage(int pageNum, int numOfRecord) {
 	//
 	//    Pageable pageable = PageRequest.of(pageNum, numOfRecord);
@@ -236,7 +250,7 @@ public class JobPostServiceImpl implements JobPostService {
 	//    return new DataResponse(200, "Job Post applied", jobPostDTOS);
 	//  }
 
-	@Override
+
 	public List<JobPostDto> getJobPostAppliedByCandidateId(long candidateId) {
 		List<JobPostDto> jobPostDtos = jobPostRepository.findAllByAppliedCandidateId(candidateId)
 														.stream()
@@ -247,7 +261,7 @@ public class JobPostServiceImpl implements JobPostService {
 		return jobPostDtos;
 	}
 
-	@Override
+
 	public Page<JobPostWithApplicationAmount> getJobPostCreatedByEmployerId(long employerId, Pageable pageable) {
 		Page<JobPostWithApplicationAmount> response =
 				// Set<JobPostDto> jobPostDTOS =
@@ -267,7 +281,7 @@ public class JobPostServiceImpl implements JobPostService {
 		return response;
 	}
 
-	@Override
+
 	public List<JobPostDto> getActiveJobPost() {
 		List<JobPostDto> jobPostDtos = jobPostRepository.findAllByActiveIsTrue().stream().map(jobPostEntity -> {
 			JobPostDto jobPostDTO = jobPostMapper.jobPostToJobPostDto(jobPostEntity);
@@ -278,7 +292,7 @@ public class JobPostServiceImpl implements JobPostService {
 		return jobPostDtos;
 	}
 
-	@Override
+
 	public List<JobPostDto> getInactiveJobPost() {
 		List<JobPostDto> jobPostDtos = jobPostRepository.findAllByActiveIsFalse()
 														.stream()
@@ -288,7 +302,7 @@ public class JobPostServiceImpl implements JobPostService {
 		return jobPostDtos;
 	}
 
-	@Override
+
 	public List<JobPostDto> getJobPostByCreateEmployerId(long employerId, boolean isActive) {
 
 		QJobPost jobPost = QJobPost.jobPost;
@@ -302,7 +316,7 @@ public class JobPostServiceImpl implements JobPostService {
 		return jobPostDtos;
 	}
 
-	@Override
+
 	public List<JobPostDto> getJobPostSavedByCandidateId(long candidateId) {
 		Candidate candidate = candidateRepository.findById(candidateId)
 												 .orElseThrow(() -> new NotFoundDataException("Candidate isn't exist"));
@@ -378,18 +392,18 @@ public class JobPostServiceImpl implements JobPostService {
 		return jobPostDtos;
 	}
 
-	@Override
+
 	public long getJobPostAmount() {
 		return jobPostRepository.count();
 	}
 
-	@Override
+
 	public long getViewedJobPostAmountByUserId(long userId) {
 		long amount = jobPostRepository.getViewedJobPostAmountByUser(userId);
 		return amount;
 	}
 
-	@Override
+
 	public long countJobPostViewReturnDataResponse(long jobPostId) {
 		return countJobPostView(jobPostId);
 	}
@@ -404,7 +418,7 @@ public class JobPostServiceImpl implements JobPostService {
 		return jobPost.get().getViews();
 	}
 
-	@Override
+
 	public void viewJobPost(long userId, long jobPostId) {
 		JobPost jobPost = jobPostRepository.findById(jobPostId)
 										   .orElseThrow(() -> new NotFoundDataException("Not found job post"));
@@ -414,7 +428,7 @@ public class JobPostServiceImpl implements JobPostService {
 		jobPostRepository.save(jobPost);
 	}
 
-	@Override
+
 	public double getApplicationRateByJobPostId(long jobPostId) {
 		Optional<JobPost> jobPost = jobPostRepository.findById(jobPostId);
 		if (jobPost.isEmpty()) {
@@ -452,7 +466,6 @@ public class JobPostServiceImpl implements JobPostService {
 	}
 
 
-	@Override
 	public long getTotalJobPostViewOfEmployer(long employerId) {
 		return jobPostRepository.getTotalJobPostViewOfEmployer(employerId);
 	}
@@ -528,7 +541,11 @@ public class JobPostServiceImpl implements JobPostService {
 
 	public Page<JobPostDto> filterJobPost(JobPostFilterRequest jobPostFilterRequest, Pageable pageable) {
 		JobPostFilterRequest jobPostFilter = jobPostFilterRequest;
-		jobPostFilter.setIsActive(true);
+		if (jobPostFilter.getNumDayAgo() != null && jobPostFilter.getNumDayAgo() != -1 && jobPostFilter.getNumDayAgo() > 0) {
+			TimeUtil timeUtil = new TimeUtil();
+			Date timeLine = timeUtil.upDownTime_TimeUtil(new Date(), jobPostFilter.getNumDayAgo(), 0, 0);
+			jobPostFilter.setCreatedAtFrom(timeLine);
+		}
 		Specification<JobPost> jobPostSpecification = doPredicate(jobPostFilter);
 		Page<JobPostDto> jobPostDtos = jobPostRepository.findAll(jobPostSpecification, pageable)
 														.map(jobPostMapper::jobPostToJobPostDto);
@@ -707,7 +724,7 @@ public class JobPostServiceImpl implements JobPostService {
 						query.orderBy(criteriaBuilder.asc(root.get(jobPostFilter.getSortColumn())));
 				}
 			} else if (Objects.nonNull(jobPostFilter.getIsAscSort()) && jobPostFilter.getIsAscSort()
-																					 .equals(true) && jobPostFilter.getSortColumn() != null && !jobPostFilter.getSortColumn()
+																					 .equals(false) && jobPostFilter.getSortColumn() != null && !jobPostFilter.getSortColumn()
 																																							 .isBlank()) {
 				switch (jobPostFilter.getSortColumn()) {
 					case "createdAt":

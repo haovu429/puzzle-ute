@@ -21,6 +21,7 @@ import hcmute.puzzle.services.*;
 import hcmute.puzzle.services.impl.ApplicationService;
 import hcmute.puzzle.services.impl.CurrentUserService;
 import hcmute.puzzle.services.impl.ExperienceService;
+import hcmute.puzzle.services.impl.JobPostService;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.Utils;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -83,7 +84,8 @@ public class CandidateController {
 
   @Autowired CompanyService companyService;
 
-  @Autowired JobPostService jobPostService;
+  @Autowired
+  JobPostService jobPostService;
 
   @Autowired
   ExperienceMapper experienceMapper;

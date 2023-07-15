@@ -50,6 +50,8 @@ public interface UserMapper {
     @Mapping(target = "subscribeEntities", ignore = true)
 //    @Mapping(target = "tokens", ignore = true)
     @Mapping(target = "isAdmin", ignore = true)
+    @Mapping(target = "isDeleted", ignore = true)
+    @Mapping(target = "balance", ignore = true)
     void updateUserFromDto(UpdateUserForAdminDto dto, @MappingTarget User entity);
 
 

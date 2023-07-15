@@ -33,6 +33,7 @@ import hcmute.puzzle.infrastructure.repository.JobPostRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.services.impl.ApplicationService;
+import hcmute.puzzle.services.impl.JobPostService;
 import hcmute.puzzle.utils.Constant;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.log4j.Log4j2;
@@ -129,9 +130,7 @@ public class EmployerController {
 	}
 
 	@PostMapping("/post-job")
-	DataResponse<JobPostDto> createJobPost(@RequestBody @Validated JobPostUserPostRequest createJobPostRequest,
-			Authentication authentication) {
-		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+	DataResponse<JobPostDto> createJobPost(@RequestBody @Validated JobPostUserPostRequest createJobPostRequest) {
 		// Validate JobPost
 		jobPostService.validateJobPost(createJobPostRequest);
 		//jobPostService.checkCreatedJobPostLimit(userDetails.getUser().getId());

@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-@Service
+//@Service
 public interface ConfigurationService {
 
     String get(String key);

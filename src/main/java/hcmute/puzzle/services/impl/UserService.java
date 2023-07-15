@@ -18,7 +18,6 @@ import hcmute.puzzle.infrastructure.models.enums.FileType;
 import hcmute.puzzle.infrastructure.models.enums.Roles;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.FilesStorageService;
-import hcmute.puzzle.services.SecurityService;
 import hcmute.puzzle.utils.Provider;
 import hcmute.puzzle.utils.RedisUtils;
 import hcmute.puzzle.utils.TimeUtil;
@@ -358,8 +357,10 @@ public class UserService {
 		return userPostDTO;
 	}
 
+	@Transactional
 	public void delete(long id) {
 		User user = userRepository.findById(id).orElseThrow(() -> new NotFoundDataException("User not found"));
+
 		// delete roles of user
 		user.getRoles().clear();
 		userRepository.save(user);

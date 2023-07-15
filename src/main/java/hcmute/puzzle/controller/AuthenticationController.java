@@ -6,14 +6,13 @@ import hcmute.puzzle.configuration.security.JwtTokenProvider;
 import hcmute.puzzle.configuration.security.UserSecurityService;
 import hcmute.puzzle.exception.AuthenticationException;
 import hcmute.puzzle.exception.ErrorDefine;
-import hcmute.puzzle.exception.ErrorResponse;
 import hcmute.puzzle.exception.UnauthorizedException;
 import hcmute.puzzle.infrastructure.dtos.olds.ResponseObject;
 import hcmute.puzzle.infrastructure.dtos.request.LoginRequest;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.entities.Role;
 import hcmute.puzzle.infrastructure.entities.User;
-import hcmute.puzzle.services.SecurityService;
+import hcmute.puzzle.services.impl.SecurityService;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.RedisUtils;
 import hcmute.puzzle.utils.login_google.GooglePojo;
@@ -156,9 +155,10 @@ public class AuthenticationController {
   }
 
   @PutMapping(VERIFY_ACCOUNT_URL)
-  public DataResponse verifyAccount(@RequestBody Map<String, String> data) {
+  public DataResponse verifyAccount(@RequestBody Map<String, String> data) throws MessagingException, TemplateException,
+          IOException, ExecutionException, InterruptedException {
     String token = data.get("token");
-//    String email = data.get("email");
+    //    String email = data.get("email");
     if (Objects.isNull(token)) {
       String mess = String.format("Miss information: token: %s", token);
       log.warn("Miss information: token: {}, email: {}", token);

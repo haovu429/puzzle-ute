@@ -21,6 +21,8 @@ public interface CommentMapper {
 	@Mapping(target = "userId", source = "author.id")
 	@Mapping(target = "blogPostId", source = "blogPost.id")
 	@Mapping(target = "canEdit", ignore = true)
+//	@Mapping(target = "nickname", ignore = true)
+	@Mapping(target = "avatar", ignore = true)
 	CommentDto commentToCommentDto(Comment entity);
 
 	List<CommentDto> commentListToCommentDtoList(List<Comment> comments);
@@ -40,6 +42,12 @@ public interface CommentMapper {
 	@Mapping(target = "blogPost", ignore = true)
 	@Mapping(target = "author", ignore = true)
 	@Mapping(target = "subComments", ignore = true)
+	@Mapping(target = "createdBy", ignore = true)
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "updatedBy", ignore = true)
+	@Mapping(target = "updatedAt", ignore = true)
+	@Mapping(target = "nickname", ignore = true)
+	@Mapping(target = "email", ignore = true)
 	void updateCommentFromUpdateCommentRequest(UpdateCommentRequest updateCommentRequest,@MappingTarget Comment comment);
 //	default CommentDto commentToCommentDto(CommentEntity entity) {
 //

@@ -10,7 +10,7 @@ import hcmute.puzzle.infrastructure.entities.Token;
 import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.repository.TokenRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
-import hcmute.puzzle.services.SecurityService;
+
 import hcmute.puzzle.utils.Constant;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 
 @Service
 @Slf4j
-public class SecurityServiceImpl implements SecurityService {
+public class SecurityService {
     @Autowired
     private TokenRepository tokenRepository;
 
@@ -46,7 +46,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     public static final String VERIFY_ACCOUNT_TOKEN = "VERIFY_ACCOUNT_TOKEN";
 
-    @Override
+    
     public DataResponse sendTokenForgotPwd(HttpServletRequest request, String email)
             throws MessagingException,
             TemplateException,
@@ -95,10 +95,15 @@ public class SecurityServiceImpl implements SecurityService {
     public void sendMailForgotPwd(String receiveMail, String urlResetPass, Token token) throws InterruptedException,
             MessagingException, TemplateException, IOException, ExecutionException {
         //MailService mailService = new MailService();
+
+        // Delete old token
+        List<Token> oldToken = tokenRepository.findTokensByEmailAndType(receiveMail, RESET_PASSWORD_TOKEN);
+        tokenRepository.deleteAll(oldToken);
+
         mailService.executeSendMailWithThread(receiveMail, urlResetPass, token);
     }
 
-    @Override
+    
     public DataResponse sendTokenVerifyAccount(String email) throws MessagingException, TemplateException, IOException,
             ExecutionException, InterruptedException {
         User foundUser = userRepository.findByEmail(email)
@@ -134,6 +139,11 @@ public class SecurityServiceImpl implements SecurityService {
     public void sendMailVerifyAccount(String receiveMail, String verifyUrl, Token token) throws InterruptedException,
             MessagingException, TemplateException, IOException, ExecutionException {
         //MailService mailService = new MailService();
+
+        // Delete old token
+        List<Token> oldToken = tokenRepository.findTokensByEmailAndType(receiveMail, VERIFY_ACCOUNT_TOKEN);
+        tokenRepository.deleteAll(oldToken);
+
         mailService.executeSendMailVerifyAccountWithThread(receiveMail, verifyUrl, token);
     }
 
@@ -154,7 +164,7 @@ public class SecurityServiceImpl implements SecurityService {
     //  }
 
 
-    @Override
+    
     public DataResponse resetPassword(String token, String newPassword) {
         Token foundToken = tokenRepository.findByToken(token);
         if (foundToken == null) {
@@ -179,15 +189,17 @@ public class SecurityServiceImpl implements SecurityService {
         return new DataResponse("change password successful");
     }
 
-    @Override
-    public DataResponse verifyAccount(String token) {
+    
+    public DataResponse verifyAccount(String token) throws MessagingException, TemplateException, IOException,
+            ExecutionException, InterruptedException {
         Token foundToken = tokenRepository.findByToken(token);
         if (foundToken == null) {
             throw new CustomException("Token is invalid");
         }
 
         if (foundToken.getExpiryTime().before(new Date())) {
-            throw new CustomException("Token was expired");
+            sendTokenVerifyAccount(foundToken.getEmail());
+            throw new CustomException("Token was expired, Check new token in your mail");
         }
         User user = tokenRepository.findUserByToken(token);
         if (user == null) {

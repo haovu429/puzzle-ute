@@ -77,7 +77,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = redisUtils.get(email) == null ? "" : redisUtils.get(email).toString();
         // System.out.println("Dung? :" + token.equals(jwt));
         if (userDetails != null  && token.equals(jwt) ) {
-          if (userDetails.getUser().getIsActive() && !userDetails.getUser().getIsDelete()) {
+          if (userDetails.getUser().getIsActive() && !userDetails.getUser().getIsDeleted()) {
             // set authentication to context
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(

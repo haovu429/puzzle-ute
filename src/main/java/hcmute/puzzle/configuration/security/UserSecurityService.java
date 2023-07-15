@@ -8,8 +8,9 @@ import hcmute.puzzle.infrastructure.entities.Role;
 import hcmute.puzzle.infrastructure.entities.User;
 import hcmute.puzzle.infrastructure.repository.RoleRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
-import hcmute.puzzle.services.SecurityService;
+
 import hcmute.puzzle.services.impl.RoleService;
+import hcmute.puzzle.services.impl.SecurityService;
 import hcmute.puzzle.utils.Provider;
 import hcmute.puzzle.utils.RedisUtils;
 import hcmute.puzzle.utils.login_google.GooglePojo;
@@ -106,7 +107,7 @@ public class UserSecurityService implements UserDetailsService {
                        .locale(googlePojo.getLocale())
                        .provider(Provider.GOOGLE)
                        .isActive(true)
-                       .isDelete(false)
+                       .isDeleted(false)
                        .build();
     //    newUser.setEmail(googlePojo.getEmail());
     //    newUser.setFullName(googlePojo.getName());

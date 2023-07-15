@@ -1,10 +1,8 @@
 package hcmute.puzzle.infrastructure.mappers;
 
-import hcmute.puzzle.infrastructure.dtos.olds.ExtraInfoDto;
 import hcmute.puzzle.infrastructure.dtos.request.JobPostAdminPostRequest;
 import hcmute.puzzle.infrastructure.dtos.request.JobPostUserPostRequest;
 import hcmute.puzzle.infrastructure.dtos.response.JobPostDto;
-import hcmute.puzzle.infrastructure.entities.ExtraInfo;
 import hcmute.puzzle.infrastructure.entities.JobPost;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -19,7 +17,18 @@ public interface JobPostMapper {
 	JobPostDto jobPostToJobPostDto(JobPost jobPost);
 
 	@Mapping(target = "views", ignore = true)
+	//	@Mapping(target = "isActive", defaultValue = "true")
+	//	@Mapping(target = "isPublic", defaultValue = "true")
+	//	@Mapping(target = "canApply", defaultValue = "true")
+	//	@Mapping(target = "isDeleted", defaultValue = "false")
+	//	@Mapping(target = "blind", defaultValue = "false")
+	//	@Mapping(target = "deaf", defaultValue = "false")
+	//	@Mapping(target = "communicationDis", defaultValue = "false")
+	//	@Mapping(target = "handDis", defaultValue = "false")
+	//	@Mapping(target = "labor", defaultValue = "false")
 	@Mapping(target = "isActive", ignore = true)
+	@Mapping(target = "isPublic", ignore = true)
+	@Mapping(target = "canApply", ignore = true)
 	@Mapping(target = "isDeleted", ignore = true)
 	@Mapping(target = "applications", ignore = true)
 	@Mapping(target = "viewedUsers", ignore = true)

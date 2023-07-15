@@ -37,7 +37,6 @@ public class PuzzleUteApplication {
 		SpringApplication.run(PuzzleUteApplication.class, args);
 	}
 
-
 	//  @Bean
 	//  FirebaseMessaging firebaseMessaging() throws IOException {
 	//    GoogleCredentials googleCredentials = GoogleCredentials

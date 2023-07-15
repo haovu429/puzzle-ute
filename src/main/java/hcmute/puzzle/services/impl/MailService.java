@@ -5,6 +5,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import hcmute.puzzle.configuration.FreemarkerConfiguration;
 import hcmute.puzzle.infrastructure.entities.Token;
+import hcmute.puzzle.infrastructure.repository.TokenRepository;
 import hcmute.puzzle.threads.ThreadService;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.mail.MailUtil;
@@ -16,16 +17,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-//import javax.mail.MessagingException;
-//import javax.mail.Transport;
-//import javax.mail.internet.MimeMessage;
-
-//import jakarta.mail.MessagingException;
-//import jakarta.mail.Transport;
-//import jakarta.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -50,6 +45,9 @@ public class MailService {
   @Autowired
   Environment environment;
 
+  @Autowired
+  TokenRepository tokenRepository;
+
   @Transactional
   public void executeSendMailWithThread(String receiveMail, String urlResetPass, Token token) throws
           InterruptedException, ExecutionException, MessagingException, TemplateException, IOException {
@@ -67,8 +65,8 @@ public class MailService {
         return true;
       }
     };
-
-    threadService1.execute(sendMail, ThreadService.MAIL_TASK, token);
+    tokenRepository.save(token);
+    threadService1.execute(sendMail, ThreadService.MAIL_TASK);
     ExecutorService executorService = threadService1.executorService;
     if (executorService != null) {
       executorService.shutdown();
@@ -83,6 +81,7 @@ public class MailService {
   }
 
   @Transactional
+  @Async
   public void executeSendMailVerifyAccountWithThread(String receiveMail, String verifyAccountUrl, Token token) throws
           InterruptedException, ExecutionException, MessagingException, TemplateException, IOException {
 
@@ -101,8 +100,9 @@ public class MailService {
     };
 
     Token tokenEntity = token;
-    ThreadService threadService = threadService1;
-    threadService.execute(sendMail, ThreadService.MAIL_TASK, tokenEntity);
+    ThreadService threadService = new ThreadService();
+    tokenRepository.save(token);
+    threadService.execute(sendMail, ThreadService.MAIL_TASK);
     ExecutorService executorService = threadService.executorService;
     if (executorService != null) {
       executorService.shutdown();

@@ -23,12 +23,14 @@ public interface SubCommentMapper {
 	@Mapping(target = "userId", source = "author.id")
 	@Mapping(target = "commentId", source = "comment.id")
 	@Mapping(target = "canEdit", ignore = true)
+	@Mapping(target = "avatar", ignore = true)
 	SubCommentDto subCommentToSubCommentDto(SubComment entity);
 
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "comment", ignore = true)
 	@Mapping(target = "author", ignore = true)
 	@Mapping(target = "interact", ignore = true)
+	@Mapping(target = "isDeleted", ignore = true)
 	SubComment createCommentRequestToComment(CreateSubCommentRequest createSubCommentRequest);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -36,6 +38,13 @@ public interface SubCommentMapper {
 	@Mapping(target = "comment", ignore = true)
 	@Mapping(target = "author", ignore = true)
 	@Mapping(target = "interact", ignore = true)
+	@Mapping(target = "createdBy", ignore = true)
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "updatedBy", ignore = true)
+	@Mapping(target = "updatedAt", ignore = true)
+	@Mapping(target = "nickname", ignore = true)
+	@Mapping(target = "email", ignore = true)
+	@Mapping(target = "deleted", ignore = true)
 	void updateCommentFromUpdateSubCommentRequest(UpdateSubCommentRequest updateSubCommentRequest,@MappingTarget SubComment subComment);
 
 	List<SubCommentDto> subCommentListToSubCommentDtoList(List<SubComment> employees);

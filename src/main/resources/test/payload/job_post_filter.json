@@ -1,0 +1,15 @@
+{
+  "minBudget": 100,
+  "maxBudget": 10000,
+  "experienceYear": [
+    "3"
+  ],
+  "employmentTypes": [],
+  "numDayAgo": -1,
+  "titles": [],
+  "cities": [],
+  "positions": [],
+  "skills": [],
+  "others": [],
+  "noOfRecords" : 100
+}

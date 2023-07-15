@@ -15,10 +15,11 @@ public interface TokenRepository extends JpaRepository<Token, Integer> {
   @Query("SELECT DISTINCT u FROM User u, Token tk WHERE u.email = tk.email AND tk.token = :token")
   User findUserByToken(@Param("token") String token);
 
-  @Query(
-      "SELECT tk FROM User u, Token tk WHERE u.email = tk.email AND u.id = :id AND tk.type=:typeToken")
-  List<Token> findTokensByUserAndType(
-      @Param("id") Long id, @Param("typeToken") String typeToken);
+  @Query("SELECT tk FROM User u, Token tk WHERE u.email = tk.email AND u.id = :id AND tk.type=:typeToken")
+  List<Token> findTokensByUserAndType(@Param("id") Long id, @Param("typeToken") String typeToken);
+
+  @Query("SELECT tk FROM Token tk WHERE tk.email = :email AND tk.type=:typeToken")
+  List<Token> findTokensByEmailAndType(@Param("email") String email, @Param("typeToken") String typeToken);
 
   Token findByToken(String token);
 }

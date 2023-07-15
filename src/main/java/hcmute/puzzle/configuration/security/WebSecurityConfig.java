@@ -44,8 +44,8 @@ public class WebSecurityConfig {
 	//    @Autowired
 	//    private AuthEntryPointJwt unauthorizedHandler;
 
-	@Autowired
-	CustomOAuth2UserService oauthUserService;
+//	@Autowired
+//	CustomOAuth2UserService oauthUserService;
 
 	@Autowired
 	UserDetailsService userDetailsService;

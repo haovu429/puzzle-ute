@@ -24,6 +24,7 @@ import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.services.impl.BlogPostService;
 import hcmute.puzzle.services.impl.CommentService;
+import hcmute.puzzle.services.impl.JobPostService;
 import hcmute.puzzle.services.impl.UserService;
 import hcmute.puzzle.utils.Constant;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

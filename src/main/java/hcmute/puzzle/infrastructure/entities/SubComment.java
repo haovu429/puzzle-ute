@@ -36,7 +36,7 @@ public class SubComment extends Auditable {
 
 	@Column(name = "is_deleted")
 	@Builder.Default
-	private boolean isDelete = false;
+	private boolean isDeleted = false;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "comment_id")

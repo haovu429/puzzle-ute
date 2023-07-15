@@ -2,8 +2,11 @@ package hcmute.puzzle.utils;
 
 //import javax.servlet.http.HttpServletRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import hcmute.puzzle.hirize.model.AIMatcherData;
+import hcmute.puzzle.hirize.model.HirizeResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -21,8 +24,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 @Slf4j
-public class Utils {
-
+public class Utils<T> {
 
 
     public static Set<String> stringToSet(String str) {
@@ -114,5 +116,22 @@ public class Utils {
         FileUtils.copyURLToFile(new URL(url), file, 4000, 4000);
     }
 
+    public T jsonToObjectClass(String json) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        TypeReference<T> typeRef = new TypeReference<T>() {};
+        return objectMapper.readValue(json, typeRef);
+    }
+
+    public static String formatJson(String jsonString) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Object json = objectMapper.readValue(jsonString, Object.class);
+            ObjectWriter writer = objectMapper.writerWithDefaultPrettyPrinter();
+            return writer.writeValueAsString(json);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }
