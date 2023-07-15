@@ -1,2 +1,2 @@
 # puzzle-ute
-Deploy: https://puzzle-ute.herokuapp.com/api/doc
+Deploy: https://puzzleute.xyz/api/doc

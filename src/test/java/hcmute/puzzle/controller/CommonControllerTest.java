@@ -1,5 +1,9 @@
 package hcmute.puzzle.controller;
 
+import hcmute.puzzle.exception.NotFoundDataException;
+import hcmute.puzzle.infrastructure.entities.Candidate;
+import hcmute.puzzle.infrastructure.models.JobPostFilterRequest;
+import hcmute.puzzle.infrastructure.repository.CandidateRepository;
 import hcmute.puzzle.model.MockTestRequest;
 import hcmute.puzzle.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,6 +41,10 @@ class CommonControllerTest {
 
 	//	@MockBean
 	//	private EmployeeService service;
+
+//	@MockBean
+	@Autowired
+	private CandidateRepository candidateRepository;
 
 	@Autowired
 	private WebApplicationContext context;
@@ -126,7 +137,7 @@ class CommonControllerTest {
 		String path = "src/main/resources/test/payload/job_post_filter.json";
 		File file = new File(path);
 		String content = new String(Files.readAllBytes(file.toPath()));
-		//		Utils<JobPostFilterRequest> utils = new Utils<>();
+				Utils<JobPostFilterRequest> utils = new Utils<>();
 		//		JobPostFilterRequest jobPostFilterRequest = utils.jsonToObjectClass(content);
 		MockTestRequest mockTestRequest = MockTestRequest.builder()
 														 .url("/common/job-post-filter")
@@ -150,79 +161,105 @@ class CommonControllerTest {
 
 	@Test
 	void getEmployerById() throws Exception {
-		processingTestApi(HttpMethod.GET, "/employer/get-employer-by-id/3");
+		processingTestApi(HttpMethod.GET, "/common/employer/get-employer-by-id/3");
+	}
+
+//	@Test
+//	void registerAccount() throws Exception {
+//		processingTestApi(HttpMethod.GET, "/employer/get-employer-by-id/3");
+//	}
+
+	@Test
+	void getHotJobPost() throws Exception {
+		processingTestApi(HttpMethod.GET, "/common/get-hot-job-post");
 	}
 
 	@Test
-	void registerAccount() throws Exception {
-		processingTestApi(HttpMethod.GET, "/employer/get-employer-by-id/3");
+	void getJobPostDueSoon() throws Exception {
+		processingTestApi(HttpMethod.GET, "/common/get-hot-job-post");
 	}
 
 	@Test
-	void getHotJobPost() {
+	void getProfileCandidate() throws Exception {
+		Pageable pageable = Pageable.ofSize(5).withPage(0);
+		Page<Candidate> candidates = candidateRepository.findAll(pageable);
+		Candidate candidateTest = null;
+		if (!candidates.isEmpty()) {
+			candidateTest = candidates.getContent().get(0);
+		} else {
+			throw new NotFoundDataException("Not found candidate");
+		}
+		processingTestApi(HttpMethod.GET, "/common/candidate-profile/" + candidateTest.getId());
+
 	}
 
 	@Test
-	void getJobPostDueSoon() {
+	void getActiveJobPost() throws Exception {
+		processingTestApi(HttpMethod.GET, "/common/get-active-job-post");
 	}
 
-	@Test
-	void getProfileCandidate() {
-	}
-
-	@Test
-	void getActiveJobPost() {
-	}
-
-	@Test
-	void getAllExperienceByCandidateId() {
-	}
-
-	@Test
-	void getCandidateProfile() {
-	}
-
-	@Test
-	void getAmountApplicationToEmployer() {
-	}
-
-	@Test
-	void getJobPostAmount() {
-	}
-
-	@Test
-	void viewJobPost() {
-	}
-
-	@Test
-	void getApplicationAmount() {
-	}
-
-	@Test
-	void viewBlogPost() {
-	}
-
-	@Test
-	void likeComment() {
-	}
-
-	@Test
-	void disLikeComment() {
-	}
-
-	@Test
-	void getAllBlogPost() {
-	}
-
-	@Test
-	void getBlogCateWithPostAmount() {
-	}
-
-	@Test
-	void getAllCategory() {
-	}
-
-	@Test
-	void getCommentListByJobPostId() {
-	}
+//	@Test
+//	void getAllExperienceByCandidateId() {
+//		processingTestApi(HttpMethod.GET, "/employer/get-hot-job-post");
+//	}
+//
+//	@Test
+//	void getCandidateProfile() {
+//		processingTestApi(HttpMethod.GET, "/employer/get-hot-job-post");
+//	}
+//
+//	@Test
+//	void getAmountApplicationToEmployer() {
+//		processingTestApi(HttpMethod.GET, "/employer/get-hot-job-post");
+//	}
+//
+//	@Test
+//	void getJobPostAmount() {
+//		processingTestApi(HttpMethod.GET, "/employer/get-hot-job-post");
+//	}
+//
+//	@Test
+//	void viewJobPost() {
+//		processingTestApi(HttpMethod.GET, "/employer/get-hot-job-post");
+//	}
+//
+//	@Test
+//	void getApplicationAmount() {
+//		processingTestApi(HttpMethod.GET, "/employer/get-hot-job-post");
+//	}
+//
+//	@Test
+//	void viewBlogPost() {
+//		processingTestApi(HttpMethod.GET, "/employer/get-hot-job-post");
+//	}
+//
+//	@Test
+//	void likeComment() {
+//		processingTestApi(HttpMethod.GET, "/employer/get-hot-job-post");
+//	}
+//
+//	@Test
+//	void disLikeComment() {
+//		processingTestApi(HttpMethod.GET, "/employer/get-hot-job-post");
+//	}
+//
+//	@Test
+//	void getAllBlogPost() {
+//		processingTestApi(HttpMethod.GET, "/employer/get-hot-job-post");
+//	}
+//
+//	@Test
+//	void getBlogCateWithPostAmount() {
+//		processingTestApi(HttpMethod.GET, "/employer/get-hot-job-post");
+//	}
+//
+//	@Test
+//	void getAllCategory() {
+//		processingTestApi(HttpMethod.GET, "/employer/get-hot-job-post");
+//	}
+//
+//	@Test
+//	void getCommentListByJobPostId() {
+//		processingTestApi(HttpMethod.GET, "/employer/get-hot-job-post");
+//	}
 }

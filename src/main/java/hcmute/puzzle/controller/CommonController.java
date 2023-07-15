@@ -497,7 +497,13 @@ public class CommonController {
 
 	@GetMapping("/get-job-post-due-soon")
 	public DataResponse<List<JobPostDto>> getJobPostDueSoon() {
-		List<JobPostDto> jobPostDtos = jobPostService.getJobPostDueSoon();
+		//List<JobPostDto> jobPostDtos = jobPostService.getJobPostDueSoon();
+		JobPostFilterRequest jobPostFilterRequest = JobPostFilterRequest.builder()
+																		.sortColumn("deadline")
+																		.isAscSort(true)
+																		.build();
+		List<JobPostDto> jobPostDtos = jobPostService.filterJobPost(jobPostFilterRequest, Pageable.unpaged())
+													 .getContent();
 		return new DataResponse<>(jobPostDtos);
 	}
 
