@@ -23,10 +23,10 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     @Query("SELECT a FROM Application a WHERE a.jobPost.id = :jobPostId")
     Page<Application> findApplicationByJobPostId(@Param("jobPostId") long jobPostId, Pageable pageable);
 
-    @Query("SELECT a FROM Application a WHERE a.jobPost.createdEmployer.id = :employerId")
+    @Query("SELECT a FROM Application a, JobPost jp WHERE a.jobPost.createdEmployer.id = :employerId AND a.jobPost.isDeleted = FALSE")
     Set<Application> findApplicationByEmployerId(@Param("employerId") long employerId);
 
-    @Query("SELECT COUNT(a) FROM Application a WHERE a.jobPost.createdEmployer.id = :employerId")
+    @Query("SELECT COUNT(a) FROM Application a WHERE a.jobPost.createdEmployer.id = :employerId AND a.jobPost.isDeleted = FALSE")
     long getAmountApplicationToEmployer(@Param("employerId") long employerId);
 
     @Query("SELECT COUNT(a) FROM Application a WHERE a.jobPost.id = :jobPostId")

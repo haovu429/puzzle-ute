@@ -16,10 +16,7 @@ import hcmute.puzzle.infrastructure.models.enums.FileType;
 import hcmute.puzzle.infrastructure.repository.BlogPostRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.*;
-import hcmute.puzzle.services.impl.BlogPostService;
-import hcmute.puzzle.services.impl.CommentService;
-import hcmute.puzzle.services.impl.JobPostService;
-import hcmute.puzzle.services.impl.UserService;
+import hcmute.puzzle.services.impl.*;
 import hcmute.puzzle.utils.Constant;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
@@ -220,17 +217,17 @@ public class UserController {
   }
 
   // log history viewed Job Post
-  @GetMapping("/view-job-post/{jobPostId}")
-  DataResponse<String> getViewJobPost(HttpServletRequest request, @PathVariable(value = "jobPostId") long jobPostId) {
-
-    Optional<User> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
-
-    if (linkUser.isEmpty()) {
-      throw new CustomException("Not found account");
-    }
-    jobPostService.viewJobPost(linkUser.get().getId(), jobPostId);
-    return new DataResponse<>("Success");
-  }
+//  @GetMapping("/view-job-post/{jobPostId}")
+//  DataResponse<String> getViewJobPost(HttpServletRequest request, @PathVariable(value = "jobPostId") long jobPostId) {
+//
+//    Optional<User> linkUser = jwtAuthenticationFilter.getUserEntityFromRequest(request);
+//
+//    if (linkUser.isEmpty()) {
+//      throw new CustomException("Not found account");
+//    }
+//    jobPostService.viewJobPost(linkUser.get().getId(), jobPostId);
+//    return new DataResponse<>("Success");
+//  }
 
   @GetMapping("/get-invoice")
   public DataResponse<List<InvoiceDto>> getInvoiceForUser() {

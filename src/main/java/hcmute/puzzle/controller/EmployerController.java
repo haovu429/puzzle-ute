@@ -33,6 +33,7 @@ import hcmute.puzzle.infrastructure.repository.JobPostRepository;
 import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.*;
 import hcmute.puzzle.services.impl.ApplicationService;
+import hcmute.puzzle.services.impl.EmployerService;
 import hcmute.puzzle.services.impl.JobPostService;
 import hcmute.puzzle.utils.Constant;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

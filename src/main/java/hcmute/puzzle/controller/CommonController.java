@@ -130,14 +130,14 @@ public class CommonController {
 	@GetMapping("/job-post/get-one/{jobPostId}")
 	DataResponse<JobPostDto> getJobPostById(@RequestHeader(value = "Authorization", required = false) String token,
 			@PathVariable(value = "jobPostId") long jobPostId) {
-		jobPostService.countJobPostView(jobPostId);
+		//jobPostService.countJobPostView(jobPostId);
 		try {
 			if (token != null && !token.isEmpty() && !token.isBlank()) {
-				Optional<User> linkUser = jwtAuthenticationFilter.getUserEntityFromToken(token);
-				jobPostService.viewJobPost(linkUser.get().getId(), jobPostId);
+				User currenUser = currentUserService.getCurrentUser();
+				jobPostService.viewJobPost(currenUser.getEmail(), jobPostId);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 		JobPostDto jobPostDto = jobPostService.getOne(jobPostId);
 		return new DataResponse<>(jobPostDto);
@@ -162,6 +162,31 @@ public class CommonController {
 	public DataResponse<List<ExtraInfoDto>> getAllExtraInfoByType(@RequestParam String type) {
 		List<ExtraInfoDto> extraInfoDtos = extraInfoService.getByType(type);
 		return new DataResponse<>(extraInfoDtos);
+	}
+
+	@GetMapping("/job-post/personal-view")
+	public DataResponse<List<JobPostDto>> getAllExtraInfoByType() {
+		List<JobPostDto> jobPostDtoList = new ArrayList<>();
+//		List<JobPostDto> jobPostDtoSuggestFromJobAlert = new ArrayList<>();
+		List<JobPostDto> recentViewJobPost;
+		List<JobPostDto> normalJobPost = new ArrayList<>();
+		try {
+			normalJobPost = new ArrayList<>(jobPostService.filterJobPost(Pageable.unpaged()).getContent());
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		User user = currentUserService.getCurrentUserOptional().orElse(null);
+		if (user != null) {
+//			jobPostDtoSuggestFromJobAlert = jobPostService.filterJobPostByAllJobAlert(user.getId());
+//			normalJobPost.removeAll(jobPostDtoSuggestFromJobAlert);
+//			jobPostDtoList.addAll(jobPostDtoSuggestFromJobAlert);
+			recentViewJobPost = jobPostService.getRecentViewJobPost(user.getId());
+			normalJobPost.removeAll(recentViewJobPost);
+			jobPostDtoList.addAll(recentViewJobPost);
+		}
+		jobPostDtoList.addAll(normalJobPost);
+		jobPostService.processListJobPost(jobPostDtoList);
+		return new DataResponse<>(jobPostDtoList);
 	}
 
 	@PostMapping("/job-post-filter")
@@ -218,6 +243,7 @@ public class CommonController {
 			Pageable pageable = this.getPageable(page, size);
 			Page<JobPostDto> jobPostDtos = jobPostService.filterJobPost(jobPostFilterRequest, pageable);
 			List<JobPostDto> jobPostDtoList = jobPostDtos.getContent();
+			jobPostService.processListJobPost(jobPostDtoList);
 			return new DataResponse<>(jobPostDtoList);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

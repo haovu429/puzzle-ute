@@ -37,7 +37,7 @@ public class User extends Auditable implements Serializable {
   @Column(name = "email", unique = true, nullable = false, columnDefinition = "VARCHAR(100)")
   private String email;
 
-  @Column(name = "phone", unique = true, columnDefinition = "VARCHAR(20)")
+  @Column(name = "phone", columnDefinition = "VARCHAR(20)")
   private String phone;
 
   @Column(name = "avatar", columnDefinition = "TEXT")

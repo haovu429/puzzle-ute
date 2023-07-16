@@ -18,10 +18,7 @@ import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.mappers.ExperienceMapper;
 import hcmute.puzzle.infrastructure.repository.*;
 import hcmute.puzzle.services.*;
-import hcmute.puzzle.services.impl.ApplicationService;
-import hcmute.puzzle.services.impl.CurrentUserService;
-import hcmute.puzzle.services.impl.ExperienceService;
-import hcmute.puzzle.services.impl.JobPostService;
+import hcmute.puzzle.services.impl.*;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.Utils;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -80,7 +77,8 @@ public class CandidateController {
   @Autowired
   ExperienceRepository experienceRepository;
 
-  @Autowired EmployerService employerService;
+  @Autowired
+  EmployerService employerService;
 
   @Autowired CompanyService companyService;
 

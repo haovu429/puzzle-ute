@@ -13,7 +13,6 @@ import hcmute.puzzle.infrastructure.entities.*;
 import hcmute.puzzle.infrastructure.mappers.EmployerMapper;
 import hcmute.puzzle.infrastructure.models.enums.JsonDataType;
 import hcmute.puzzle.infrastructure.repository.*;
-import hcmute.puzzle.services.EmployerService;
 import hcmute.puzzle.utils.Constant;
 import hcmute.puzzle.utils.Utils;
 import jakarta.persistence.EntityManager;
@@ -33,7 +32,7 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class EmployerServiceImpl implements EmployerService {
+public class EmployerService {
 
 	@Autowired
 	CandidateRepository candidateRepository;
@@ -83,7 +82,7 @@ public class EmployerServiceImpl implements EmployerService {
 	@Autowired
 	CurrentUserService currentUserService;
 
-	@Override
+	
 	public EmployerDto save(EmployerDto employerDTO) {
 		// casting provinceDTO to ProvinceEntity
 		Employer employer = employerMapper.employerDtoToEmployer(employerDTO);
@@ -114,13 +113,13 @@ public class EmployerServiceImpl implements EmployerService {
 		return employerDto;
 	}
 
-	@Override
+	
 	public void delete(long id) {
 		Employer employer = employerRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not found employer"));
 		employerRepository.delete(employer);
 	}
 
-	@Override
+	
 	public EmployerDto update(EmployerDto employerDTO) {
 		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext()
 																				 .getAuthentication()
@@ -133,7 +132,7 @@ public class EmployerServiceImpl implements EmployerService {
 		return employerMapper.employerToEmployerDto(employer);
 	}
 
-	@Override
+	
 	public EmployerDto getOne(long id) {
 		Employer employer = employerRepository.findById(id)
 											  .orElseThrow(() -> new NotFoundDataException(
@@ -142,7 +141,7 @@ public class EmployerServiceImpl implements EmployerService {
 		return employerMapper.employerToEmployerDto(employer);
 	}
 
-	@Override
+	
 	public List<EmployerDto> getEmployerFollowedByCandidateId(long candidateId) {
 		Candidate candidate = candidateRepository.findById(candidateId).orElseThrow(() -> new NotFoundDataException("Candidate isn't exist"));
 
@@ -157,7 +156,7 @@ public class EmployerServiceImpl implements EmployerService {
 
 	//markingJobpostWasDeleted
 
-	@Override
+	
 	public double getApplicationRateEmployerId(long employerId) {
 		Optional<Employer> employer = employerRepository.findById(employerId);
 		if (employer.isEmpty()) {
@@ -181,7 +180,8 @@ public class EmployerServiceImpl implements EmployerService {
 	public long getViewedCandidateAmountToJobPostCreatedByEmployer(long employerId) {
 		long amount = 0;
 		// check subscribes of employer
-		String sql = "SELECT COUNT(u.id) FROM JobPost jp INNER JOIN jp.viewedUsers u WHERE jp.createdEmployer.id =:employerId AND u.candidate.id IS NOT NULL AND jp.isDeleted=FALSE";
+		//  AND jp.isDeleted=FALSE
+		String sql = "SELECT COUNT(u.id) FROM JobPost jp, JobPostView jpv, User u WHERE jp.createdEmployer.id =:employerId AND jp.id = jpv.jobPostId AND u.email = jpv.email AND u.candidate.id IS NOT NULL AND jp.isDeleted=FALSE";
 		try {
 			amount = (long) em.createQuery(sql).setParameter("employerId", employerId).getSingleResult();
 		} catch (Exception e) {
@@ -234,9 +234,9 @@ public class EmployerServiceImpl implements EmployerService {
 	}
 
 	public HirizeResponse<AIMatcherData> getPointOfApplicationFromHirize(Application application,
-			JobPost jobPost) throws IOException, IllegalArgumentException, APIError {
-
-		String cvBase64 = EmployerServiceImpl.getStringBase64FromURL(application.getCv(), tempFileLocation);
+			JobPost jobPost) throws IOException, IllegalArgumentException, APIError, InvalidBehaviorException {
+		this.checkReduceCoinAvailable();
+		String cvBase64 = EmployerService.getStringBase64FromURL(application.getCv(), tempFileLocation);
 
 		// Detect language of content cv to convert to English
 		String translated = webClientService.translate(jobPost.getDescription());
@@ -314,6 +314,7 @@ public class EmployerServiceImpl implements EmployerService {
 	@Transactional
 	public HirizeResponse<HirizeIQData> getAISuggestForApplicationFromHirize(Long jobPostId, Long candidateId) throws
 			IOException, APIError, InvalidBehaviorException {
+		this.checkReduceCoinAvailable();
 		JobPost jobPost = jobPostRepository.findById(jobPostId)
 										   .orElseThrow(() -> new NotFoundDataException("Not found job post"));
 		Application application = applicationRepository.findApplicationByCanIdAndJobPostId(candidateId, jobPostId)
@@ -361,6 +362,24 @@ public class EmployerServiceImpl implements EmployerService {
 		userRepository.save(currentUser);
 	}
 
+	private void checkReduceCoinAvailable() throws InvalidBehaviorException, NumberFormatException {
+		CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext()
+																					   .getAuthentication()
+																					   .getPrincipal();
+		User currentUser = customUserDetails.getUser();
+		SystemConfiguration pricingConfiguration = systemConfigurationRepository.findByKey(
+				Constant.Hirize.HIRIZE_COIN_PRICING).orElse(null);
+		if (pricingConfiguration != null && pricingConfiguration.getValue() != null) {
+			coinPrice = Long.parseLong(pricingConfiguration.getValue());
+		} else if (coinPrice == null) {
+			throw new NotFoundDataException("Not found configuration for Cohere api");
+		}
+		long newBalance = currentUser.getBalance() - coinPrice;
+		if (newBalance < 0) {
+			throw new InvalidBehaviorException("account not enough coins");
+		}
+	}
+
 	public HirizeResponse<HirizeIQData> getAISuggestAlreadyExisted(long applicationId) throws JsonProcessingException {
 		Application application = applicationRepository.findById(applicationId)
 													   .orElseThrow(() -> new NotFoundDataException(
@@ -378,7 +397,7 @@ public class EmployerServiceImpl implements EmployerService {
 
 	public HirizeResponse<HirizeIQData> getAISuggestForApplicationFromHirize(Application application,
 			JobPost jobPost) throws IOException, IllegalArgumentException, APIError {
-		String cvBase64 = EmployerServiceImpl.getStringBase64FromURL(application.getCv(), tempFileLocation);
+		String cvBase64 = EmployerService.getStringBase64FromURL(application.getCv(), tempFileLocation);
 
 		// Detect language of content cv to convert to English
 		String translated = webClientService.translate(jobPost.getDescription());

@@ -15,6 +15,10 @@ public interface JsonDataMapper {
 
 	JsonDataDto jsonDataToJsonDataDto(JsonData jsonData);
 
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "hirizeId", ignore = true)
+	@Mapping(target = "applicationId", ignore = true)
+	@Mapping(target = "type", ignore = true)
 	JsonData createJsonDataTypeCvRequestToJsonData(CreateJsonDataTypeCvRequest createJsonDataTypeCvRequest);
 
 	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -22,6 +26,10 @@ public interface JsonDataMapper {
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "updatedBy", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "hirizeId", ignore = true)
+	@Mapping(target = "applicationId", ignore = true)
+	@Mapping(target = "type", ignore = true)
 	void updateJsonDataFromJsonDataUpdateRequest(
 			UpdateJsonDataTypeCvRequest updateJsonDataTypeCvRequest, @MappingTarget JsonData jsonData);
 }

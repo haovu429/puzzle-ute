@@ -21,6 +21,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,7 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class JobPostService {
 
@@ -69,6 +71,12 @@ public class JobPostService {
 
 	@Autowired
 	EmployerRepository employerRepository;
+
+	@Autowired
+	JobPostViewRepository jobPostViewRepository;
+
+	@Autowired
+	JobAlertRepository jobAlertRepository;
 
 	public JobPostDto add(JobPostUserPostRequest createJobPostRequest) {
 		//validateJobPost(jobPostDTO);
@@ -150,6 +158,7 @@ public class JobPostService {
 	public void markJobPostWasDelete(long id) {
 		JobPost jobPost = jobPostRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not found data"));
 		jobPost.setIsDeleted(true);
+		jobPost.setIsActive(false);
 		jobPostRepository.markJobPostWasDelete(id);
 
 	}
@@ -207,7 +216,14 @@ public class JobPostService {
 		JobPost jobPost = jobPostRepository.findById(id)
 										   .orElseThrow(() -> new NotFoundDataException(
 												   "Cannot find job post with id = " + id));
-		return jobPostMapper.jobPostToJobPostDto(jobPost);
+		JobPostDto jobPostDto = jobPostMapper.jobPostToJobPostDto(jobPost);
+		processingViewOfJobPost(jobPostDto);
+		return jobPostDto;
+	}
+
+	public void processingViewOfJobPost(JobPostDto jobPostDto) {
+		long viewNum = jobPostViewRepository.countByJobPostId(jobPostDto.getId());
+		jobPostDto.setViews(viewNum);
 	}
 
 
@@ -257,7 +273,6 @@ public class JobPostService {
 														.map(jobPostMapper::jobPostToJobPostDto)
 														.toList();
 		processListJobPost(jobPostDtos);
-
 		return jobPostDtos;
 	}
 
@@ -309,7 +324,8 @@ public class JobPostService {
 		JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 		List<JobPost> jobPosts = queryFactory.selectFrom(jobPost)
 											 .where(jobPost.isActive.eq(isActive),
-													jobPost.createdEmployer.id.eq(employerId))
+													jobPost.createdEmployer.id.eq(employerId),
+													jobPost.isDeleted.eq(false))
 											 .fetch();
 		List<JobPostDto> jobPostDtos = jobPosts.stream().map(jobPostMapper::jobPostToJobPostDto).toList();
 
@@ -419,13 +435,31 @@ public class JobPostService {
 	}
 
 
-	public void viewJobPost(long userId, long jobPostId) {
+	public void viewJobPost(String email, long jobPostId) {
 		JobPost jobPost = jobPostRepository.findById(jobPostId)
 										   .orElseThrow(() -> new NotFoundDataException("Not found job post"));
-		User userEntity = userRepository.findById(userId)
-										.orElseThrow(() -> new NotFoundDataException(" Not found user"));
-		jobPost.getViewedUsers().add(userEntity);
-		jobPostRepository.save(jobPost);
+		JobPostView jobPostView = jobPostViewRepository.findByEmailAndJobPostId(email, jobPostId).orElse(null);
+		if (jobPostView == null) {
+			jobPostView = JobPostView.builder().email(email).jobPostId(jobPost.getId()).build();
+			jobPostViewRepository.save(jobPostView);
+		} else {
+			jobPostView.setUpdatedAt(new Date());
+			jobPostViewRepository.save(jobPostView);
+		}
+	}
+
+	public List<JobPostDto> getRecentViewJobPost(long userId) {
+		List<JobPostDto> jobPostDtos = new ArrayList<>();
+		try {
+			jobPostDtos = jobPostRepository.getRecentViewJobPostByUserId(userId)
+							 .stream()
+							 .map(jobPostMapper::jobPostToJobPostDto)
+							 .toList();
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		processListJobPost(jobPostDtos);
+		return jobPostDtos;
 	}
 
 
@@ -487,19 +521,46 @@ public class JobPostService {
 	public Page<JobPostDto> filterJobPostByJobAlert(JobAlert jobAlert, Pageable pageable) {
 
 		JobPostFilterRequest jobPostFilterRequest = JobPostFilterRequest.builder()
-																		.city(jobAlert.getCity())
 																		.isActive(true)
 																		.searchKeys(List.of(jobAlert.getTag(),
 																							jobAlert.getIndustry()))
-																		.minBudget(jobAlert.getMinBudget())
 																		.canApply(true)
-																		.position(jobAlert.getTag())
-
 																		.build();
 		Specification<JobPost> jobPostSpecification = doPredicate(jobPostFilterRequest);
 		Page<JobPostDto> jobPostDtos = jobPostRepository.findAll(jobPostSpecification, pageable)
 														.map(jobPostMapper::jobPostToJobPostDto);
 
+		return jobPostDtos;
+	}
+
+	public List<JobPostDto> filterJobPostByJobAlert(JobAlert jobAlert) {
+
+		JobPostFilterRequest jobPostFilterRequest = JobPostFilterRequest.builder()
+																		.isActive(true)
+																		.searchKeys(List.of(jobAlert.getTag(),
+																							jobAlert.getIndustry()))
+																		.canApply(true)
+																		.build();
+		Specification<JobPost> jobPostSpecification = doPredicate(jobPostFilterRequest);
+		Page<JobPostDto> jobPostDtos = jobPostRepository.findAll(jobPostSpecification, Pageable.unpaged())
+														.map(jobPostMapper::jobPostToJobPostDto);
+		List<JobPostDto> jobPostDtoList = jobPostDtos.getContent();
+
+		return jobPostDtoList;
+	}
+
+	public List<JobPostDto> filterJobPostByAllJobAlert(long userId) {
+		List<JobPostDto> jobPostDtos = new ArrayList<>();
+		Candidate candidate = candidateRepository.findById(userId).orElse(null);
+		if (candidate != null) {
+			List<JobAlert> jobAlerts = jobAlertRepository.findAllByCandidate_Id(userId);
+			for (JobAlert jobAlert : jobAlerts) {
+				List<JobPostDto> temp = new ArrayList<>(this.filterJobPostByJobAlert(jobAlert));
+				// Avoid duplicate
+				temp.removeAll(jobPostDtos);
+				jobPostDtos.addAll(temp);
+			}
+		}
 		return jobPostDtos;
 	}
 
@@ -533,10 +594,16 @@ public class JobPostService {
 		}
 	}
 
-	public static void processListJobPost(Collection<JobPostDto> jobPostDtos) {
+	public void processListJobPost(Collection<JobPostDto> jobPostDtos) {
 		jobPostDtos.forEach(jobPostDTO -> {
 			jobPostDTO.setDescription(null);
+			processingViewOfJobPost(jobPostDTO);
 		});
+	}
+
+	public Page<JobPostDto> filterJobPost(Pageable pageable){
+		JobPostFilterRequest jobPostFilterRequest = JobPostFilterRequest.builder().sortColumn("updatedAt").build();
+		return filterJobPost(jobPostFilterRequest, pageable);
 	}
 
 	public Page<JobPostDto> filterJobPost(JobPostFilterRequest jobPostFilterRequest, Pageable pageable) {
@@ -558,6 +625,9 @@ public class JobPostService {
 
 		return ((root, query, criteriaBuilder) -> {
 			List<Predicate> predicates = new LinkedList<>();
+
+			Predicate withCheckDeletedFromSystem = criteriaBuilder.equal(root.get("isDeleted"), false);
+			predicates.add(withCheckDeletedFromSystem);
 
 			// Is Active
 			if (jobPostFilter.getIsActive() != null) {
