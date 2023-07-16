@@ -18,7 +18,7 @@ public class JsonData extends Auditable{
 	private long id;
 
 	@Column(name = "hirize_id")
-	private long hirizeId;
+	private Long hirizeId;
 
 	@Column(name = "application_id")
 	private Long applicationId;

@@ -1,22 +1,21 @@
 package hcmute.puzzle.services.impl;
 
 import freemarker.template.TemplateException;
-import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.*;
 import hcmute.puzzle.infrastructure.dtos.news.*;
-import hcmute.puzzle.infrastructure.dtos.olds.CommentDto;
-import hcmute.puzzle.infrastructure.dtos.olds.SubCommentDto;
-import hcmute.puzzle.infrastructure.dtos.request.UpdateCommentRequest;
-import hcmute.puzzle.infrastructure.dtos.request.UpdateSubCommentRequest;
+import hcmute.puzzle.infrastructure.dtos.request.CreateJsonDataTypeCvRequest;
+import hcmute.puzzle.infrastructure.dtos.request.UpdateJsonDataTypeCvRequest;
 import hcmute.puzzle.infrastructure.entities.*;
-import hcmute.puzzle.infrastructure.mappers.CommentMapper;
-import hcmute.puzzle.infrastructure.mappers.SubCommentMapper;
+import hcmute.puzzle.infrastructure.mappers.JsonDataMapper;
 import hcmute.puzzle.infrastructure.mappers.UserMapper;
 import hcmute.puzzle.infrastructure.models.DataStaticJoinAccount;
 import hcmute.puzzle.infrastructure.models.enums.FileCategory;
 import hcmute.puzzle.infrastructure.models.enums.FileType;
+import hcmute.puzzle.infrastructure.models.enums.JsonDataType;
 import hcmute.puzzle.infrastructure.models.enums.Roles;
-import hcmute.puzzle.infrastructure.repository.*;
+import hcmute.puzzle.infrastructure.repository.JsonDataRepository;
+import hcmute.puzzle.infrastructure.repository.RoleRepository;
+import hcmute.puzzle.infrastructure.repository.UserRepository;
 import hcmute.puzzle.services.FilesStorageService;
 import hcmute.puzzle.utils.Provider;
 import hcmute.puzzle.utils.RedisUtils;
@@ -26,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -66,25 +64,13 @@ public class UserService {
 	private UserMapper userMapper;
 
 	@Autowired
-	private CommentRepository commentRepository;
-
-	@Autowired
-	private SubCommentRepository subCommentRepository;
-
-	@Autowired
-	private BlogPostRepository blogPostRepository;
-
-	@Autowired
-	private CommentMapper commentMapper;
-
-	@Autowired
-	private SubCommentMapper subCommentMapper;
+	private JsonDataRepository jsonDataRepository;
 
 	@Autowired
 	private CurrentUserService currentUserService;
 
 	@Autowired
-	private CommentService commentService;
+	private JsonDataMapper jsonDataMapper;
 
 	public boolean checkEmailExists(String email) {
 		User user = userRepository.getUserByEmail(email);
@@ -419,6 +405,54 @@ public class UserService {
 		return data;
 	}
 
+	public List<JsonDataDto> getMyCvOnlineJsonData() {
+		User currentUser = currentUserService.getCurrentUser();
+		List<JsonDataDto> jsonDataDtos = jsonDataRepository.findByCreatedByAndType(currentUser.getEmail(),
+																				   JsonDataType.CV_ONLINE)
+														   .stream()
+														   .map(jsonDataMapper::jsonDataToJsonDataDto)
+														   .toList();
+		return jsonDataDtos;
+	}
 
+	public JsonDataDto getJsonDataTypeCvById(long jsonDataId) {
+		User currentUser = currentUserService.getCurrentUser();
+		JsonData jsonData = jsonDataRepository.findById(jsonDataId).orElseThrow(
+				() -> new NotFoundDataException("Not found json data")
+		);
+		if (!jsonData.getCreatedBy().equals(currentUser.getEmail())) {
+			throw new UnauthorizedException("You don't have rights for this data");
+		}
+		return jsonDataMapper.jsonDataToJsonDataDto(jsonData);
+	}
+
+	public JsonDataDto addCvOnlineJsonData(CreateJsonDataTypeCvRequest createJsonDataTypeCvRequest) {
+		JsonData jsonData = jsonDataMapper.createJsonDataTypeCvRequestToJsonData(createJsonDataTypeCvRequest);
+		jsonData.setType(JsonDataType.CV_ONLINE);
+		return jsonDataMapper.jsonDataToJsonDataDto(jsonDataRepository.save(jsonData));
+	}
+
+	public JsonDataDto updateCvOnlineJsonData(long jsonDataId, UpdateJsonDataTypeCvRequest updateJsonDataTypeCvRequest) {
+		JsonData jsonData = jsonDataRepository.findById(jsonDataId).orElseThrow(
+				() -> new NotFoundDataException("Not found json data")
+		);
+		User currentUser = currentUserService.getCurrentUser();
+		if (!jsonData.getCreatedBy().equals(currentUser.getEmail())) {
+			throw new UnauthorizedException("You don't have rights for this data");
+		}
+		jsonDataMapper.updateJsonDataFromJsonDataUpdateRequest(updateJsonDataTypeCvRequest, jsonData);
+		return jsonDataMapper.jsonDataToJsonDataDto(jsonDataRepository.save(jsonData));
+	}
+
+	public void deleteCvOnlineJsonData(long jsonDataId) {
+		JsonData jsonData = jsonDataRepository.findById(jsonDataId).orElseThrow(
+				() -> new NotFoundDataException("Not found json data")
+		);
+		User currentUser = currentUserService.getCurrentUser();
+		if (!jsonData.getCreatedBy().equals(currentUser.getEmail())) {
+			throw new UnauthorizedException("You don't have rights for this data");
+		}
+		jsonDataRepository.delete(jsonData);
+	}
 
 }

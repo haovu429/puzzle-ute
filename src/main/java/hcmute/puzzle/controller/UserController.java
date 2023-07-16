@@ -4,15 +4,9 @@ import hcmute.puzzle.configuration.security.CustomUserDetails;
 import hcmute.puzzle.exception.*;
 import hcmute.puzzle.filter.JwtAuthenticationFilter;
 import hcmute.puzzle.infrastructure.converter.Converter;
-import hcmute.puzzle.infrastructure.dtos.news.CreateCommentRequest;
-import hcmute.puzzle.infrastructure.dtos.news.CreateSubCommentRequest;
-import hcmute.puzzle.infrastructure.dtos.news.UpdateUserDto;
-import hcmute.puzzle.infrastructure.dtos.news.UserPostDto;
+import hcmute.puzzle.infrastructure.dtos.news.*;
 import hcmute.puzzle.infrastructure.dtos.olds.*;
-import hcmute.puzzle.infrastructure.dtos.request.BlogPostRequest;
-import hcmute.puzzle.infrastructure.dtos.request.BlogPostUpdateRequest;
-import hcmute.puzzle.infrastructure.dtos.request.UpdateCommentRequest;
-import hcmute.puzzle.infrastructure.dtos.request.UpdateSubCommentRequest;
+import hcmute.puzzle.infrastructure.dtos.request.*;
 import hcmute.puzzle.infrastructure.dtos.response.DataResponse;
 import hcmute.puzzle.infrastructure.entities.BlogPost;
 import hcmute.puzzle.infrastructure.entities.User;
@@ -397,4 +391,31 @@ public class UserController {
     }
     return pageable;
   }
+
+  @GetMapping(path = "/cv-online/my-cv")
+  public DataResponse<List<JsonDataDto>> getMyCvOnline() {
+    return new DataResponse<>(userService.getMyCvOnlineJsonData());
+  }
+
+  @GetMapping(path = "/cv-online/{jsonDataId}")
+  public DataResponse<JsonDataDto> getCvOnlineById(@PathVariable long jsonDataId) {
+    return new DataResponse<>(userService.getJsonDataTypeCvById(jsonDataId));
+  }
+
+  @PostMapping(path = "/cv-online")
+  public DataResponse<JsonDataDto> addCvOnline(@RequestBody CreateJsonDataTypeCvRequest createJsonDataTypeCvRequest) {
+    return new DataResponse<>(userService.addCvOnlineJsonData(createJsonDataTypeCvRequest));
+  }
+
+  @PutMapping(path = "/cv-online/{jsonDataId}")
+  public DataResponse<JsonDataDto> updateCvOnline(@PathVariable long jsonDataId, @RequestBody UpdateJsonDataTypeCvRequest updateJsonDataTypeCvRequest) {
+    return new DataResponse<>(userService.updateCvOnlineJsonData(jsonDataId, updateJsonDataTypeCvRequest));
+  }
+
+  @DeleteMapping(path = "/cv-online/{jsonDataId}")
+  public DataResponse<String> deleteCvOnline(@PathVariable long jsonDataId) {
+    userService.deleteCvOnlineJsonData(jsonDataId);
+    return new DataResponse<>("Success");
+  }
+
 }
