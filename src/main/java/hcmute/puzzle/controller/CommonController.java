@@ -128,12 +128,11 @@ public class CommonController {
 	}
 
 	@GetMapping("/job-post/get-one/{jobPostId}")
-	DataResponse<JobPostDto> getJobPostById(@RequestHeader(value = "Authorization", required = false) String token,
-			@PathVariable(value = "jobPostId") long jobPostId) {
+	DataResponse<JobPostDto> getJobPostById(@PathVariable(value = "jobPostId") long jobPostId) {
 		//jobPostService.countJobPostView(jobPostId);
 		try {
-			if (token != null && !token.isEmpty() && !token.isBlank()) {
-				User currenUser = currentUserService.getCurrentUser();
+			User currenUser = currentUserService.getCurrentUserOptional().orElse(null);
+			if (currenUser != null) {
 				jobPostService.viewJobPost(currenUser.getEmail(), jobPostId);
 			}
 		} catch (Exception e) {
@@ -165,9 +164,9 @@ public class CommonController {
 	}
 
 	@GetMapping("/job-post/personal-view")
-	public DataResponse<List<JobPostDto>> getAllExtraInfoByType() {
+	public DataResponse<List<JobPostDto>> getAllExtraInfoByType(@RequestParam(required = false) Integer size) {
 		List<JobPostDto> jobPostDtoList = new ArrayList<>();
-//		List<JobPostDto> jobPostDtoSuggestFromJobAlert = new ArrayList<>();
+		//		List<JobPostDto> jobPostDtoSuggestFromJobAlert = new ArrayList<>();
 		List<JobPostDto> recentViewJobPost;
 		List<JobPostDto> normalJobPost = new ArrayList<>();
 		try {
@@ -177,14 +176,19 @@ public class CommonController {
 		}
 		User user = currentUserService.getCurrentUserOptional().orElse(null);
 		if (user != null) {
-//			jobPostDtoSuggestFromJobAlert = jobPostService.filterJobPostByAllJobAlert(user.getId());
-//			normalJobPost.removeAll(jobPostDtoSuggestFromJobAlert);
-//			jobPostDtoList.addAll(jobPostDtoSuggestFromJobAlert);
+			//			jobPostDtoSuggestFromJobAlert = jobPostService.filterJobPostByAllJobAlert(user.getId());
+			//			normalJobPost.removeAll(jobPostDtoSuggestFromJobAlert);
+			//			jobPostDtoList.addAll(jobPostDtoSuggestFromJobAlert);
 			recentViewJobPost = jobPostService.getRecentViewJobPost(user.getId());
-			normalJobPost.removeAll(recentViewJobPost);
+			List<Long> recentViewJobPostId = recentViewJobPost.stream().map(JobPostDto::getId).toList();
+			normalJobPost.removeIf(jobPostDto -> recentViewJobPostId.contains(jobPostDto.getId()));
 			jobPostDtoList.addAll(recentViewJobPost);
 		}
 		jobPostDtoList.addAll(normalJobPost);
+		if (size != null) {
+			jobPostDtoList = jobPostDtoList.subList(0, size);
+		}
+
 		jobPostService.processListJobPost(jobPostDtoList);
 		return new DataResponse<>(jobPostDtoList);
 	}
@@ -236,6 +240,7 @@ public class CommonController {
 																			.position(position)
 																			.skills(jobPostFilter.getSkills())
 																			.categoryIds(jobPostFilter.getCategoryIds())
+																			.companyIds(jobPostFilter.getCompanyIds())
 																			.isActive(true)
 																			.numDayAgo(jobPostFilter.getNumDayAgo())
 																			.sortColumn("updatedAt")

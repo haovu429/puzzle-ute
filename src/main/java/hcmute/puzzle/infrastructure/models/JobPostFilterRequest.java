@@ -21,6 +21,7 @@ public class JobPostFilterRequest implements Serializable {
 	String position;
 	List<String> skills;
 	List<Long> categoryIds;
+	List<Long> companyIds;
 	Boolean canApply;
 	@Builder.Default
 	Boolean isPublic = true;

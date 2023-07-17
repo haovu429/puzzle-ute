@@ -199,8 +199,6 @@ public class UserService {
 
 	@Transactional
 	public UserPostDto updateUserForAdmin(long id, UpdateUserForAdminDto user) {
-
-
 		User updateUser = userRepository.findById(id).orElseThrow(() -> new NotFoundException("NOT_FOUND_USER"));
 		// Check username Exists
 		if (updateUser.getUsername() != null && !updateUser.getUsername()
@@ -213,7 +211,8 @@ public class UserService {
 
 			if (updateUser.getRoles() != null && !updateUser.getRoles().isEmpty()) {
 				// Remove old roles
-				roleRepository.deleteAll(updateUser.getRoles());
+				updateUser.getRoles().clear();
+				userRepository.save(updateUser);
 			}
 
 			List<Role> rolesFromDb = roleRepository.findAllByCodeIn(user.getRoleCodes());

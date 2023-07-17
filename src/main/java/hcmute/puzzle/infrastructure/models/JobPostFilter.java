@@ -21,6 +21,7 @@ public class JobPostFilter {
     List<String> skills;
     List<String> others;
     List<Long> categoryIds;
+    List<Long> companyIds;
     int numDayAgo = -1;
     boolean active = true;
     int noOfRecords = 6;

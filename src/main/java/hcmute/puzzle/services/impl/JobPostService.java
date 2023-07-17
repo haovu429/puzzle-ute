@@ -649,6 +649,12 @@ public class JobPostService {
 				predicates.add(categoryJoin.get("id").in(jobPostFilter.getCategoryIds()));
 			}
 
+			// Company
+			if (jobPostFilter.getCompanyIds() != null && !jobPostFilter.getCompanyIds().isEmpty()) {
+				Join<JobPost, Company> companyJoin = root.join("company", JoinType.INNER);
+				predicates.add(companyJoin.get("id").in(jobPostFilter.getCompanyIds()));
+			}
+
 			// EmployerType
 			if (jobPostFilter.getEmploymentTypes() != null && !jobPostFilter.getEmploymentTypes().isEmpty()) {
 				Predicate inEmploymentType = root.get("employmentType").in(jobPostFilter.getEmploymentTypes());
